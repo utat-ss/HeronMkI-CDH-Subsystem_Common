@@ -1,3 +1,34 @@
+/*
+	Author: Keenan Burnett
+	(Originally taken from Digi-Key Design Support)
+
+	***********************************************************************
+	*	FILE NAME:		Timer.c
+	*
+	*	PURPOSE:	This program contains the basic API for using timers.
+	*
+	*	FILE REFERENCES:	io.h, interrupt.h, timer.h
+	*
+	*	EXTERNAL VARIABLES:	
+	*
+	*	EXTERNAL REFERENCES:	Same a File References.
+	*
+	*	ABORNOMAL TERMINATION CONDITIONS, ERROR AND WARNING MESSAGES: None yet.
+	*
+	*	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
+	*
+	*	NOTES:	
+	*
+	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
+	*	None so far.
+	*
+	*	DEVELOPMENT HISTORY:
+	*	01/02/2015		Created.
+	*
+	*	02/06/2015		Edited the header.
+	*
+*/
+
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -36,3 +67,4 @@ void delay_ms(uint16_t ms) {
 		delay_us(1000);
 	}
 }
+

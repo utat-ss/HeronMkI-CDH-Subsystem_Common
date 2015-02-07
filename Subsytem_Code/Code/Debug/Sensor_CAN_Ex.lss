@@ -19,11 +19,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_frame  00000254  00000000  00000000  00002cc4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    00000474  00000000  00000000  00002f18  2**0
+  8 .debug_str    000004c3  00000000  00000000  00002f18  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    00000db4  00000000  00000000  0000338c  2**0
+  9 .debug_loc    00000db4  00000000  00000000  000033db  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 000000e8  00000000  00000000  00004140  2**0
+ 10 .debug_ranges 000000e8  00000000  00000000  0000418f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -100,12 +100,6 @@ Disassembly of section .text:
   b6:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000ba <can_clear_all_mob>:
-    else //! mode = 1
-    {
-        brp  = Max ((((CANBT1 &  BRP_MSK) >> 1) +1) , BRP_MIN );
-        prs  = Max ((((CANBT2 &  PRS_MSK) >> 1) +1) , PRS_MIN );
-        phs1 = Max ((((CANBT3 & PHS1_MSK) >> 1) +1) , PHS1_MIN);
-        phs2 = Max ((((CANBT3 & PHS2_MSK) >> 4) +1) , PHS2_MIN);
   ba:	80 e0       	ldi	r24, 0x00	; 0
   bc:	ad ee       	ldi	r26, 0xED	; 237
   be:	b0 e0       	ldi	r27, 0x00	; 0
@@ -117,7 +111,6 @@ Disassembly of section .text:
   ca:	9c 93       	st	X, r25
   cc:	e3 2f       	mov	r30, r19
   ce:	f2 2f       	mov	r31, r18
-        ntq  = Max ((prs + phs1 + phs2 + 1) , NTQ_MIN);
   d0:	11 92       	st	Z+, r1
   d2:	e8 3f       	cpi	r30, 0xF8	; 248
   d4:	f1 05       	cpc	r31, r1
@@ -133,85 +126,29 @@ Disassembly of section .text:
   e4:	20 81       	ld	r18, Z
   e6:	10 82       	st	Z, r1
   e8:	80 91 ef 00 	lds	r24, 0x00EF
-        phs1_inc = evaluate = 1;   //! To enter in "while (evaluate ..." loop
   ec:	80 7c       	andi	r24, 0xC0	; 192
   ee:	69 f0       	breq	.+26     	; 0x10a <can_get_mob_free+0x2a>
-        ntq  = NTQ_MIN;
-        phs1 = PHS1_MIN;
-        phs2 = PHS2_MIN;
-        prs  = ntq - ( phs1 + phs2 + 1 );
-        try_conf = 1;       //! Try this configuration
-        wait_for_rx = 1;    //! Enable "while (wait_for_rx ..." loop
   f0:	81 e0       	ldi	r24, 0x01	; 1
   f2:	ad ee       	ldi	r26, 0xED	; 237
-    uint8_t  ovrtim_flag=0;                          //! Timer overflow count
-    uint16_t conf_index;                             //! Count of bit timing configuration tried
-    uint8_t  bt_performed;                           //! Return flag
-
-    //! --- Default setting
-    phs1_inc = evaluate = 0;
   f4:	b0 e0       	ldi	r27, 0x00	; 0
-    if (mode==0)
-    {
-        brp  = BRP_MIN;
-        ntq  = NTQ_MIN;
-        phs1 = PHS1_MIN;
-        phs2 = PHS2_MIN;
   f6:	ef ee       	ldi	r30, 0xEF	; 239
-    //!     or init segment variables with CANBTx if mode=1
-    if (mode==0)
-    {
-        brp  = BRP_MIN;
-        ntq  = NTQ_MIN;
-        phs1 = PHS1_MIN;
   f8:	f0 e0       	ldi	r31, 0x00	; 0
-    //! --- Init segment variables with MIN values if mode=0
-    //!     or init segment variables with CANBTx if mode=1
-    if (mode==0)
-    {
-        brp  = BRP_MIN;
-        ntq  = NTQ_MIN;
   fa:	98 2f       	mov	r25, r24
   fc:	92 95       	swap	r25
   fe:	90 7f       	andi	r25, 0xF0	; 240
-        phs1 = PHS1_MIN;
-        phs2 = PHS2_MIN;
-        prs  = ntq - ( phs1 + phs2 + 1 );
  100:	9c 93       	st	X, r25
  102:	90 81       	ld	r25, Z
  104:	90 7c       	andi	r25, 0xC0	; 192
  106:	29 f4       	brne	.+10     	; 0x112 <can_get_mob_free+0x32>
-
-    //! --- Init segment variables with MIN values if mode=0
-    //!     or init segment variables with CANBTx if mode=1
-    if (mode==0)
-    {
-        brp  = BRP_MIN;
  108:	01 c0       	rjmp	.+2      	; 0x10c <can_get_mob_free+0x2c>
  10a:	80 e0       	ldi	r24, 0x00	; 0
-        try_conf = 0;       //! Look for the next configuration
-        wait_for_rx = 0;    //! Skip "while (wait_for_rx ..." loop
-    }
-
-    //! --- Clear all MOb's (CANMSG not cleared)
-    for (u8_temp0 = 0; u8_temp0 < NB_MOB; u8_temp0++)
  10c:	20 93 ed 00 	sts	0x00ED, r18
-    {
-        Can_set_mob(u8_temp0);  //! Page index
  110:	08 95       	ret
-        Can_clear_mob();        //! All MOb Registers = 0x00
  112:	8f 5f       	subi	r24, 0xFF	; 255
  114:	86 30       	cpi	r24, 0x06	; 6
-    }
-
-    //! --- Clear all MOb's (CANMSG not cleared)
-    for (u8_temp0 = 0; u8_temp0 < NB_MOB; u8_temp0++)
-    {
-        Can_set_mob(u8_temp0);  //! Page index
  116:	89 f7       	brne	.-30     	; 0xfa <can_get_mob_free+0x1a>
  118:	20 93 ed 00 	sts	0x00ED, r18
  11c:	8f ef       	ldi	r24, 0xFF	; 255
-        Can_clear_mob();        //! All MOb Registers = 0x00
  11e:	08 95       	ret
 
 00000120 <can_get_mob_status>:
@@ -219,12 +156,6 @@ Disassembly of section .text:
  124:	80 7c       	andi	r24, 0xC0	; 192
  126:	61 f0       	breq	.+24     	; 0x140 <can_get_mob_status+0x20>
  128:	80 91 ee 00 	lds	r24, 0x00EE
-        try_conf = 0;       //! Look for the next configuration
-        wait_for_rx = 0;    //! Skip "while (wait_for_rx ..." loop
-    }
-
-    //! --- Clear all MOb's (CANMSG not cleared)
-    for (u8_temp0 = 0; u8_temp0 < NB_MOB; u8_temp0++)
  12c:	98 2f       	mov	r25, r24
  12e:	90 7e       	andi	r25, 0xE0	; 224
  130:	28 2f       	mov	r18, r24
@@ -233,12 +164,6 @@ Disassembly of section .text:
  136:	31 f0       	breq	.+12     	; 0x144 <can_get_mob_status+0x24>
  138:	90 34       	cpi	r25, 0x40	; 64
  13a:	31 f0       	breq	.+12     	; 0x148 <can_get_mob_status+0x28>
-
-    while (bt_not_found == 1)
-    {
-        if (try_conf == 1)
-        {
-            Can_reset();
  13c:	8f 71       	andi	r24, 0x1F	; 31
  13e:	08 95       	ret
  140:	8f ef       	ldi	r24, 0xFF	; 255
@@ -246,82 +171,33 @@ Disassembly of section .text:
  144:	89 2f       	mov	r24, r25
  146:	08 95       	ret
  148:	89 2f       	mov	r24, r25
-            CANSTMOB = 0;                       //! Reset MOb status (undone by "Can_reset()")
-            CANCDMOB = (MOB_Rx_ENA  << CONMOB); //! MOb 0 in receive mode
-
-            //! CAN controller configuration
-            CANGCON = (1<<LISTEN) | (1<<ENASTB);//! Enable CAN controller in "listen" mode
-            while ((CANGSTA & (1<<ENFG)) == 0); //! Wait for Enable OK
  14a:	08 95       	ret
 
 0000014c <can_get_data>:
  14c:	cf 93       	push	r28
-            CANGIT = 0xFF;                      //! Reset General errors and OVRTIM flag
  14e:	df 93       	push	r29
  150:	20 91 ef 00 	lds	r18, 0x00EF
  154:	2f 70       	andi	r18, 0x0F	; 15
  156:	99 f0       	breq	.+38     	; 0x17e <can_get_data+0x32>
-    {
-        if (try_conf == 1)
-        {
-            Can_reset();
-            conf_index++;
-            ovrtim_flag=0;
  158:	60 e0       	ldi	r22, 0x00	; 0
-                {
-                    if (ovrtim_flag==0)
-                    {
-                        //! --- First Time_out
-                        CANGIT |= (1<<OVRTIM);  // Reset OVRTIM
-                        ovrtim_flag++;
  15a:	ca ef       	ldi	r28, 0xFA	; 250
-            {
-                //! --- MOb error ?
-                if ((u8_temp0 & ((1<<BERR)|(1<<SERR)|(1<<CERR)|(1<<FERR)|(1<<AERR))) !=0)
-                {
-                    evaluate = 1;       //! Will enter in "while (evaluate ..." loop
-                    wait_for_rx = 0;    //! Out of "while (wait_for_rx ..." loop
  15c:	d0 e0       	ldi	r29, 0x00	; 0
-
-            // --- The following test takes into account the previous incrementation of phs1
-            if ((phs1 > PHS1_MAX) && (phs2 >= PHS2_MAX))
-            {
-                phs1 = PHS1_MIN;
-                phs2 = PHS2_MIN;
  15e:	af ee       	ldi	r26, 0xEF	; 239
  160:	b0 e0       	ldi	r27, 0x00	; 0
  162:	28 81       	ld	r18, Y
-                phs1_inc = 0;
-                if (ntq != NTQ_MAX) ntq++;
-                else
-                {
-                    ntq = NTQ_MIN;
  164:	fc 01       	movw	r30, r24
  166:	e6 0f       	add	r30, r22
-        Can_clear_mob();        //! All MOb Registers = 0x00
-    }
-
-    while (bt_not_found == 1)
-    {
-        if (try_conf == 1)
  168:	f1 1d       	adc	r31, r1
  16a:	20 83       	st	Z, r18
  16c:	6f 5f       	subi	r22, 0xFF	; 255
  16e:	2c 91       	ld	r18, X
-        {
-            Can_reset();
  170:	46 2f       	mov	r20, r22
  172:	50 e0       	ldi	r21, 0x00	; 0
-            conf_index++;
  174:	2f 70       	andi	r18, 0x0F	; 15
  176:	30 e0       	ldi	r19, 0x00	; 0
  178:	42 17       	cp	r20, r18
  17a:	53 07       	cpc	r21, r19
  17c:	94 f3       	brlt	.-28     	; 0x162 <can_get_data+0x16>
-            ovrtim_flag=0;
-
-            //! --- CANBTx registers update (sjw = phs2/2, 3 sample points)
-            CANBT1 = ((brp-1) << BRP);
  17e:	df 91       	pop	r29
  180:	cf 91       	pop	r28
  182:	08 95       	ret
@@ -329,7 +205,6 @@ Disassembly of section .text:
 00000184 <can_fixed_baudrate>:
  184:	81 e0       	ldi	r24, 0x01	; 1
  186:	80 93 d8 00 	sts	0x00D8, r24
-            CANBT2 = (((phs2 >> 1)-1) << SJW) |((prs-1) << PRS);
  18a:	82 e0       	ldi	r24, 0x02	; 2
  18c:	80 93 e2 00 	sts	0x00E2, r24
  190:	8c e0       	ldi	r24, 0x0C	; 12
@@ -2320,23 +2195,11 @@ uint8_t can_get_status (st_cmd_t* cmd)
  e58:	08 95       	ret
 
 00000e5a <LED_Reg_Write>:
-
-#include <avr/io.h>
-#include "LED.h"
-
-void LED_Reg_Write(uint8_t val) {
-	LEDPORT = ~val;
  e5a:	80 95       	com	r24
  e5c:	85 b9       	out	0x05, r24	; 5
  e5e:	08 95       	ret
 
 00000e60 <main>:
-volatile uint8_t CTC_flag;
-
-uint8_t response_data[DATA_BUFFER_SIZE];
-
-int main(void)
-{		
  e60:	cf 93       	push	r28
  e62:	df 93       	push	r29
  e64:	cd b7       	in	r28, 0x3d	; 61
@@ -2347,120 +2210,54 @@ int main(void)
  e6e:	de bf       	out	0x3e, r29	; 62
  e70:	0f be       	out	0x3f, r0	; 63
  e72:	cd bf       	out	0x3d, r28	; 61
-    }
-}
-
-void sys_init(void) {
-	// Make sure sys clock is at least 8MHz
-	CLKPR = 0x80;  
  e74:	e1 e6       	ldi	r30, 0x61	; 97
  e76:	f0 e0       	ldi	r31, 0x00	; 0
  e78:	80 e8       	ldi	r24, 0x80	; 128
  e7a:	80 83       	st	Z, r24
-	CLKPR = 0x00;
  e7c:	10 82       	st	Z, r1
-}
-
-void io_init(void) {
-	
-	// Init PORTB[7:0] // LED port
-	DDRB = 0xFF;
  e7e:	8f ef       	ldi	r24, 0xFF	; 255
  e80:	84 b9       	out	0x04, r24	; 4
-	LED_Reg_Write(0x00); // clear all LEDs
  e82:	80 e0       	ldi	r24, 0x00	; 0
  e84:	0e 94 2d 07 	call	0xe5a	; 0xe5a <LED_Reg_Write>
-	
-	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
-	DDRC = 0x00;
  e88:	17 b8       	out	0x07, r1	; 7
-	PORTC = 0x00;
  e8a:	18 b8       	out	0x08, r1	; 8
-	
-	// Init PORTD[7:0]
-	DDRD = 0x00;
  e8c:	1a b8       	out	0x0a, r1	; 10
-	PORTD = 0x00;
  e8e:	1b b8       	out	0x0b, r1	; 11
-	
-	// Init PORTE[2:0]
-	DDRE = 0x00;
  e90:	1d b8       	out	0x0d, r1	; 13
-	PORTD = 0x00;
  e92:	1b b8       	out	0x0b, r1	; 11
-	// Make sure sys clock is at least 8MHz
-	CLKPR = 0x80;  
-	CLKPR = 0x00;
-	
-	io_init();	
-	timer_init();
  e94:	0e 94 87 07 	call	0xf0e	; 0xf0e <timer_init>
-	can_init(0);
  e98:	80 e0       	ldi	r24, 0x00	; 0
  e9a:	0e 94 d0 00 	call	0x1a0	; 0x1a0 <can_init>
-{		
-	// Initialize I/O, Timer, and CAN peripheral
-	sys_init();
-	
-	// Enable global interrupts for Timer execution
-	sei();
  e9e:	78 94       	sei
-	
-	// Flash LEDs to indicate program startup
-	LED_Reg_Write(0x01);
  ea0:	81 e0       	ldi	r24, 0x01	; 1
  ea2:	0e 94 2d 07 	call	0xe5a	; 0xe5a <LED_Reg_Write>
-	delay_ms(250);
  ea6:	8a ef       	ldi	r24, 0xFA	; 250
  ea8:	90 e0       	ldi	r25, 0x00	; 0
  eaa:	0e 94 a1 07 	call	0xf42	; 0xf42 <delay_ms>
-	LED_Reg_Write(0x00);
  eae:	80 e0       	ldi	r24, 0x00	; 0
  eb0:	0e 94 2d 07 	call	0xe5a	; 0xe5a <LED_Reg_Write>
-		// Simulate collecting local sensor data: put test bytes in response buffer
-		//response_data[0] = MY_ID_TAG;
-		//if(MY_ID_TAG == 0x80) { response_data[1] = 0x3C; }
-		//if(MY_ID_TAG == 0x81) { response_data[1] = 0x0F; }
-			
-		reply_message.pt_data = &response_data[0]; // point message object to first element of data buffer
  eb4:	0f 2e       	mov	r0, r31
  eb6:	f0 e0       	ldi	r31, 0x00	; 0
  eb8:	ef 2e       	mov	r14, r31
  eba:	f1 e0       	ldi	r31, 0x01	; 1
  ebc:	ff 2e       	mov	r15, r31
  ebe:	f0 2d       	mov	r31, r0
-		reply_message.ctrl.ide = 0; // standard CAN frame type (2.0A)
-		reply_message.id.std = MY_ID_TAG; // populate ID field with ID Tag
  ec0:	0a e0       	ldi	r16, 0x0A	; 10
  ec2:	10 e0       	ldi	r17, 0x00	; 0
-		reply_message.cmd = CMD_RX; // assign this as a receiving message object.
  ec4:	68 94       	set
  ec6:	dd 24       	eor	r13, r13
  ec8:	d2 f8       	bld	r13, 2
-		// Simulate collecting local sensor data: put test bytes in response buffer
-		//response_data[0] = MY_ID_TAG;
-		//if(MY_ID_TAG == 0x80) { response_data[1] = 0x3C; }
-		//if(MY_ID_TAG == 0x81) { response_data[1] = 0x0F; }
-			
-		reply_message.pt_data = &response_data[0]; // point message object to first element of data buffer
  eca:	f9 86       	std	Y+9, r15	; 0x09
  ecc:	e8 86       	std	Y+8, r14	; 0x08
-		reply_message.ctrl.ide = 0; // standard CAN frame type (2.0A)
  ece:	1c 86       	std	Y+12, r1	; 0x0c
-		reply_message.id.std = MY_ID_TAG; // populate ID field with ID Tag
  ed0:	1c 83       	std	Y+4, r17	; 0x04
  ed2:	0b 83       	std	Y+3, r16	; 0x03
-		reply_message.cmd = CMD_RX; // assign this as a receiving message object.
  ed4:	da 82       	std	Y+2, r13	; 0x02
-		
-		while(can_cmd(&reply_message) != CAN_CMD_ACCEPTED); // wait for MOb to configure
  ed6:	ce 01       	movw	r24, r28
  ed8:	01 96       	adiw	r24, 0x01	; 1
  eda:	0e 94 df 00 	call	0x1be	; 0x1be <can_cmd>
  ede:	81 11       	cpse	r24, r1
  ee0:	fa cf       	rjmp	.-12     	; 0xed6 <main+0x76>
-		
-		while(can_get_status(&reply_message) == CAN_STATUS_NOT_COMPLETED); // wait for a transmit request to come in, and send a response
  ee2:	ce 01       	movw	r24, r28
  ee4:	01 96       	adiw	r24, 0x01	; 1
  ee6:	0e 94 0e 06 	call	0xc1c	; 0xc1c <can_get_status>
@@ -2469,22 +2266,14 @@ void io_init(void) {
  eee:	ed cf       	rjmp	.-38     	; 0xeca <main+0x6a>
 
 00000ef0 <__vector_12>:
-
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include "Timer.h"
-
-ISR(TIMER1_COMPA_vect) {
  ef0:	1f 92       	push	r1
  ef2:	0f 92       	push	r0
  ef4:	0f b6       	in	r0, 0x3f	; 63
  ef6:	0f 92       	push	r0
  ef8:	11 24       	eor	r1, r1
  efa:	8f 93       	push	r24
-	CTC_flag = 1;
  efc:	81 e0       	ldi	r24, 0x01	; 1
  efe:	80 93 02 01 	sts	0x0102, r24
-}
  f02:	8f 91       	pop	r24
  f04:	0f 90       	pop	r0
  f06:	0f be       	out	0x3f, r0	; 63
@@ -2493,72 +2282,42 @@ ISR(TIMER1_COMPA_vect) {
  f0c:	18 95       	reti
 
 00000f0e <timer_init>:
-
-// This function initializes a 16-bit timer used for delays.
-void timer_init(void) {
-	
-	TIMSK1 = 0x00; //Disable timer interrupts
  f0e:	10 92 6f 00 	sts	0x006F, r1
-	TCCR1A = 0x00; //Timer not connected to any pins
  f12:	10 92 80 00 	sts	0x0080, r1
-	TCCR1B = 0x0A; //CTC mode; Timer_Rate = System_CLK/8 = 1MHz
  f16:	8a e0       	ldi	r24, 0x0A	; 10
  f18:	80 93 81 00 	sts	0x0081, r24
  f1c:	08 95       	ret
 
 00000f1e <delay_us>:
-// if timer rate is set to 1MHz frequency. For example, this 
-// project uses a system clock of 8MHz. Timer1 rate is set to
-// System Clock divided by 8 which is 1MHz (in timer_init). 
-// Therefore the "us" parameter truly is 1us.
-void delay_us(uint16_t us) {
-	CTC_flag = 0; //Clear CTC Interrupt flag
  f1e:	10 92 02 01 	sts	0x0102, r1
-	TCNT1 = 0x0000; //Clear timer
  f22:	10 92 85 00 	sts	0x0085, r1
  f26:	10 92 84 00 	sts	0x0084, r1
-	OCR1A = us; //Load compare value with desired delay in us
  f2a:	90 93 89 00 	sts	0x0089, r25
  f2e:	80 93 88 00 	sts	0x0088, r24
-	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
  f32:	82 e0       	ldi	r24, 0x02	; 2
  f34:	80 93 6f 00 	sts	0x006F, r24
-	while(!CTC_flag); //wait for the designated number of us
  f38:	80 91 02 01 	lds	r24, 0x0102
  f3c:	88 23       	and	r24, r24
  f3e:	e1 f3       	breq	.-8      	; 0xf38 <delay_us+0x1a>
-}
  f40:	08 95       	ret
 
 00000f42 <delay_ms>:
-
-void delay_ms(uint16_t ms) {
  f42:	0f 93       	push	r16
  f44:	1f 93       	push	r17
  f46:	cf 93       	push	r28
  f48:	df 93       	push	r29
  f4a:	8c 01       	movw	r16, r24
-	for(uint16_t i=0; i<ms; i++) {
  f4c:	00 97       	sbiw	r24, 0x00	; 0
  f4e:	51 f0       	breq	.+20     	; 0xf64 <delay_ms+0x22>
  f50:	c0 e0       	ldi	r28, 0x00	; 0
  f52:	d0 e0       	ldi	r29, 0x00	; 0
-		delay_us(1000);
  f54:	88 ee       	ldi	r24, 0xE8	; 232
  f56:	93 e0       	ldi	r25, 0x03	; 3
  f58:	0e 94 8f 07 	call	0xf1e	; 0xf1e <delay_us>
-	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
-	while(!CTC_flag); //wait for the designated number of us
-}
-
-void delay_ms(uint16_t ms) {
-	for(uint16_t i=0; i<ms; i++) {
  f5c:	21 96       	adiw	r28, 0x01	; 1
  f5e:	c0 17       	cp	r28, r16
  f60:	d1 07       	cpc	r29, r17
  f62:	c1 f7       	brne	.-16     	; 0xf54 <delay_ms+0x12>
-		delay_us(1000);
-	}
  f64:	df 91       	pop	r29
  f66:	cf 91       	pop	r28
  f68:	1f 91       	pop	r17

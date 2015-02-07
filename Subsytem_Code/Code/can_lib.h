@@ -1,34 +1,46 @@
 /*
- * can_lib.h
- 
-	The contents of this file were originally from the CAN Software Library
-	provided by Atmel. Use of this file is subject to Atmel's End User
-	License Agreement.
- 
- */ 
+	Copyright (c) 2007 Atmel.
+	Edited by Keenan Burnett
 
+	***********************************************************************
+	*	FILE NAME:		can_lib.h
+	*
+	*	PURPOSE:		
+	*	This is the main program which shall be run on the ATMEGA32M1s to be used on subsystem
+	*	microcontrollers.
+	*
+	*	This file contains the prototypes and macros of the library of functions of:
+	*			CAN (Controller Array Network)
+	*			AT90CAN128/64/32
+	*
+	*	This file can be parsed by Doxygen for automatic documentation generation.
+	*	This file has been validated with AVRStudio-413528/WinAVR-20070122.
+	*
+	*	FILE REFERENCES:	can_drv.h
+	*
+	*	EXTERNAL VARIABLES:	
+	*
+	*	EXTERNAL REFERENCES:	Same a File References.
+	*
+	*	ABORNOMAL TERMINATION CONDITIONS, ERROR AND WARNING MESSAGES: None yet.
+	*
+	*	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
+	*
+	*	NOTES:	
+	*		The contents of this file were originally from the CAN Software Library
+	*		provided by Atmel written for AT90CAN devices. Use of this file is subject
+	*		to Atmel's End User License Agreement.
+	*
+	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
+	*	None so far.
+	*
+	*	DEVELOPMENT HISTORY:
+	*	01/02/2015		Created.
+	*
+	*	02/06/2015		Edited the header.
+	*
+*/
 
-//******************************************************************************
-//! @file $RCSfile: can_lib.h,v $
-//!
-//! Copyright (c) 2007 Atmel.
-//!
-//! Use of this program is subject to Atmel's End User License Agreement.
-//! Please read file license.txt for copyright notice.
-//!
-//! @brief This file contains the prototypes and the macros of the
-//!        library of functions of:
-//!             - CAN (Controller Array Network)
-//!             - for AT90CAN128/64/32.
-//!
-//! This file can be parsed by Doxygen for automatic documentation generation.
-//! This file has been validated with AVRStudio-413528/WinAVR-20070122.
-//!
-//! @version $Revision: 3.20 $ $Name: jtellier $
-//!
-//! @todo
-//! @bug
-//******************************************************************************
 
 #ifndef _CAN_LIB_H_
 #define _CAN_LIB_H_
@@ -37,6 +49,14 @@
 #include "can_drv.h"
 
 //_____ D E F I N I T I O N S __________________________________________________
+
+/*				MY CAN DEFINES								*/
+#define CAN_MAM_MIDvA_Pos 18
+#define CAN_MAM_MIDvA_Msk (0x7ffu << CAN_MAM_MIDvA_Pos) /**< \brief (CAN_MAM) Identifier for standard frame mode */
+
+#define CAN_MAM_MIDvB_Pos 0
+#define CAN_MAM_MIDvB_Msk (0x3ffffu << CAN_MAM_MIDvB_Pos) /**< \brief (CAN_MAM) Complementary bits for identifier in extended frame mode */
+/*********************************************************************/
 
 // ----------
 // @brief This constant is used as return value for "can_cmd" function.
@@ -93,7 +113,7 @@ typedef struct{
 
 // ----------
 // @brief This structure allows to define a specific action on CAN network.
-// 1) handle: manage by the library.
+// 1) handle:  Equivalent to the MOb Number.
 // 2) cmd   :  initialize by the application to select the operation.
 // 3) id    :  initialize by the application in transmission
 //             complete by the library in reception.
@@ -177,3 +197,4 @@ extern uint8_t can_get_status (st_cmd_t *);
 //______________________________________________________________________________
 
 #endif // _CAN_LIB_H_
+

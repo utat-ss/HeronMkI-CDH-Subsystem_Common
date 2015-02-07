@@ -40,7 +40,7 @@ C_SRCS +=  \
 ../can_drv.c \
 ../can_lib.c \
 ../LED.c \
-../Sensor_CAN_Ex.c \
+../main.c \
 ../Timer.c
 
 
@@ -54,33 +54,33 @@ OBJS +=  \
 can_drv.o \
 can_lib.o \
 LED.o \
-Sensor_CAN_Ex.o \
+main.o \
 Timer.o
 
 OBJS_AS_ARGS +=  \
 can_drv.o \
 can_lib.o \
 LED.o \
-Sensor_CAN_Ex.o \
+main.o \
 Timer.o
 
 C_DEPS +=  \
 can_drv.d \
 can_lib.d \
 LED.d \
-Sensor_CAN_Ex.d \
+main.d \
 Timer.d
 
 C_DEPS_AS_ARGS +=  \
 can_drv.d \
 can_lib.d \
 LED.d \
-Sensor_CAN_Ex.d \
+main.d \
 Timer.d
 
-OUTPUT_FILE_PATH +=Sensor_CAN_Ex.elf
+OUTPUT_FILE_PATH +=Subsystem_Program.elf
 
-OUTPUT_FILE_PATH_AS_ARGS +=Sensor_CAN_Ex.elf
+OUTPUT_FILE_PATH_AS_ARGS +=Subsystem_Program.elf
 
 ADDITIONAL_DEPENDENCIES:=
 
@@ -135,13 +135,13 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER_SCRIPT_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU Linker : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="Sensor_CAN_Ex.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atmega32m1  
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="Subsystem_Program.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group -Wl,--gc-sections -mmcu=atmega32m1  
 	@echo Finished building target: $@
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "Sensor_CAN_Ex.elf" "Sensor_CAN_Ex.hex"
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "Sensor_CAN_Ex.elf" "Sensor_CAN_Ex.eep" || exit 0
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "Sensor_CAN_Ex.elf" > "Sensor_CAN_Ex.lss"
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "Sensor_CAN_Ex.elf" "Sensor_CAN_Ex.srec"
-	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-size.exe" "Sensor_CAN_Ex.elf"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures  "Subsystem_Program.elf" "Subsystem_Program.hex"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "Subsystem_Program.elf" "Subsystem_Program.eep" || exit 0
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objdump.exe" -h -S "Subsystem_Program.elf" > "Subsystem_Program.lss"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-objcopy.exe" -O srec -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures "Subsystem_Program.elf" "Subsystem_Program.srec"
+	"C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-size.exe" "Subsystem_Program.elf"
 	
 	
 
@@ -153,5 +153,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP) $(LIB_DEP) $(LINKER
 clean:
 	-$(RM) $(OBJS_AS_ARGS) $(EXECUTABLES)  
 	-$(RM) $(C_DEPS_AS_ARGS)   
-	rm -rf "Sensor_CAN_Ex.elf" "Sensor_CAN_Ex.a" "Sensor_CAN_Ex.hex" "Sensor_CAN_Ex.lss" "Sensor_CAN_Ex.eep" "Sensor_CAN_Ex.map" "Sensor_CAN_Ex.srec" "Sensor_CAN_Ex.usersignatures"
+	rm -rf "Subsystem_Program.elf" "Subsystem_Program.a" "Subsystem_Program.hex" "Subsystem_Program.lss" "Subsystem_Program.eep" "Subsystem_Program.map" "Subsystem_Program.srec" "Subsystem_Program.usersignatures"
 	

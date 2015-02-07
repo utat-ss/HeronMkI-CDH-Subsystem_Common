@@ -1,32 +1,49 @@
 /*
- * can_lib.c
- 
-	The contents of this file were originally from the CAN Software Library
-	provided by Atmel written for AT90CAN devices. Use of this file is subject 
-	to Atmel's End User License Agreement.
- 
- */ 
+	Copyright (c) 2007 Atmel.
+	Edited by Keenan Burnett
 
-//******************************************************************************
-//! @file $RCSfile: can_lib.c,v $
-//!
-//! Copyright (c) 2007 Atmel.
-//!
-//! Use of this program is subject to Atmel's End User License Agreement.
-//! Please read file license.txt for copyright notice.
-//!
-//! @brief This file contains the library of functions of:
-//!             - CAN (Controller Array Network)
-//!             - AT90CAN128/64/32
-//!
-//! This file can be parsed by Doxygen for automatic documentation generation.
-//! This file has been validated with AVRStudio-413528/WinAVR-20070122.
-//!
-//! @version $Revision: 3.20 $ $Name: jtellier $
-//!
-//! @todo
-//! @bug
-//******************************************************************************
+	***********************************************************************
+	*	FILE NAME:		can_lib.c
+	*
+	*	PURPOSE:		
+	*	This is the main program which shall be run on the ATMEGA32M1s to be used on subsystem
+	*	microcontrollers.
+	*
+	*	This file contains the library of functions of:
+	*			CAN (Controller Array Network)
+	*			AT90CAN128/64/32
+	*
+	*	This file can be parsed by Doxygen for automatic documentation generation.
+	*	This file has been validated with AVRStudio-413528/WinAVR-20070122.
+	*
+	*	FILE REFERENCES:	can_lib.h, config.h, can_drv.h
+	*
+	*	EXTERNAL VARIABLES:	
+	*
+	*	EXTERNAL REFERENCES:	Same a File References.
+	*
+	*	ABORNOMAL TERMINATION CONDITIONS, ERROR AND WARNING MESSAGES: None yet.
+	*
+	*	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
+	*
+	*	NOTES:	
+	*		The contents of this file were originally from the CAN Software Library
+	*		provided by Atmel written for AT90CAN devices. Use of this file is subject
+	*		to Atmel's End User License Agreement.
+	*
+	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
+	*	None so far.
+	*
+	*	DEVELOPMENT HISTORY:
+	*	01/02/2015		Created.
+	*
+	*	02/06/2015		Edited the header.
+	*
+	*					~Line 307: Changed CAN_STATUS_COMPLETED to MOB_RX_COMPLETED
+	*
+	*					I got rid of the Can_mob_abort() statements as I want my mailboxes
+	*					to remain the same throughout the life of the program.
+*/
 
 //_____ I N C L U D E S ________________________________________________________
 #include "config.h"
@@ -150,9 +167,22 @@ uint8_t can_cmd(st_cmd_t* cmd)
           break;
         //------------      
         case CMD_RX_DATA:
-          u32_temp=0; Can_set_ext_msk(u32_temp);
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
+		
+          u32_temp = 0; 
+		  Can_set_std_msk(u32_temp);
+		  
+		  u32_temp = 10;
+		  Can_set_std_id(u32_temp);
+		  
+		  u32_temp = 0;
+		  Can_set_ext_msk(u32_temp);
+          Can_set_dlc(cmd->dlc);		// For simplicity, should always be 8.
+		  
+          cmd->ctrl.rtr=0; 
+		  Can_set_rtrmsk(); 
+		  Can_clear_rtr();
+		  
+		  Can_clear_ide();
           Can_clear_idemsk();
           Can_config_rx();       
           break;
@@ -239,7 +269,7 @@ uint8_t can_cmd(st_cmd_t* cmd)
 //  @fn can_get_status
 //!
 //! This function allows to return if the command has been performed or not.
-//! In an reception case, all the CAN message is stored in the structure.
+//! In a reception case, all the CAN message is stored in the structure.
 //! This function also updates the CAN descriptor status (MOB_TX_COMPLETED,    
 //!  MOB_RX_COMPLETED, MOB_RX_COMPLETED_DLCW or MOB_???_ERROR).         
 //!
@@ -263,29 +293,19 @@ uint8_t can_get_status (st_cmd_t* cmd)
 
     Can_set_mob(cmd->handle);
     a_status = can_get_mob_status();
-	LED_Reg_Write(0x02);		//Toggle LED1 when this point in the code is reached.
     
     switch (a_status)
     {
         case MOB_NOT_COMPLETED:
             // cmd->status not updated
             rtn_val = CAN_STATUS_NOT_COMPLETED;
-			LED_Reg_Write(0x04);		//Toggle LED2 when this point in the code is reached.
             break;
-        //---------------      
+			 
         case MOB_RX_COMPLETED:
-			LED_Reg_Write(0x01);
-			delay_ms(1000);
-            cmd->dlc = Can_get_dlc();
-            can_get_data(cmd->pt_data);
-            //-------------------------------------------------------
-            if ((*(cmd->pt_data) == 0x00001111) | (*(cmd->pt_data) == 0x55AAAA55))
-            {
-				LED_Reg_Write(0x01);	//Toggle LED0 when the appropriate message is received.
-				delay_ms(1000);
-            }
-
-            //-------------------------------------------------------
+			LED_Reg_Write(0x01);	//Toggle LED0 when the appropriate message is received.
+			delay_ms(500);
+			LED_Reg_Write(0x00);
+	    
             cmd->ctrl.rtr = Can_get_rtr();
             if (Can_get_ide()) // if extended frame
             {
@@ -298,25 +318,18 @@ uint8_t can_get_status (st_cmd_t* cmd)
 	            Can_get_std_id(cmd->id.std);
             }
             // Status field of descriptor: 0x20 if Rx completed
-            // Status field of descriptor: 0xA0 if Rx completed with DLCWarning
             cmd->status = a_status;
-            Can_mob_abort();        // Freed the MOB
-            Can_clear_status_mob(); //   and reset MOb status
-            rtn_val = CAN_STATUS_COMPLETED;
+			can_get_data(cmd->pt_data);
+			Can_mob_abort();        // Freed the MOb
+            Can_clear_status_mob(); //   Reset MOb status
+            rtn_val = MOB_RX_COMPLETED;
             break;
+			
         case MOB_RX_COMPLETED_DLCW:
-			LED_Reg_Write(0x01);
-			delay_ms(1000);
-            cmd->dlc = Can_get_dlc();
-            can_get_data(cmd->pt_data);
-//-------------------------------------------------------
-			if ((*(cmd->pt_data) == 0x00001111) | (*(cmd->pt_data) == 0x55AAAA55))
-			{
-				LED_Reg_Write(0x01);		//Toggle LED0 when the appropriate message is received.
-				delay_ms(1000);
-			}
+			//LED_Reg_Write(0x01);	//Toggle LED0 when the appropriate message is received.
+			//delay_ms(500);
+			//LED_Reg_Write(0x00);	//Toggle LED0 when the appropriate message is received.
 
-//-------------------------------------------------------
             cmd->ctrl.rtr = Can_get_rtr();
             if (Can_get_ide()) // if extended frame
             {
@@ -328,27 +341,27 @@ uint8_t can_get_status (st_cmd_t* cmd)
                     cmd->ctrl.ide = 0;
                     Can_get_std_id(cmd->id.std);
                 }
-            // Status field of descriptor: 0x20 if Rx completed
             // Status field of descriptor: 0xA0 if Rx completed with DLCWarning    
             cmd->status = a_status;
-            Can_mob_abort();        // Freed the MOB
-            Can_clear_status_mob(); //   and reset MOb status
-            rtn_val = CAN_STATUS_COMPLETED;
+			can_get_data(cmd->pt_data);
+			
+			Can_mob_abort();        // Freed the MO
+            Can_clear_status_mob(); //   Reset MOb status
+            rtn_val = MOB_RX_COMPLETED_DLCW;
             break;
-        //---------------      
+ 
         case MOB_TX_COMPLETED:     
             // Status field of descriptor: 0x40 if Tx completed
             cmd->status = a_status;
-            Can_mob_abort();        // Freed the MOB
+			Can_mob_abort();        // Freed the MO
             Can_clear_status_mob(); //   and reset MOb status
-            rtn_val = CAN_STATUS_COMPLETED;
+            rtn_val = MOB_TX_COMPLETED;
             break;
-        //---------------      
+ 
         default:
             // Status field of descriptor: (bin)000b.scfa if MOb error
             cmd->status = a_status;
-			LED_Reg_Write(0x04);		//Turn on LED2 when the the computer reaches this point.
-            Can_mob_abort();        // Freed the MOB
+			Can_mob_abort();        // Freed the MOb
             Can_clear_status_mob(); //   and reset MOb status
             rtn_val = CAN_STATUS_ERROR;
             break;
@@ -357,18 +370,5 @@ uint8_t can_get_status (st_cmd_t* cmd)
  
     return (rtn_val);
 }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
+    

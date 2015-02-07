@@ -1,31 +1,36 @@
 /*
- * config.h
- 
-	The contents of this file were originally from the CAN Software Library
-	provided by Atmel written for AT90CAN devices. Use of this file is subject
-	to Atmel's End User License Agreement.
- 
- */ 
+	Copyright (c) 2007 Atmel.
+	Edited by Keenan Burnett
 
-//******************************************************************************
-//! @file $RCSfile: config.h,v $
-//!
-//! Copyright (c) 2007 Atmel.
-//!
-//! Use of this program is subject to Atmel's End User License Agreement.
-//! Please read file license.txt for copyright notice.
-//!
-//! @brief Configuration file for the following project:
-//!             - can_sensor_node_example_gcc
-//!
-//! This file can be parsed by Doxygen for automatic documentation generation.
-//! This file has been validated with AVRStudio-413528/WinAVR-20070122.
-//!
-//! @version $Revision: 3.20 $ $Name: jtellier $
-//!
-//! @todo
-//! @bug
-//******************************************************************************
+	***********************************************************************
+	*	FILE NAME:		config.h
+	*
+	*	PURPOSE:	Configuration file.
+	*
+	*	FILE REFERENCES:	io.h, interrupt.h
+	*
+	*	EXTERNAL VARIABLES:	
+	*
+	*	EXTERNAL REFERENCES:	Same a File References.
+	*
+	*	ABORNOMAL TERMINATION CONDITIONS, ERROR AND WARNING MESSAGES: None yet.
+	*
+	*	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
+	*
+	*	NOTES:	
+	*		The contents of this file were originally from the CAN Software Library
+	*		provided by Atmel written for AT90CAN devices. Use of this file is subject
+	*		to Atmel's End User License Agreement.
+	*
+	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
+	*	None so far.
+	*
+	*	DEVELOPMENT HISTORY:
+	*	01/02/2015		Created.
+	*
+	*	02/06/2015		Edited the header.
+	*
+*/
 
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
