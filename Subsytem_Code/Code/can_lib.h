@@ -51,11 +51,18 @@
 //_____ D E F I N I T I O N S __________________________________________________
 
 /*				MY CAN DEFINES								*/
-#define CAN_MAM_MIDvA_Pos 18
-#define CAN_MAM_MIDvA_Msk (0x7ffu << CAN_MAM_MIDvA_Pos) /**< \brief (CAN_MAM) Identifier for standard frame mode */
+#define NODE0_ID				10
+#define NODE1_ID				9
 
-#define CAN_MAM_MIDvB_Pos 0
-#define CAN_MAM_MIDvB_Msk (0x3ffffu << CAN_MAM_MIDvB_Pos) /**< \brief (CAN_MAM) Complementary bits for identifier in extended frame mode */
+#define SUB0_ID0 20
+#define SUB0_ID1 21
+#define SUB0_ID2 22
+#define SUB0_ID3 23
+#define SUB0_ID4 24
+#define SUB0_ID5 25
+
+
+
 /*********************************************************************/
 
 // ----------
@@ -135,6 +142,8 @@ typedef  struct{
 
 
 //_____ D E C L A R A T I O N S ________________________________________________
+volatile st_cmd_t message; // message object
+
 
 //------------------------------------------------------------------------------
 //  @fn can_init
@@ -175,8 +184,7 @@ extern uint8_t can_init(uint8_t mode);
 //! @return CAN_CMD_ACCEPTED - command is accepted
 //!         CAN_CMD_REFUSED  - command is refused
 //!
-extern uint8_t can_cmd (st_cmd_t *);
-
+extern uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number);
 //------------------------------------------------------------------------------
 //  @fn can_get_status
 //!
@@ -192,7 +200,7 @@ extern uint8_t can_cmd (st_cmd_t *);
 //!         CAN_STATUS_ERROR         - Error in configuration or in the
 //!                                    CAN communication
 //!
-extern uint8_t can_get_status (st_cmd_t *); 
+extern uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number);
 
 //______________________________________________________________________________
 

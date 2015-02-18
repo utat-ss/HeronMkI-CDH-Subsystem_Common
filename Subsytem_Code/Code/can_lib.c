@@ -43,6 +43,16 @@
 	*
 	*					I got rid of the Can_mob_abort() statements as I want my mailboxes
 	*					to remain the same throughout the life of the program.
+	*
+	*	02/17/2015		I edited can_cmd() so that it now takes mob_number as a second parameter.
+	*					This way I can use this function (which is already made) to reinitialize
+	*					message objects the way that I want them to work.
+	*
+	*					I also edited can_get_status() in the same fashion.
+	*
+	*					I FOUND A BUG IN THE CODE THAT WAS GIVEN TO ME. They made use of a temporary
+	*					32-bit integer which does not work on an 8-bit architecture. This was the cause
+	*					of the errors I had in terms of receiving a message from an ID that did not match.
 */
 
 //_____ I N C L U D E S ________________________________________________________
@@ -78,6 +88,7 @@ uint8_t can_init(uint8_t mode)
 {
     if ((Can_bit_timing(mode))==0) return (0);  // c.f. macro in "can_drv.h"
     can_clear_all_mob();                        // c.f. function in "can_drv.c"
+	
     Can_enable();                               // c.f. macro in "can_drv.h" 
     return (1);
 }
@@ -101,31 +112,30 @@ uint8_t can_init(uint8_t mode)
 //!         CAN_CMD_REFUSED  - command is refused
 //!
 //------------------------------------------------------------------------------
-uint8_t can_cmd(st_cmd_t* cmd)
+uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
 {
   uint8_t mob_handle, cpt;
-  uint32_t u32_temp;
+  uint8_t u8_temp;
   
   if (cmd->cmd == CMD_ABORT)
   {
     if (cmd->status == MOB_PENDING)
     {
       // Rx or Tx not yet performed
-      Can_set_mob(cmd->handle);
+      Can_set_mob(mob_number);
       Can_mob_abort();
-      Can_clear_status_mob();       // To be sure !
-      cmd->handle = 0;
+      Can_clear_status_mob();       // To be sure!
+      cmd->handle = mob_number;
     }
     cmd->status = STATUS_CLEARED; 
   }
   else
   {
-    mob_handle = can_get_mob_free();
-    if (mob_handle!= NO_MOB)
+	Can_set_mob(mob_number);
+    if ((CANCDMOB & 0xC0) == 0x00)	// MOb is disabled.
     {
       cmd->status = MOB_PENDING; 
-      cmd->handle = mob_handle;
-      Can_set_mob(mob_handle);
+      cmd->handle = mob_number;
       Can_clear_mob();
           
       switch (cmd->cmd)
@@ -159,7 +169,7 @@ uint8_t can_cmd(st_cmd_t* cmd)
           break;
         //------------      
         case CMD_RX:
-          u32_temp=0; Can_set_ext_msk(u32_temp);
+          u8_temp=0; Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
           Can_clear_rtrmsk();
           Can_clear_idemsk();
@@ -168,14 +178,13 @@ uint8_t can_cmd(st_cmd_t* cmd)
         //------------      
         case CMD_RX_DATA:
 		
-          u32_temp = 0; 
-		  Can_set_std_msk(u32_temp);
+          u8_temp = 0xFF;				// Compares 8 bits of the ID.
+		  Can_set_std_msk(u8_temp);
 		  
-		  u32_temp = 10;
-		  Can_set_std_id(u32_temp);
+		  Can_set_std_id(cmd->id.std);	// New ID of the MOB is from the cmd object.
 		  
-		  u32_temp = 0;
-		  Can_set_ext_msk(u32_temp);
+		  u8_temp = 0;
+		  Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);		// For simplicity, should always be 8.
 		  
           cmd->ctrl.rtr=0; 
@@ -188,7 +197,7 @@ uint8_t can_cmd(st_cmd_t* cmd)
           break;
         //------------      
         case CMD_RX_REMOTE:
-          u32_temp=0; Can_set_ext_msk(u32_temp);
+          u8_temp=0; Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
           Can_clear_rplv();
@@ -199,7 +208,9 @@ uint8_t can_cmd(st_cmd_t* cmd)
         case CMD_RX_MASKED:
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
           else              { Can_set_std_id(cmd->id.std);}
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
+          u8_temp=~0; Can_set_ext_msk(u8_temp);
+		  
+		  
           Can_set_dlc(cmd->dlc);
           Can_clear_rtrmsk();
           Can_set_idemsk();
@@ -209,7 +220,7 @@ uint8_t can_cmd(st_cmd_t* cmd)
         case CMD_RX_DATA_MASKED:
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
           else              { Can_set_std_id(cmd->id.std);}
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
+          u8_temp=~0; Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
           Can_set_idemsk();
@@ -219,7 +230,7 @@ uint8_t can_cmd(st_cmd_t* cmd)
         case CMD_RX_REMOTE_MASKED:
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
           else              { Can_set_std_id(cmd->id.std);}
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
+          u8_temp=~0; Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
           Can_clear_rplv();
@@ -229,7 +240,7 @@ uint8_t can_cmd(st_cmd_t* cmd)
         //------------      
         case CMD_REPLY:
           for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
-          u32_temp=0; Can_set_ext_msk(u32_temp);
+          u8_temp=0; Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
           Can_set_rplv();
@@ -241,7 +252,7 @@ uint8_t can_cmd(st_cmd_t* cmd)
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
           else              { Can_set_std_id(cmd->id.std);}
           for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
+          u8_temp=~0; Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
           Can_set_rplv();
@@ -281,9 +292,10 @@ uint8_t can_cmd(st_cmd_t* cmd)
 //!                                    CAN communication
 //!
 //------------------------------------------------------------------------------
-uint8_t can_get_status (st_cmd_t* cmd)
+uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number)
 {
     uint8_t a_status, rtn_val;
+	can_id_t	received_id;
      
     a_status = cmd->status;
     if ((a_status==STATUS_CLEARED)||(a_status==MOB_NOT_REACHED)||(a_status==MOB_DISABLE))
@@ -291,7 +303,7 @@ uint8_t can_get_status (st_cmd_t* cmd)
         return CAN_STATUS_ERROR;
     }
 
-    Can_set_mob(cmd->handle);
+    Can_set_mob(mob_number);
     a_status = can_get_mob_status();
     
     switch (a_status)
@@ -315,15 +327,18 @@ uint8_t can_get_status (st_cmd_t* cmd)
             else // else standard frame
             {
 	            cmd->ctrl.ide = 0;
-	            Can_get_std_id(cmd->id.std);
+//	            Can_get_std_id(cmd->id.std);
+				Can_get_std_id(received_id);
             }
+			
             // Status field of descriptor: 0x20 if Rx completed
-            cmd->status = a_status;
+			
+			cmd->status = a_status;
 			can_get_data(cmd->pt_data);
+			rtn_val = MOB_RX_COMPLETED;
 			Can_mob_abort();        // Freed the MOb
-            Can_clear_status_mob(); //   Reset MOb status
-            rtn_val = MOB_RX_COMPLETED;
-            break;
+			Can_clear_status_mob(); //   Reset MOb status
+			break;
 			
         case MOB_RX_COMPLETED_DLCW:
 			//LED_Reg_Write(0x01);	//Toggle LED0 when the appropriate message is received.
