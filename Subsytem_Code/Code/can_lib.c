@@ -197,9 +197,19 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
           break;
         //------------      
         case CMD_RX_REMOTE:
-          u8_temp=0; Can_set_ext_msk(u8_temp);
+		  u8_temp = 0xFF;				// Compares 8 bits of the ID.
+		  Can_set_std_msk(u8_temp);
+				  
+		  Can_set_std_id(cmd->id.std);	// New ID of the MOB is from the cmd object.
+		
+          u8_temp=0; 
+		  Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
+		  
+          cmd->ctrl.rtr=1; 
+		  Can_set_rtrmsk(); 
+		  Can_set_rtr();
+		  
           Can_clear_rplv();
           Can_clear_idemsk();
           Can_config_rx();       

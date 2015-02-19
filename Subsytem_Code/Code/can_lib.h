@@ -54,14 +54,12 @@
 #define NODE0_ID				10
 #define NODE1_ID				9
 
-#define SUB0_ID0 20
-#define SUB0_ID1 21
-#define SUB0_ID2 22
-#define SUB0_ID3 23
-#define SUB0_ID4 24
-#define SUB0_ID5 25
-
-
+#define SUB0_ID0				20
+#define SUB0_ID1				21
+#define SUB0_ID2				22
+#define SUB0_ID3				23
+#define SUB0_ID4				24
+#define SUB0_ID5				25
 
 /*********************************************************************/
 
@@ -142,7 +140,7 @@ typedef  struct{
 
 
 //_____ D E C L A R A T I O N S ________________________________________________
-volatile st_cmd_t message; // message object
+st_cmd_t message; // message object
 
 
 //------------------------------------------------------------------------------

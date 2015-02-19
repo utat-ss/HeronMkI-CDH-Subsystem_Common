@@ -3,27 +3,27 @@ Subsystem_Program.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         0000119c  00000000  00000000  00000074  2**1
+  0 .text         00001372  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          0000003d  00800100  00800100  00001210  2**0
+  1 .bss          0000003d  00800100  00800100  000013e6  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  00001210  2**0
+  2 .comment      00000030  00000000  00000000  000013e6  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 00000108  00000000  00000000  00001240  2**0
+  3 .debug_aranges 00000108  00000000  00000000  00001416  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00000e56  00000000  00000000  00001348  2**0
+  4 .debug_info   00000f29  00000000  00000000  0000151e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 000006a8  00000000  00000000  0000219e  2**0
+  5 .debug_abbrev 000006c4  00000000  00000000  00002447  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   00000865  00000000  00000000  00002846  2**0
+  6 .debug_line   000008cb  00000000  00000000  00002b0b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000234  00000000  00000000  000030ac  2**2
+  7 .debug_frame  00000234  00000000  00000000  000033d8  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000004a0  00000000  00000000  000032e0  2**0
+  8 .debug_str    000004a8  00000000  00000000  0000360c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    00000fd3  00000000  00000000  00003780  2**0
+  9 .debug_loc    0000108c  00000000  00000000  00003ab4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000100  00000000  00000000  00004753  2**0
+ 10 .debug_ranges 00000100  00000000  00000000  00004b40  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -41,7 +41,7 @@ Disassembly of section .text:
       24:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       28:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       2c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
-      30:	0c 94 87 08 	jmp	0x110e	; 0x110e <__vector_12>
+      30:	0c 94 72 09 	jmp	0x12e4	; 0x12e4 <__vector_12>
       34:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       38:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       3c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
@@ -66,11 +66,11 @@ Disassembly of section .text:
       82:	87 02       	muls	r24, r23
       84:	c7 02       	muls	r28, r23
       86:	43 03       	mulsu	r20, r19
-      88:	90 03       	fmuls	r17, r16
-      8a:	2d 04       	cpc	r2, r13
-      8c:	d3 04       	cpc	r13, r3
+      88:	c0 03       	fmuls	r20, r16
+      8a:	5d 04       	cpc	r5, r13
+      8c:	03 05       	cpc	r16, r3
       8e:	f1 00       	.word	0x00f1	; ????
-      90:	dc 05       	cpc	r29, r12
+      90:	0c 06       	cpc	r0, r28
 
 00000092 <__ctors_end>:
       92:	11 24       	eor	r1, r1
@@ -93,8 +93,8 @@ Disassembly of section .text:
       a8:	ad 33       	cpi	r26, 0x3D	; 61
       aa:	b2 07       	cpc	r27, r18
       ac:	e1 f7       	brne	.-8      	; 0xa6 <.do_clear_bss_loop>
-      ae:	0e 94 9e 07 	call	0xf3c	; 0xf3c <main>
-      b2:	0c 94 cc 08 	jmp	0x1198	; 0x1198 <_exit>
+      ae:	0e 94 ce 07 	call	0xf9c	; 0xf9c <main>
+      b2:	0c 94 b7 09 	jmp	0x136e	; 0x136e <_exit>
 
 000000b6 <__bad_interrupt>:
       b6:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -328,7 +328,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
      198:	80 e0       	ldi	r24, 0x00	; 0
-     19a:	d7 c5       	rjmp	.+2990   	; 0xd4a <__stack+0x44b>
+     19a:	07 c6       	rjmp	.+3086   	; 0xdaa <__stack+0x4ab>
     }
     cmd->status = STATUS_CLEARED; 
   }
@@ -343,7 +343,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
      1a6:	80 91 ef 00 	lds	r24, 0x00EF
      1aa:	80 7c       	andi	r24, 0xC0	; 192
      1ac:	09 f0       	breq	.+2      	; 0x1b0 <can_cmd+0x56>
-     1ae:	c9 c5       	rjmp	.+2962   	; 0xd42 <__stack+0x443>
+     1ae:	f9 c5       	rjmp	.+3058   	; 0xda2 <__stack+0x4a3>
     {
       cmd->status = MOB_PENDING; 
      1b0:	80 e6       	ldi	r24, 0x60	; 96
@@ -370,10 +370,10 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
      1d2:	eb 30       	cpi	r30, 0x0B	; 11
      1d4:	f1 05       	cpc	r31, r1
      1d6:	08 f0       	brcs	.+2      	; 0x1da <can_cmd+0x80>
-     1d8:	b0 c5       	rjmp	.+2912   	; 0xd3a <__stack+0x43b>
+     1d8:	e0 c5       	rjmp	.+3008   	; 0xd9a <__stack+0x49b>
      1da:	e2 5c       	subi	r30, 0xC2	; 194
      1dc:	ff 4f       	sbci	r31, 0xFF	; 255
-     1de:	0c 94 c6 08 	jmp	0x118c	; 0x118c <__tablejump2__>
+     1de:	0c 94 b1 09 	jmp	0x1362	; 0x1362 <__tablejump2__>
           Can_set_idemsk();
           Can_config_rx();       
           break;
@@ -384,8 +384,8 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
      1e4:	8c 91       	ld	r24, X
      1e6:	16 97       	sbiw	r26, 0x06	; 6
      1e8:	81 11       	cpse	r24, r1
-     1ea:	87 c4       	rjmp	.+2318   	; 0xafa <__stack+0x1fb>
-     1ec:	98 c4       	rjmp	.+2352   	; 0xb1e <__stack+0x21f>
+     1ea:	b7 c4       	rjmp	.+2414   	; 0xb5a <__stack+0x25b>
+     1ec:	c8 c4       	rjmp	.+2448   	; 0xb7e <__stack+0x27f>
           
       switch (cmd->cmd)
       {
@@ -549,7 +549,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
           Can_set_dlc(cmd->dlc);
           Can_config_tx();
           break;
-     310:	1c c5       	rjmp	.+2616   	; 0xd4a <__stack+0x44b>
+     310:	4c c5       	rjmp	.+2712   	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_TX_DATA:    
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
@@ -701,7 +701,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
           Can_set_dlc(cmd->dlc);
           Can_config_tx();
           break;
-     424:	92 c4       	rjmp	.+2340   	; 0xd4a <__stack+0x44b>
+     424:	c2 c4       	rjmp	.+2436   	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_TX_REMOTE:       
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
@@ -830,7 +830,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
           Can_set_dlc(cmd->dlc);
           Can_config_tx();
           break;
-     50c:	1e c4       	rjmp	.+2108   	; 0xd4a <__stack+0x44b>
+     50c:	4e c4       	rjmp	.+2204   	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_RX:
           u8_temp=0; Can_set_ext_msk(u8_temp);
@@ -910,7 +910,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
           Can_clear_idemsk();
           Can_config_rx();       
           break;
-     58c:	de c3       	rjmp	.+1980   	; 0xd4a <__stack+0x44b>
+     58c:	0e c4       	rjmp	.+2076   	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_RX_DATA:
 		
@@ -1062,1831 +1062,2172 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
           Can_clear_idemsk();
           Can_config_rx();       
           break;
-     684:	62 c3       	rjmp	.+1732   	; 0xd4a <__stack+0x44b>
+     684:	92 c3       	rjmp	.+1828   	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_RX_REMOTE:
-          u8_temp=0; Can_set_ext_msk(u8_temp);
-     686:	19 82       	std	Y+1, r1	; 0x01
-     688:	9b 81       	ldd	r25, Y+3	; 0x03
-     68a:	92 95       	swap	r25
-     68c:	96 95       	lsr	r25
-     68e:	97 70       	andi	r25, 0x07	; 7
-     690:	8c 81       	ldd	r24, Y+4	; 0x04
-     692:	88 0f       	add	r24, r24
-     694:	88 0f       	add	r24, r24
-     696:	88 0f       	add	r24, r24
-     698:	89 0f       	add	r24, r25
-     69a:	80 93 f7 00 	sts	0x00F7, r24
-     69e:	9a 81       	ldd	r25, Y+2	; 0x02
-     6a0:	92 95       	swap	r25
-     6a2:	96 95       	lsr	r25
-     6a4:	97 70       	andi	r25, 0x07	; 7
-     6a6:	8b 81       	ldd	r24, Y+3	; 0x03
-     6a8:	88 0f       	add	r24, r24
-     6aa:	88 0f       	add	r24, r24
-     6ac:	88 0f       	add	r24, r24
-     6ae:	89 0f       	add	r24, r25
-     6b0:	80 93 f6 00 	sts	0x00F6, r24
-     6b4:	99 81       	ldd	r25, Y+1	; 0x01
-     6b6:	92 95       	swap	r25
-     6b8:	96 95       	lsr	r25
-     6ba:	97 70       	andi	r25, 0x07	; 7
-     6bc:	8a 81       	ldd	r24, Y+2	; 0x02
-     6be:	88 0f       	add	r24, r24
-     6c0:	88 0f       	add	r24, r24
-     6c2:	88 0f       	add	r24, r24
-     6c4:	89 0f       	add	r24, r25
-     6c6:	80 93 f5 00 	sts	0x00F5, r24
-     6ca:	29 81       	ldd	r18, Y+1	; 0x01
-     6cc:	22 0f       	add	r18, r18
-     6ce:	22 0f       	add	r18, r18
-     6d0:	22 0f       	add	r18, r18
-     6d2:	84 ef       	ldi	r24, 0xF4	; 244
-     6d4:	90 e0       	ldi	r25, 0x00	; 0
-     6d6:	fc 01       	movw	r30, r24
-     6d8:	20 83       	st	Z, r18
+		  u8_temp = 0xFF;				// Compares 8 bits of the ID.
+     686:	8f ef       	ldi	r24, 0xFF	; 255
+     688:	89 83       	std	Y+1, r24	; 0x01
+		  Can_set_std_msk(u8_temp);
+     68a:	8a 81       	ldd	r24, Y+2	; 0x02
+     68c:	82 95       	swap	r24
+     68e:	88 0f       	add	r24, r24
+     690:	80 7e       	andi	r24, 0xE0	; 224
+     692:	81 5e       	subi	r24, 0xE1	; 225
+     694:	27 ef       	ldi	r18, 0xF7	; 247
+     696:	30 e0       	ldi	r19, 0x00	; 0
+     698:	f9 01       	movw	r30, r18
+     69a:	80 83       	st	Z, r24
+     69c:	49 81       	ldd	r20, Y+1	; 0x01
+     69e:	42 95       	swap	r20
+     6a0:	44 0f       	add	r20, r20
+     6a2:	40 7e       	andi	r20, 0xE0	; 224
+     6a4:	86 ef       	ldi	r24, 0xF6	; 246
+     6a6:	90 e0       	ldi	r25, 0x00	; 0
+     6a8:	fc 01       	movw	r30, r24
+     6aa:	40 83       	st	Z, r20
+				  
+		  Can_set_std_id(cmd->id.std);	// New ID of the MOB is from the cmd object.
+     6ac:	12 96       	adiw	r26, 0x02	; 2
+     6ae:	4c 91       	ld	r20, X
+     6b0:	12 97       	sbiw	r26, 0x02	; 2
+     6b2:	46 95       	lsr	r20
+     6b4:	46 95       	lsr	r20
+     6b6:	46 95       	lsr	r20
+     6b8:	13 96       	adiw	r26, 0x03	; 3
+     6ba:	5c 91       	ld	r21, X
+     6bc:	13 97       	sbiw	r26, 0x03	; 3
+     6be:	f0 e2       	ldi	r31, 0x20	; 32
+     6c0:	5f 9f       	mul	r21, r31
+     6c2:	40 0d       	add	r20, r0
+     6c4:	11 24       	eor	r1, r1
+     6c6:	40 93 f3 00 	sts	0x00F3, r20
+     6ca:	12 96       	adiw	r26, 0x02	; 2
+     6cc:	4c 91       	ld	r20, X
+     6ce:	12 97       	sbiw	r26, 0x02	; 2
+     6d0:	42 95       	swap	r20
+     6d2:	44 0f       	add	r20, r20
+     6d4:	40 7e       	andi	r20, 0xE0	; 224
+     6d6:	40 93 f2 00 	sts	0x00F2, r20
+     6da:	6f ee       	ldi	r22, 0xEF	; 239
+     6dc:	70 e0       	ldi	r23, 0x00	; 0
+     6de:	fb 01       	movw	r30, r22
+     6e0:	40 81       	ld	r20, Z
+     6e2:	4f 7e       	andi	r20, 0xEF	; 239
+     6e4:	40 83       	st	Z, r20
+		
+          u8_temp=0; 
+     6e6:	19 82       	std	Y+1, r1	; 0x01
+		  Can_set_ext_msk(u8_temp);
+     6e8:	5b 81       	ldd	r21, Y+3	; 0x03
+     6ea:	52 95       	swap	r21
+     6ec:	56 95       	lsr	r21
+     6ee:	57 70       	andi	r21, 0x07	; 7
+     6f0:	4c 81       	ldd	r20, Y+4	; 0x04
+     6f2:	44 0f       	add	r20, r20
+     6f4:	44 0f       	add	r20, r20
+     6f6:	44 0f       	add	r20, r20
+     6f8:	45 0f       	add	r20, r21
+     6fa:	f9 01       	movw	r30, r18
+     6fc:	40 83       	st	Z, r20
+     6fe:	3a 81       	ldd	r19, Y+2	; 0x02
+     700:	32 95       	swap	r19
+     702:	36 95       	lsr	r19
+     704:	37 70       	andi	r19, 0x07	; 7
+     706:	2b 81       	ldd	r18, Y+3	; 0x03
+     708:	22 0f       	add	r18, r18
+     70a:	22 0f       	add	r18, r18
+     70c:	22 0f       	add	r18, r18
+     70e:	23 0f       	add	r18, r19
+     710:	fc 01       	movw	r30, r24
+     712:	20 83       	st	Z, r18
+     714:	99 81       	ldd	r25, Y+1	; 0x01
+     716:	92 95       	swap	r25
+     718:	96 95       	lsr	r25
+     71a:	97 70       	andi	r25, 0x07	; 7
+     71c:	8a 81       	ldd	r24, Y+2	; 0x02
+     71e:	88 0f       	add	r24, r24
+     720:	88 0f       	add	r24, r24
+     722:	88 0f       	add	r24, r24
+     724:	89 0f       	add	r24, r25
+     726:	80 93 f5 00 	sts	0x00F5, r24
+     72a:	29 81       	ldd	r18, Y+1	; 0x01
+     72c:	22 0f       	add	r18, r18
+     72e:	22 0f       	add	r18, r18
+     730:	22 0f       	add	r18, r18
+     732:	84 ef       	ldi	r24, 0xF4	; 244
+     734:	90 e0       	ldi	r25, 0x00	; 0
+     736:	fc 01       	movw	r30, r24
+     738:	20 83       	st	Z, r18
           Can_set_dlc(cmd->dlc);
-     6da:	ef ee       	ldi	r30, 0xEF	; 239
-     6dc:	f0 e0       	ldi	r31, 0x00	; 0
-     6de:	30 81       	ld	r19, Z
-     6e0:	16 96       	adiw	r26, 0x06	; 6
-     6e2:	2c 91       	ld	r18, X
-     6e4:	16 97       	sbiw	r26, 0x06	; 6
-     6e6:	23 2b       	or	r18, r19
-     6e8:	20 83       	st	Z, r18
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-     6ea:	21 e0       	ldi	r18, 0x01	; 1
-     6ec:	1a 96       	adiw	r26, 0x0a	; 10
-     6ee:	2c 93       	st	X, r18
-     6f0:	dc 01       	movw	r26, r24
-     6f2:	2c 91       	ld	r18, X
-     6f4:	24 60       	ori	r18, 0x04	; 4
-     6f6:	2c 93       	st	X, r18
-     6f8:	a0 ef       	ldi	r26, 0xF0	; 240
-     6fa:	b0 e0       	ldi	r27, 0x00	; 0
-     6fc:	2c 91       	ld	r18, X
-     6fe:	24 60       	ori	r18, 0x04	; 4
-     700:	2c 93       	st	X, r18
+     73a:	fb 01       	movw	r30, r22
+     73c:	30 81       	ld	r19, Z
+     73e:	16 96       	adiw	r26, 0x06	; 6
+     740:	2c 91       	ld	r18, X
+     742:	16 97       	sbiw	r26, 0x06	; 6
+     744:	23 2b       	or	r18, r19
+     746:	20 83       	st	Z, r18
+		  
+          cmd->ctrl.rtr=1; 
+     748:	21 e0       	ldi	r18, 0x01	; 1
+     74a:	1a 96       	adiw	r26, 0x0a	; 10
+     74c:	2c 93       	st	X, r18
+		  Can_set_rtrmsk(); 
+     74e:	dc 01       	movw	r26, r24
+     750:	2c 91       	ld	r18, X
+     752:	24 60       	ori	r18, 0x04	; 4
+     754:	2c 93       	st	X, r18
+		  Can_set_rtr();
+     756:	a0 ef       	ldi	r26, 0xF0	; 240
+     758:	b0 e0       	ldi	r27, 0x00	; 0
+     75a:	2c 91       	ld	r18, X
+     75c:	24 60       	ori	r18, 0x04	; 4
+     75e:	2c 93       	st	X, r18
+		  
           Can_clear_rplv();
-     702:	20 81       	ld	r18, Z
-     704:	2f 7d       	andi	r18, 0xDF	; 223
-     706:	20 83       	st	Z, r18
+     760:	20 81       	ld	r18, Z
+     762:	2f 7d       	andi	r18, 0xDF	; 223
+     764:	20 83       	st	Z, r18
           Can_clear_idemsk();
-     708:	dc 01       	movw	r26, r24
-     70a:	2c 91       	ld	r18, X
-     70c:	2e 7f       	andi	r18, 0xFE	; 254
-     70e:	2c 93       	st	X, r18
+     766:	fc 01       	movw	r30, r24
+     768:	20 81       	ld	r18, Z
+     76a:	2e 7f       	andi	r18, 0xFE	; 254
+     76c:	20 83       	st	Z, r18
           Can_config_rx();       
-     710:	80 81       	ld	r24, Z
-     712:	8f 73       	andi	r24, 0x3F	; 63
-     714:	80 83       	st	Z, r24
-     716:	80 81       	ld	r24, Z
-     718:	80 68       	ori	r24, 0x80	; 128
-     71a:	80 83       	st	Z, r24
+     76e:	db 01       	movw	r26, r22
+     770:	8c 91       	ld	r24, X
+     772:	8f 73       	andi	r24, 0x3F	; 63
+     774:	8c 93       	st	X, r24
+     776:	8c 91       	ld	r24, X
+     778:	80 68       	ori	r24, 0x80	; 128
+     77a:	8c 93       	st	X, r24
     {
       cmd->status = MOB_NOT_REACHED;
       return CAN_CMD_REFUSED;
     }
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
-     71c:	80 e0       	ldi	r24, 0x00	; 0
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
+     77c:	80 e0       	ldi	r24, 0x00	; 0
+		  Can_set_rtr();
+		  
           Can_clear_rplv();
           Can_clear_idemsk();
           Can_config_rx();       
           break;
-     71e:	15 c3       	rjmp	.+1578   	; 0xd4a <__stack+0x44b>
+     77e:	15 c3       	rjmp	.+1578   	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_RX_MASKED:
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
-     720:	1b 96       	adiw	r26, 0x0b	; 11
-     722:	8c 91       	ld	r24, X
-     724:	1b 97       	sbiw	r26, 0x0b	; 11
-     726:	88 23       	and	r24, r24
-     728:	d9 f1       	breq	.+118    	; 0x7a0 <can_cmd+0x646>
-     72a:	14 96       	adiw	r26, 0x04	; 4
-     72c:	9c 91       	ld	r25, X
-     72e:	14 97       	sbiw	r26, 0x04	; 4
-     730:	92 95       	swap	r25
-     732:	96 95       	lsr	r25
-     734:	97 70       	andi	r25, 0x07	; 7
-     736:	15 96       	adiw	r26, 0x05	; 5
-     738:	8c 91       	ld	r24, X
-     73a:	15 97       	sbiw	r26, 0x05	; 5
-     73c:	88 0f       	add	r24, r24
-     73e:	88 0f       	add	r24, r24
-     740:	88 0f       	add	r24, r24
-     742:	89 0f       	add	r24, r25
-     744:	80 93 f3 00 	sts	0x00F3, r24
-     748:	13 96       	adiw	r26, 0x03	; 3
-     74a:	9c 91       	ld	r25, X
-     74c:	13 97       	sbiw	r26, 0x03	; 3
-     74e:	92 95       	swap	r25
-     750:	96 95       	lsr	r25
-     752:	97 70       	andi	r25, 0x07	; 7
-     754:	14 96       	adiw	r26, 0x04	; 4
-     756:	8c 91       	ld	r24, X
-     758:	14 97       	sbiw	r26, 0x04	; 4
-     75a:	88 0f       	add	r24, r24
-     75c:	88 0f       	add	r24, r24
-     75e:	88 0f       	add	r24, r24
-     760:	89 0f       	add	r24, r25
-     762:	80 93 f2 00 	sts	0x00F2, r24
-     766:	12 96       	adiw	r26, 0x02	; 2
-     768:	9c 91       	ld	r25, X
-     76a:	12 97       	sbiw	r26, 0x02	; 2
-     76c:	92 95       	swap	r25
-     76e:	96 95       	lsr	r25
-     770:	97 70       	andi	r25, 0x07	; 7
-     772:	13 96       	adiw	r26, 0x03	; 3
-     774:	8c 91       	ld	r24, X
-     776:	13 97       	sbiw	r26, 0x03	; 3
-     778:	88 0f       	add	r24, r24
-     77a:	88 0f       	add	r24, r24
-     77c:	88 0f       	add	r24, r24
-     77e:	89 0f       	add	r24, r25
-     780:	80 93 f1 00 	sts	0x00F1, r24
-     784:	12 96       	adiw	r26, 0x02	; 2
-     786:	8c 91       	ld	r24, X
-     788:	12 97       	sbiw	r26, 0x02	; 2
-     78a:	88 0f       	add	r24, r24
-     78c:	88 0f       	add	r24, r24
-     78e:	88 0f       	add	r24, r24
-     790:	80 93 f0 00 	sts	0x00F0, r24
-     794:	ef ee       	ldi	r30, 0xEF	; 239
-     796:	f0 e0       	ldi	r31, 0x00	; 0
-     798:	80 81       	ld	r24, Z
-     79a:	80 61       	ori	r24, 0x10	; 16
-     79c:	80 83       	st	Z, r24
-     79e:	1c c0       	rjmp	.+56     	; 0x7d8 <can_cmd+0x67e>
-          else              { Can_set_std_id(cmd->id.std);}
-     7a0:	12 96       	adiw	r26, 0x02	; 2
-     7a2:	8c 91       	ld	r24, X
-     7a4:	12 97       	sbiw	r26, 0x02	; 2
-     7a6:	86 95       	lsr	r24
-     7a8:	86 95       	lsr	r24
-     7aa:	86 95       	lsr	r24
-     7ac:	13 96       	adiw	r26, 0x03	; 3
-     7ae:	9c 91       	ld	r25, X
-     7b0:	13 97       	sbiw	r26, 0x03	; 3
-     7b2:	e0 e2       	ldi	r30, 0x20	; 32
-     7b4:	9e 9f       	mul	r25, r30
-     7b6:	80 0d       	add	r24, r0
-     7b8:	11 24       	eor	r1, r1
-     7ba:	80 93 f3 00 	sts	0x00F3, r24
-     7be:	12 96       	adiw	r26, 0x02	; 2
-     7c0:	8c 91       	ld	r24, X
-     7c2:	12 97       	sbiw	r26, 0x02	; 2
-     7c4:	82 95       	swap	r24
-     7c6:	88 0f       	add	r24, r24
-     7c8:	80 7e       	andi	r24, 0xE0	; 224
-     7ca:	80 93 f2 00 	sts	0x00F2, r24
-     7ce:	ef ee       	ldi	r30, 0xEF	; 239
-     7d0:	f0 e0       	ldi	r31, 0x00	; 0
-     7d2:	80 81       	ld	r24, Z
-     7d4:	8f 7e       	andi	r24, 0xEF	; 239
-     7d6:	80 83       	st	Z, r24
-          u8_temp=~0; Can_set_ext_msk(u8_temp);
-     7d8:	8f ef       	ldi	r24, 0xFF	; 255
-     7da:	89 83       	std	Y+1, r24	; 0x01
-     7dc:	9b 81       	ldd	r25, Y+3	; 0x03
-     7de:	92 95       	swap	r25
-     7e0:	96 95       	lsr	r25
-     7e2:	97 70       	andi	r25, 0x07	; 7
-     7e4:	8c 81       	ldd	r24, Y+4	; 0x04
-     7e6:	88 0f       	add	r24, r24
-     7e8:	88 0f       	add	r24, r24
+     780:	1b 96       	adiw	r26, 0x0b	; 11
+     782:	8c 91       	ld	r24, X
+     784:	1b 97       	sbiw	r26, 0x0b	; 11
+     786:	88 23       	and	r24, r24
+     788:	d9 f1       	breq	.+118    	; 0x800 <can_cmd+0x6a6>
+     78a:	14 96       	adiw	r26, 0x04	; 4
+     78c:	9c 91       	ld	r25, X
+     78e:	14 97       	sbiw	r26, 0x04	; 4
+     790:	92 95       	swap	r25
+     792:	96 95       	lsr	r25
+     794:	97 70       	andi	r25, 0x07	; 7
+     796:	15 96       	adiw	r26, 0x05	; 5
+     798:	8c 91       	ld	r24, X
+     79a:	15 97       	sbiw	r26, 0x05	; 5
+     79c:	88 0f       	add	r24, r24
+     79e:	88 0f       	add	r24, r24
+     7a0:	88 0f       	add	r24, r24
+     7a2:	89 0f       	add	r24, r25
+     7a4:	80 93 f3 00 	sts	0x00F3, r24
+     7a8:	13 96       	adiw	r26, 0x03	; 3
+     7aa:	9c 91       	ld	r25, X
+     7ac:	13 97       	sbiw	r26, 0x03	; 3
+     7ae:	92 95       	swap	r25
+     7b0:	96 95       	lsr	r25
+     7b2:	97 70       	andi	r25, 0x07	; 7
+     7b4:	14 96       	adiw	r26, 0x04	; 4
+     7b6:	8c 91       	ld	r24, X
+     7b8:	14 97       	sbiw	r26, 0x04	; 4
+     7ba:	88 0f       	add	r24, r24
+     7bc:	88 0f       	add	r24, r24
+     7be:	88 0f       	add	r24, r24
+     7c0:	89 0f       	add	r24, r25
+     7c2:	80 93 f2 00 	sts	0x00F2, r24
+     7c6:	12 96       	adiw	r26, 0x02	; 2
+     7c8:	9c 91       	ld	r25, X
+     7ca:	12 97       	sbiw	r26, 0x02	; 2
+     7cc:	92 95       	swap	r25
+     7ce:	96 95       	lsr	r25
+     7d0:	97 70       	andi	r25, 0x07	; 7
+     7d2:	13 96       	adiw	r26, 0x03	; 3
+     7d4:	8c 91       	ld	r24, X
+     7d6:	13 97       	sbiw	r26, 0x03	; 3
+     7d8:	88 0f       	add	r24, r24
+     7da:	88 0f       	add	r24, r24
+     7dc:	88 0f       	add	r24, r24
+     7de:	89 0f       	add	r24, r25
+     7e0:	80 93 f1 00 	sts	0x00F1, r24
+     7e4:	12 96       	adiw	r26, 0x02	; 2
+     7e6:	8c 91       	ld	r24, X
+     7e8:	12 97       	sbiw	r26, 0x02	; 2
      7ea:	88 0f       	add	r24, r24
-     7ec:	89 0f       	add	r24, r25
-     7ee:	80 93 f7 00 	sts	0x00F7, r24
-     7f2:	9a 81       	ldd	r25, Y+2	; 0x02
-     7f4:	92 95       	swap	r25
-     7f6:	96 95       	lsr	r25
-     7f8:	97 70       	andi	r25, 0x07	; 7
-     7fa:	8b 81       	ldd	r24, Y+3	; 0x03
-     7fc:	88 0f       	add	r24, r24
-     7fe:	88 0f       	add	r24, r24
-     800:	88 0f       	add	r24, r24
-     802:	89 0f       	add	r24, r25
-     804:	80 93 f6 00 	sts	0x00F6, r24
-     808:	99 81       	ldd	r25, Y+1	; 0x01
-     80a:	92 95       	swap	r25
-     80c:	96 95       	lsr	r25
-     80e:	97 70       	andi	r25, 0x07	; 7
-     810:	8a 81       	ldd	r24, Y+2	; 0x02
-     812:	88 0f       	add	r24, r24
-     814:	88 0f       	add	r24, r24
-     816:	88 0f       	add	r24, r24
-     818:	89 0f       	add	r24, r25
-     81a:	80 93 f5 00 	sts	0x00F5, r24
-     81e:	29 81       	ldd	r18, Y+1	; 0x01
-     820:	22 0f       	add	r18, r18
-     822:	22 0f       	add	r18, r18
-     824:	22 0f       	add	r18, r18
-     826:	84 ef       	ldi	r24, 0xF4	; 244
-     828:	90 e0       	ldi	r25, 0x00	; 0
-     82a:	fc 01       	movw	r30, r24
-     82c:	20 83       	st	Z, r18
-		  
-		  
-          Can_set_dlc(cmd->dlc);
+     7ec:	88 0f       	add	r24, r24
+     7ee:	88 0f       	add	r24, r24
+     7f0:	80 93 f0 00 	sts	0x00F0, r24
+     7f4:	ef ee       	ldi	r30, 0xEF	; 239
+     7f6:	f0 e0       	ldi	r31, 0x00	; 0
+     7f8:	80 81       	ld	r24, Z
+     7fa:	80 61       	ori	r24, 0x10	; 16
+     7fc:	80 83       	st	Z, r24
+     7fe:	1c c0       	rjmp	.+56     	; 0x838 <can_cmd+0x6de>
+          else              { Can_set_std_id(cmd->id.std);}
+     800:	12 96       	adiw	r26, 0x02	; 2
+     802:	8c 91       	ld	r24, X
+     804:	12 97       	sbiw	r26, 0x02	; 2
+     806:	86 95       	lsr	r24
+     808:	86 95       	lsr	r24
+     80a:	86 95       	lsr	r24
+     80c:	13 96       	adiw	r26, 0x03	; 3
+     80e:	9c 91       	ld	r25, X
+     810:	13 97       	sbiw	r26, 0x03	; 3
+     812:	e0 e2       	ldi	r30, 0x20	; 32
+     814:	9e 9f       	mul	r25, r30
+     816:	80 0d       	add	r24, r0
+     818:	11 24       	eor	r1, r1
+     81a:	80 93 f3 00 	sts	0x00F3, r24
+     81e:	12 96       	adiw	r26, 0x02	; 2
+     820:	8c 91       	ld	r24, X
+     822:	12 97       	sbiw	r26, 0x02	; 2
+     824:	82 95       	swap	r24
+     826:	88 0f       	add	r24, r24
+     828:	80 7e       	andi	r24, 0xE0	; 224
+     82a:	80 93 f2 00 	sts	0x00F2, r24
      82e:	ef ee       	ldi	r30, 0xEF	; 239
      830:	f0 e0       	ldi	r31, 0x00	; 0
-     832:	30 81       	ld	r19, Z
-     834:	16 96       	adiw	r26, 0x06	; 6
-     836:	2c 91       	ld	r18, X
-     838:	23 2b       	or	r18, r19
-     83a:	20 83       	st	Z, r18
-          Can_clear_rtrmsk();
-     83c:	dc 01       	movw	r26, r24
-     83e:	2c 91       	ld	r18, X
-     840:	2b 7f       	andi	r18, 0xFB	; 251
-     842:	2c 93       	st	X, r18
-          Can_set_idemsk();
-     844:	2c 91       	ld	r18, X
-     846:	21 60       	ori	r18, 0x01	; 1
-     848:	2c 93       	st	X, r18
-          Can_config_rx();       
-     84a:	80 81       	ld	r24, Z
-     84c:	8f 73       	andi	r24, 0x3F	; 63
-     84e:	80 83       	st	Z, r24
-     850:	80 81       	ld	r24, Z
-     852:	80 68       	ori	r24, 0x80	; 128
-     854:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
-     856:	80 e0       	ldi	r24, 0x00	; 0
-		  
-          Can_set_dlc(cmd->dlc);
-          Can_clear_rtrmsk();
-          Can_set_idemsk();
-          Can_config_rx();       
-          break;
-     858:	78 c2       	rjmp	.+1264   	; 0xd4a <__stack+0x44b>
-        //------------      
-        case CMD_RX_DATA_MASKED:
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
-     85a:	1b 96       	adiw	r26, 0x0b	; 11
-     85c:	8c 91       	ld	r24, X
-     85e:	1b 97       	sbiw	r26, 0x0b	; 11
-     860:	88 23       	and	r24, r24
-     862:	d9 f1       	breq	.+118    	; 0x8da <can_cmd+0x780>
-     864:	14 96       	adiw	r26, 0x04	; 4
-     866:	9c 91       	ld	r25, X
-     868:	14 97       	sbiw	r26, 0x04	; 4
+     832:	80 81       	ld	r24, Z
+     834:	8f 7e       	andi	r24, 0xEF	; 239
+     836:	80 83       	st	Z, r24
+          u8_temp=~0; Can_set_ext_msk(u8_temp);
+     838:	8f ef       	ldi	r24, 0xFF	; 255
+     83a:	89 83       	std	Y+1, r24	; 0x01
+     83c:	9b 81       	ldd	r25, Y+3	; 0x03
+     83e:	92 95       	swap	r25
+     840:	96 95       	lsr	r25
+     842:	97 70       	andi	r25, 0x07	; 7
+     844:	8c 81       	ldd	r24, Y+4	; 0x04
+     846:	88 0f       	add	r24, r24
+     848:	88 0f       	add	r24, r24
+     84a:	88 0f       	add	r24, r24
+     84c:	89 0f       	add	r24, r25
+     84e:	80 93 f7 00 	sts	0x00F7, r24
+     852:	9a 81       	ldd	r25, Y+2	; 0x02
+     854:	92 95       	swap	r25
+     856:	96 95       	lsr	r25
+     858:	97 70       	andi	r25, 0x07	; 7
+     85a:	8b 81       	ldd	r24, Y+3	; 0x03
+     85c:	88 0f       	add	r24, r24
+     85e:	88 0f       	add	r24, r24
+     860:	88 0f       	add	r24, r24
+     862:	89 0f       	add	r24, r25
+     864:	80 93 f6 00 	sts	0x00F6, r24
+     868:	99 81       	ldd	r25, Y+1	; 0x01
      86a:	92 95       	swap	r25
      86c:	96 95       	lsr	r25
      86e:	97 70       	andi	r25, 0x07	; 7
-     870:	15 96       	adiw	r26, 0x05	; 5
-     872:	8c 91       	ld	r24, X
-     874:	15 97       	sbiw	r26, 0x05	; 5
+     870:	8a 81       	ldd	r24, Y+2	; 0x02
+     872:	88 0f       	add	r24, r24
+     874:	88 0f       	add	r24, r24
      876:	88 0f       	add	r24, r24
-     878:	88 0f       	add	r24, r24
-     87a:	88 0f       	add	r24, r24
-     87c:	89 0f       	add	r24, r25
-     87e:	80 93 f3 00 	sts	0x00F3, r24
-     882:	13 96       	adiw	r26, 0x03	; 3
-     884:	9c 91       	ld	r25, X
-     886:	13 97       	sbiw	r26, 0x03	; 3
-     888:	92 95       	swap	r25
-     88a:	96 95       	lsr	r25
-     88c:	97 70       	andi	r25, 0x07	; 7
-     88e:	14 96       	adiw	r26, 0x04	; 4
-     890:	8c 91       	ld	r24, X
-     892:	14 97       	sbiw	r26, 0x04	; 4
-     894:	88 0f       	add	r24, r24
-     896:	88 0f       	add	r24, r24
-     898:	88 0f       	add	r24, r24
-     89a:	89 0f       	add	r24, r25
-     89c:	80 93 f2 00 	sts	0x00F2, r24
-     8a0:	12 96       	adiw	r26, 0x02	; 2
-     8a2:	9c 91       	ld	r25, X
-     8a4:	12 97       	sbiw	r26, 0x02	; 2
-     8a6:	92 95       	swap	r25
-     8a8:	96 95       	lsr	r25
-     8aa:	97 70       	andi	r25, 0x07	; 7
-     8ac:	13 96       	adiw	r26, 0x03	; 3
-     8ae:	8c 91       	ld	r24, X
-     8b0:	13 97       	sbiw	r26, 0x03	; 3
-     8b2:	88 0f       	add	r24, r24
-     8b4:	88 0f       	add	r24, r24
-     8b6:	88 0f       	add	r24, r24
-     8b8:	89 0f       	add	r24, r25
-     8ba:	80 93 f1 00 	sts	0x00F1, r24
-     8be:	12 96       	adiw	r26, 0x02	; 2
-     8c0:	8c 91       	ld	r24, X
-     8c2:	12 97       	sbiw	r26, 0x02	; 2
-     8c4:	88 0f       	add	r24, r24
-     8c6:	88 0f       	add	r24, r24
-     8c8:	88 0f       	add	r24, r24
-     8ca:	80 93 f0 00 	sts	0x00F0, r24
-     8ce:	ef ee       	ldi	r30, 0xEF	; 239
-     8d0:	f0 e0       	ldi	r31, 0x00	; 0
-     8d2:	80 81       	ld	r24, Z
-     8d4:	80 61       	ori	r24, 0x10	; 16
-     8d6:	80 83       	st	Z, r24
-     8d8:	1c c0       	rjmp	.+56     	; 0x912 <__stack+0x13>
-          else              { Can_set_std_id(cmd->id.std);}
-     8da:	12 96       	adiw	r26, 0x02	; 2
-     8dc:	8c 91       	ld	r24, X
-     8de:	12 97       	sbiw	r26, 0x02	; 2
-     8e0:	86 95       	lsr	r24
-     8e2:	86 95       	lsr	r24
-     8e4:	86 95       	lsr	r24
-     8e6:	13 96       	adiw	r26, 0x03	; 3
-     8e8:	9c 91       	ld	r25, X
-     8ea:	13 97       	sbiw	r26, 0x03	; 3
-     8ec:	e0 e2       	ldi	r30, 0x20	; 32
-     8ee:	9e 9f       	mul	r25, r30
-     8f0:	80 0d       	add	r24, r0
-     8f2:	11 24       	eor	r1, r1
-     8f4:	80 93 f3 00 	sts	0x00F3, r24
-     8f8:	12 96       	adiw	r26, 0x02	; 2
-     8fa:	8c 91       	ld	r24, X
-     8fc:	12 97       	sbiw	r26, 0x02	; 2
-     8fe:	82 95       	swap	r24
-     900:	88 0f       	add	r24, r24
-     902:	80 7e       	andi	r24, 0xE0	; 224
-     904:	80 93 f2 00 	sts	0x00F2, r24
-     908:	ef ee       	ldi	r30, 0xEF	; 239
-     90a:	f0 e0       	ldi	r31, 0x00	; 0
-     90c:	80 81       	ld	r24, Z
-     90e:	8f 7e       	andi	r24, 0xEF	; 239
-     910:	80 83       	st	Z, r24
-          u8_temp=~0; Can_set_ext_msk(u8_temp);
-     912:	8f ef       	ldi	r24, 0xFF	; 255
-     914:	89 83       	std	Y+1, r24	; 0x01
-     916:	9b 81       	ldd	r25, Y+3	; 0x03
-     918:	92 95       	swap	r25
-     91a:	96 95       	lsr	r25
-     91c:	97 70       	andi	r25, 0x07	; 7
-     91e:	8c 81       	ldd	r24, Y+4	; 0x04
-     920:	88 0f       	add	r24, r24
-     922:	88 0f       	add	r24, r24
-     924:	88 0f       	add	r24, r24
-     926:	89 0f       	add	r24, r25
-     928:	80 93 f7 00 	sts	0x00F7, r24
-     92c:	9a 81       	ldd	r25, Y+2	; 0x02
-     92e:	92 95       	swap	r25
-     930:	96 95       	lsr	r25
-     932:	97 70       	andi	r25, 0x07	; 7
-     934:	8b 81       	ldd	r24, Y+3	; 0x03
-     936:	88 0f       	add	r24, r24
-     938:	88 0f       	add	r24, r24
-     93a:	88 0f       	add	r24, r24
-     93c:	89 0f       	add	r24, r25
-     93e:	80 93 f6 00 	sts	0x00F6, r24
-     942:	99 81       	ldd	r25, Y+1	; 0x01
-     944:	92 95       	swap	r25
-     946:	96 95       	lsr	r25
-     948:	97 70       	andi	r25, 0x07	; 7
-     94a:	8a 81       	ldd	r24, Y+2	; 0x02
-     94c:	88 0f       	add	r24, r24
-     94e:	88 0f       	add	r24, r24
-     950:	88 0f       	add	r24, r24
-     952:	89 0f       	add	r24, r25
-     954:	80 93 f5 00 	sts	0x00F5, r24
-     958:	29 81       	ldd	r18, Y+1	; 0x01
-     95a:	22 0f       	add	r18, r18
-     95c:	22 0f       	add	r18, r18
-     95e:	22 0f       	add	r18, r18
-     960:	84 ef       	ldi	r24, 0xF4	; 244
-     962:	90 e0       	ldi	r25, 0x00	; 0
-     964:	fc 01       	movw	r30, r24
-     966:	20 83       	st	Z, r18
+     878:	89 0f       	add	r24, r25
+     87a:	80 93 f5 00 	sts	0x00F5, r24
+     87e:	29 81       	ldd	r18, Y+1	; 0x01
+     880:	22 0f       	add	r18, r18
+     882:	22 0f       	add	r18, r18
+     884:	22 0f       	add	r18, r18
+     886:	84 ef       	ldi	r24, 0xF4	; 244
+     888:	90 e0       	ldi	r25, 0x00	; 0
+     88a:	fc 01       	movw	r30, r24
+     88c:	20 83       	st	Z, r18
+		  
+		  
           Can_set_dlc(cmd->dlc);
-     968:	ef ee       	ldi	r30, 0xEF	; 239
-     96a:	f0 e0       	ldi	r31, 0x00	; 0
-     96c:	30 81       	ld	r19, Z
-     96e:	16 96       	adiw	r26, 0x06	; 6
-     970:	2c 91       	ld	r18, X
-     972:	16 97       	sbiw	r26, 0x06	; 6
-     974:	23 2b       	or	r18, r19
-     976:	20 83       	st	Z, r18
-          cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
-     978:	1a 96       	adiw	r26, 0x0a	; 10
-     97a:	1c 92       	st	X, r1
-     97c:	dc 01       	movw	r26, r24
-     97e:	2c 91       	ld	r18, X
-     980:	24 60       	ori	r18, 0x04	; 4
-     982:	2c 93       	st	X, r18
-     984:	a0 ef       	ldi	r26, 0xF0	; 240
-     986:	b0 e0       	ldi	r27, 0x00	; 0
-     988:	2c 91       	ld	r18, X
-     98a:	2b 7f       	andi	r18, 0xFB	; 251
-     98c:	2c 93       	st	X, r18
+     88e:	ef ee       	ldi	r30, 0xEF	; 239
+     890:	f0 e0       	ldi	r31, 0x00	; 0
+     892:	30 81       	ld	r19, Z
+     894:	16 96       	adiw	r26, 0x06	; 6
+     896:	2c 91       	ld	r18, X
+     898:	23 2b       	or	r18, r19
+     89a:	20 83       	st	Z, r18
+          Can_clear_rtrmsk();
+     89c:	dc 01       	movw	r26, r24
+     89e:	2c 91       	ld	r18, X
+     8a0:	2b 7f       	andi	r18, 0xFB	; 251
+     8a2:	2c 93       	st	X, r18
           Can_set_idemsk();
-     98e:	dc 01       	movw	r26, r24
-     990:	2c 91       	ld	r18, X
-     992:	21 60       	ori	r18, 0x01	; 1
-     994:	2c 93       	st	X, r18
+     8a4:	2c 91       	ld	r18, X
+     8a6:	21 60       	ori	r18, 0x01	; 1
+     8a8:	2c 93       	st	X, r18
           Can_config_rx();       
-     996:	80 81       	ld	r24, Z
-     998:	8f 73       	andi	r24, 0x3F	; 63
-     99a:	80 83       	st	Z, r24
-     99c:	80 81       	ld	r24, Z
-     99e:	80 68       	ori	r24, 0x80	; 128
-     9a0:	80 83       	st	Z, r24
+     8aa:	80 81       	ld	r24, Z
+     8ac:	8f 73       	andi	r24, 0x3F	; 63
+     8ae:	80 83       	st	Z, r24
+     8b0:	80 81       	ld	r24, Z
+     8b2:	80 68       	ori	r24, 0x80	; 128
+     8b4:	80 83       	st	Z, r24
     {
       cmd->status = MOB_NOT_REACHED;
       return CAN_CMD_REFUSED;
     }
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
-     9a2:	80 e0       	ldi	r24, 0x00	; 0
+     8b6:	80 e0       	ldi	r24, 0x00	; 0
+		  
+          Can_set_dlc(cmd->dlc);
+          Can_clear_rtrmsk();
+          Can_set_idemsk();
+          Can_config_rx();       
+          break;
+     8b8:	78 c2       	rjmp	.+1264   	; 0xdaa <__stack+0x4ab>
+        //------------      
+        case CMD_RX_DATA_MASKED:
+          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
+     8ba:	1b 96       	adiw	r26, 0x0b	; 11
+     8bc:	8c 91       	ld	r24, X
+     8be:	1b 97       	sbiw	r26, 0x0b	; 11
+     8c0:	88 23       	and	r24, r24
+     8c2:	d9 f1       	breq	.+118    	; 0x93a <__stack+0x3b>
+     8c4:	14 96       	adiw	r26, 0x04	; 4
+     8c6:	9c 91       	ld	r25, X
+     8c8:	14 97       	sbiw	r26, 0x04	; 4
+     8ca:	92 95       	swap	r25
+     8cc:	96 95       	lsr	r25
+     8ce:	97 70       	andi	r25, 0x07	; 7
+     8d0:	15 96       	adiw	r26, 0x05	; 5
+     8d2:	8c 91       	ld	r24, X
+     8d4:	15 97       	sbiw	r26, 0x05	; 5
+     8d6:	88 0f       	add	r24, r24
+     8d8:	88 0f       	add	r24, r24
+     8da:	88 0f       	add	r24, r24
+     8dc:	89 0f       	add	r24, r25
+     8de:	80 93 f3 00 	sts	0x00F3, r24
+     8e2:	13 96       	adiw	r26, 0x03	; 3
+     8e4:	9c 91       	ld	r25, X
+     8e6:	13 97       	sbiw	r26, 0x03	; 3
+     8e8:	92 95       	swap	r25
+     8ea:	96 95       	lsr	r25
+     8ec:	97 70       	andi	r25, 0x07	; 7
+     8ee:	14 96       	adiw	r26, 0x04	; 4
+     8f0:	8c 91       	ld	r24, X
+     8f2:	14 97       	sbiw	r26, 0x04	; 4
+     8f4:	88 0f       	add	r24, r24
+     8f6:	88 0f       	add	r24, r24
+     8f8:	88 0f       	add	r24, r24
+     8fa:	89 0f       	add	r24, r25
+     8fc:	80 93 f2 00 	sts	0x00F2, r24
+     900:	12 96       	adiw	r26, 0x02	; 2
+     902:	9c 91       	ld	r25, X
+     904:	12 97       	sbiw	r26, 0x02	; 2
+     906:	92 95       	swap	r25
+     908:	96 95       	lsr	r25
+     90a:	97 70       	andi	r25, 0x07	; 7
+     90c:	13 96       	adiw	r26, 0x03	; 3
+     90e:	8c 91       	ld	r24, X
+     910:	13 97       	sbiw	r26, 0x03	; 3
+     912:	88 0f       	add	r24, r24
+     914:	88 0f       	add	r24, r24
+     916:	88 0f       	add	r24, r24
+     918:	89 0f       	add	r24, r25
+     91a:	80 93 f1 00 	sts	0x00F1, r24
+     91e:	12 96       	adiw	r26, 0x02	; 2
+     920:	8c 91       	ld	r24, X
+     922:	12 97       	sbiw	r26, 0x02	; 2
+     924:	88 0f       	add	r24, r24
+     926:	88 0f       	add	r24, r24
+     928:	88 0f       	add	r24, r24
+     92a:	80 93 f0 00 	sts	0x00F0, r24
+     92e:	ef ee       	ldi	r30, 0xEF	; 239
+     930:	f0 e0       	ldi	r31, 0x00	; 0
+     932:	80 81       	ld	r24, Z
+     934:	80 61       	ori	r24, 0x10	; 16
+     936:	80 83       	st	Z, r24
+     938:	1c c0       	rjmp	.+56     	; 0x972 <__stack+0x73>
+          else              { Can_set_std_id(cmd->id.std);}
+     93a:	12 96       	adiw	r26, 0x02	; 2
+     93c:	8c 91       	ld	r24, X
+     93e:	12 97       	sbiw	r26, 0x02	; 2
+     940:	86 95       	lsr	r24
+     942:	86 95       	lsr	r24
+     944:	86 95       	lsr	r24
+     946:	13 96       	adiw	r26, 0x03	; 3
+     948:	9c 91       	ld	r25, X
+     94a:	13 97       	sbiw	r26, 0x03	; 3
+     94c:	e0 e2       	ldi	r30, 0x20	; 32
+     94e:	9e 9f       	mul	r25, r30
+     950:	80 0d       	add	r24, r0
+     952:	11 24       	eor	r1, r1
+     954:	80 93 f3 00 	sts	0x00F3, r24
+     958:	12 96       	adiw	r26, 0x02	; 2
+     95a:	8c 91       	ld	r24, X
+     95c:	12 97       	sbiw	r26, 0x02	; 2
+     95e:	82 95       	swap	r24
+     960:	88 0f       	add	r24, r24
+     962:	80 7e       	andi	r24, 0xE0	; 224
+     964:	80 93 f2 00 	sts	0x00F2, r24
+     968:	ef ee       	ldi	r30, 0xEF	; 239
+     96a:	f0 e0       	ldi	r31, 0x00	; 0
+     96c:	80 81       	ld	r24, Z
+     96e:	8f 7e       	andi	r24, 0xEF	; 239
+     970:	80 83       	st	Z, r24
+          u8_temp=~0; Can_set_ext_msk(u8_temp);
+     972:	8f ef       	ldi	r24, 0xFF	; 255
+     974:	89 83       	std	Y+1, r24	; 0x01
+     976:	9b 81       	ldd	r25, Y+3	; 0x03
+     978:	92 95       	swap	r25
+     97a:	96 95       	lsr	r25
+     97c:	97 70       	andi	r25, 0x07	; 7
+     97e:	8c 81       	ldd	r24, Y+4	; 0x04
+     980:	88 0f       	add	r24, r24
+     982:	88 0f       	add	r24, r24
+     984:	88 0f       	add	r24, r24
+     986:	89 0f       	add	r24, r25
+     988:	80 93 f7 00 	sts	0x00F7, r24
+     98c:	9a 81       	ldd	r25, Y+2	; 0x02
+     98e:	92 95       	swap	r25
+     990:	96 95       	lsr	r25
+     992:	97 70       	andi	r25, 0x07	; 7
+     994:	8b 81       	ldd	r24, Y+3	; 0x03
+     996:	88 0f       	add	r24, r24
+     998:	88 0f       	add	r24, r24
+     99a:	88 0f       	add	r24, r24
+     99c:	89 0f       	add	r24, r25
+     99e:	80 93 f6 00 	sts	0x00F6, r24
+     9a2:	99 81       	ldd	r25, Y+1	; 0x01
+     9a4:	92 95       	swap	r25
+     9a6:	96 95       	lsr	r25
+     9a8:	97 70       	andi	r25, 0x07	; 7
+     9aa:	8a 81       	ldd	r24, Y+2	; 0x02
+     9ac:	88 0f       	add	r24, r24
+     9ae:	88 0f       	add	r24, r24
+     9b0:	88 0f       	add	r24, r24
+     9b2:	89 0f       	add	r24, r25
+     9b4:	80 93 f5 00 	sts	0x00F5, r24
+     9b8:	29 81       	ldd	r18, Y+1	; 0x01
+     9ba:	22 0f       	add	r18, r18
+     9bc:	22 0f       	add	r18, r18
+     9be:	22 0f       	add	r18, r18
+     9c0:	84 ef       	ldi	r24, 0xF4	; 244
+     9c2:	90 e0       	ldi	r25, 0x00	; 0
+     9c4:	fc 01       	movw	r30, r24
+     9c6:	20 83       	st	Z, r18
+          Can_set_dlc(cmd->dlc);
+     9c8:	ef ee       	ldi	r30, 0xEF	; 239
+     9ca:	f0 e0       	ldi	r31, 0x00	; 0
+     9cc:	30 81       	ld	r19, Z
+     9ce:	16 96       	adiw	r26, 0x06	; 6
+     9d0:	2c 91       	ld	r18, X
+     9d2:	16 97       	sbiw	r26, 0x06	; 6
+     9d4:	23 2b       	or	r18, r19
+     9d6:	20 83       	st	Z, r18
+          cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
+     9d8:	1a 96       	adiw	r26, 0x0a	; 10
+     9da:	1c 92       	st	X, r1
+     9dc:	dc 01       	movw	r26, r24
+     9de:	2c 91       	ld	r18, X
+     9e0:	24 60       	ori	r18, 0x04	; 4
+     9e2:	2c 93       	st	X, r18
+     9e4:	a0 ef       	ldi	r26, 0xF0	; 240
+     9e6:	b0 e0       	ldi	r27, 0x00	; 0
+     9e8:	2c 91       	ld	r18, X
+     9ea:	2b 7f       	andi	r18, 0xFB	; 251
+     9ec:	2c 93       	st	X, r18
+          Can_set_idemsk();
+     9ee:	dc 01       	movw	r26, r24
+     9f0:	2c 91       	ld	r18, X
+     9f2:	21 60       	ori	r18, 0x01	; 1
+     9f4:	2c 93       	st	X, r18
+          Can_config_rx();       
+     9f6:	80 81       	ld	r24, Z
+     9f8:	8f 73       	andi	r24, 0x3F	; 63
+     9fa:	80 83       	st	Z, r24
+     9fc:	80 81       	ld	r24, Z
+     9fe:	80 68       	ori	r24, 0x80	; 128
+     a00:	80 83       	st	Z, r24
+    {
+      cmd->status = MOB_NOT_REACHED;
+      return CAN_CMD_REFUSED;
+    }
+  } // else of no CMD_ABORT
+  return CAN_CMD_ACCEPTED;
+     a02:	80 e0       	ldi	r24, 0x00	; 0
           u8_temp=~0; Can_set_ext_msk(u8_temp);
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
           Can_set_idemsk();
           Can_config_rx();       
           break;
-     9a4:	d2 c1       	rjmp	.+932    	; 0xd4a <__stack+0x44b>
+     a04:	d2 c1       	rjmp	.+932    	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_RX_REMOTE_MASKED:
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
-     9a6:	1b 96       	adiw	r26, 0x0b	; 11
-     9a8:	8c 91       	ld	r24, X
-     9aa:	1b 97       	sbiw	r26, 0x0b	; 11
-     9ac:	88 23       	and	r24, r24
-     9ae:	d9 f1       	breq	.+118    	; 0xa26 <__stack+0x127>
-     9b0:	14 96       	adiw	r26, 0x04	; 4
-     9b2:	9c 91       	ld	r25, X
-     9b4:	14 97       	sbiw	r26, 0x04	; 4
-     9b6:	92 95       	swap	r25
-     9b8:	96 95       	lsr	r25
-     9ba:	97 70       	andi	r25, 0x07	; 7
-     9bc:	15 96       	adiw	r26, 0x05	; 5
-     9be:	8c 91       	ld	r24, X
-     9c0:	15 97       	sbiw	r26, 0x05	; 5
-     9c2:	88 0f       	add	r24, r24
-     9c4:	88 0f       	add	r24, r24
-     9c6:	88 0f       	add	r24, r24
-     9c8:	89 0f       	add	r24, r25
-     9ca:	80 93 f3 00 	sts	0x00F3, r24
-     9ce:	13 96       	adiw	r26, 0x03	; 3
-     9d0:	9c 91       	ld	r25, X
-     9d2:	13 97       	sbiw	r26, 0x03	; 3
-     9d4:	92 95       	swap	r25
-     9d6:	96 95       	lsr	r25
-     9d8:	97 70       	andi	r25, 0x07	; 7
-     9da:	14 96       	adiw	r26, 0x04	; 4
-     9dc:	8c 91       	ld	r24, X
-     9de:	14 97       	sbiw	r26, 0x04	; 4
-     9e0:	88 0f       	add	r24, r24
-     9e2:	88 0f       	add	r24, r24
-     9e4:	88 0f       	add	r24, r24
-     9e6:	89 0f       	add	r24, r25
-     9e8:	80 93 f2 00 	sts	0x00F2, r24
-     9ec:	12 96       	adiw	r26, 0x02	; 2
-     9ee:	9c 91       	ld	r25, X
-     9f0:	12 97       	sbiw	r26, 0x02	; 2
-     9f2:	92 95       	swap	r25
-     9f4:	96 95       	lsr	r25
-     9f6:	97 70       	andi	r25, 0x07	; 7
-     9f8:	13 96       	adiw	r26, 0x03	; 3
-     9fa:	8c 91       	ld	r24, X
-     9fc:	13 97       	sbiw	r26, 0x03	; 3
-     9fe:	88 0f       	add	r24, r24
-     a00:	88 0f       	add	r24, r24
-     a02:	88 0f       	add	r24, r24
-     a04:	89 0f       	add	r24, r25
-     a06:	80 93 f1 00 	sts	0x00F1, r24
-     a0a:	12 96       	adiw	r26, 0x02	; 2
-     a0c:	8c 91       	ld	r24, X
-     a0e:	12 97       	sbiw	r26, 0x02	; 2
-     a10:	88 0f       	add	r24, r24
-     a12:	88 0f       	add	r24, r24
-     a14:	88 0f       	add	r24, r24
-     a16:	80 93 f0 00 	sts	0x00F0, r24
-     a1a:	ef ee       	ldi	r30, 0xEF	; 239
-     a1c:	f0 e0       	ldi	r31, 0x00	; 0
-     a1e:	80 81       	ld	r24, Z
-     a20:	80 61       	ori	r24, 0x10	; 16
-     a22:	80 83       	st	Z, r24
-     a24:	1c c0       	rjmp	.+56     	; 0xa5e <__stack+0x15f>
-          else              { Can_set_std_id(cmd->id.std);}
-     a26:	12 96       	adiw	r26, 0x02	; 2
-     a28:	8c 91       	ld	r24, X
-     a2a:	12 97       	sbiw	r26, 0x02	; 2
-     a2c:	86 95       	lsr	r24
-     a2e:	86 95       	lsr	r24
-     a30:	86 95       	lsr	r24
-     a32:	13 96       	adiw	r26, 0x03	; 3
-     a34:	9c 91       	ld	r25, X
-     a36:	13 97       	sbiw	r26, 0x03	; 3
-     a38:	e0 e2       	ldi	r30, 0x20	; 32
-     a3a:	9e 9f       	mul	r25, r30
-     a3c:	80 0d       	add	r24, r0
-     a3e:	11 24       	eor	r1, r1
-     a40:	80 93 f3 00 	sts	0x00F3, r24
-     a44:	12 96       	adiw	r26, 0x02	; 2
-     a46:	8c 91       	ld	r24, X
-     a48:	12 97       	sbiw	r26, 0x02	; 2
-     a4a:	82 95       	swap	r24
-     a4c:	88 0f       	add	r24, r24
-     a4e:	80 7e       	andi	r24, 0xE0	; 224
-     a50:	80 93 f2 00 	sts	0x00F2, r24
-     a54:	ef ee       	ldi	r30, 0xEF	; 239
-     a56:	f0 e0       	ldi	r31, 0x00	; 0
-     a58:	80 81       	ld	r24, Z
-     a5a:	8f 7e       	andi	r24, 0xEF	; 239
-     a5c:	80 83       	st	Z, r24
-          u8_temp=~0; Can_set_ext_msk(u8_temp);
-     a5e:	8f ef       	ldi	r24, 0xFF	; 255
-     a60:	89 83       	std	Y+1, r24	; 0x01
-     a62:	9b 81       	ldd	r25, Y+3	; 0x03
-     a64:	92 95       	swap	r25
-     a66:	96 95       	lsr	r25
-     a68:	97 70       	andi	r25, 0x07	; 7
-     a6a:	8c 81       	ldd	r24, Y+4	; 0x04
-     a6c:	88 0f       	add	r24, r24
-     a6e:	88 0f       	add	r24, r24
+     a06:	1b 96       	adiw	r26, 0x0b	; 11
+     a08:	8c 91       	ld	r24, X
+     a0a:	1b 97       	sbiw	r26, 0x0b	; 11
+     a0c:	88 23       	and	r24, r24
+     a0e:	d9 f1       	breq	.+118    	; 0xa86 <__stack+0x187>
+     a10:	14 96       	adiw	r26, 0x04	; 4
+     a12:	9c 91       	ld	r25, X
+     a14:	14 97       	sbiw	r26, 0x04	; 4
+     a16:	92 95       	swap	r25
+     a18:	96 95       	lsr	r25
+     a1a:	97 70       	andi	r25, 0x07	; 7
+     a1c:	15 96       	adiw	r26, 0x05	; 5
+     a1e:	8c 91       	ld	r24, X
+     a20:	15 97       	sbiw	r26, 0x05	; 5
+     a22:	88 0f       	add	r24, r24
+     a24:	88 0f       	add	r24, r24
+     a26:	88 0f       	add	r24, r24
+     a28:	89 0f       	add	r24, r25
+     a2a:	80 93 f3 00 	sts	0x00F3, r24
+     a2e:	13 96       	adiw	r26, 0x03	; 3
+     a30:	9c 91       	ld	r25, X
+     a32:	13 97       	sbiw	r26, 0x03	; 3
+     a34:	92 95       	swap	r25
+     a36:	96 95       	lsr	r25
+     a38:	97 70       	andi	r25, 0x07	; 7
+     a3a:	14 96       	adiw	r26, 0x04	; 4
+     a3c:	8c 91       	ld	r24, X
+     a3e:	14 97       	sbiw	r26, 0x04	; 4
+     a40:	88 0f       	add	r24, r24
+     a42:	88 0f       	add	r24, r24
+     a44:	88 0f       	add	r24, r24
+     a46:	89 0f       	add	r24, r25
+     a48:	80 93 f2 00 	sts	0x00F2, r24
+     a4c:	12 96       	adiw	r26, 0x02	; 2
+     a4e:	9c 91       	ld	r25, X
+     a50:	12 97       	sbiw	r26, 0x02	; 2
+     a52:	92 95       	swap	r25
+     a54:	96 95       	lsr	r25
+     a56:	97 70       	andi	r25, 0x07	; 7
+     a58:	13 96       	adiw	r26, 0x03	; 3
+     a5a:	8c 91       	ld	r24, X
+     a5c:	13 97       	sbiw	r26, 0x03	; 3
+     a5e:	88 0f       	add	r24, r24
+     a60:	88 0f       	add	r24, r24
+     a62:	88 0f       	add	r24, r24
+     a64:	89 0f       	add	r24, r25
+     a66:	80 93 f1 00 	sts	0x00F1, r24
+     a6a:	12 96       	adiw	r26, 0x02	; 2
+     a6c:	8c 91       	ld	r24, X
+     a6e:	12 97       	sbiw	r26, 0x02	; 2
      a70:	88 0f       	add	r24, r24
-     a72:	89 0f       	add	r24, r25
-     a74:	80 93 f7 00 	sts	0x00F7, r24
-     a78:	9a 81       	ldd	r25, Y+2	; 0x02
-     a7a:	92 95       	swap	r25
-     a7c:	96 95       	lsr	r25
-     a7e:	97 70       	andi	r25, 0x07	; 7
-     a80:	8b 81       	ldd	r24, Y+3	; 0x03
-     a82:	88 0f       	add	r24, r24
-     a84:	88 0f       	add	r24, r24
-     a86:	88 0f       	add	r24, r24
-     a88:	89 0f       	add	r24, r25
-     a8a:	80 93 f6 00 	sts	0x00F6, r24
-     a8e:	99 81       	ldd	r25, Y+1	; 0x01
-     a90:	92 95       	swap	r25
-     a92:	96 95       	lsr	r25
-     a94:	97 70       	andi	r25, 0x07	; 7
-     a96:	8a 81       	ldd	r24, Y+2	; 0x02
-     a98:	88 0f       	add	r24, r24
-     a9a:	88 0f       	add	r24, r24
-     a9c:	88 0f       	add	r24, r24
-     a9e:	89 0f       	add	r24, r25
-     aa0:	80 93 f5 00 	sts	0x00F5, r24
-     aa4:	29 81       	ldd	r18, Y+1	; 0x01
-     aa6:	22 0f       	add	r18, r18
-     aa8:	22 0f       	add	r18, r18
-     aaa:	22 0f       	add	r18, r18
-     aac:	84 ef       	ldi	r24, 0xF4	; 244
-     aae:	90 e0       	ldi	r25, 0x00	; 0
-     ab0:	fc 01       	movw	r30, r24
-     ab2:	20 83       	st	Z, r18
-          Can_set_dlc(cmd->dlc);
+     a72:	88 0f       	add	r24, r24
+     a74:	88 0f       	add	r24, r24
+     a76:	80 93 f0 00 	sts	0x00F0, r24
+     a7a:	ef ee       	ldi	r30, 0xEF	; 239
+     a7c:	f0 e0       	ldi	r31, 0x00	; 0
+     a7e:	80 81       	ld	r24, Z
+     a80:	80 61       	ori	r24, 0x10	; 16
+     a82:	80 83       	st	Z, r24
+     a84:	1c c0       	rjmp	.+56     	; 0xabe <__stack+0x1bf>
+          else              { Can_set_std_id(cmd->id.std);}
+     a86:	12 96       	adiw	r26, 0x02	; 2
+     a88:	8c 91       	ld	r24, X
+     a8a:	12 97       	sbiw	r26, 0x02	; 2
+     a8c:	86 95       	lsr	r24
+     a8e:	86 95       	lsr	r24
+     a90:	86 95       	lsr	r24
+     a92:	13 96       	adiw	r26, 0x03	; 3
+     a94:	9c 91       	ld	r25, X
+     a96:	13 97       	sbiw	r26, 0x03	; 3
+     a98:	e0 e2       	ldi	r30, 0x20	; 32
+     a9a:	9e 9f       	mul	r25, r30
+     a9c:	80 0d       	add	r24, r0
+     a9e:	11 24       	eor	r1, r1
+     aa0:	80 93 f3 00 	sts	0x00F3, r24
+     aa4:	12 96       	adiw	r26, 0x02	; 2
+     aa6:	8c 91       	ld	r24, X
+     aa8:	12 97       	sbiw	r26, 0x02	; 2
+     aaa:	82 95       	swap	r24
+     aac:	88 0f       	add	r24, r24
+     aae:	80 7e       	andi	r24, 0xE0	; 224
+     ab0:	80 93 f2 00 	sts	0x00F2, r24
      ab4:	ef ee       	ldi	r30, 0xEF	; 239
      ab6:	f0 e0       	ldi	r31, 0x00	; 0
-     ab8:	30 81       	ld	r19, Z
-     aba:	16 96       	adiw	r26, 0x06	; 6
-     abc:	2c 91       	ld	r18, X
-     abe:	16 97       	sbiw	r26, 0x06	; 6
-     ac0:	23 2b       	or	r18, r19
-     ac2:	20 83       	st	Z, r18
+     ab8:	80 81       	ld	r24, Z
+     aba:	8f 7e       	andi	r24, 0xEF	; 239
+     abc:	80 83       	st	Z, r24
+          u8_temp=~0; Can_set_ext_msk(u8_temp);
+     abe:	8f ef       	ldi	r24, 0xFF	; 255
+     ac0:	89 83       	std	Y+1, r24	; 0x01
+     ac2:	9b 81       	ldd	r25, Y+3	; 0x03
+     ac4:	92 95       	swap	r25
+     ac6:	96 95       	lsr	r25
+     ac8:	97 70       	andi	r25, 0x07	; 7
+     aca:	8c 81       	ldd	r24, Y+4	; 0x04
+     acc:	88 0f       	add	r24, r24
+     ace:	88 0f       	add	r24, r24
+     ad0:	88 0f       	add	r24, r24
+     ad2:	89 0f       	add	r24, r25
+     ad4:	80 93 f7 00 	sts	0x00F7, r24
+     ad8:	9a 81       	ldd	r25, Y+2	; 0x02
+     ada:	92 95       	swap	r25
+     adc:	96 95       	lsr	r25
+     ade:	97 70       	andi	r25, 0x07	; 7
+     ae0:	8b 81       	ldd	r24, Y+3	; 0x03
+     ae2:	88 0f       	add	r24, r24
+     ae4:	88 0f       	add	r24, r24
+     ae6:	88 0f       	add	r24, r24
+     ae8:	89 0f       	add	r24, r25
+     aea:	80 93 f6 00 	sts	0x00F6, r24
+     aee:	99 81       	ldd	r25, Y+1	; 0x01
+     af0:	92 95       	swap	r25
+     af2:	96 95       	lsr	r25
+     af4:	97 70       	andi	r25, 0x07	; 7
+     af6:	8a 81       	ldd	r24, Y+2	; 0x02
+     af8:	88 0f       	add	r24, r24
+     afa:	88 0f       	add	r24, r24
+     afc:	88 0f       	add	r24, r24
+     afe:	89 0f       	add	r24, r25
+     b00:	80 93 f5 00 	sts	0x00F5, r24
+     b04:	29 81       	ldd	r18, Y+1	; 0x01
+     b06:	22 0f       	add	r18, r18
+     b08:	22 0f       	add	r18, r18
+     b0a:	22 0f       	add	r18, r18
+     b0c:	84 ef       	ldi	r24, 0xF4	; 244
+     b0e:	90 e0       	ldi	r25, 0x00	; 0
+     b10:	fc 01       	movw	r30, r24
+     b12:	20 83       	st	Z, r18
+          Can_set_dlc(cmd->dlc);
+     b14:	ef ee       	ldi	r30, 0xEF	; 239
+     b16:	f0 e0       	ldi	r31, 0x00	; 0
+     b18:	30 81       	ld	r19, Z
+     b1a:	16 96       	adiw	r26, 0x06	; 6
+     b1c:	2c 91       	ld	r18, X
+     b1e:	16 97       	sbiw	r26, 0x06	; 6
+     b20:	23 2b       	or	r18, r19
+     b22:	20 83       	st	Z, r18
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-     ac4:	21 e0       	ldi	r18, 0x01	; 1
-     ac6:	1a 96       	adiw	r26, 0x0a	; 10
-     ac8:	2c 93       	st	X, r18
-     aca:	dc 01       	movw	r26, r24
-     acc:	2c 91       	ld	r18, X
-     ace:	24 60       	ori	r18, 0x04	; 4
-     ad0:	2c 93       	st	X, r18
-     ad2:	a0 ef       	ldi	r26, 0xF0	; 240
-     ad4:	b0 e0       	ldi	r27, 0x00	; 0
-     ad6:	2c 91       	ld	r18, X
-     ad8:	24 60       	ori	r18, 0x04	; 4
-     ada:	2c 93       	st	X, r18
+     b24:	21 e0       	ldi	r18, 0x01	; 1
+     b26:	1a 96       	adiw	r26, 0x0a	; 10
+     b28:	2c 93       	st	X, r18
+     b2a:	dc 01       	movw	r26, r24
+     b2c:	2c 91       	ld	r18, X
+     b2e:	24 60       	ori	r18, 0x04	; 4
+     b30:	2c 93       	st	X, r18
+     b32:	a0 ef       	ldi	r26, 0xF0	; 240
+     b34:	b0 e0       	ldi	r27, 0x00	; 0
+     b36:	2c 91       	ld	r18, X
+     b38:	24 60       	ori	r18, 0x04	; 4
+     b3a:	2c 93       	st	X, r18
           Can_clear_rplv();
-     adc:	20 81       	ld	r18, Z
-     ade:	2f 7d       	andi	r18, 0xDF	; 223
-     ae0:	20 83       	st	Z, r18
+     b3c:	20 81       	ld	r18, Z
+     b3e:	2f 7d       	andi	r18, 0xDF	; 223
+     b40:	20 83       	st	Z, r18
           Can_set_idemsk();
-     ae2:	dc 01       	movw	r26, r24
-     ae4:	2c 91       	ld	r18, X
-     ae6:	21 60       	ori	r18, 0x01	; 1
-     ae8:	2c 93       	st	X, r18
+     b42:	dc 01       	movw	r26, r24
+     b44:	2c 91       	ld	r18, X
+     b46:	21 60       	ori	r18, 0x01	; 1
+     b48:	2c 93       	st	X, r18
           Can_config_rx();       
-     aea:	80 81       	ld	r24, Z
-     aec:	8f 73       	andi	r24, 0x3F	; 63
-     aee:	80 83       	st	Z, r24
-     af0:	80 81       	ld	r24, Z
-     af2:	80 68       	ori	r24, 0x80	; 128
-     af4:	80 83       	st	Z, r24
+     b4a:	80 81       	ld	r24, Z
+     b4c:	8f 73       	andi	r24, 0x3F	; 63
+     b4e:	80 83       	st	Z, r24
+     b50:	80 81       	ld	r24, Z
+     b52:	80 68       	ori	r24, 0x80	; 128
+     b54:	80 83       	st	Z, r24
     {
       cmd->status = MOB_NOT_REACHED;
       return CAN_CMD_REFUSED;
     }
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
-     af6:	80 e0       	ldi	r24, 0x00	; 0
+     b56:	80 e0       	ldi	r24, 0x00	; 0
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
           Can_clear_rplv();
           Can_set_idemsk();
           Can_config_rx();       
           break;
-     af8:	28 c1       	rjmp	.+592    	; 0xd4a <__stack+0x44b>
+     b58:	28 c1       	rjmp	.+592    	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_REPLY:
           for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
-     afa:	20 e0       	ldi	r18, 0x00	; 0
-     afc:	8a ef       	ldi	r24, 0xFA	; 250
-     afe:	90 e0       	ldi	r25, 0x00	; 0
-     b00:	17 96       	adiw	r26, 0x07	; 7
-     b02:	ed 91       	ld	r30, X+
-     b04:	fc 91       	ld	r31, X
-     b06:	18 97       	sbiw	r26, 0x08	; 8
-     b08:	e2 0f       	add	r30, r18
-     b0a:	f1 1d       	adc	r31, r1
-     b0c:	30 81       	ld	r19, Z
-     b0e:	fc 01       	movw	r30, r24
-     b10:	30 83       	st	Z, r19
-     b12:	2f 5f       	subi	r18, 0xFF	; 255
-     b14:	16 96       	adiw	r26, 0x06	; 6
-     b16:	3c 91       	ld	r19, X
-     b18:	16 97       	sbiw	r26, 0x06	; 6
-     b1a:	23 17       	cp	r18, r19
-     b1c:	88 f3       	brcs	.-30     	; 0xb00 <__stack+0x201>
-          u8_temp=0; Can_set_ext_msk(u8_temp);
-     b1e:	19 82       	std	Y+1, r1	; 0x01
-     b20:	9b 81       	ldd	r25, Y+3	; 0x03
-     b22:	92 95       	swap	r25
-     b24:	96 95       	lsr	r25
-     b26:	97 70       	andi	r25, 0x07	; 7
-     b28:	8c 81       	ldd	r24, Y+4	; 0x04
-     b2a:	88 0f       	add	r24, r24
-     b2c:	88 0f       	add	r24, r24
-     b2e:	88 0f       	add	r24, r24
-     b30:	89 0f       	add	r24, r25
-     b32:	80 93 f7 00 	sts	0x00F7, r24
-     b36:	9a 81       	ldd	r25, Y+2	; 0x02
-     b38:	92 95       	swap	r25
-     b3a:	96 95       	lsr	r25
-     b3c:	97 70       	andi	r25, 0x07	; 7
-     b3e:	8b 81       	ldd	r24, Y+3	; 0x03
-     b40:	88 0f       	add	r24, r24
-     b42:	88 0f       	add	r24, r24
-     b44:	88 0f       	add	r24, r24
-     b46:	89 0f       	add	r24, r25
-     b48:	80 93 f6 00 	sts	0x00F6, r24
-     b4c:	99 81       	ldd	r25, Y+1	; 0x01
-     b4e:	92 95       	swap	r25
-     b50:	96 95       	lsr	r25
-     b52:	97 70       	andi	r25, 0x07	; 7
-     b54:	8a 81       	ldd	r24, Y+2	; 0x02
-     b56:	88 0f       	add	r24, r24
-     b58:	88 0f       	add	r24, r24
-     b5a:	88 0f       	add	r24, r24
-     b5c:	89 0f       	add	r24, r25
-     b5e:	80 93 f5 00 	sts	0x00F5, r24
-     b62:	29 81       	ldd	r18, Y+1	; 0x01
-     b64:	22 0f       	add	r18, r18
-     b66:	22 0f       	add	r18, r18
-     b68:	22 0f       	add	r18, r18
-     b6a:	84 ef       	ldi	r24, 0xF4	; 244
-     b6c:	90 e0       	ldi	r25, 0x00	; 0
+     b5a:	20 e0       	ldi	r18, 0x00	; 0
+     b5c:	8a ef       	ldi	r24, 0xFA	; 250
+     b5e:	90 e0       	ldi	r25, 0x00	; 0
+     b60:	17 96       	adiw	r26, 0x07	; 7
+     b62:	ed 91       	ld	r30, X+
+     b64:	fc 91       	ld	r31, X
+     b66:	18 97       	sbiw	r26, 0x08	; 8
+     b68:	e2 0f       	add	r30, r18
+     b6a:	f1 1d       	adc	r31, r1
+     b6c:	30 81       	ld	r19, Z
      b6e:	fc 01       	movw	r30, r24
-     b70:	20 83       	st	Z, r18
+     b70:	30 83       	st	Z, r19
+     b72:	2f 5f       	subi	r18, 0xFF	; 255
+     b74:	16 96       	adiw	r26, 0x06	; 6
+     b76:	3c 91       	ld	r19, X
+     b78:	16 97       	sbiw	r26, 0x06	; 6
+     b7a:	23 17       	cp	r18, r19
+     b7c:	88 f3       	brcs	.-30     	; 0xb60 <__stack+0x261>
+          u8_temp=0; Can_set_ext_msk(u8_temp);
+     b7e:	19 82       	std	Y+1, r1	; 0x01
+     b80:	9b 81       	ldd	r25, Y+3	; 0x03
+     b82:	92 95       	swap	r25
+     b84:	96 95       	lsr	r25
+     b86:	97 70       	andi	r25, 0x07	; 7
+     b88:	8c 81       	ldd	r24, Y+4	; 0x04
+     b8a:	88 0f       	add	r24, r24
+     b8c:	88 0f       	add	r24, r24
+     b8e:	88 0f       	add	r24, r24
+     b90:	89 0f       	add	r24, r25
+     b92:	80 93 f7 00 	sts	0x00F7, r24
+     b96:	9a 81       	ldd	r25, Y+2	; 0x02
+     b98:	92 95       	swap	r25
+     b9a:	96 95       	lsr	r25
+     b9c:	97 70       	andi	r25, 0x07	; 7
+     b9e:	8b 81       	ldd	r24, Y+3	; 0x03
+     ba0:	88 0f       	add	r24, r24
+     ba2:	88 0f       	add	r24, r24
+     ba4:	88 0f       	add	r24, r24
+     ba6:	89 0f       	add	r24, r25
+     ba8:	80 93 f6 00 	sts	0x00F6, r24
+     bac:	99 81       	ldd	r25, Y+1	; 0x01
+     bae:	92 95       	swap	r25
+     bb0:	96 95       	lsr	r25
+     bb2:	97 70       	andi	r25, 0x07	; 7
+     bb4:	8a 81       	ldd	r24, Y+2	; 0x02
+     bb6:	88 0f       	add	r24, r24
+     bb8:	88 0f       	add	r24, r24
+     bba:	88 0f       	add	r24, r24
+     bbc:	89 0f       	add	r24, r25
+     bbe:	80 93 f5 00 	sts	0x00F5, r24
+     bc2:	29 81       	ldd	r18, Y+1	; 0x01
+     bc4:	22 0f       	add	r18, r18
+     bc6:	22 0f       	add	r18, r18
+     bc8:	22 0f       	add	r18, r18
+     bca:	84 ef       	ldi	r24, 0xF4	; 244
+     bcc:	90 e0       	ldi	r25, 0x00	; 0
+     bce:	fc 01       	movw	r30, r24
+     bd0:	20 83       	st	Z, r18
           Can_set_dlc(cmd->dlc);
-     b72:	ef ee       	ldi	r30, 0xEF	; 239
-     b74:	f0 e0       	ldi	r31, 0x00	; 0
-     b76:	30 81       	ld	r19, Z
-     b78:	16 96       	adiw	r26, 0x06	; 6
-     b7a:	2c 91       	ld	r18, X
-     b7c:	16 97       	sbiw	r26, 0x06	; 6
-     b7e:	23 2b       	or	r18, r19
-     b80:	20 83       	st	Z, r18
+     bd2:	ef ee       	ldi	r30, 0xEF	; 239
+     bd4:	f0 e0       	ldi	r31, 0x00	; 0
+     bd6:	30 81       	ld	r19, Z
+     bd8:	16 96       	adiw	r26, 0x06	; 6
+     bda:	2c 91       	ld	r18, X
+     bdc:	16 97       	sbiw	r26, 0x06	; 6
+     bde:	23 2b       	or	r18, r19
+     be0:	20 83       	st	Z, r18
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-     b82:	21 e0       	ldi	r18, 0x01	; 1
-     b84:	1a 96       	adiw	r26, 0x0a	; 10
-     b86:	2c 93       	st	X, r18
-     b88:	dc 01       	movw	r26, r24
-     b8a:	2c 91       	ld	r18, X
-     b8c:	24 60       	ori	r18, 0x04	; 4
-     b8e:	2c 93       	st	X, r18
-     b90:	a0 ef       	ldi	r26, 0xF0	; 240
-     b92:	b0 e0       	ldi	r27, 0x00	; 0
-     b94:	2c 91       	ld	r18, X
-     b96:	24 60       	ori	r18, 0x04	; 4
-     b98:	2c 93       	st	X, r18
+     be2:	21 e0       	ldi	r18, 0x01	; 1
+     be4:	1a 96       	adiw	r26, 0x0a	; 10
+     be6:	2c 93       	st	X, r18
+     be8:	dc 01       	movw	r26, r24
+     bea:	2c 91       	ld	r18, X
+     bec:	24 60       	ori	r18, 0x04	; 4
+     bee:	2c 93       	st	X, r18
+     bf0:	a0 ef       	ldi	r26, 0xF0	; 240
+     bf2:	b0 e0       	ldi	r27, 0x00	; 0
+     bf4:	2c 91       	ld	r18, X
+     bf6:	24 60       	ori	r18, 0x04	; 4
+     bf8:	2c 93       	st	X, r18
           Can_set_rplv();
-     b9a:	20 81       	ld	r18, Z
-     b9c:	20 62       	ori	r18, 0x20	; 32
-     b9e:	20 83       	st	Z, r18
+     bfa:	20 81       	ld	r18, Z
+     bfc:	20 62       	ori	r18, 0x20	; 32
+     bfe:	20 83       	st	Z, r18
           Can_clear_idemsk();
-     ba0:	dc 01       	movw	r26, r24
-     ba2:	2c 91       	ld	r18, X
-     ba4:	2e 7f       	andi	r18, 0xFE	; 254
-     ba6:	2c 93       	st	X, r18
+     c00:	dc 01       	movw	r26, r24
+     c02:	2c 91       	ld	r18, X
+     c04:	2e 7f       	andi	r18, 0xFE	; 254
+     c06:	2c 93       	st	X, r18
           Can_config_rx();       
-     ba8:	80 81       	ld	r24, Z
-     baa:	8f 73       	andi	r24, 0x3F	; 63
-     bac:	80 83       	st	Z, r24
-     bae:	80 81       	ld	r24, Z
-     bb0:	80 68       	ori	r24, 0x80	; 128
-     bb2:	80 83       	st	Z, r24
+     c08:	80 81       	ld	r24, Z
+     c0a:	8f 73       	andi	r24, 0x3F	; 63
+     c0c:	80 83       	st	Z, r24
+     c0e:	80 81       	ld	r24, Z
+     c10:	80 68       	ori	r24, 0x80	; 128
+     c12:	80 83       	st	Z, r24
     {
       cmd->status = MOB_NOT_REACHED;
       return CAN_CMD_REFUSED;
     }
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
-     bb4:	80 e0       	ldi	r24, 0x00	; 0
+     c14:	80 e0       	ldi	r24, 0x00	; 0
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
           Can_set_rplv();
           Can_clear_idemsk();
           Can_config_rx();       
           break;
-     bb6:	c9 c0       	rjmp	.+402    	; 0xd4a <__stack+0x44b>
+     c16:	c9 c0       	rjmp	.+402    	; 0xdaa <__stack+0x4ab>
         //------------      
         case CMD_REPLY_MASKED:
           if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
-     bb8:	1b 96       	adiw	r26, 0x0b	; 11
-     bba:	8c 91       	ld	r24, X
-     bbc:	1b 97       	sbiw	r26, 0x0b	; 11
-     bbe:	88 23       	and	r24, r24
-     bc0:	d9 f1       	breq	.+118    	; 0xc38 <__stack+0x339>
-     bc2:	14 96       	adiw	r26, 0x04	; 4
-     bc4:	9c 91       	ld	r25, X
-     bc6:	14 97       	sbiw	r26, 0x04	; 4
-     bc8:	92 95       	swap	r25
-     bca:	96 95       	lsr	r25
-     bcc:	97 70       	andi	r25, 0x07	; 7
-     bce:	15 96       	adiw	r26, 0x05	; 5
-     bd0:	8c 91       	ld	r24, X
-     bd2:	15 97       	sbiw	r26, 0x05	; 5
-     bd4:	88 0f       	add	r24, r24
-     bd6:	88 0f       	add	r24, r24
-     bd8:	88 0f       	add	r24, r24
-     bda:	89 0f       	add	r24, r25
-     bdc:	80 93 f3 00 	sts	0x00F3, r24
-     be0:	13 96       	adiw	r26, 0x03	; 3
-     be2:	9c 91       	ld	r25, X
-     be4:	13 97       	sbiw	r26, 0x03	; 3
-     be6:	92 95       	swap	r25
-     be8:	96 95       	lsr	r25
-     bea:	97 70       	andi	r25, 0x07	; 7
-     bec:	14 96       	adiw	r26, 0x04	; 4
-     bee:	8c 91       	ld	r24, X
-     bf0:	14 97       	sbiw	r26, 0x04	; 4
-     bf2:	88 0f       	add	r24, r24
-     bf4:	88 0f       	add	r24, r24
-     bf6:	88 0f       	add	r24, r24
-     bf8:	89 0f       	add	r24, r25
-     bfa:	80 93 f2 00 	sts	0x00F2, r24
-     bfe:	12 96       	adiw	r26, 0x02	; 2
-     c00:	9c 91       	ld	r25, X
-     c02:	12 97       	sbiw	r26, 0x02	; 2
-     c04:	92 95       	swap	r25
-     c06:	96 95       	lsr	r25
-     c08:	97 70       	andi	r25, 0x07	; 7
-     c0a:	13 96       	adiw	r26, 0x03	; 3
-     c0c:	8c 91       	ld	r24, X
-     c0e:	13 97       	sbiw	r26, 0x03	; 3
-     c10:	88 0f       	add	r24, r24
-     c12:	88 0f       	add	r24, r24
-     c14:	88 0f       	add	r24, r24
-     c16:	89 0f       	add	r24, r25
-     c18:	80 93 f1 00 	sts	0x00F1, r24
-     c1c:	12 96       	adiw	r26, 0x02	; 2
-     c1e:	8c 91       	ld	r24, X
-     c20:	12 97       	sbiw	r26, 0x02	; 2
-     c22:	88 0f       	add	r24, r24
-     c24:	88 0f       	add	r24, r24
-     c26:	88 0f       	add	r24, r24
-     c28:	80 93 f0 00 	sts	0x00F0, r24
-     c2c:	ef ee       	ldi	r30, 0xEF	; 239
-     c2e:	f0 e0       	ldi	r31, 0x00	; 0
-     c30:	80 81       	ld	r24, Z
-     c32:	80 61       	ori	r24, 0x10	; 16
-     c34:	80 83       	st	Z, r24
-     c36:	1c c0       	rjmp	.+56     	; 0xc70 <__stack+0x371>
+     c18:	1b 96       	adiw	r26, 0x0b	; 11
+     c1a:	8c 91       	ld	r24, X
+     c1c:	1b 97       	sbiw	r26, 0x0b	; 11
+     c1e:	88 23       	and	r24, r24
+     c20:	d9 f1       	breq	.+118    	; 0xc98 <__stack+0x399>
+     c22:	14 96       	adiw	r26, 0x04	; 4
+     c24:	9c 91       	ld	r25, X
+     c26:	14 97       	sbiw	r26, 0x04	; 4
+     c28:	92 95       	swap	r25
+     c2a:	96 95       	lsr	r25
+     c2c:	97 70       	andi	r25, 0x07	; 7
+     c2e:	15 96       	adiw	r26, 0x05	; 5
+     c30:	8c 91       	ld	r24, X
+     c32:	15 97       	sbiw	r26, 0x05	; 5
+     c34:	88 0f       	add	r24, r24
+     c36:	88 0f       	add	r24, r24
+     c38:	88 0f       	add	r24, r24
+     c3a:	89 0f       	add	r24, r25
+     c3c:	80 93 f3 00 	sts	0x00F3, r24
+     c40:	13 96       	adiw	r26, 0x03	; 3
+     c42:	9c 91       	ld	r25, X
+     c44:	13 97       	sbiw	r26, 0x03	; 3
+     c46:	92 95       	swap	r25
+     c48:	96 95       	lsr	r25
+     c4a:	97 70       	andi	r25, 0x07	; 7
+     c4c:	14 96       	adiw	r26, 0x04	; 4
+     c4e:	8c 91       	ld	r24, X
+     c50:	14 97       	sbiw	r26, 0x04	; 4
+     c52:	88 0f       	add	r24, r24
+     c54:	88 0f       	add	r24, r24
+     c56:	88 0f       	add	r24, r24
+     c58:	89 0f       	add	r24, r25
+     c5a:	80 93 f2 00 	sts	0x00F2, r24
+     c5e:	12 96       	adiw	r26, 0x02	; 2
+     c60:	9c 91       	ld	r25, X
+     c62:	12 97       	sbiw	r26, 0x02	; 2
+     c64:	92 95       	swap	r25
+     c66:	96 95       	lsr	r25
+     c68:	97 70       	andi	r25, 0x07	; 7
+     c6a:	13 96       	adiw	r26, 0x03	; 3
+     c6c:	8c 91       	ld	r24, X
+     c6e:	13 97       	sbiw	r26, 0x03	; 3
+     c70:	88 0f       	add	r24, r24
+     c72:	88 0f       	add	r24, r24
+     c74:	88 0f       	add	r24, r24
+     c76:	89 0f       	add	r24, r25
+     c78:	80 93 f1 00 	sts	0x00F1, r24
+     c7c:	12 96       	adiw	r26, 0x02	; 2
+     c7e:	8c 91       	ld	r24, X
+     c80:	12 97       	sbiw	r26, 0x02	; 2
+     c82:	88 0f       	add	r24, r24
+     c84:	88 0f       	add	r24, r24
+     c86:	88 0f       	add	r24, r24
+     c88:	80 93 f0 00 	sts	0x00F0, r24
+     c8c:	ef ee       	ldi	r30, 0xEF	; 239
+     c8e:	f0 e0       	ldi	r31, 0x00	; 0
+     c90:	80 81       	ld	r24, Z
+     c92:	80 61       	ori	r24, 0x10	; 16
+     c94:	80 83       	st	Z, r24
+     c96:	1c c0       	rjmp	.+56     	; 0xcd0 <__stack+0x3d1>
           else              { Can_set_std_id(cmd->id.std);}
-     c38:	12 96       	adiw	r26, 0x02	; 2
-     c3a:	8c 91       	ld	r24, X
-     c3c:	12 97       	sbiw	r26, 0x02	; 2
-     c3e:	86 95       	lsr	r24
-     c40:	86 95       	lsr	r24
-     c42:	86 95       	lsr	r24
-     c44:	13 96       	adiw	r26, 0x03	; 3
-     c46:	9c 91       	ld	r25, X
-     c48:	13 97       	sbiw	r26, 0x03	; 3
-     c4a:	e0 e2       	ldi	r30, 0x20	; 32
-     c4c:	9e 9f       	mul	r25, r30
-     c4e:	80 0d       	add	r24, r0
-     c50:	11 24       	eor	r1, r1
-     c52:	80 93 f3 00 	sts	0x00F3, r24
-     c56:	12 96       	adiw	r26, 0x02	; 2
-     c58:	8c 91       	ld	r24, X
-     c5a:	12 97       	sbiw	r26, 0x02	; 2
-     c5c:	82 95       	swap	r24
-     c5e:	88 0f       	add	r24, r24
-     c60:	80 7e       	andi	r24, 0xE0	; 224
-     c62:	80 93 f2 00 	sts	0x00F2, r24
-     c66:	ef ee       	ldi	r30, 0xEF	; 239
-     c68:	f0 e0       	ldi	r31, 0x00	; 0
-     c6a:	80 81       	ld	r24, Z
-     c6c:	8f 7e       	andi	r24, 0xEF	; 239
-     c6e:	80 83       	st	Z, r24
+     c98:	12 96       	adiw	r26, 0x02	; 2
+     c9a:	8c 91       	ld	r24, X
+     c9c:	12 97       	sbiw	r26, 0x02	; 2
+     c9e:	86 95       	lsr	r24
+     ca0:	86 95       	lsr	r24
+     ca2:	86 95       	lsr	r24
+     ca4:	13 96       	adiw	r26, 0x03	; 3
+     ca6:	9c 91       	ld	r25, X
+     ca8:	13 97       	sbiw	r26, 0x03	; 3
+     caa:	e0 e2       	ldi	r30, 0x20	; 32
+     cac:	9e 9f       	mul	r25, r30
+     cae:	80 0d       	add	r24, r0
+     cb0:	11 24       	eor	r1, r1
+     cb2:	80 93 f3 00 	sts	0x00F3, r24
+     cb6:	12 96       	adiw	r26, 0x02	; 2
+     cb8:	8c 91       	ld	r24, X
+     cba:	12 97       	sbiw	r26, 0x02	; 2
+     cbc:	82 95       	swap	r24
+     cbe:	88 0f       	add	r24, r24
+     cc0:	80 7e       	andi	r24, 0xE0	; 224
+     cc2:	80 93 f2 00 	sts	0x00F2, r24
+     cc6:	ef ee       	ldi	r30, 0xEF	; 239
+     cc8:	f0 e0       	ldi	r31, 0x00	; 0
+     cca:	80 81       	ld	r24, Z
+     ccc:	8f 7e       	andi	r24, 0xEF	; 239
+     cce:	80 83       	st	Z, r24
           for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
-     c70:	16 96       	adiw	r26, 0x06	; 6
-     c72:	8c 91       	ld	r24, X
-     c74:	16 97       	sbiw	r26, 0x06	; 6
-     c76:	88 23       	and	r24, r24
-     c78:	91 f0       	breq	.+36     	; 0xc9e <__stack+0x39f>
-     c7a:	20 e0       	ldi	r18, 0x00	; 0
-     c7c:	8a ef       	ldi	r24, 0xFA	; 250
-     c7e:	90 e0       	ldi	r25, 0x00	; 0
-     c80:	17 96       	adiw	r26, 0x07	; 7
-     c82:	ed 91       	ld	r30, X+
-     c84:	fc 91       	ld	r31, X
-     c86:	18 97       	sbiw	r26, 0x08	; 8
-     c88:	e2 0f       	add	r30, r18
-     c8a:	f1 1d       	adc	r31, r1
-     c8c:	30 81       	ld	r19, Z
-     c8e:	fc 01       	movw	r30, r24
-     c90:	30 83       	st	Z, r19
-     c92:	2f 5f       	subi	r18, 0xFF	; 255
-     c94:	16 96       	adiw	r26, 0x06	; 6
-     c96:	3c 91       	ld	r19, X
-     c98:	16 97       	sbiw	r26, 0x06	; 6
-     c9a:	23 17       	cp	r18, r19
-     c9c:	88 f3       	brcs	.-30     	; 0xc80 <__stack+0x381>
+     cd0:	16 96       	adiw	r26, 0x06	; 6
+     cd2:	8c 91       	ld	r24, X
+     cd4:	16 97       	sbiw	r26, 0x06	; 6
+     cd6:	88 23       	and	r24, r24
+     cd8:	91 f0       	breq	.+36     	; 0xcfe <__stack+0x3ff>
+     cda:	20 e0       	ldi	r18, 0x00	; 0
+     cdc:	8a ef       	ldi	r24, 0xFA	; 250
+     cde:	90 e0       	ldi	r25, 0x00	; 0
+     ce0:	17 96       	adiw	r26, 0x07	; 7
+     ce2:	ed 91       	ld	r30, X+
+     ce4:	fc 91       	ld	r31, X
+     ce6:	18 97       	sbiw	r26, 0x08	; 8
+     ce8:	e2 0f       	add	r30, r18
+     cea:	f1 1d       	adc	r31, r1
+     cec:	30 81       	ld	r19, Z
+     cee:	fc 01       	movw	r30, r24
+     cf0:	30 83       	st	Z, r19
+     cf2:	2f 5f       	subi	r18, 0xFF	; 255
+     cf4:	16 96       	adiw	r26, 0x06	; 6
+     cf6:	3c 91       	ld	r19, X
+     cf8:	16 97       	sbiw	r26, 0x06	; 6
+     cfa:	23 17       	cp	r18, r19
+     cfc:	88 f3       	brcs	.-30     	; 0xce0 <__stack+0x3e1>
           u8_temp=~0; Can_set_ext_msk(u8_temp);
-     c9e:	8f ef       	ldi	r24, 0xFF	; 255
-     ca0:	89 83       	std	Y+1, r24	; 0x01
-     ca2:	9b 81       	ldd	r25, Y+3	; 0x03
-     ca4:	92 95       	swap	r25
-     ca6:	96 95       	lsr	r25
-     ca8:	97 70       	andi	r25, 0x07	; 7
-     caa:	8c 81       	ldd	r24, Y+4	; 0x04
-     cac:	88 0f       	add	r24, r24
-     cae:	88 0f       	add	r24, r24
-     cb0:	88 0f       	add	r24, r24
-     cb2:	89 0f       	add	r24, r25
-     cb4:	80 93 f7 00 	sts	0x00F7, r24
-     cb8:	9a 81       	ldd	r25, Y+2	; 0x02
-     cba:	92 95       	swap	r25
-     cbc:	96 95       	lsr	r25
-     cbe:	97 70       	andi	r25, 0x07	; 7
-     cc0:	8b 81       	ldd	r24, Y+3	; 0x03
-     cc2:	88 0f       	add	r24, r24
-     cc4:	88 0f       	add	r24, r24
-     cc6:	88 0f       	add	r24, r24
-     cc8:	89 0f       	add	r24, r25
-     cca:	80 93 f6 00 	sts	0x00F6, r24
-     cce:	99 81       	ldd	r25, Y+1	; 0x01
-     cd0:	92 95       	swap	r25
-     cd2:	96 95       	lsr	r25
-     cd4:	97 70       	andi	r25, 0x07	; 7
-     cd6:	8a 81       	ldd	r24, Y+2	; 0x02
-     cd8:	88 0f       	add	r24, r24
-     cda:	88 0f       	add	r24, r24
-     cdc:	88 0f       	add	r24, r24
-     cde:	89 0f       	add	r24, r25
-     ce0:	80 93 f5 00 	sts	0x00F5, r24
-     ce4:	29 81       	ldd	r18, Y+1	; 0x01
-     ce6:	22 0f       	add	r18, r18
-     ce8:	22 0f       	add	r18, r18
-     cea:	22 0f       	add	r18, r18
-     cec:	84 ef       	ldi	r24, 0xF4	; 244
-     cee:	90 e0       	ldi	r25, 0x00	; 0
-     cf0:	fc 01       	movw	r30, r24
-     cf2:	20 83       	st	Z, r18
+     cfe:	8f ef       	ldi	r24, 0xFF	; 255
+     d00:	89 83       	std	Y+1, r24	; 0x01
+     d02:	9b 81       	ldd	r25, Y+3	; 0x03
+     d04:	92 95       	swap	r25
+     d06:	96 95       	lsr	r25
+     d08:	97 70       	andi	r25, 0x07	; 7
+     d0a:	8c 81       	ldd	r24, Y+4	; 0x04
+     d0c:	88 0f       	add	r24, r24
+     d0e:	88 0f       	add	r24, r24
+     d10:	88 0f       	add	r24, r24
+     d12:	89 0f       	add	r24, r25
+     d14:	80 93 f7 00 	sts	0x00F7, r24
+     d18:	9a 81       	ldd	r25, Y+2	; 0x02
+     d1a:	92 95       	swap	r25
+     d1c:	96 95       	lsr	r25
+     d1e:	97 70       	andi	r25, 0x07	; 7
+     d20:	8b 81       	ldd	r24, Y+3	; 0x03
+     d22:	88 0f       	add	r24, r24
+     d24:	88 0f       	add	r24, r24
+     d26:	88 0f       	add	r24, r24
+     d28:	89 0f       	add	r24, r25
+     d2a:	80 93 f6 00 	sts	0x00F6, r24
+     d2e:	99 81       	ldd	r25, Y+1	; 0x01
+     d30:	92 95       	swap	r25
+     d32:	96 95       	lsr	r25
+     d34:	97 70       	andi	r25, 0x07	; 7
+     d36:	8a 81       	ldd	r24, Y+2	; 0x02
+     d38:	88 0f       	add	r24, r24
+     d3a:	88 0f       	add	r24, r24
+     d3c:	88 0f       	add	r24, r24
+     d3e:	89 0f       	add	r24, r25
+     d40:	80 93 f5 00 	sts	0x00F5, r24
+     d44:	29 81       	ldd	r18, Y+1	; 0x01
+     d46:	22 0f       	add	r18, r18
+     d48:	22 0f       	add	r18, r18
+     d4a:	22 0f       	add	r18, r18
+     d4c:	84 ef       	ldi	r24, 0xF4	; 244
+     d4e:	90 e0       	ldi	r25, 0x00	; 0
+     d50:	fc 01       	movw	r30, r24
+     d52:	20 83       	st	Z, r18
           Can_set_dlc(cmd->dlc);
-     cf4:	ef ee       	ldi	r30, 0xEF	; 239
-     cf6:	f0 e0       	ldi	r31, 0x00	; 0
-     cf8:	30 81       	ld	r19, Z
-     cfa:	16 96       	adiw	r26, 0x06	; 6
-     cfc:	2c 91       	ld	r18, X
-     cfe:	16 97       	sbiw	r26, 0x06	; 6
-     d00:	23 2b       	or	r18, r19
-     d02:	20 83       	st	Z, r18
+     d54:	ef ee       	ldi	r30, 0xEF	; 239
+     d56:	f0 e0       	ldi	r31, 0x00	; 0
+     d58:	30 81       	ld	r19, Z
+     d5a:	16 96       	adiw	r26, 0x06	; 6
+     d5c:	2c 91       	ld	r18, X
+     d5e:	16 97       	sbiw	r26, 0x06	; 6
+     d60:	23 2b       	or	r18, r19
+     d62:	20 83       	st	Z, r18
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-     d04:	21 e0       	ldi	r18, 0x01	; 1
-     d06:	1a 96       	adiw	r26, 0x0a	; 10
-     d08:	2c 93       	st	X, r18
-     d0a:	dc 01       	movw	r26, r24
-     d0c:	2c 91       	ld	r18, X
-     d0e:	24 60       	ori	r18, 0x04	; 4
-     d10:	2c 93       	st	X, r18
-     d12:	a0 ef       	ldi	r26, 0xF0	; 240
-     d14:	b0 e0       	ldi	r27, 0x00	; 0
-     d16:	2c 91       	ld	r18, X
-     d18:	24 60       	ori	r18, 0x04	; 4
-     d1a:	2c 93       	st	X, r18
+     d64:	21 e0       	ldi	r18, 0x01	; 1
+     d66:	1a 96       	adiw	r26, 0x0a	; 10
+     d68:	2c 93       	st	X, r18
+     d6a:	dc 01       	movw	r26, r24
+     d6c:	2c 91       	ld	r18, X
+     d6e:	24 60       	ori	r18, 0x04	; 4
+     d70:	2c 93       	st	X, r18
+     d72:	a0 ef       	ldi	r26, 0xF0	; 240
+     d74:	b0 e0       	ldi	r27, 0x00	; 0
+     d76:	2c 91       	ld	r18, X
+     d78:	24 60       	ori	r18, 0x04	; 4
+     d7a:	2c 93       	st	X, r18
           Can_set_rplv();
-     d1c:	20 81       	ld	r18, Z
-     d1e:	20 62       	ori	r18, 0x20	; 32
-     d20:	20 83       	st	Z, r18
+     d7c:	20 81       	ld	r18, Z
+     d7e:	20 62       	ori	r18, 0x20	; 32
+     d80:	20 83       	st	Z, r18
           Can_set_idemsk();
-     d22:	dc 01       	movw	r26, r24
-     d24:	2c 91       	ld	r18, X
-     d26:	21 60       	ori	r18, 0x01	; 1
-     d28:	2c 93       	st	X, r18
+     d82:	dc 01       	movw	r26, r24
+     d84:	2c 91       	ld	r18, X
+     d86:	21 60       	ori	r18, 0x01	; 1
+     d88:	2c 93       	st	X, r18
           Can_config_rx();       
-     d2a:	80 81       	ld	r24, Z
-     d2c:	8f 73       	andi	r24, 0x3F	; 63
-     d2e:	80 83       	st	Z, r24
-     d30:	80 81       	ld	r24, Z
-     d32:	80 68       	ori	r24, 0x80	; 128
-     d34:	80 83       	st	Z, r24
+     d8a:	80 81       	ld	r24, Z
+     d8c:	8f 73       	andi	r24, 0x3F	; 63
+     d8e:	80 83       	st	Z, r24
+     d90:	80 81       	ld	r24, Z
+     d92:	80 68       	ori	r24, 0x80	; 128
+     d94:	80 83       	st	Z, r24
     {
       cmd->status = MOB_NOT_REACHED;
       return CAN_CMD_REFUSED;
     }
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
-     d36:	80 e0       	ldi	r24, 0x00	; 0
+     d96:	80 e0       	ldi	r24, 0x00	; 0
           Can_set_dlc(cmd->dlc);
           cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
           Can_set_rplv();
           Can_set_idemsk();
           Can_config_rx();       
           break;
-     d38:	08 c0       	rjmp	.+16     	; 0xd4a <__stack+0x44b>
+     d98:	08 c0       	rjmp	.+16     	; 0xdaa <__stack+0x4ab>
         //------------      
         default:
           // case CMD_NONE or not implemented command
           cmd->status = STATUS_CLEARED; 
-     d3a:	19 96       	adiw	r26, 0x09	; 9
-     d3c:	1c 92       	st	X, r1
+     d9a:	19 96       	adiw	r26, 0x09	; 9
+     d9c:	1c 92       	st	X, r1
     {
       cmd->status = MOB_NOT_REACHED;
       return CAN_CMD_REFUSED;
     }
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
-     d3e:	80 e0       	ldi	r24, 0x00	; 0
+     d9e:	80 e0       	ldi	r24, 0x00	; 0
           break;
         //------------      
         default:
           // case CMD_NONE or not implemented command
           cmd->status = STATUS_CLEARED; 
           break;
-     d40:	04 c0       	rjmp	.+8      	; 0xd4a <__stack+0x44b>
+     da0:	04 c0       	rjmp	.+8      	; 0xdaa <__stack+0x4ab>
         //------------      
       } // switch (cmd ...
     } // if (mob_handle ...
     else
     {
       cmd->status = MOB_NOT_REACHED;
-     d42:	8f e1       	ldi	r24, 0x1F	; 31
-     d44:	19 96       	adiw	r26, 0x09	; 9
-     d46:	8c 93       	st	X, r24
+     da2:	8f e1       	ldi	r24, 0x1F	; 31
+     da4:	19 96       	adiw	r26, 0x09	; 9
+     da6:	8c 93       	st	X, r24
       return CAN_CMD_REFUSED;
-     d48:	8f ef       	ldi	r24, 0xFF	; 255
+     da8:	8f ef       	ldi	r24, 0xFF	; 255
     }
   } // else of no CMD_ABORT
   return CAN_CMD_ACCEPTED;
 }
-     d4a:	0f 90       	pop	r0
-     d4c:	df 91       	pop	r29
-     d4e:	cf 91       	pop	r28
-     d50:	08 95       	ret
+     daa:	0f 90       	pop	r0
+     dac:	df 91       	pop	r29
+     dae:	cf 91       	pop	r28
+     db0:	08 95       	ret
 
-00000d52 <can_get_status>:
+00000db2 <can_get_status>:
 //!         CAN_STATUS_ERROR         - Error in configuration or in the
 //!                                    CAN communication
 //!
 //------------------------------------------------------------------------------
 uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number)
 {
-     d52:	cf 93       	push	r28
-     d54:	df 93       	push	r29
-     d56:	ec 01       	movw	r28, r24
+     db2:	cf 93       	push	r28
+     db4:	df 93       	push	r29
+     db6:	ec 01       	movw	r28, r24
     uint8_t a_status, rtn_val;
 	can_id_t	received_id;
      
     a_status = cmd->status;
-     d58:	89 85       	ldd	r24, Y+9	; 0x09
+     db8:	89 85       	ldd	r24, Y+9	; 0x09
     if ((a_status==STATUS_CLEARED)||(a_status==MOB_NOT_REACHED)||(a_status==MOB_DISABLE))
-     d5a:	88 23       	and	r24, r24
-     d5c:	09 f4       	brne	.+2      	; 0xd60 <can_get_status+0xe>
-     d5e:	e1 c0       	rjmp	.+450    	; 0xf22 <can_get_status+0x1d0>
-     d60:	8f 31       	cpi	r24, 0x1F	; 31
-     d62:	09 f4       	brne	.+2      	; 0xd66 <can_get_status+0x14>
-     d64:	e0 c0       	rjmp	.+448    	; 0xf26 <can_get_status+0x1d4>
-     d66:	8f 3f       	cpi	r24, 0xFF	; 255
-     d68:	09 f4       	brne	.+2      	; 0xd6c <can_get_status+0x1a>
-     d6a:	df c0       	rjmp	.+446    	; 0xf2a <can_get_status+0x1d8>
+     dba:	88 23       	and	r24, r24
+     dbc:	09 f4       	brne	.+2      	; 0xdc0 <can_get_status+0xe>
+     dbe:	e1 c0       	rjmp	.+450    	; 0xf82 <can_get_status+0x1d0>
+     dc0:	8f 31       	cpi	r24, 0x1F	; 31
+     dc2:	09 f4       	brne	.+2      	; 0xdc6 <can_get_status+0x14>
+     dc4:	e0 c0       	rjmp	.+448    	; 0xf86 <can_get_status+0x1d4>
+     dc6:	8f 3f       	cpi	r24, 0xFF	; 255
+     dc8:	09 f4       	brne	.+2      	; 0xdcc <can_get_status+0x1a>
+     dca:	df c0       	rjmp	.+446    	; 0xf8a <can_get_status+0x1d8>
     {
         return CAN_STATUS_ERROR;
     }
 
     Can_set_mob(mob_number);
-     d6c:	62 95       	swap	r22
-     d6e:	60 7f       	andi	r22, 0xF0	; 240
-     d70:	60 93 ed 00 	sts	0x00ED, r22
+     dcc:	62 95       	swap	r22
+     dce:	60 7f       	andi	r22, 0xF0	; 240
+     dd0:	60 93 ed 00 	sts	0x00ED, r22
     a_status = can_get_mob_status();
-     d74:	0e 94 70 00 	call	0xe0	; 0xe0 <can_get_mob_status>
+     dd4:	0e 94 70 00 	call	0xe0	; 0xe0 <can_get_mob_status>
     
     switch (a_status)
-     d78:	80 32       	cpi	r24, 0x20	; 32
-     d7a:	61 f0       	breq	.+24     	; 0xd94 <can_get_status+0x42>
-     d7c:	20 f4       	brcc	.+8      	; 0xd86 <can_get_status+0x34>
-     d7e:	88 23       	and	r24, r24
-     d80:	09 f4       	brne	.+2      	; 0xd84 <can_get_status+0x32>
-     d82:	d5 c0       	rjmp	.+426    	; 0xf2e <can_get_status+0x1dc>
-     d84:	c4 c0       	rjmp	.+392    	; 0xf0e <can_get_status+0x1bc>
-     d86:	80 34       	cpi	r24, 0x40	; 64
-     d88:	09 f4       	brne	.+2      	; 0xd8c <can_get_status+0x3a>
-     d8a:	b6 c0       	rjmp	.+364    	; 0xef8 <can_get_status+0x1a6>
-     d8c:	80 3a       	cpi	r24, 0xA0	; 160
-     d8e:	09 f4       	brne	.+2      	; 0xd92 <can_get_status+0x40>
-     d90:	5a c0       	rjmp	.+180    	; 0xe46 <can_get_status+0xf4>
-     d92:	bd c0       	rjmp	.+378    	; 0xf0e <can_get_status+0x1bc>
+     dd8:	80 32       	cpi	r24, 0x20	; 32
+     dda:	61 f0       	breq	.+24     	; 0xdf4 <can_get_status+0x42>
+     ddc:	20 f4       	brcc	.+8      	; 0xde6 <can_get_status+0x34>
+     dde:	88 23       	and	r24, r24
+     de0:	09 f4       	brne	.+2      	; 0xde4 <can_get_status+0x32>
+     de2:	d5 c0       	rjmp	.+426    	; 0xf8e <can_get_status+0x1dc>
+     de4:	c4 c0       	rjmp	.+392    	; 0xf6e <can_get_status+0x1bc>
+     de6:	80 34       	cpi	r24, 0x40	; 64
+     de8:	09 f4       	brne	.+2      	; 0xdec <can_get_status+0x3a>
+     dea:	b6 c0       	rjmp	.+364    	; 0xf58 <can_get_status+0x1a6>
+     dec:	80 3a       	cpi	r24, 0xA0	; 160
+     dee:	09 f4       	brne	.+2      	; 0xdf2 <can_get_status+0x40>
+     df0:	5a c0       	rjmp	.+180    	; 0xea6 <can_get_status+0xf4>
+     df2:	bd c0       	rjmp	.+378    	; 0xf6e <can_get_status+0x1bc>
             // cmd->status not updated
             rtn_val = CAN_STATUS_NOT_COMPLETED;
             break;
 			 
         case MOB_RX_COMPLETED:
 			LED_Reg_Write(0x01);	//Toggle LED0 when the appropriate message is received.
-     d94:	81 e0       	ldi	r24, 0x01	; 1
-     d96:	90 e0       	ldi	r25, 0x00	; 0
-     d98:	0e 94 9b 07 	call	0xf36	; 0xf36 <LED_Reg_Write>
+     df4:	81 e0       	ldi	r24, 0x01	; 1
+     df6:	90 e0       	ldi	r25, 0x00	; 0
+     df8:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
 			delay_ms(500);
-     d9c:	84 ef       	ldi	r24, 0xF4	; 244
-     d9e:	91 e0       	ldi	r25, 0x01	; 1
-     da0:	0e 94 b0 08 	call	0x1160	; 0x1160 <delay_ms>
+     dfc:	84 ef       	ldi	r24, 0xF4	; 244
+     dfe:	91 e0       	ldi	r25, 0x01	; 1
+     e00:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
 			LED_Reg_Write(0x00);
-     da4:	80 e0       	ldi	r24, 0x00	; 0
-     da6:	90 e0       	ldi	r25, 0x00	; 0
-     da8:	0e 94 9b 07 	call	0xf36	; 0xf36 <LED_Reg_Write>
+     e04:	80 e0       	ldi	r24, 0x00	; 0
+     e06:	90 e0       	ldi	r25, 0x00	; 0
+     e08:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
 	    
             cmd->ctrl.rtr = Can_get_rtr();
-     dac:	80 91 f0 00 	lds	r24, 0x00F0
-     db0:	82 fb       	bst	r24, 2
-     db2:	88 27       	eor	r24, r24
-     db4:	80 f9       	bld	r24, 0
-     db6:	8a 87       	std	Y+10, r24	; 0x0a
+     e0c:	80 91 f0 00 	lds	r24, 0x00F0
+     e10:	82 fb       	bst	r24, 2
+     e12:	88 27       	eor	r24, r24
+     e14:	80 f9       	bld	r24, 0
+     e16:	8a 87       	std	Y+10, r24	; 0x0a
             if (Can_get_ide()) // if extended frame
-     db8:	80 91 ef 00 	lds	r24, 0x00EF
-     dbc:	84 ff       	sbrs	r24, 4
-     dbe:	2d c0       	rjmp	.+90     	; 0xe1a <can_get_status+0xc8>
+     e18:	80 91 ef 00 	lds	r24, 0x00EF
+     e1c:	84 ff       	sbrs	r24, 4
+     e1e:	2d c0       	rjmp	.+90     	; 0xe7a <can_get_status+0xc8>
             {
 	            cmd->ctrl.ide = 1; // extended frame
-     dc0:	81 e0       	ldi	r24, 0x01	; 1
-     dc2:	8b 87       	std	Y+11, r24	; 0x0b
+     e20:	81 e0       	ldi	r24, 0x01	; 1
+     e22:	8b 87       	std	Y+11, r24	; 0x0b
 	            Can_get_ext_id(cmd->id.ext);
-     dc4:	e3 ef       	ldi	r30, 0xF3	; 243
-     dc6:	f0 e0       	ldi	r31, 0x00	; 0
-     dc8:	80 81       	ld	r24, Z
-     dca:	86 95       	lsr	r24
-     dcc:	86 95       	lsr	r24
-     dce:	86 95       	lsr	r24
-     dd0:	8d 83       	std	Y+5, r24	; 0x05
-     dd2:	a2 ef       	ldi	r26, 0xF2	; 242
-     dd4:	b0 e0       	ldi	r27, 0x00	; 0
-     dd6:	8c 91       	ld	r24, X
-     dd8:	90 81       	ld	r25, Z
-     dda:	86 95       	lsr	r24
-     ddc:	86 95       	lsr	r24
-     dde:	86 95       	lsr	r24
-     de0:	20 e2       	ldi	r18, 0x20	; 32
-     de2:	92 9f       	mul	r25, r18
-     de4:	80 0d       	add	r24, r0
-     de6:	11 24       	eor	r1, r1
-     de8:	8c 83       	std	Y+4, r24	; 0x04
-     dea:	e1 ef       	ldi	r30, 0xF1	; 241
-     dec:	f0 e0       	ldi	r31, 0x00	; 0
-     dee:	80 81       	ld	r24, Z
-     df0:	9c 91       	ld	r25, X
-     df2:	86 95       	lsr	r24
-     df4:	86 95       	lsr	r24
-     df6:	86 95       	lsr	r24
-     df8:	20 e2       	ldi	r18, 0x20	; 32
-     dfa:	92 9f       	mul	r25, r18
-     dfc:	80 0d       	add	r24, r0
-     dfe:	11 24       	eor	r1, r1
-     e00:	8b 83       	std	Y+3, r24	; 0x03
-     e02:	80 91 f0 00 	lds	r24, 0x00F0
-     e06:	90 81       	ld	r25, Z
-     e08:	86 95       	lsr	r24
-     e0a:	86 95       	lsr	r24
-     e0c:	86 95       	lsr	r24
-     e0e:	20 e2       	ldi	r18, 0x20	; 32
-     e10:	92 9f       	mul	r25, r18
-     e12:	80 0d       	add	r24, r0
-     e14:	11 24       	eor	r1, r1
-     e16:	8a 83       	std	Y+2, r24	; 0x02
-     e18:	07 c0       	rjmp	.+14     	; 0xe28 <can_get_status+0xd6>
+     e24:	e3 ef       	ldi	r30, 0xF3	; 243
+     e26:	f0 e0       	ldi	r31, 0x00	; 0
+     e28:	80 81       	ld	r24, Z
+     e2a:	86 95       	lsr	r24
+     e2c:	86 95       	lsr	r24
+     e2e:	86 95       	lsr	r24
+     e30:	8d 83       	std	Y+5, r24	; 0x05
+     e32:	a2 ef       	ldi	r26, 0xF2	; 242
+     e34:	b0 e0       	ldi	r27, 0x00	; 0
+     e36:	8c 91       	ld	r24, X
+     e38:	90 81       	ld	r25, Z
+     e3a:	86 95       	lsr	r24
+     e3c:	86 95       	lsr	r24
+     e3e:	86 95       	lsr	r24
+     e40:	20 e2       	ldi	r18, 0x20	; 32
+     e42:	92 9f       	mul	r25, r18
+     e44:	80 0d       	add	r24, r0
+     e46:	11 24       	eor	r1, r1
+     e48:	8c 83       	std	Y+4, r24	; 0x04
+     e4a:	e1 ef       	ldi	r30, 0xF1	; 241
+     e4c:	f0 e0       	ldi	r31, 0x00	; 0
+     e4e:	80 81       	ld	r24, Z
+     e50:	9c 91       	ld	r25, X
+     e52:	86 95       	lsr	r24
+     e54:	86 95       	lsr	r24
+     e56:	86 95       	lsr	r24
+     e58:	20 e2       	ldi	r18, 0x20	; 32
+     e5a:	92 9f       	mul	r25, r18
+     e5c:	80 0d       	add	r24, r0
+     e5e:	11 24       	eor	r1, r1
+     e60:	8b 83       	std	Y+3, r24	; 0x03
+     e62:	80 91 f0 00 	lds	r24, 0x00F0
+     e66:	90 81       	ld	r25, Z
+     e68:	86 95       	lsr	r24
+     e6a:	86 95       	lsr	r24
+     e6c:	86 95       	lsr	r24
+     e6e:	20 e2       	ldi	r18, 0x20	; 32
+     e70:	92 9f       	mul	r25, r18
+     e72:	80 0d       	add	r24, r0
+     e74:	11 24       	eor	r1, r1
+     e76:	8a 83       	std	Y+2, r24	; 0x02
+     e78:	07 c0       	rjmp	.+14     	; 0xe88 <can_get_status+0xd6>
             }
             else // else standard frame
             {
 	            cmd->ctrl.ide = 0;
-     e1a:	1b 86       	std	Y+11, r1	; 0x0b
+     e7a:	1b 86       	std	Y+11, r1	; 0x0b
 //	            Can_get_std_id(cmd->id.std);
 				Can_get_std_id(received_id);
-     e1c:	e3 ef       	ldi	r30, 0xF3	; 243
-     e1e:	f0 e0       	ldi	r31, 0x00	; 0
-     e20:	80 81       	ld	r24, Z
-     e22:	80 91 f2 00 	lds	r24, 0x00F2
-     e26:	80 81       	ld	r24, Z
+     e7c:	e3 ef       	ldi	r30, 0xF3	; 243
+     e7e:	f0 e0       	ldi	r31, 0x00	; 0
+     e80:	80 81       	ld	r24, Z
+     e82:	80 91 f2 00 	lds	r24, 0x00F2
+     e86:	80 81       	ld	r24, Z
             }
 			
             // Status field of descriptor: 0x20 if Rx completed
 			
 			cmd->status = a_status;
-     e28:	80 e2       	ldi	r24, 0x20	; 32
-     e2a:	89 87       	std	Y+9, r24	; 0x09
+     e88:	80 e2       	ldi	r24, 0x20	; 32
+     e8a:	89 87       	std	Y+9, r24	; 0x09
 			can_get_data(cmd->pt_data);
-     e2c:	8f 81       	ldd	r24, Y+7	; 0x07
-     e2e:	98 85       	ldd	r25, Y+8	; 0x08
-     e30:	0e 94 86 00 	call	0x10c	; 0x10c <can_get_data>
+     e8c:	8f 81       	ldd	r24, Y+7	; 0x07
+     e8e:	98 85       	ldd	r25, Y+8	; 0x08
+     e90:	0e 94 86 00 	call	0x10c	; 0x10c <can_get_data>
 			rtn_val = MOB_RX_COMPLETED;
 			Can_mob_abort();        // Freed the MOb
-     e34:	ef ee       	ldi	r30, 0xEF	; 239
-     e36:	f0 e0       	ldi	r31, 0x00	; 0
-     e38:	80 81       	ld	r24, Z
-     e3a:	8f 73       	andi	r24, 0x3F	; 63
-     e3c:	80 83       	st	Z, r24
+     e94:	ef ee       	ldi	r30, 0xEF	; 239
+     e96:	f0 e0       	ldi	r31, 0x00	; 0
+     e98:	80 81       	ld	r24, Z
+     e9a:	8f 73       	andi	r24, 0x3F	; 63
+     e9c:	80 83       	st	Z, r24
 			Can_clear_status_mob(); //   Reset MOb status
-     e3e:	10 92 ee 00 	sts	0x00EE, r1
+     e9e:	10 92 ee 00 	sts	0x00EE, r1
 			
             // Status field of descriptor: 0x20 if Rx completed
 			
 			cmd->status = a_status;
 			can_get_data(cmd->pt_data);
 			rtn_val = MOB_RX_COMPLETED;
-     e42:	80 e2       	ldi	r24, 0x20	; 32
+     ea2:	80 e2       	ldi	r24, 0x20	; 32
 			Can_mob_abort();        // Freed the MOb
 			Can_clear_status_mob(); //   Reset MOb status
 			break;
-     e44:	75 c0       	rjmp	.+234    	; 0xf30 <can_get_status+0x1de>
+     ea4:	75 c0       	rjmp	.+234    	; 0xf90 <can_get_status+0x1de>
         case MOB_RX_COMPLETED_DLCW:
 			//LED_Reg_Write(0x01);	//Toggle LED0 when the appropriate message is received.
 			//delay_ms(500);
 			//LED_Reg_Write(0x00);	//Toggle LED0 when the appropriate message is received.
 
             cmd->ctrl.rtr = Can_get_rtr();
-     e46:	80 91 f0 00 	lds	r24, 0x00F0
-     e4a:	82 fb       	bst	r24, 2
-     e4c:	88 27       	eor	r24, r24
-     e4e:	80 f9       	bld	r24, 0
-     e50:	8a 87       	std	Y+10, r24	; 0x0a
+     ea6:	80 91 f0 00 	lds	r24, 0x00F0
+     eaa:	82 fb       	bst	r24, 2
+     eac:	88 27       	eor	r24, r24
+     eae:	80 f9       	bld	r24, 0
+     eb0:	8a 87       	std	Y+10, r24	; 0x0a
             if (Can_get_ide()) // if extended frame
-     e52:	80 91 ef 00 	lds	r24, 0x00EF
-     e56:	84 ff       	sbrs	r24, 4
-     e58:	2d c0       	rjmp	.+90     	; 0xeb4 <can_get_status+0x162>
+     eb2:	80 91 ef 00 	lds	r24, 0x00EF
+     eb6:	84 ff       	sbrs	r24, 4
+     eb8:	2d c0       	rjmp	.+90     	; 0xf14 <can_get_status+0x162>
             {
                 cmd->ctrl.ide = 1; // extended frame
-     e5a:	81 e0       	ldi	r24, 0x01	; 1
-     e5c:	8b 87       	std	Y+11, r24	; 0x0b
+     eba:	81 e0       	ldi	r24, 0x01	; 1
+     ebc:	8b 87       	std	Y+11, r24	; 0x0b
                 Can_get_ext_id(cmd->id.ext);
-     e5e:	e3 ef       	ldi	r30, 0xF3	; 243
-     e60:	f0 e0       	ldi	r31, 0x00	; 0
-     e62:	80 81       	ld	r24, Z
-     e64:	86 95       	lsr	r24
-     e66:	86 95       	lsr	r24
-     e68:	86 95       	lsr	r24
-     e6a:	8d 83       	std	Y+5, r24	; 0x05
-     e6c:	a2 ef       	ldi	r26, 0xF2	; 242
-     e6e:	b0 e0       	ldi	r27, 0x00	; 0
-     e70:	8c 91       	ld	r24, X
-     e72:	90 81       	ld	r25, Z
-     e74:	86 95       	lsr	r24
-     e76:	86 95       	lsr	r24
-     e78:	86 95       	lsr	r24
-     e7a:	20 e2       	ldi	r18, 0x20	; 32
-     e7c:	92 9f       	mul	r25, r18
-     e7e:	80 0d       	add	r24, r0
-     e80:	11 24       	eor	r1, r1
-     e82:	8c 83       	std	Y+4, r24	; 0x04
-     e84:	e1 ef       	ldi	r30, 0xF1	; 241
-     e86:	f0 e0       	ldi	r31, 0x00	; 0
-     e88:	80 81       	ld	r24, Z
-     e8a:	9c 91       	ld	r25, X
-     e8c:	86 95       	lsr	r24
-     e8e:	86 95       	lsr	r24
-     e90:	86 95       	lsr	r24
-     e92:	20 e2       	ldi	r18, 0x20	; 32
-     e94:	92 9f       	mul	r25, r18
-     e96:	80 0d       	add	r24, r0
-     e98:	11 24       	eor	r1, r1
-     e9a:	8b 83       	std	Y+3, r24	; 0x03
-     e9c:	80 91 f0 00 	lds	r24, 0x00F0
-     ea0:	90 81       	ld	r25, Z
-     ea2:	86 95       	lsr	r24
-     ea4:	86 95       	lsr	r24
-     ea6:	86 95       	lsr	r24
-     ea8:	20 e2       	ldi	r18, 0x20	; 32
-     eaa:	92 9f       	mul	r25, r18
-     eac:	80 0d       	add	r24, r0
-     eae:	11 24       	eor	r1, r1
-     eb0:	8a 83       	std	Y+2, r24	; 0x02
-     eb2:	13 c0       	rjmp	.+38     	; 0xeda <can_get_status+0x188>
+     ebe:	e3 ef       	ldi	r30, 0xF3	; 243
+     ec0:	f0 e0       	ldi	r31, 0x00	; 0
+     ec2:	80 81       	ld	r24, Z
+     ec4:	86 95       	lsr	r24
+     ec6:	86 95       	lsr	r24
+     ec8:	86 95       	lsr	r24
+     eca:	8d 83       	std	Y+5, r24	; 0x05
+     ecc:	a2 ef       	ldi	r26, 0xF2	; 242
+     ece:	b0 e0       	ldi	r27, 0x00	; 0
+     ed0:	8c 91       	ld	r24, X
+     ed2:	90 81       	ld	r25, Z
+     ed4:	86 95       	lsr	r24
+     ed6:	86 95       	lsr	r24
+     ed8:	86 95       	lsr	r24
+     eda:	20 e2       	ldi	r18, 0x20	; 32
+     edc:	92 9f       	mul	r25, r18
+     ede:	80 0d       	add	r24, r0
+     ee0:	11 24       	eor	r1, r1
+     ee2:	8c 83       	std	Y+4, r24	; 0x04
+     ee4:	e1 ef       	ldi	r30, 0xF1	; 241
+     ee6:	f0 e0       	ldi	r31, 0x00	; 0
+     ee8:	80 81       	ld	r24, Z
+     eea:	9c 91       	ld	r25, X
+     eec:	86 95       	lsr	r24
+     eee:	86 95       	lsr	r24
+     ef0:	86 95       	lsr	r24
+     ef2:	20 e2       	ldi	r18, 0x20	; 32
+     ef4:	92 9f       	mul	r25, r18
+     ef6:	80 0d       	add	r24, r0
+     ef8:	11 24       	eor	r1, r1
+     efa:	8b 83       	std	Y+3, r24	; 0x03
+     efc:	80 91 f0 00 	lds	r24, 0x00F0
+     f00:	90 81       	ld	r25, Z
+     f02:	86 95       	lsr	r24
+     f04:	86 95       	lsr	r24
+     f06:	86 95       	lsr	r24
+     f08:	20 e2       	ldi	r18, 0x20	; 32
+     f0a:	92 9f       	mul	r25, r18
+     f0c:	80 0d       	add	r24, r0
+     f0e:	11 24       	eor	r1, r1
+     f10:	8a 83       	std	Y+2, r24	; 0x02
+     f12:	13 c0       	rjmp	.+38     	; 0xf3a <can_get_status+0x188>
             }
             else // else standard frame
                 {
                     cmd->ctrl.ide = 0;
-     eb4:	1b 86       	std	Y+11, r1	; 0x0b
+     f14:	1b 86       	std	Y+11, r1	; 0x0b
                     Can_get_std_id(cmd->id.std);
-     eb6:	e3 ef       	ldi	r30, 0xF3	; 243
-     eb8:	f0 e0       	ldi	r31, 0x00	; 0
-     eba:	80 81       	ld	r24, Z
-     ebc:	82 95       	swap	r24
-     ebe:	86 95       	lsr	r24
-     ec0:	87 70       	andi	r24, 0x07	; 7
-     ec2:	8b 83       	std	Y+3, r24	; 0x03
-     ec4:	80 91 f2 00 	lds	r24, 0x00F2
-     ec8:	90 81       	ld	r25, Z
-     eca:	99 0f       	add	r25, r25
-     ecc:	99 0f       	add	r25, r25
-     ece:	99 0f       	add	r25, r25
-     ed0:	82 95       	swap	r24
-     ed2:	86 95       	lsr	r24
-     ed4:	87 70       	andi	r24, 0x07	; 7
-     ed6:	89 0f       	add	r24, r25
-     ed8:	8a 83       	std	Y+2, r24	; 0x02
+     f16:	e3 ef       	ldi	r30, 0xF3	; 243
+     f18:	f0 e0       	ldi	r31, 0x00	; 0
+     f1a:	80 81       	ld	r24, Z
+     f1c:	82 95       	swap	r24
+     f1e:	86 95       	lsr	r24
+     f20:	87 70       	andi	r24, 0x07	; 7
+     f22:	8b 83       	std	Y+3, r24	; 0x03
+     f24:	80 91 f2 00 	lds	r24, 0x00F2
+     f28:	90 81       	ld	r25, Z
+     f2a:	99 0f       	add	r25, r25
+     f2c:	99 0f       	add	r25, r25
+     f2e:	99 0f       	add	r25, r25
+     f30:	82 95       	swap	r24
+     f32:	86 95       	lsr	r24
+     f34:	87 70       	andi	r24, 0x07	; 7
+     f36:	89 0f       	add	r24, r25
+     f38:	8a 83       	std	Y+2, r24	; 0x02
                 }
             // Status field of descriptor: 0xA0 if Rx completed with DLCWarning    
             cmd->status = a_status;
-     eda:	80 ea       	ldi	r24, 0xA0	; 160
-     edc:	89 87       	std	Y+9, r24	; 0x09
+     f3a:	80 ea       	ldi	r24, 0xA0	; 160
+     f3c:	89 87       	std	Y+9, r24	; 0x09
 			can_get_data(cmd->pt_data);
-     ede:	8f 81       	ldd	r24, Y+7	; 0x07
-     ee0:	98 85       	ldd	r25, Y+8	; 0x08
-     ee2:	0e 94 86 00 	call	0x10c	; 0x10c <can_get_data>
+     f3e:	8f 81       	ldd	r24, Y+7	; 0x07
+     f40:	98 85       	ldd	r25, Y+8	; 0x08
+     f42:	0e 94 86 00 	call	0x10c	; 0x10c <can_get_data>
 			
 			Can_mob_abort();        // Freed the MO
-     ee6:	ef ee       	ldi	r30, 0xEF	; 239
-     ee8:	f0 e0       	ldi	r31, 0x00	; 0
-     eea:	80 81       	ld	r24, Z
-     eec:	8f 73       	andi	r24, 0x3F	; 63
-     eee:	80 83       	st	Z, r24
+     f46:	ef ee       	ldi	r30, 0xEF	; 239
+     f48:	f0 e0       	ldi	r31, 0x00	; 0
+     f4a:	80 81       	ld	r24, Z
+     f4c:	8f 73       	andi	r24, 0x3F	; 63
+     f4e:	80 83       	st	Z, r24
             Can_clear_status_mob(); //   Reset MOb status
-     ef0:	10 92 ee 00 	sts	0x00EE, r1
+     f50:	10 92 ee 00 	sts	0x00EE, r1
             rtn_val = MOB_RX_COMPLETED_DLCW;
-     ef4:	80 ea       	ldi	r24, 0xA0	; 160
+     f54:	80 ea       	ldi	r24, 0xA0	; 160
             break;
-     ef6:	1c c0       	rjmp	.+56     	; 0xf30 <can_get_status+0x1de>
+     f56:	1c c0       	rjmp	.+56     	; 0xf90 <can_get_status+0x1de>
  
         case MOB_TX_COMPLETED:     
             // Status field of descriptor: 0x40 if Tx completed
             cmd->status = a_status;
-     ef8:	80 e4       	ldi	r24, 0x40	; 64
-     efa:	89 87       	std	Y+9, r24	; 0x09
+     f58:	80 e4       	ldi	r24, 0x40	; 64
+     f5a:	89 87       	std	Y+9, r24	; 0x09
 			Can_mob_abort();        // Freed the MO
-     efc:	ef ee       	ldi	r30, 0xEF	; 239
-     efe:	f0 e0       	ldi	r31, 0x00	; 0
-     f00:	80 81       	ld	r24, Z
-     f02:	8f 73       	andi	r24, 0x3F	; 63
-     f04:	80 83       	st	Z, r24
+     f5c:	ef ee       	ldi	r30, 0xEF	; 239
+     f5e:	f0 e0       	ldi	r31, 0x00	; 0
+     f60:	80 81       	ld	r24, Z
+     f62:	8f 73       	andi	r24, 0x3F	; 63
+     f64:	80 83       	st	Z, r24
             Can_clear_status_mob(); //   and reset MOb status
-     f06:	10 92 ee 00 	sts	0x00EE, r1
+     f66:	10 92 ee 00 	sts	0x00EE, r1
             rtn_val = MOB_TX_COMPLETED;
-     f0a:	80 e4       	ldi	r24, 0x40	; 64
+     f6a:	80 e4       	ldi	r24, 0x40	; 64
             break;
-     f0c:	11 c0       	rjmp	.+34     	; 0xf30 <can_get_status+0x1de>
+     f6c:	11 c0       	rjmp	.+34     	; 0xf90 <can_get_status+0x1de>
  
         default:
             // Status field of descriptor: (bin)000b.scfa if MOb error
             cmd->status = a_status;
-     f0e:	89 87       	std	Y+9, r24	; 0x09
+     f6e:	89 87       	std	Y+9, r24	; 0x09
 			Can_mob_abort();        // Freed the MOb
-     f10:	ef ee       	ldi	r30, 0xEF	; 239
-     f12:	f0 e0       	ldi	r31, 0x00	; 0
-     f14:	80 81       	ld	r24, Z
-     f16:	8f 73       	andi	r24, 0x3F	; 63
-     f18:	80 83       	st	Z, r24
+     f70:	ef ee       	ldi	r30, 0xEF	; 239
+     f72:	f0 e0       	ldi	r31, 0x00	; 0
+     f74:	80 81       	ld	r24, Z
+     f76:	8f 73       	andi	r24, 0x3F	; 63
+     f78:	80 83       	st	Z, r24
             Can_clear_status_mob(); //   and reset MOb status
-     f1a:	10 92 ee 00 	sts	0x00EE, r1
+     f7a:	10 92 ee 00 	sts	0x00EE, r1
             rtn_val = CAN_STATUS_ERROR;
-     f1e:	82 e0       	ldi	r24, 0x02	; 2
+     f7e:	82 e0       	ldi	r24, 0x02	; 2
             break;
-     f20:	07 c0       	rjmp	.+14     	; 0xf30 <can_get_status+0x1de>
+     f80:	07 c0       	rjmp	.+14     	; 0xf90 <can_get_status+0x1de>
 	can_id_t	received_id;
      
     a_status = cmd->status;
     if ((a_status==STATUS_CLEARED)||(a_status==MOB_NOT_REACHED)||(a_status==MOB_DISABLE))
     {
         return CAN_STATUS_ERROR;
-     f22:	82 e0       	ldi	r24, 0x02	; 2
-     f24:	05 c0       	rjmp	.+10     	; 0xf30 <can_get_status+0x1de>
-     f26:	82 e0       	ldi	r24, 0x02	; 2
-     f28:	03 c0       	rjmp	.+6      	; 0xf30 <can_get_status+0x1de>
-     f2a:	82 e0       	ldi	r24, 0x02	; 2
-     f2c:	01 c0       	rjmp	.+2      	; 0xf30 <can_get_status+0x1de>
+     f82:	82 e0       	ldi	r24, 0x02	; 2
+     f84:	05 c0       	rjmp	.+10     	; 0xf90 <can_get_status+0x1de>
+     f86:	82 e0       	ldi	r24, 0x02	; 2
+     f88:	03 c0       	rjmp	.+6      	; 0xf90 <can_get_status+0x1de>
+     f8a:	82 e0       	ldi	r24, 0x02	; 2
+     f8c:	01 c0       	rjmp	.+2      	; 0xf90 <can_get_status+0x1de>
     
     switch (a_status)
     {
         case MOB_NOT_COMPLETED:
             // cmd->status not updated
             rtn_val = CAN_STATUS_NOT_COMPLETED;
-     f2e:	81 e0       	ldi	r24, 0x01	; 1
+     f8e:	81 e0       	ldi	r24, 0x01	; 1
             break;
              
     } // switch (a_status...
  
     return (rtn_val);
 }
-     f30:	df 91       	pop	r29
-     f32:	cf 91       	pop	r28
-     f34:	08 95       	ret
+     f90:	df 91       	pop	r29
+     f92:	cf 91       	pop	r28
+     f94:	08 95       	ret
 
-00000f36 <LED_Reg_Write>:
+00000f96 <LED_Reg_Write>:
 */
 #include <avr/io.h>
 #include "LED.h"
 
 void LED_Reg_Write(uint8_t val) {
 	LEDPORT = ~val;
-     f36:	80 95       	com	r24
-     f38:	85 b9       	out	0x05, r24	; 5
-     f3a:	08 95       	ret
+     f96:	80 95       	com	r24
+     f98:	85 b9       	out	0x05, r24	; 5
+     f9a:	08 95       	ret
 
-00000f3c <main>:
+00000f9c <main>:
 uint8_t data3[DATA_BUFFER_SIZE];	// Data Buffer for MOb3
 uint8_t data4[DATA_BUFFER_SIZE];	// Data Buffer for MOb4
 uint8_t data5[DATA_BUFFER_SIZE];	// Data Buffer for MOb5
 
 int main(void)
 {		
-     f3c:	cf 93       	push	r28
-     f3e:	df 93       	push	r29
-     f40:	cd b7       	in	r28, 0x3d	; 61
-     f42:	de b7       	in	r29, 0x3e	; 62
-     f44:	28 97       	sbiw	r28, 0x08	; 8
-     f46:	0f b6       	in	r0, 0x3f	; 63
-     f48:	f8 94       	cli
-     f4a:	de bf       	out	0x3e, r29	; 62
-     f4c:	0f be       	out	0x3f, r0	; 63
-     f4e:	cd bf       	out	0x3d, r28	; 61
+     f9c:	cf 93       	push	r28
+     f9e:	df 93       	push	r29
+     fa0:	cd b7       	in	r28, 0x3d	; 61
+     fa2:	de b7       	in	r29, 0x3e	; 62
+     fa4:	63 97       	sbiw	r28, 0x13	; 19
+     fa6:	0f b6       	in	r0, 0x3f	; 63
+     fa8:	f8 94       	cli
+     faa:	de bf       	out	0x3e, r29	; 62
+     fac:	0f be       	out	0x3f, r0	; 63
+     fae:	cd bf       	out	0x3d, r28	; 61
 	}
 }
 
 void sys_init(void) {
 	// Make sure sys clock is at least 8MHz
 	CLKPR = 0x80;  
-     f50:	e1 e6       	ldi	r30, 0x61	; 97
-     f52:	f0 e0       	ldi	r31, 0x00	; 0
-     f54:	80 e8       	ldi	r24, 0x80	; 128
-     f56:	80 83       	st	Z, r24
+     fb0:	e1 e6       	ldi	r30, 0x61	; 97
+     fb2:	f0 e0       	ldi	r31, 0x00	; 0
+     fb4:	80 e8       	ldi	r24, 0x80	; 128
+     fb6:	80 83       	st	Z, r24
 	CLKPR = 0x00;
-     f58:	10 82       	st	Z, r1
+     fb8:	10 82       	st	Z, r1
 }
 
 void io_init(void) {
 	
 	// Init PORTB[7:0] // LED port
 	DDRB = 0xFF;
-     f5a:	8f ef       	ldi	r24, 0xFF	; 255
-     f5c:	84 b9       	out	0x04, r24	; 4
+     fba:	8f ef       	ldi	r24, 0xFF	; 255
+     fbc:	84 b9       	out	0x04, r24	; 4
 	LED_Reg_Write(0x00); // clear all LEDs
-     f5e:	80 e0       	ldi	r24, 0x00	; 0
-     f60:	0e 94 9b 07 	call	0xf36	; 0xf36 <LED_Reg_Write>
+     fbe:	80 e0       	ldi	r24, 0x00	; 0
+     fc0:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
 	DDRC = 0x00;
-     f64:	17 b8       	out	0x07, r1	; 7
+     fc4:	17 b8       	out	0x07, r1	; 7
 	PORTC = 0x00;
-     f66:	18 b8       	out	0x08, r1	; 8
+     fc6:	18 b8       	out	0x08, r1	; 8
 	
 	// Init PORTD[7:0]
 	DDRD = 0x00;
-     f68:	1a b8       	out	0x0a, r1	; 10
+     fc8:	1a b8       	out	0x0a, r1	; 10
 	PORTD = 0x00;
-     f6a:	1b b8       	out	0x0b, r1	; 11
+     fca:	1b b8       	out	0x0b, r1	; 11
 	
 	// Init PORTE[2:0]
 	DDRE = 0x00;
-     f6c:	1d b8       	out	0x0d, r1	; 13
+     fcc:	1d b8       	out	0x0d, r1	; 13
 	PORTD = 0x00;
-     f6e:	1b b8       	out	0x0b, r1	; 11
+     fce:	1b b8       	out	0x0b, r1	; 11
 	// Make sure sys clock is at least 8MHz
 	CLKPR = 0x80;  
 	CLKPR = 0x00;
 	
 	io_init();	
 	timer_init();
-     f70:	0e 94 96 08 	call	0x112c	; 0x112c <timer_init>
+     fd0:	0e 94 81 09 	call	0x1302	; 0x1302 <timer_init>
 	can_init(0);
-     f74:	80 e0       	ldi	r24, 0x00	; 0
-     f76:	0e 94 9e 00 	call	0x13c	; 0x13c <can_init>
+     fd4:	80 e0       	ldi	r24, 0x00	; 0
+     fd6:	0e 94 9e 00 	call	0x13c	; 0x13c <can_init>
 	
-	uint8_t	status, i, mob_number, send_now;
+	uint8_t	status, i, mob_number, send_now, send_hk;
 	uint8_t message_arr[8];
 	
 	// Enable global interrupts for Timer execution
 	sei();
-     f7a:	78 94       	sei
+     fda:	78 94       	sei
 	
 	// Flash LEDs to indicate program startup
 	LED_Reg_Write(0x01);
-     f7c:	81 e0       	ldi	r24, 0x01	; 1
-     f7e:	0e 94 9b 07 	call	0xf36	; 0xf36 <LED_Reg_Write>
+     fdc:	81 e0       	ldi	r24, 0x01	; 1
+     fde:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
 	delay_ms(250);
-     f82:	8a ef       	ldi	r24, 0xFA	; 250
-     f84:	90 e0       	ldi	r25, 0x00	; 0
-     f86:	0e 94 b0 08 	call	0x1160	; 0x1160 <delay_ms>
+     fe2:	8a ef       	ldi	r24, 0xFA	; 250
+     fe4:	90 e0       	ldi	r25, 0x00	; 0
+     fe6:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
 	LED_Reg_Write(0x00);
-     f8a:	80 e0       	ldi	r24, 0x00	; 0
-     f8c:	0e 94 9b 07 	call	0xf36	; 0xf36 <LED_Reg_Write>
+     fea:	80 e0       	ldi	r24, 0x00	; 0
+     fec:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
+     ff0:	ce 01       	movw	r24, r28
+     ff2:	01 96       	adiw	r24, 0x01	; 1
+     ff4:	9a 87       	std	Y+10, r25	; 0x0a
+     ff6:	89 87       	std	Y+9, r24	; 0x09
+     ff8:	8e 01       	movw	r16, r28
+     ffa:	07 5f       	subi	r16, 0xF7	; 247
+     ffc:	1f 4f       	sbci	r17, 0xFF	; 255
+     ffe:	fc 01       	movw	r30, r24
 	
-    while(1)
-    {
-		for (i = 0; i < 8; i ++)
-     f90:	80 e0       	ldi	r24, 0x00	; 0
-		{
-			message_arr[i] = 0;			// Reset the message array to zero after each message.
-		}
-			
-		message.pt_data = &data0[0]; // point message object to first element of data buffer
-     f92:	07 e0       	ldi	r16, 0x07	; 7
-     f94:	11 e0       	ldi	r17, 0x01	; 1
-     f96:	0f 2e       	mov	r0, r31
-     f98:	f4 e2       	ldi	r31, 0x24	; 36
-     f9a:	8f 2e       	mov	r8, r31
-     f9c:	f1 e0       	ldi	r31, 0x01	; 1
-     f9e:	9f 2e       	mov	r9, r31
-     fa0:	f0 2d       	mov	r31, r0
-		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     fa2:	0f 2e       	mov	r0, r31
-     fa4:	fb e0       	ldi	r31, 0x0B	; 11
-     fa6:	cf 2e       	mov	r12, r31
-     fa8:	f1 e0       	ldi	r31, 0x01	; 1
-     faa:	df 2e       	mov	r13, r31
-     fac:	f0 2d       	mov	r31, r0
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-     fae:	0f 2e       	mov	r0, r31
-     fb0:	f2 e0       	ldi	r31, 0x02	; 2
-     fb2:	ef 2e       	mov	r14, r31
-     fb4:	f1 e0       	ldi	r31, 0x01	; 1
-     fb6:	ff 2e       	mov	r15, r31
-     fb8:	f0 2d       	mov	r31, r0
-     fba:	0f 2e       	mov	r0, r31
-     fbc:	f4 e1       	ldi	r31, 0x14	; 20
-     fbe:	af 2e       	mov	r10, r31
-     fc0:	b1 2c       	mov	r11, r1
-     fc2:	f0 2d       	mov	r31, r0
-		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-     fc4:	0f 2e       	mov	r0, r31
-     fc6:	f1 e0       	ldi	r31, 0x01	; 1
-     fc8:	6f 2e       	mov	r6, r31
-     fca:	f1 e0       	ldi	r31, 0x01	; 1
-     fcc:	7f 2e       	mov	r7, r31
-     fce:	f0 2d       	mov	r31, r0
-		message.dlc = 8;			 // Max length of a CAN message.
-     fd0:	0f 2e       	mov	r0, r31
-     fd2:	f6 e0       	ldi	r31, 0x06	; 6
-     fd4:	4f 2e       	mov	r4, r31
-     fd6:	f1 e0       	ldi	r31, 0x01	; 1
-     fd8:	5f 2e       	mov	r5, r31
-     fda:	f0 2d       	mov	r31, r0
-		
-		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
-		
-		while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to come in.
-		
-		status = message.status;
-     fdc:	0f 2e       	mov	r0, r31
-     fde:	f9 e0       	ldi	r31, 0x09	; 9
-     fe0:	2f 2e       	mov	r2, r31
-     fe2:	f1 e0       	ldi	r31, 0x01	; 1
-     fe4:	3f 2e       	mov	r3, r31
-     fe6:	f0 2d       	mov	r31, r0
-     fe8:	0a c0       	rjmp	.+20     	; 0xffe <main+0xc2>
-	
-    while(1)
-    {
-		for (i = 0; i < 8; i ++)
-		{
-			message_arr[i] = 0;			// Reset the message array to zero after each message.
-     fea:	e1 e0       	ldi	r30, 0x01	; 1
-     fec:	f0 e0       	ldi	r31, 0x00	; 0
-     fee:	ec 0f       	add	r30, r28
-     ff0:	fd 1f       	adc	r31, r29
-     ff2:	e8 0f       	add	r30, r24
-     ff4:	f1 1d       	adc	r31, r1
-     ff6:	10 82       	st	Z, r1
+	for (i = 0; i < 8; i ++)
+	{
+		message_arr[i] = 0;			// Reset the message array to zero after each message.
+    1000:	11 92       	st	Z+, r1
+	// Flash LEDs to indicate program startup
+	LED_Reg_Write(0x01);
 	delay_ms(250);
 	LED_Reg_Write(0x00);
 	
-    while(1)
-    {
-		for (i = 0; i < 8; i ++)
-     ff8:	8f 5f       	subi	r24, 0xFF	; 255
-     ffa:	01 c0       	rjmp	.+2      	; 0xffe <main+0xc2>
-     ffc:	80 e0       	ldi	r24, 0x00	; 0
-     ffe:	88 30       	cpi	r24, 0x08	; 8
-    1000:	a0 f3       	brcs	.-24     	; 0xfea <main+0xae>
-		{
-			message_arr[i] = 0;			// Reset the message array to zero after each message.
-		}
-			
-		message.pt_data = &data0[0]; // point message object to first element of data buffer
-    1002:	d8 01       	movw	r26, r16
-    1004:	11 96       	adiw	r26, 0x01	; 1
-    1006:	9c 92       	st	X, r9
-    1008:	8e 92       	st	-X, r8
-		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    100a:	f6 01       	movw	r30, r12
-    100c:	10 82       	st	Z, r1
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-    100e:	d7 01       	movw	r26, r14
-    1010:	11 96       	adiw	r26, 0x01	; 1
-    1012:	bc 92       	st	X, r11
-    1014:	ae 92       	st	-X, r10
-		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-    1016:	85 e0       	ldi	r24, 0x05	; 5
-    1018:	f3 01       	movw	r30, r6
-    101a:	80 83       	st	Z, r24
-		message.dlc = 8;			 // Max length of a CAN message.
-    101c:	88 e0       	ldi	r24, 0x08	; 8
-    101e:	d2 01       	movw	r26, r4
-    1020:	8c 93       	st	X, r24
-		mob_number = 0;
+	for (i = 0; i < 8; i ++)
+    1002:	e0 17       	cp	r30, r16
+    1004:	f1 07       	cpc	r31, r17
+    1006:	e1 f7       	brne	.-8      	; 0x1000 <main+0x64>
+	send_now = 0;
+	send_hk = 0;
+	
+	/* INITIALIZE MOB0 */
+
+	message.pt_data = &data0[0]; // point message object to first element of data buffer
+    1008:	84 e2       	ldi	r24, 0x24	; 36
+    100a:	91 e0       	ldi	r25, 0x01	; 1
+    100c:	90 93 08 01 	sts	0x0108, r25
+    1010:	80 93 07 01 	sts	0x0107, r24
+	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+    1014:	10 92 0b 01 	sts	0x010B, r1
+	message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+    1018:	84 e1       	ldi	r24, 0x14	; 20
+    101a:	90 e0       	ldi	r25, 0x00	; 0
+    101c:	90 93 03 01 	sts	0x0103, r25
+    1020:	80 93 02 01 	sts	0x0102, r24
+	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    1024:	85 e0       	ldi	r24, 0x05	; 5
+    1026:	80 93 01 01 	sts	0x0101, r24
+	message.dlc = 8;			 // Max length of a CAN message.
+    102a:	88 e0       	ldi	r24, 0x08	; 8
+    102c:	80 93 06 01 	sts	0x0106, r24
+	mob_number = 0;
 		
-		send_now = 0;
-		
-		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
-    1022:	60 e0       	ldi	r22, 0x00	; 0
-    1024:	80 e0       	ldi	r24, 0x00	; 0
-    1026:	91 e0       	ldi	r25, 0x01	; 1
-    1028:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
-    102c:	81 11       	cpse	r24, r1
-    102e:	f9 cf       	rjmp	.-14     	; 0x1022 <main+0xe6>
-		
-		while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to come in.
+	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
     1030:	60 e0       	ldi	r22, 0x00	; 0
     1032:	80 e0       	ldi	r24, 0x00	; 0
     1034:	91 e0       	ldi	r25, 0x01	; 1
-    1036:	0e 94 a9 06 	call	0xd52	; 0xd52 <can_get_status>
-    103a:	81 30       	cpi	r24, 0x01	; 1
-    103c:	c9 f3       	breq	.-14     	; 0x1030 <main+0xf4>
-		
-		status = message.status;
-    103e:	f1 01       	movw	r30, r2
-    1040:	80 81       	ld	r24, Z
-		
-		if ((status == MOB_RX_COMPLETED) || (status == MOB_RX_COMPLETED_DLCW))
-    1042:	8f 77       	andi	r24, 0x7F	; 127
-    1044:	80 32       	cpi	r24, 0x20	; 32
-    1046:	09 f0       	breq	.+2      	; 0x104a <main+0x10e>
-    1048:	60 c0       	rjmp	.+192    	; 0x110a <main+0x1ce>
-    104a:	fe 01       	movw	r30, r28
-    104c:	31 96       	adiw	r30, 0x01	; 1
-    104e:	80 e0       	ldi	r24, 0x00	; 0
+    1036:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    103a:	81 11       	cpse	r24, r1
+    103c:	f9 cf       	rjmp	.-14     	; 0x1030 <main+0x94>
+	
+	/* INITIALIZE MOB5 */
+	
+	message.pt_data = &data5[0];	// point message object to first element of data buffer
+    103e:	85 e3       	ldi	r24, 0x35	; 53
+    1040:	91 e0       	ldi	r25, 0x01	; 1
+    1042:	90 93 08 01 	sts	0x0108, r25
+    1046:	80 93 07 01 	sts	0x0107, r24
+	message.ctrl.ide = 0;			// standard CAN frame type (2.0A)
+    104a:	10 92 0b 01 	sts	0x010B, r1
+	message.id.std = SUB0_ID5;		// populate ID field with ID Tag
+    104e:	89 e1       	ldi	r24, 0x19	; 25
     1050:	90 e0       	ldi	r25, 0x00	; 0
-		{
-			for (i = 0; i < 8; i ++)
-			{
-				message_arr[i] = *(message.pt_data + i);
-    1052:	d8 01       	movw	r26, r16
-    1054:	2d 91       	ld	r18, X+
-    1056:	3c 91       	ld	r19, X
-    1058:	d9 01       	movw	r26, r18
-    105a:	a8 0f       	add	r26, r24
-    105c:	b9 1f       	adc	r27, r25
-    105e:	2c 91       	ld	r18, X
-    1060:	21 93       	st	Z+, r18
-    1062:	01 96       	adiw	r24, 0x01	; 1
+    1052:	90 93 03 01 	sts	0x0103, r25
+    1056:	80 93 02 01 	sts	0x0102, r24
+	message.cmd = CMD_RX_DATA;		// assign this as a producer message object (Housekeeping MOB).
+    105a:	85 e0       	ldi	r24, 0x05	; 5
+    105c:	80 93 01 01 	sts	0x0101, r24
+	message.dlc = 8;				// Max length of a CAN message.
+    1060:	88 e0       	ldi	r24, 0x08	; 8
+    1062:	80 93 06 01 	sts	0x0106, r24
+	mob_number = 5;
 		
-		status = message.status;
+	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOB to configure
+    1066:	65 e0       	ldi	r22, 0x05	; 5
+    1068:	80 e0       	ldi	r24, 0x00	; 0
+    106a:	91 e0       	ldi	r25, 0x01	; 1
+    106c:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    1070:	81 11       	cpse	r24, r1
+    1072:	f9 cf       	rjmp	.-14     	; 0x1066 <main+0xca>
+
+	
+    while(1)
+    {
 		
-		if ((status == MOB_RX_COMPLETED) || (status == MOB_RX_COMPLETED_DLCW))
+		message.pt_data = &data0[0]; // point message object to first element of data buffer
+    1074:	0f 2e       	mov	r0, r31
+    1076:	f7 e0       	ldi	r31, 0x07	; 7
+    1078:	cf 2e       	mov	r12, r31
+    107a:	f1 e0       	ldi	r31, 0x01	; 1
+    107c:	df 2e       	mov	r13, r31
+    107e:	f0 2d       	mov	r31, r0
+		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+    1080:	0f 2e       	mov	r0, r31
+    1082:	fb e0       	ldi	r31, 0x0B	; 11
+    1084:	4f 2e       	mov	r4, r31
+    1086:	f1 e0       	ldi	r31, 0x01	; 1
+    1088:	5f 2e       	mov	r5, r31
+    108a:	f0 2d       	mov	r31, r0
+		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+    108c:	0f 2e       	mov	r0, r31
+    108e:	f2 e0       	ldi	r31, 0x02	; 2
+    1090:	ef 2e       	mov	r14, r31
+    1092:	f1 e0       	ldi	r31, 0x01	; 1
+    1094:	ff 2e       	mov	r15, r31
+    1096:	f0 2d       	mov	r31, r0
+		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    1098:	0f 2e       	mov	r0, r31
+    109a:	f1 e0       	ldi	r31, 0x01	; 1
+    109c:	6f 2e       	mov	r6, r31
+    109e:	f1 e0       	ldi	r31, 0x01	; 1
+    10a0:	7f 2e       	mov	r7, r31
+    10a2:	f0 2d       	mov	r31, r0
+		message.dlc = 8;			 // Max length of a CAN message.
+    10a4:	0f 2e       	mov	r0, r31
+    10a6:	f6 e0       	ldi	r31, 0x06	; 6
+    10a8:	2f 2e       	mov	r2, r31
+    10aa:	f1 e0       	ldi	r31, 0x01	; 1
+    10ac:	3f 2e       	mov	r3, r31
+    10ae:	f0 2d       	mov	r31, r0
+
+	
+    while(1)
+    {
+		
+		message.pt_data = &data0[0]; // point message object to first element of data buffer
+    10b0:	a4 e2       	ldi	r26, 0x24	; 36
+    10b2:	b1 e0       	ldi	r27, 0x01	; 1
+    10b4:	ad 87       	std	Y+13, r26	; 0x0d
+    10b6:	be 87       	std	Y+14, r27	; 0x0e
+		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+    10b8:	f4 e1       	ldi	r31, 0x14	; 20
+    10ba:	ff 87       	std	Y+15, r31	; 0x0f
+    10bc:	18 8a       	std	Y+16, r1	; 0x10
+	sei();
+	
+	// Flash LEDs to indicate program startup
+	LED_Reg_Write(0x01);
+	delay_ms(250);
+	LED_Reg_Write(0x00);
+    10be:	a1 2c       	mov	r10, r1
+    {
+		
+		message.pt_data = &data0[0]; // point message object to first element of data buffer
+		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    10c0:	0f 2e       	mov	r0, r31
+    10c2:	f5 e0       	ldi	r31, 0x05	; 5
+    10c4:	bf 2e       	mov	r11, r31
+    10c6:	f0 2d       	mov	r31, r0
+    10c8:	bb 8a       	std	Y+19, r11	; 0x13
+		message.dlc = 8;			 // Max length of a CAN message.
+    10ca:	88 e0       	ldi	r24, 0x08	; 8
+    10cc:	8c 87       	std	Y+12, r24	; 0x0c
 		{
-			for (i = 0; i < 8; i ++)
-    1064:	88 30       	cpi	r24, 0x08	; 8
-    1066:	91 05       	cpc	r25, r1
-    1068:	a1 f7       	brne	.-24     	; 0x1052 <main+0x116>
+			if(message.status == MOB_RX_COMPLETED)
 			{
-				message_arr[i] = *(message.pt_data + i);
-			}
-			
-			if ((message_arr[0] == 0xFF) && (message_arr[1] == 0xFF) && (message_arr[2] == 0xFF) && (message_arr[3] == 0xFF) 
-    106a:	89 81       	ldd	r24, Y+1	; 0x01
-    106c:	8f 3f       	cpi	r24, 0xFF	; 255
-    106e:	09 f0       	breq	.+2      	; 0x1072 <main+0x136>
-    1070:	4c c0       	rjmp	.+152    	; 0x110a <main+0x1ce>
-    1072:	8a 81       	ldd	r24, Y+2	; 0x02
-    1074:	8f 3f       	cpi	r24, 0xFF	; 255
-    1076:	09 f0       	breq	.+2      	; 0x107a <main+0x13e>
-    1078:	48 c0       	rjmp	.+144    	; 0x110a <main+0x1ce>
-    107a:	8b 81       	ldd	r24, Y+3	; 0x03
-    107c:	8f 3f       	cpi	r24, 0xFF	; 255
-    107e:	09 f0       	breq	.+2      	; 0x1082 <main+0x146>
-    1080:	44 c0       	rjmp	.+136    	; 0x110a <main+0x1ce>
-    1082:	8c 81       	ldd	r24, Y+4	; 0x04
-    1084:	8f 3f       	cpi	r24, 0xFF	; 255
-    1086:	09 f0       	breq	.+2      	; 0x108a <main+0x14e>
-    1088:	40 c0       	rjmp	.+128    	; 0x110a <main+0x1ce>
+				for (i = 0; i < 8; i ++)
+				{
+					message_arr[i] = *(message.pt_data + i);
+    10ce:	99 85       	ldd	r25, Y+9	; 0x09
+    10d0:	99 8b       	std	Y+17, r25	; 0x11
+    10d2:	aa 85       	ldd	r26, Y+10	; 0x0a
+    10d4:	aa 8b       	std	Y+18, r26	; 0x12
+			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure	
+		}
+		
+			message.pt_data = &data5[0]; // point message object to first element of data buffer
+			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+			message.id.std = SUB0_ID5;  // populate ID field with ID Tag
+    10d6:	0f 2e       	mov	r0, r31
+    10d8:	f9 e1       	ldi	r31, 0x19	; 25
+    10da:	8f 2e       	mov	r8, r31
+    10dc:	91 2c       	mov	r9, r1
+    10de:	f0 2d       	mov	r31, r0
+    10e0:	ab 86       	std	Y+11, r10	; 0x0b
+    10e2:	0f 2e       	mov	r0, r31
+    10e4:	f5 e0       	ldi	r31, 0x05	; 5
+    10e6:	af 2e       	mov	r10, r31
+    10e8:	f0 2d       	mov	r31, r0
+
+	
+    while(1)
+    {
+		
+		message.pt_data = &data0[0]; // point message object to first element of data buffer
+    10ea:	8d 85       	ldd	r24, Y+13	; 0x0d
+    10ec:	f6 01       	movw	r30, r12
+    10ee:	80 83       	st	Z, r24
+    10f0:	9e 85       	ldd	r25, Y+14	; 0x0e
+    10f2:	91 83       	std	Z+1, r25	; 0x01
+		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+    10f4:	d2 01       	movw	r26, r4
+    10f6:	1c 92       	st	X, r1
+		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+    10f8:	8f 85       	ldd	r24, Y+15	; 0x0f
+    10fa:	f7 01       	movw	r30, r14
+    10fc:	80 83       	st	Z, r24
+    10fe:	98 89       	ldd	r25, Y+16	; 0x10
+    1100:	91 83       	std	Z+1, r25	; 0x01
+		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    1102:	d3 01       	movw	r26, r6
+    1104:	ac 92       	st	X, r10
+		message.dlc = 8;			 // Max length of a CAN message.
+    1106:	8c 85       	ldd	r24, Y+12	; 0x0c
+    1108:	f1 01       	movw	r30, r2
+    110a:	80 83       	st	Z, r24
+		mob_number = 0;
+		
+		
+		if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a message to come in.
+    110c:	60 e0       	ldi	r22, 0x00	; 0
+    110e:	80 e0       	ldi	r24, 0x00	; 0
+    1110:	91 e0       	ldi	r25, 0x01	; 1
+    1112:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
+    1116:	81 30       	cpi	r24, 0x01	; 1
+    1118:	09 f4       	brne	.+2      	; 0x111c <main+0x180>
+    111a:	50 c0       	rjmp	.+160    	; 0x11bc <main+0x220>
+		{
+			if(message.status == MOB_RX_COMPLETED)
+    111c:	a9 e0       	ldi	r26, 0x09	; 9
+    111e:	b1 e0       	ldi	r27, 0x01	; 1
+    1120:	8c 91       	ld	r24, X
+    1122:	80 32       	cpi	r24, 0x20	; 32
+    1124:	a1 f5       	brne	.+104    	; 0x118e <main+0x1f2>
+    1126:	f6 01       	movw	r30, r12
+    1128:	a0 81       	ld	r26, Z
+    112a:	b1 81       	ldd	r27, Z+1	; 0x01
+			{
+				for (i = 0; i < 8; i ++)
+				{
+					message_arr[i] = *(message.pt_data + i);
+    112c:	e9 89       	ldd	r30, Y+17	; 0x11
+    112e:	fa 89       	ldd	r31, Y+18	; 0x12
+    1130:	8d 91       	ld	r24, X+
+    1132:	81 93       	st	Z+, r24
+		
+		if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a message to come in.
+		{
+			if(message.status == MOB_RX_COMPLETED)
+			{
+				for (i = 0; i < 8; i ++)
+    1134:	0e 17       	cp	r16, r30
+    1136:	1f 07       	cpc	r17, r31
+    1138:	d9 f7       	brne	.-10     	; 0x1130 <main+0x194>
+				{
+					message_arr[i] = *(message.pt_data + i);
+				}
+				
+				if ((message_arr[0] == 0xFF) && (message_arr[1] == 0xFF) && (message_arr[2] == 0xFF) && (message_arr[3] == 0xFF)
+    113a:	89 81       	ldd	r24, Y+1	; 0x01
+    113c:	8f 3f       	cpi	r24, 0xFF	; 255
+    113e:	09 f5       	brne	.+66     	; 0x1182 <main+0x1e6>
+    1140:	8a 81       	ldd	r24, Y+2	; 0x02
+    1142:	8f 3f       	cpi	r24, 0xFF	; 255
+    1144:	f1 f4       	brne	.+60     	; 0x1182 <main+0x1e6>
+    1146:	8b 81       	ldd	r24, Y+3	; 0x03
+    1148:	8f 3f       	cpi	r24, 0xFF	; 255
+    114a:	d9 f4       	brne	.+54     	; 0x1182 <main+0x1e6>
+    114c:	8c 81       	ldd	r24, Y+4	; 0x04
+    114e:	8f 3f       	cpi	r24, 0xFF	; 255
+    1150:	c1 f4       	brne	.+48     	; 0x1182 <main+0x1e6>
 				&& (message_arr[4] == 0xFF) && (message_arr[5] == 0xFF) && (message_arr[6] == 0xFF) && (message_arr[7] == 0xFF))
-    108a:	8d 81       	ldd	r24, Y+5	; 0x05
-    108c:	8f 3f       	cpi	r24, 0xFF	; 255
-    108e:	e9 f5       	brne	.+122    	; 0x110a <main+0x1ce>
-    1090:	8e 81       	ldd	r24, Y+6	; 0x06
-    1092:	8f 3f       	cpi	r24, 0xFF	; 255
-    1094:	d1 f5       	brne	.+116    	; 0x110a <main+0x1ce>
-    1096:	8f 81       	ldd	r24, Y+7	; 0x07
-    1098:	8f 3f       	cpi	r24, 0xFF	; 255
-    109a:	b9 f5       	brne	.+110    	; 0x110a <main+0x1ce>
-    109c:	88 85       	ldd	r24, Y+8	; 0x08
-    109e:	8f 3f       	cpi	r24, 0xFF	; 255
-    10a0:	a1 f5       	brne	.+104    	; 0x110a <main+0x1ce>
+    1152:	8d 81       	ldd	r24, Y+5	; 0x05
+    1154:	8f 3f       	cpi	r24, 0xFF	; 255
+    1156:	a9 f4       	brne	.+42     	; 0x1182 <main+0x1e6>
+    1158:	8e 81       	ldd	r24, Y+6	; 0x06
+    115a:	8f 3f       	cpi	r24, 0xFF	; 255
+    115c:	91 f4       	brne	.+36     	; 0x1182 <main+0x1e6>
+    115e:	8f 81       	ldd	r24, Y+7	; 0x07
+    1160:	8f 3f       	cpi	r24, 0xFF	; 255
+    1162:	79 f4       	brne	.+30     	; 0x1182 <main+0x1e6>
+    1164:	88 85       	ldd	r24, Y+8	; 0x08
+    1166:	8f 3f       	cpi	r24, 0xFF	; 255
+    1168:	61 f4       	brne	.+24     	; 0x1182 <main+0x1e6>
+				{
+					LED_Reg_Write(0x04);	//Toggle LED2 when the appropriate message is received.
+    116a:	84 e0       	ldi	r24, 0x04	; 4
+    116c:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
+					delay_ms(500);
+    1170:	84 ef       	ldi	r24, 0xF4	; 244
+    1172:	91 e0       	ldi	r25, 0x01	; 1
+    1174:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
+					LED_Reg_Write(0x00);
+    1178:	80 e0       	ldi	r24, 0x00	; 0
+    117a:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
+					send_now = 1;
+    117e:	f1 e0       	ldi	r31, 0x01	; 1
+    1180:	fb 87       	std	Y+11, r31	; 0x0b
+    1182:	e9 89       	ldd	r30, Y+17	; 0x11
+    1184:	fa 89       	ldd	r31, Y+18	; 0x12
+				}
+				for (i = 0; i < 8; i ++)
+				{
+					message_arr[i] = 0;			// Reset the message array to zero after each message.
+    1186:	11 92       	st	Z+, r1
+					LED_Reg_Write(0x04);	//Toggle LED2 when the appropriate message is received.
+					delay_ms(500);
+					LED_Reg_Write(0x00);
+					send_now = 1;
+				}
+				for (i = 0; i < 8; i ++)
+    1188:	0e 17       	cp	r16, r30
+    118a:	1f 07       	cpc	r17, r31
+    118c:	e1 f7       	brne	.-8      	; 0x1186 <main+0x1ea>
+				{
+					message_arr[i] = 0;			// Reset the message array to zero after each message.
+				}				
+			}
+			message.pt_data = &data0[0]; // point message object to first element of data buffer
+    118e:	e4 e2       	ldi	r30, 0x24	; 36
+    1190:	f1 e0       	ldi	r31, 0x01	; 1
+    1192:	d6 01       	movw	r26, r12
+    1194:	ed 93       	st	X+, r30
+    1196:	fc 93       	st	X, r31
+			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+    1198:	d2 01       	movw	r26, r4
+    119a:	1c 92       	st	X, r1
+			message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+    119c:	84 e1       	ldi	r24, 0x14	; 20
+    119e:	f7 01       	movw	r30, r14
+    11a0:	80 83       	st	Z, r24
+    11a2:	11 82       	std	Z+1, r1	; 0x01
+			message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    11a4:	d3 01       	movw	r26, r6
+    11a6:	bc 92       	st	X, r11
+			message.dlc = 8;			 // Max length of a CAN message.
+    11a8:	88 e0       	ldi	r24, 0x08	; 8
+    11aa:	f1 01       	movw	r30, r2
+    11ac:	80 83       	st	Z, r24
+			mob_number = 0;
+			
+			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure	
+    11ae:	60 e0       	ldi	r22, 0x00	; 0
+    11b0:	80 e0       	ldi	r24, 0x00	; 0
+    11b2:	91 e0       	ldi	r25, 0x01	; 1
+    11b4:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    11b8:	81 11       	cpse	r24, r1
+    11ba:	f9 cf       	rjmp	.-14     	; 0x11ae <main+0x212>
+		}
+		
+			message.pt_data = &data5[0]; // point message object to first element of data buffer
+    11bc:	e5 e3       	ldi	r30, 0x35	; 53
+    11be:	f1 e0       	ldi	r31, 0x01	; 1
+    11c0:	d6 01       	movw	r26, r12
+    11c2:	ed 93       	st	X+, r30
+    11c4:	fc 93       	st	X, r31
+			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+    11c6:	d2 01       	movw	r26, r4
+    11c8:	1c 92       	st	X, r1
+			message.id.std = SUB0_ID5;  // populate ID field with ID Tag
+    11ca:	f7 01       	movw	r30, r14
+    11cc:	91 82       	std	Z+1, r9	; 0x01
+    11ce:	80 82       	st	Z, r8
+			message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    11d0:	d3 01       	movw	r26, r6
+    11d2:	bc 92       	st	X, r11
+			message.dlc = 8;			 // Max length of a CAN message.
+    11d4:	88 e0       	ldi	r24, 0x08	; 8
+    11d6:	f1 01       	movw	r30, r2
+    11d8:	80 83       	st	Z, r24
+			mob_number = 5;
+			
+			
+			if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a housekeeping request to come in.
+    11da:	6b 2d       	mov	r22, r11
+    11dc:	80 e0       	ldi	r24, 0x00	; 0
+    11de:	91 e0       	ldi	r25, 0x01	; 1
+    11e0:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
+    11e4:	81 30       	cpi	r24, 0x01	; 1
+    11e6:	09 f4       	brne	.+2      	; 0x11ea <main+0x24e>
+    11e8:	4f c0       	rjmp	.+158    	; 0x1288 <main+0x2ec>
 			{
-				LED_Reg_Write(0x04);	//Toggle LED2 when the appropriate message is received.
-    10a2:	84 e0       	ldi	r24, 0x04	; 4
-    10a4:	0e 94 9b 07 	call	0xf36	; 0xf36 <LED_Reg_Write>
-				delay_ms(500);
-    10a8:	84 ef       	ldi	r24, 0xF4	; 244
-    10aa:	91 e0       	ldi	r25, 0x01	; 1
-    10ac:	0e 94 b0 08 	call	0x1160	; 0x1160 <delay_ms>
-				LED_Reg_Write(0x00);
-    10b0:	80 e0       	ldi	r24, 0x00	; 0
-    10b2:	0e 94 9b 07 	call	0xf36	; 0xf36 <LED_Reg_Write>
+				if(message.status == MOB_RX_COMPLETED)
+    11ea:	a9 e0       	ldi	r26, 0x09	; 9
+    11ec:	b1 e0       	ldi	r27, 0x01	; 1
+    11ee:	8c 91       	ld	r24, X
+    11f0:	80 32       	cpi	r24, 0x20	; 32
+    11f2:	a1 f5       	brne	.+104    	; 0x125c <main+0x2c0>
+    11f4:	f6 01       	movw	r30, r12
+    11f6:	a0 81       	ld	r26, Z
+    11f8:	b1 81       	ldd	r27, Z+1	; 0x01
+				{
+					for (i = 0; i < 8; i ++)
+					{
+						message_arr[i] = *(message.pt_data + i);
+    11fa:	e9 89       	ldd	r30, Y+17	; 0x11
+    11fc:	fa 89       	ldd	r31, Y+18	; 0x12
+    11fe:	8d 91       	ld	r24, X+
+    1200:	81 93       	st	Z+, r24
+			
+			if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a housekeeping request to come in.
+			{
+				if(message.status == MOB_RX_COMPLETED)
+				{
+					for (i = 0; i < 8; i ++)
+    1202:	0e 17       	cp	r16, r30
+    1204:	1f 07       	cpc	r17, r31
+    1206:	d9 f7       	brne	.-10     	; 0x11fe <main+0x262>
+					{
+						message_arr[i] = *(message.pt_data + i);
+					}
+					
+					if ((message_arr[0] == 0x0F) && (message_arr[1] == 0x0F) && (message_arr[2] == 0x0F) && (message_arr[3] == 0x0F)
+    1208:	89 81       	ldd	r24, Y+1	; 0x01
+    120a:	8f 30       	cpi	r24, 0x0F	; 15
+    120c:	09 f5       	brne	.+66     	; 0x1250 <main+0x2b4>
+    120e:	8a 81       	ldd	r24, Y+2	; 0x02
+    1210:	8f 30       	cpi	r24, 0x0F	; 15
+    1212:	f1 f4       	brne	.+60     	; 0x1250 <main+0x2b4>
+    1214:	8b 81       	ldd	r24, Y+3	; 0x03
+    1216:	8f 30       	cpi	r24, 0x0F	; 15
+    1218:	d9 f4       	brne	.+54     	; 0x1250 <main+0x2b4>
+    121a:	8c 81       	ldd	r24, Y+4	; 0x04
+    121c:	8f 30       	cpi	r24, 0x0F	; 15
+    121e:	c1 f4       	brne	.+48     	; 0x1250 <main+0x2b4>
+					&& (message_arr[4] == 0x0F) && (message_arr[5] == 0x0F) && (message_arr[6] == 0x0F) && (message_arr[7] == 0x0F))
+    1220:	8d 81       	ldd	r24, Y+5	; 0x05
+    1222:	8f 30       	cpi	r24, 0x0F	; 15
+    1224:	a9 f4       	brne	.+42     	; 0x1250 <main+0x2b4>
+    1226:	8e 81       	ldd	r24, Y+6	; 0x06
+    1228:	8f 30       	cpi	r24, 0x0F	; 15
+    122a:	91 f4       	brne	.+36     	; 0x1250 <main+0x2b4>
+    122c:	8f 81       	ldd	r24, Y+7	; 0x07
+    122e:	8f 30       	cpi	r24, 0x0F	; 15
+    1230:	79 f4       	brne	.+30     	; 0x1250 <main+0x2b4>
+    1232:	88 85       	ldd	r24, Y+8	; 0x08
+    1234:	8f 30       	cpi	r24, 0x0F	; 15
+    1236:	61 f4       	brne	.+24     	; 0x1250 <main+0x2b4>
+					{
+						LED_Reg_Write(0x08);	//Toggle LED3 when housekeeping was requested.
+    1238:	88 e0       	ldi	r24, 0x08	; 8
+    123a:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
+						delay_ms(500);
+    123e:	84 ef       	ldi	r24, 0xF4	; 244
+    1240:	91 e0       	ldi	r25, 0x01	; 1
+    1242:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
+						LED_Reg_Write(0x00);
+    1246:	80 e0       	ldi	r24, 0x00	; 0
+    1248:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
+						send_now = 1;
+    124c:	f1 e0       	ldi	r31, 0x01	; 1
+    124e:	fb 87       	std	Y+11, r31	; 0x0b
+    1250:	e9 89       	ldd	r30, Y+17	; 0x11
+    1252:	fa 89       	ldd	r31, Y+18	; 0x12
+					}
+					for (i = 0; i < 8; i ++)
+					{
+						message_arr[i] = 0;			// Reset the message array to zero after each message.
+    1254:	11 92       	st	Z+, r1
+						LED_Reg_Write(0x08);	//Toggle LED3 when housekeeping was requested.
+						delay_ms(500);
+						LED_Reg_Write(0x00);
+						send_now = 1;
+					}
+					for (i = 0; i < 8; i ++)
+    1256:	0e 17       	cp	r16, r30
+    1258:	1f 07       	cpc	r17, r31
+    125a:	e1 f7       	brne	.-8      	; 0x1254 <main+0x2b8>
+					{
+						message_arr[i] = 0;			// Reset the message array to zero after each message.
+					}
+				}
+				message.pt_data = &data5[0]; // point message object to first element of data buffer
+    125c:	e5 e3       	ldi	r30, 0x35	; 53
+    125e:	f1 e0       	ldi	r31, 0x01	; 1
+    1260:	d6 01       	movw	r26, r12
+    1262:	ed 93       	st	X+, r30
+    1264:	fc 93       	st	X, r31
+				message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
+    1266:	d2 01       	movw	r26, r4
+    1268:	1c 92       	st	X, r1
+				message.id.std = SUB0_ID5;  // populate ID field with ID Tag
+    126a:	f7 01       	movw	r30, r14
+    126c:	91 82       	std	Z+1, r9	; 0x01
+    126e:	80 82       	st	Z, r8
+				message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    1270:	d3 01       	movw	r26, r6
+    1272:	bc 92       	st	X, r11
+				message.dlc = 8;			 // Max length of a CAN message.
+    1274:	88 e0       	ldi	r24, 0x08	; 8
+    1276:	f1 01       	movw	r30, r2
+    1278:	80 83       	st	Z, r24
+				mob_number = 5;
+				
+				while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
+    127a:	6b 2d       	mov	r22, r11
+    127c:	80 e0       	ldi	r24, 0x00	; 0
+    127e:	91 e0       	ldi	r25, 0x01	; 1
+    1280:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    1284:	81 11       	cpse	r24, r1
+    1286:	f9 cf       	rjmp	.-14     	; 0x127a <main+0x2de>
+			}	
+	
 		
 		/*	Message Object 4  */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
+    1288:	9b 85       	ldd	r25, Y+11	; 0x0b
+    128a:	91 30       	cpi	r25, 0x01	; 1
+    128c:	09 f0       	breq	.+2      	; 0x1290 <main+0x2f4>
+    128e:	2d cf       	rjmp	.-422    	; 0x10ea <main+0x14e>
 		{	
 			message.pt_data = &data4[0]; // point message object to first element of data buffer
-    10b6:	8c e1       	ldi	r24, 0x1C	; 28
-    10b8:	91 e0       	ldi	r25, 0x01	; 1
-    10ba:	f8 01       	movw	r30, r16
-    10bc:	91 83       	std	Z+1, r25	; 0x01
-    10be:	80 83       	st	Z, r24
+    1290:	8c e1       	ldi	r24, 0x1C	; 28
+    1292:	91 e0       	ldi	r25, 0x01	; 1
+    1294:	d6 01       	movw	r26, r12
+    1296:	8d 93       	st	X+, r24
+    1298:	9c 93       	st	X, r25
 			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    10c0:	d6 01       	movw	r26, r12
-    10c2:	1c 92       	st	X, r1
+    129a:	f2 01       	movw	r30, r4
+    129c:	10 82       	st	Z, r1
 			message.id.std = NODE0_ID;  // populate ID field with ID Tag
-    10c4:	8a e0       	ldi	r24, 0x0A	; 10
-    10c6:	90 e0       	ldi	r25, 0x00	; 0
-    10c8:	f7 01       	movw	r30, r14
-    10ca:	91 83       	std	Z+1, r25	; 0x01
-    10cc:	80 83       	st	Z, r24
+    129e:	8a e0       	ldi	r24, 0x0A	; 10
+    12a0:	90 e0       	ldi	r25, 0x00	; 0
+    12a2:	d7 01       	movw	r26, r14
+    12a4:	8d 93       	st	X+, r24
+    12a6:	9c 93       	st	X, r25
 			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
-    10ce:	82 e0       	ldi	r24, 0x02	; 2
-    10d0:	d3 01       	movw	r26, r6
-    10d2:	8c 93       	st	X, r24
+    12a8:	82 e0       	ldi	r24, 0x02	; 2
+    12aa:	f3 01       	movw	r30, r6
+    12ac:	80 83       	st	Z, r24
 			message.dlc = 8;			 // Max length of a CAN message.
-    10d4:	88 e0       	ldi	r24, 0x08	; 8
-    10d6:	f2 01       	movw	r30, r4
-    10d8:	80 83       	st	Z, r24
-    10da:	ec e1       	ldi	r30, 0x1C	; 28
-    10dc:	f1 e0       	ldi	r31, 0x01	; 1
-    10de:	84 e2       	ldi	r24, 0x24	; 36
-    10e0:	91 e0       	ldi	r25, 0x01	; 1
+    12ae:	88 e0       	ldi	r24, 0x08	; 8
+    12b0:	d1 01       	movw	r26, r2
+    12b2:	8c 93       	st	X, r24
+    12b4:	ec e1       	ldi	r30, 0x1C	; 28
+    12b6:	f1 e0       	ldi	r31, 0x01	; 1
+    12b8:	84 e2       	ldi	r24, 0x24	; 36
+    12ba:	91 e0       	ldi	r25, 0x01	; 1
 			mob_number = 4;
 		
 			for (i = 0; i < 8; i ++)
 			{
 				data4[i] = 0xAB;		// Message to be sent back to the OBC.
-    10e2:	2b ea       	ldi	r18, 0xAB	; 171
-    10e4:	21 93       	st	Z+, r18
+    12bc:	2b ea       	ldi	r18, 0xAB	; 171
+    12be:	21 93       	st	Z+, r18
 			message.id.std = NODE0_ID;  // populate ID field with ID Tag
 			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
 			message.dlc = 8;			 // Max length of a CAN message.
 			mob_number = 4;
 		
 			for (i = 0; i < 8; i ++)
-    10e6:	e8 17       	cp	r30, r24
-    10e8:	f9 07       	cpc	r31, r25
-    10ea:	e1 f7       	brne	.-8      	; 0x10e4 <main+0x1a8>
+    12c0:	e8 17       	cp	r30, r24
+    12c2:	f9 07       	cpc	r31, r25
+    12c4:	e1 f7       	brne	.-8      	; 0x12be <main+0x322>
 			{
 				data4[i] = 0xAB;		// Message to be sent back to the OBC.
 			}
 			
 			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb4 to configure
-    10ec:	64 e0       	ldi	r22, 0x04	; 4
-    10ee:	80 e0       	ldi	r24, 0x00	; 0
-    10f0:	91 e0       	ldi	r25, 0x01	; 1
-    10f2:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
-    10f6:	81 11       	cpse	r24, r1
-    10f8:	f9 cf       	rjmp	.-14     	; 0x10ec <main+0x1b0>
+    12c6:	64 e0       	ldi	r22, 0x04	; 4
+    12c8:	80 e0       	ldi	r24, 0x00	; 0
+    12ca:	91 e0       	ldi	r25, 0x01	; 1
+    12cc:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    12d0:	81 11       	cpse	r24, r1
+    12d2:	f9 cf       	rjmp	.-14     	; 0x12c6 <main+0x32a>
 
 			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
-    10fa:	64 e0       	ldi	r22, 0x04	; 4
-    10fc:	80 e0       	ldi	r24, 0x00	; 0
-    10fe:	91 e0       	ldi	r25, 0x01	; 1
-    1100:	0e 94 a9 06 	call	0xd52	; 0xd52 <can_get_status>
-    1104:	81 30       	cpi	r24, 0x01	; 1
-    1106:	c9 f3       	breq	.-14     	; 0x10fa <main+0x1be>
-    1108:	79 cf       	rjmp	.-270    	; 0xffc <main+0xc0>
-	delay_ms(250);
-	LED_Reg_Write(0x00);
-	
-    while(1)
-    {
-		for (i = 0; i < 8; i ++)
-    110a:	80 e0       	ldi	r24, 0x00	; 0
-    110c:	78 cf       	rjmp	.-272    	; 0xffe <main+0xc2>
+    12d4:	64 e0       	ldi	r22, 0x04	; 4
+    12d6:	80 e0       	ldi	r24, 0x00	; 0
+    12d8:	91 e0       	ldi	r25, 0x01	; 1
+    12da:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
+    12de:	81 30       	cpi	r24, 0x01	; 1
+    12e0:	c9 f3       	breq	.-14     	; 0x12d4 <main+0x338>
+    12e2:	ed ce       	rjmp	.-550    	; 0x10be <main+0x122>
 
-0000110e <__vector_12>:
+000012e4 <__vector_12>:
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "Timer.h"
 
 ISR(TIMER1_COMPA_vect) {
-    110e:	1f 92       	push	r1
-    1110:	0f 92       	push	r0
-    1112:	0f b6       	in	r0, 0x3f	; 63
-    1114:	0f 92       	push	r0
-    1116:	11 24       	eor	r1, r1
-    1118:	8f 93       	push	r24
+    12e4:	1f 92       	push	r1
+    12e6:	0f 92       	push	r0
+    12e8:	0f b6       	in	r0, 0x3f	; 63
+    12ea:	0f 92       	push	r0
+    12ec:	11 24       	eor	r1, r1
+    12ee:	8f 93       	push	r24
 	CTC_flag = 1;
-    111a:	81 e0       	ldi	r24, 0x01	; 1
-    111c:	80 93 2c 01 	sts	0x012C, r24
+    12f0:	81 e0       	ldi	r24, 0x01	; 1
+    12f2:	80 93 2c 01 	sts	0x012C, r24
 }
-    1120:	8f 91       	pop	r24
-    1122:	0f 90       	pop	r0
-    1124:	0f be       	out	0x3f, r0	; 63
-    1126:	0f 90       	pop	r0
-    1128:	1f 90       	pop	r1
-    112a:	18 95       	reti
+    12f6:	8f 91       	pop	r24
+    12f8:	0f 90       	pop	r0
+    12fa:	0f be       	out	0x3f, r0	; 63
+    12fc:	0f 90       	pop	r0
+    12fe:	1f 90       	pop	r1
+    1300:	18 95       	reti
 
-0000112c <timer_init>:
+00001302 <timer_init>:
 
 // This function initializes a 16-bit timer used for delays.
 void timer_init(void) {
 	
 	TIMSK1 = 0x00; //Disable timer interrupts
-    112c:	10 92 6f 00 	sts	0x006F, r1
+    1302:	10 92 6f 00 	sts	0x006F, r1
 	TCCR1A = 0x00; //Timer not connected to any pins
-    1130:	10 92 80 00 	sts	0x0080, r1
+    1306:	10 92 80 00 	sts	0x0080, r1
 	TCCR1B = 0x0A; //CTC mode; Timer_Rate = System_CLK/8 = 1MHz
-    1134:	8a e0       	ldi	r24, 0x0A	; 10
-    1136:	80 93 81 00 	sts	0x0081, r24
-    113a:	08 95       	ret
+    130a:	8a e0       	ldi	r24, 0x0A	; 10
+    130c:	80 93 81 00 	sts	0x0081, r24
+    1310:	08 95       	ret
 
-0000113c <delay_us>:
+00001312 <delay_us>:
 // if timer rate is set to 1MHz frequency. For example, this 
 // project uses a system clock of 8MHz. Timer1 rate is set to
 // System Clock divided by 8 which is 1MHz (in timer_init). 
 // Therefore the "us" parameter truly is 1us.
 void delay_us(uint16_t us) {
 	CTC_flag = 0; //Clear CTC Interrupt flag
-    113c:	10 92 2c 01 	sts	0x012C, r1
+    1312:	10 92 2c 01 	sts	0x012C, r1
 	TCNT1 = 0x0000; //Clear timer
-    1140:	10 92 85 00 	sts	0x0085, r1
-    1144:	10 92 84 00 	sts	0x0084, r1
+    1316:	10 92 85 00 	sts	0x0085, r1
+    131a:	10 92 84 00 	sts	0x0084, r1
 	OCR1A = us; //Load compare value with desired delay in us
-    1148:	90 93 89 00 	sts	0x0089, r25
-    114c:	80 93 88 00 	sts	0x0088, r24
+    131e:	90 93 89 00 	sts	0x0089, r25
+    1322:	80 93 88 00 	sts	0x0088, r24
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
-    1150:	82 e0       	ldi	r24, 0x02	; 2
-    1152:	80 93 6f 00 	sts	0x006F, r24
+    1326:	82 e0       	ldi	r24, 0x02	; 2
+    1328:	80 93 6f 00 	sts	0x006F, r24
 	while(!CTC_flag); //wait for the designated number of us
-    1156:	80 91 2c 01 	lds	r24, 0x012C
-    115a:	88 23       	and	r24, r24
-    115c:	e1 f3       	breq	.-8      	; 0x1156 <delay_us+0x1a>
+    132c:	80 91 2c 01 	lds	r24, 0x012C
+    1330:	88 23       	and	r24, r24
+    1332:	e1 f3       	breq	.-8      	; 0x132c <delay_us+0x1a>
 }
-    115e:	08 95       	ret
+    1334:	08 95       	ret
 
-00001160 <delay_ms>:
+00001336 <delay_ms>:
 
 void delay_ms(uint16_t ms) {
-    1160:	0f 93       	push	r16
-    1162:	1f 93       	push	r17
-    1164:	cf 93       	push	r28
-    1166:	df 93       	push	r29
-    1168:	8c 01       	movw	r16, r24
+    1336:	0f 93       	push	r16
+    1338:	1f 93       	push	r17
+    133a:	cf 93       	push	r28
+    133c:	df 93       	push	r29
+    133e:	8c 01       	movw	r16, r24
 	for(uint16_t i=0; i<ms; i++) {
-    116a:	00 97       	sbiw	r24, 0x00	; 0
-    116c:	51 f0       	breq	.+20     	; 0x1182 <delay_ms+0x22>
-    116e:	c0 e0       	ldi	r28, 0x00	; 0
-    1170:	d0 e0       	ldi	r29, 0x00	; 0
+    1340:	00 97       	sbiw	r24, 0x00	; 0
+    1342:	51 f0       	breq	.+20     	; 0x1358 <delay_ms+0x22>
+    1344:	c0 e0       	ldi	r28, 0x00	; 0
+    1346:	d0 e0       	ldi	r29, 0x00	; 0
 		delay_us(1000);
-    1172:	88 ee       	ldi	r24, 0xE8	; 232
-    1174:	93 e0       	ldi	r25, 0x03	; 3
-    1176:	0e 94 9e 08 	call	0x113c	; 0x113c <delay_us>
+    1348:	88 ee       	ldi	r24, 0xE8	; 232
+    134a:	93 e0       	ldi	r25, 0x03	; 3
+    134c:	0e 94 89 09 	call	0x1312	; 0x1312 <delay_us>
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
 	while(!CTC_flag); //wait for the designated number of us
 }
 
 void delay_ms(uint16_t ms) {
 	for(uint16_t i=0; i<ms; i++) {
-    117a:	21 96       	adiw	r28, 0x01	; 1
-    117c:	c0 17       	cp	r28, r16
-    117e:	d1 07       	cpc	r29, r17
-    1180:	c1 f7       	brne	.-16     	; 0x1172 <delay_ms+0x12>
+    1350:	21 96       	adiw	r28, 0x01	; 1
+    1352:	c0 17       	cp	r28, r16
+    1354:	d1 07       	cpc	r29, r17
+    1356:	c1 f7       	brne	.-16     	; 0x1348 <delay_ms+0x12>
 		delay_us(1000);
 	}
 }
-    1182:	df 91       	pop	r29
-    1184:	cf 91       	pop	r28
-    1186:	1f 91       	pop	r17
-    1188:	0f 91       	pop	r16
-    118a:	08 95       	ret
+    1358:	df 91       	pop	r29
+    135a:	cf 91       	pop	r28
+    135c:	1f 91       	pop	r17
+    135e:	0f 91       	pop	r16
+    1360:	08 95       	ret
 
-0000118c <__tablejump2__>:
-    118c:	ee 0f       	add	r30, r30
-    118e:	ff 1f       	adc	r31, r31
+00001362 <__tablejump2__>:
+    1362:	ee 0f       	add	r30, r30
+    1364:	ff 1f       	adc	r31, r31
 
-00001190 <__tablejump__>:
-    1190:	05 90       	lpm	r0, Z+
-    1192:	f4 91       	lpm	r31, Z
-    1194:	e0 2d       	mov	r30, r0
-    1196:	09 94       	ijmp
+00001366 <__tablejump__>:
+    1366:	05 90       	lpm	r0, Z+
+    1368:	f4 91       	lpm	r31, Z
+    136a:	e0 2d       	mov	r30, r0
+    136c:	09 94       	ijmp
 
-00001198 <_exit>:
-    1198:	f8 94       	cli
+0000136e <_exit>:
+    136e:	f8 94       	cli
 
-0000119a <__stop_program>:
-    119a:	ff cf       	rjmp	.-2      	; 0x119a <__stop_program>
+00001370 <__stop_program>:
+    1370:	ff cf       	rjmp	.-2      	; 0x1370 <__stop_program>

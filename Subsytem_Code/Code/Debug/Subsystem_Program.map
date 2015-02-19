@@ -214,7 +214,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x119c
+.text           0x00000000     0x1372
  *(.vectors)
  .vectors       0x00000000       0x7c c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm32m1.o
                 0x00000000                __vector_default
@@ -318,36 +318,36 @@ END GROUP
  .text.can_init
                 0x0000013c       0x1e can_lib.o
                 0x0000013c                can_init
- .text.can_cmd  0x0000015a      0xbf8 can_lib.o
+ .text.can_cmd  0x0000015a      0xc58 can_lib.o
                 0x0000015a                can_cmd
  .text.can_get_status
-                0x00000d52      0x1e4 can_lib.o
-                0x00000d52                can_get_status
+                0x00000db2      0x1e4 can_lib.o
+                0x00000db2                can_get_status
  .text.LED_Reg_Write
-                0x00000f36        0x6 LED.o
-                0x00000f36                LED_Reg_Write
- .text.main     0x00000f3c      0x1d2 main.o
-                0x00000f3c                main
+                0x00000f96        0x6 LED.o
+                0x00000f96                LED_Reg_Write
+ .text.main     0x00000f9c      0x348 main.o
+                0x00000f9c                main
  .text.__vector_12
-                0x0000110e       0x1e Timer.o
-                0x0000110e                __vector_12
+                0x000012e4       0x1e Timer.o
+                0x000012e4                __vector_12
  .text.timer_init
-                0x0000112c       0x10 Timer.o
-                0x0000112c                timer_init
+                0x00001302       0x10 Timer.o
+                0x00001302                timer_init
  .text.delay_us
-                0x0000113c       0x24 Timer.o
-                0x0000113c                delay_us
+                0x00001312       0x24 Timer.o
+                0x00001312                delay_us
  .text.delay_ms
-                0x00001160       0x2c Timer.o
-                0x00001160                delay_ms
- .text.libgcc   0x0000118c        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
-                0x0000118c                __tablejump2__
-                0x00001190                __tablejump__
-                0x00001198                . = ALIGN (0x2)
+                0x00001336       0x2c Timer.o
+                0x00001336                delay_ms
+ .text.libgcc   0x00001362        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
+                0x00001362                __tablejump2__
+                0x00001366                __tablejump__
+                0x0000136e                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00001198        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
-                0x00001198                _exit
-                0x00001198                exit
+ .fini9         0x0000136e        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+                0x0000136e                _exit
+                0x0000136e                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -366,11 +366,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00001198        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+ .fini0         0x0000136e        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000119c                _etext = .
+                0x00001372                _etext = .
 
-.data           0x00800100        0x0 load address 0x0000119c
+.data           0x00800100        0x0 load address 0x00001372
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -397,8 +397,8 @@ END GROUP
                 0x0080012d                data3
                 0x00800135                data5
                 0x0080013d                PROVIDE (__bss_end, .)
-                0x0000119c                __data_load_start = LOADADDR (.data)
-                0x0000119c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00001372                __data_load_start = LOADADDR (.data)
+                0x00001372                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080013d        0x0
                 0x0080013d                PROVIDE (__noinit_start, .)
@@ -484,29 +484,29 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xe56
+.debug_info     0x00000000      0xf29
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x2e8 can_drv.o
- .debug_info    0x000002e8      0x44c can_lib.o
- .debug_info    0x00000734      0x10f LED.o
- .debug_info    0x00000843      0x4de main.o
- .debug_info    0x00000d21      0x135 Timer.o
+ .debug_info    0x000002e8      0x447 can_lib.o
+ .debug_info    0x0000072f      0x10f LED.o
+ .debug_info    0x0000083e      0x5b6 main.o
+ .debug_info    0x00000df4      0x135 Timer.o
 
-.debug_abbrev   0x00000000      0x6a8
+.debug_abbrev   0x00000000      0x6c4
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x12c can_drv.o
  .debug_abbrev  0x0000012c      0x24e can_lib.o
  .debug_abbrev  0x0000037a       0x89 LED.o
- .debug_abbrev  0x00000403      0x1b2 main.o
- .debug_abbrev  0x000005b5       0xf3 Timer.o
+ .debug_abbrev  0x00000403      0x1ce main.o
+ .debug_abbrev  0x000005d1       0xf3 Timer.o
 
-.debug_line     0x00000000      0x865
+.debug_line     0x00000000      0x8cb
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x2a2 can_drv.o
- .debug_line    0x000002a2      0x290 can_lib.o
- .debug_line    0x00000532       0xd9 LED.o
- .debug_line    0x0000060b      0x15c main.o
- .debug_line    0x00000767       0xfe Timer.o
+ .debug_line    0x000002a2      0x297 can_lib.o
+ .debug_line    0x00000539       0xd9 LED.o
+ .debug_line    0x00000612      0x1bb main.o
+ .debug_line    0x000007cd       0xfe Timer.o
 
 .debug_frame    0x00000000      0x234
  *(.debug_frame)
@@ -516,7 +516,7 @@ END GROUP
  .debug_frame   0x00000188       0x34 main.o
  .debug_frame   0x000001bc       0x78 Timer.o
 
-.debug_str      0x00000000      0x4a0
+.debug_str      0x00000000      0x4a8
  *(.debug_str)
  .debug_str     0x00000000      0x27a can_drv.o
                                 0x2b9 (size before relaxing)
@@ -524,18 +524,18 @@ END GROUP
                                 0x333 (size before relaxing)
  .debug_str     0x000003e9       0x26 LED.o
                                 0x187 (size before relaxing)
- .debug_str     0x0000040f       0x6f main.o
-                                0x314 (size before relaxing)
- .debug_str     0x0000047e       0x22 Timer.o
+ .debug_str     0x0000040f       0x77 main.o
+                                0x31c (size before relaxing)
+ .debug_str     0x00000486       0x22 Timer.o
                                 0x19b (size before relaxing)
 
-.debug_loc      0x00000000      0xfd3
+.debug_loc      0x00000000     0x108c
  *(.debug_loc)
  .debug_loc     0x00000000      0x962 can_drv.o
- .debug_loc     0x00000962      0x3d3 can_lib.o
- .debug_loc     0x00000d35       0x63 LED.o
- .debug_loc     0x00000d98      0x12a main.o
- .debug_loc     0x00000ec2      0x111 Timer.o
+ .debug_loc     0x00000962      0x3ec can_lib.o
+ .debug_loc     0x00000d4e       0x63 LED.o
+ .debug_loc     0x00000db1      0x1ca main.o
+ .debug_loc     0x00000f7b      0x111 Timer.o
 
 .debug_macinfo
  *(.debug_macinfo)
