@@ -214,7 +214,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1372
+.text           0x00000000     0x13c2
  *(.vectors)
  .vectors       0x00000000       0x7c c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm32m1.o
                 0x00000000                __vector_default
@@ -326,28 +326,28 @@ END GROUP
  .text.LED_Reg_Write
                 0x00000f96        0x6 LED.o
                 0x00000f96                LED_Reg_Write
- .text.main     0x00000f9c      0x348 main.o
+ .text.main     0x00000f9c      0x398 main.o
                 0x00000f9c                main
  .text.__vector_12
-                0x000012e4       0x1e Timer.o
-                0x000012e4                __vector_12
+                0x00001334       0x1e Timer.o
+                0x00001334                __vector_12
  .text.timer_init
-                0x00001302       0x10 Timer.o
-                0x00001302                timer_init
+                0x00001352       0x10 Timer.o
+                0x00001352                timer_init
  .text.delay_us
-                0x00001312       0x24 Timer.o
-                0x00001312                delay_us
+                0x00001362       0x24 Timer.o
+                0x00001362                delay_us
  .text.delay_ms
-                0x00001336       0x2c Timer.o
-                0x00001336                delay_ms
- .text.libgcc   0x00001362        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
-                0x00001362                __tablejump2__
-                0x00001366                __tablejump__
-                0x0000136e                . = ALIGN (0x2)
+                0x00001386       0x2c Timer.o
+                0x00001386                delay_ms
+ .text.libgcc   0x000013b2        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
+                0x000013b2                __tablejump2__
+                0x000013b6                __tablejump__
+                0x000013be                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000136e        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
-                0x0000136e                _exit
-                0x0000136e                exit
+ .fini9         0x000013be        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+                0x000013be                _exit
+                0x000013be                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -366,11 +366,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000136e        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+ .fini0         0x000013be        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00001372                _etext = .
+                0x000013c2                _etext = .
 
-.data           0x00800100        0x0 load address 0x00001372
+.data           0x00800100        0x0 load address 0x000013c2
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -397,8 +397,8 @@ END GROUP
                 0x0080012d                data3
                 0x00800135                data5
                 0x0080013d                PROVIDE (__bss_end, .)
-                0x00001372                __data_load_start = LOADADDR (.data)
-                0x00001372                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000013c2                __data_load_start = LOADADDR (.data)
+                0x000013c2                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080013d        0x0
                 0x0080013d                PROVIDE (__noinit_start, .)
@@ -484,29 +484,29 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xf29
+.debug_info     0x00000000      0xf6c
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x2e8 can_drv.o
  .debug_info    0x000002e8      0x447 can_lib.o
  .debug_info    0x0000072f      0x10f LED.o
- .debug_info    0x0000083e      0x5b6 main.o
- .debug_info    0x00000df4      0x135 Timer.o
+ .debug_info    0x0000083e      0x5f9 main.o
+ .debug_info    0x00000e37      0x135 Timer.o
 
-.debug_abbrev   0x00000000      0x6c4
+.debug_abbrev   0x00000000      0x6b5
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x12c can_drv.o
  .debug_abbrev  0x0000012c      0x24e can_lib.o
  .debug_abbrev  0x0000037a       0x89 LED.o
- .debug_abbrev  0x00000403      0x1ce main.o
- .debug_abbrev  0x000005d1       0xf3 Timer.o
+ .debug_abbrev  0x00000403      0x1bf main.o
+ .debug_abbrev  0x000005c2       0xf3 Timer.o
 
-.debug_line     0x00000000      0x8cb
+.debug_line     0x00000000      0x8e5
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x2a2 can_drv.o
  .debug_line    0x000002a2      0x297 can_lib.o
  .debug_line    0x00000539       0xd9 LED.o
- .debug_line    0x00000612      0x1bb main.o
- .debug_line    0x000007cd       0xfe Timer.o
+ .debug_line    0x00000612      0x1d5 main.o
+ .debug_line    0x000007e7       0xfe Timer.o
 
 .debug_frame    0x00000000      0x234
  *(.debug_frame)
@@ -529,13 +529,13 @@ END GROUP
  .debug_str     0x00000486       0x22 Timer.o
                                 0x19b (size before relaxing)
 
-.debug_loc      0x00000000     0x108c
+.debug_loc      0x00000000     0x10e3
  *(.debug_loc)
  .debug_loc     0x00000000      0x962 can_drv.o
  .debug_loc     0x00000962      0x3ec can_lib.o
  .debug_loc     0x00000d4e       0x63 LED.o
- .debug_loc     0x00000db1      0x1ca main.o
- .debug_loc     0x00000f7b      0x111 Timer.o
+ .debug_loc     0x00000db1      0x221 main.o
+ .debug_loc     0x00000fd2      0x111 Timer.o
 
 .debug_macinfo
  *(.debug_macinfo)

@@ -142,13 +142,14 @@ int main(void)
 			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure	
 		}
 		
+		/* CHECK FOR HOUSEKEEPING REQUEST */
+		
 			message.pt_data = &data5[0]; // point message object to first element of data buffer
 			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
 			message.id.std = SUB0_ID5;  // populate ID field with ID Tag
 			message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
 			message.dlc = 8;			 // Max length of a CAN message.
 			mob_number = 5;
-			
 			
 			if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a housekeeping request to come in.
 			{
@@ -165,7 +166,7 @@ int main(void)
 						LED_Reg_Write(0x08);	//Toggle LED3 when housekeeping was requested.
 						delay_ms(500);
 						LED_Reg_Write(0x00);
-						send_now = 1;
+						send_hk = 1;
 					}
 					for (i = 0; i < 8; i ++)
 					{
@@ -206,36 +207,25 @@ int main(void)
 			send_now = 0;
 		}
 				
-		if (send_hk == 1)		// send a reply to the message that was received!
+		if (send_hk == 1)		// send housekeeping back to the OBC!
 		{
-			message.pt_data = &data5[0]; // point message object to first element of data buffer
+			message.pt_data = &data4[0]; // point message object to first element of data buffer
 			message.ctrl.ide = 0;		 // standard can frame type (2.0a)
 			message.id.std = NODE0_ID;  // populate id field with id tag
 			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
 			message.dlc = 8;			 // max length of a can message.
-			mob_number = 5;
+			mob_number = 4;
 		
 			for (i = 0; i < 8; i ++)
 			{
-				data4[i] = 0xf0;		// message to be sent back to the obc.
+				data4[i] = 0xF0;		// message to be sent back to the OBC.
 			}
 		
-			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob5 to configure
+			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob4 to configure
 		
 			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
 		
 			send_hk = 0;
-		
-			/* reset mob5 to being an rx object */
-		
-			message.pt_data = &data5[0];	// point message object to first element of data buffer
-			message.ctrl.ide = 0;			// standard can frame type (2.0a)
-			message.id.std = SUB0_ID5;		// populate id field with id tag
-			message.cmd = CMD_RX_DATA;		// assign this as a producer message object (housekeeping mob).
-			message.dlc = 8;				// max length of a can message.
-			mob_number = 5;
-		
-			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob5 to configure
 		}
 	}
 }

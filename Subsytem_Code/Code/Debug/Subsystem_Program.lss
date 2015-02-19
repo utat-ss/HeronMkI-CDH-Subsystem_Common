@@ -3,27 +3,27 @@ Subsystem_Program.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00001372  00000000  00000000  00000074  2**1
+  0 .text         000013c2  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          0000003d  00800100  00800100  000013e6  2**0
+  1 .bss          0000003d  00800100  00800100  00001436  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  000013e6  2**0
+  2 .comment      00000030  00000000  00000000  00001436  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 00000108  00000000  00000000  00001416  2**0
+  3 .debug_aranges 00000108  00000000  00000000  00001466  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00000f29  00000000  00000000  0000151e  2**0
+  4 .debug_info   00000f6c  00000000  00000000  0000156e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 000006c4  00000000  00000000  00002447  2**0
+  5 .debug_abbrev 000006b5  00000000  00000000  000024da  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   000008cb  00000000  00000000  00002b0b  2**0
+  6 .debug_line   000008e5  00000000  00000000  00002b8f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000234  00000000  00000000  000033d8  2**2
+  7 .debug_frame  00000234  00000000  00000000  00003474  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000004a8  00000000  00000000  0000360c  2**0
+  8 .debug_str    000004a8  00000000  00000000  000036a8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    0000108c  00000000  00000000  00003ab4  2**0
+  9 .debug_loc    000010e3  00000000  00000000  00003b50  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000100  00000000  00000000  00004b40  2**0
+ 10 .debug_ranges 00000100  00000000  00000000  00004c33  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -41,7 +41,7 @@ Disassembly of section .text:
       24:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       28:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       2c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
-      30:	0c 94 72 09 	jmp	0x12e4	; 0x12e4 <__vector_12>
+      30:	0c 94 9a 09 	jmp	0x1334	; 0x1334 <__vector_12>
       34:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       38:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       3c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
@@ -94,7 +94,7 @@ Disassembly of section .text:
       aa:	b2 07       	cpc	r27, r18
       ac:	e1 f7       	brne	.-8      	; 0xa6 <.do_clear_bss_loop>
       ae:	0e 94 ce 07 	call	0xf9c	; 0xf9c <main>
-      b2:	0c 94 b7 09 	jmp	0x136e	; 0x136e <_exit>
+      b2:	0c 94 df 09 	jmp	0x13be	; 0x13be <_exit>
 
 000000b6 <__bad_interrupt>:
       b6:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -373,7 +373,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
      1d8:	e0 c5       	rjmp	.+3008   	; 0xd9a <__stack+0x49b>
      1da:	e2 5c       	subi	r30, 0xC2	; 194
      1dc:	ff 4f       	sbci	r31, 0xFF	; 255
-     1de:	0c 94 b1 09 	jmp	0x1362	; 0x1362 <__tablejump2__>
+     1de:	0c 94 d9 09 	jmp	0x13b2	; 0x13b2 <__tablejump2__>
           Can_set_idemsk();
           Can_config_rx();       
           break;
@@ -2170,7 +2170,7 @@ uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number)
 			delay_ms(500);
      dfc:	84 ef       	ldi	r24, 0xF4	; 244
      dfe:	91 e0       	ldi	r25, 0x01	; 1
-     e00:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
+     e00:	0e 94 c3 09 	call	0x1386	; 0x1386 <delay_ms>
 			LED_Reg_Write(0x00);
      e04:	80 e0       	ldi	r24, 0x00	; 0
      e06:	90 e0       	ldi	r25, 0x00	; 0
@@ -2469,7 +2469,7 @@ int main(void)
      f9e:	df 93       	push	r29
      fa0:	cd b7       	in	r28, 0x3d	; 61
      fa2:	de b7       	in	r29, 0x3e	; 62
-     fa4:	63 97       	sbiw	r28, 0x13	; 19
+     fa4:	62 97       	sbiw	r28, 0x12	; 18
      fa6:	0f b6       	in	r0, 0x3f	; 63
      fa8:	f8 94       	cli
      faa:	de bf       	out	0x3e, r29	; 62
@@ -2522,7 +2522,7 @@ void io_init(void) {
 	
 	io_init();	
 	timer_init();
-     fd0:	0e 94 81 09 	call	0x1302	; 0x1302 <timer_init>
+     fd0:	0e 94 a9 09 	call	0x1352	; 0x1352 <timer_init>
 	can_init(0);
      fd4:	80 e0       	ldi	r24, 0x00	; 0
      fd6:	0e 94 9e 00 	call	0x13c	; 0x13c <can_init>
@@ -2541,223 +2541,202 @@ void io_init(void) {
 	delay_ms(250);
      fe2:	8a ef       	ldi	r24, 0xFA	; 250
      fe4:	90 e0       	ldi	r25, 0x00	; 0
-     fe6:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
+     fe6:	0e 94 c3 09 	call	0x1386	; 0x1386 <delay_ms>
 	LED_Reg_Write(0x00);
      fea:	80 e0       	ldi	r24, 0x00	; 0
      fec:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
      ff0:	ce 01       	movw	r24, r28
      ff2:	01 96       	adiw	r24, 0x01	; 1
-     ff4:	9a 87       	std	Y+10, r25	; 0x0a
-     ff6:	89 87       	std	Y+9, r24	; 0x09
-     ff8:	8e 01       	movw	r16, r28
-     ffa:	07 5f       	subi	r16, 0xF7	; 247
-     ffc:	1f 4f       	sbci	r17, 0xFF	; 255
-     ffe:	fc 01       	movw	r30, r24
+     ff4:	5c 01       	movw	r10, r24
+     ff6:	8e 01       	movw	r16, r28
+     ff8:	07 5f       	subi	r16, 0xF7	; 247
+     ffa:	1f 4f       	sbci	r17, 0xFF	; 255
+     ffc:	fc 01       	movw	r30, r24
 	
 	for (i = 0; i < 8; i ++)
 	{
 		message_arr[i] = 0;			// Reset the message array to zero after each message.
-    1000:	11 92       	st	Z+, r1
+     ffe:	11 92       	st	Z+, r1
 	// Flash LEDs to indicate program startup
 	LED_Reg_Write(0x01);
 	delay_ms(250);
 	LED_Reg_Write(0x00);
 	
 	for (i = 0; i < 8; i ++)
-    1002:	e0 17       	cp	r30, r16
-    1004:	f1 07       	cpc	r31, r17
-    1006:	e1 f7       	brne	.-8      	; 0x1000 <main+0x64>
+    1000:	e0 17       	cp	r30, r16
+    1002:	f1 07       	cpc	r31, r17
+    1004:	e1 f7       	brne	.-8      	; 0xffe <main+0x62>
 	send_now = 0;
 	send_hk = 0;
 	
 	/* INITIALIZE MOB0 */
 
 	message.pt_data = &data0[0]; // point message object to first element of data buffer
-    1008:	84 e2       	ldi	r24, 0x24	; 36
-    100a:	91 e0       	ldi	r25, 0x01	; 1
-    100c:	90 93 08 01 	sts	0x0108, r25
-    1010:	80 93 07 01 	sts	0x0107, r24
+    1006:	84 e2       	ldi	r24, 0x24	; 36
+    1008:	91 e0       	ldi	r25, 0x01	; 1
+    100a:	90 93 08 01 	sts	0x0108, r25
+    100e:	80 93 07 01 	sts	0x0107, r24
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    1014:	10 92 0b 01 	sts	0x010B, r1
+    1012:	10 92 0b 01 	sts	0x010B, r1
 	message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-    1018:	84 e1       	ldi	r24, 0x14	; 20
-    101a:	90 e0       	ldi	r25, 0x00	; 0
-    101c:	90 93 03 01 	sts	0x0103, r25
-    1020:	80 93 02 01 	sts	0x0102, r24
+    1016:	84 e1       	ldi	r24, 0x14	; 20
+    1018:	90 e0       	ldi	r25, 0x00	; 0
+    101a:	90 93 03 01 	sts	0x0103, r25
+    101e:	80 93 02 01 	sts	0x0102, r24
 	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-    1024:	85 e0       	ldi	r24, 0x05	; 5
-    1026:	80 93 01 01 	sts	0x0101, r24
+    1022:	85 e0       	ldi	r24, 0x05	; 5
+    1024:	80 93 01 01 	sts	0x0101, r24
 	message.dlc = 8;			 // Max length of a CAN message.
-    102a:	88 e0       	ldi	r24, 0x08	; 8
-    102c:	80 93 06 01 	sts	0x0106, r24
+    1028:	88 e0       	ldi	r24, 0x08	; 8
+    102a:	80 93 06 01 	sts	0x0106, r24
 	mob_number = 0;
 		
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
-    1030:	60 e0       	ldi	r22, 0x00	; 0
-    1032:	80 e0       	ldi	r24, 0x00	; 0
-    1034:	91 e0       	ldi	r25, 0x01	; 1
-    1036:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
-    103a:	81 11       	cpse	r24, r1
-    103c:	f9 cf       	rjmp	.-14     	; 0x1030 <main+0x94>
+    102e:	60 e0       	ldi	r22, 0x00	; 0
+    1030:	80 e0       	ldi	r24, 0x00	; 0
+    1032:	91 e0       	ldi	r25, 0x01	; 1
+    1034:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    1038:	81 11       	cpse	r24, r1
+    103a:	f9 cf       	rjmp	.-14     	; 0x102e <main+0x92>
 	
 	/* INITIALIZE MOB5 */
 	
 	message.pt_data = &data5[0];	// point message object to first element of data buffer
-    103e:	85 e3       	ldi	r24, 0x35	; 53
-    1040:	91 e0       	ldi	r25, 0x01	; 1
-    1042:	90 93 08 01 	sts	0x0108, r25
-    1046:	80 93 07 01 	sts	0x0107, r24
+    103c:	85 e3       	ldi	r24, 0x35	; 53
+    103e:	91 e0       	ldi	r25, 0x01	; 1
+    1040:	90 93 08 01 	sts	0x0108, r25
+    1044:	80 93 07 01 	sts	0x0107, r24
 	message.ctrl.ide = 0;			// standard CAN frame type (2.0A)
-    104a:	10 92 0b 01 	sts	0x010B, r1
+    1048:	10 92 0b 01 	sts	0x010B, r1
 	message.id.std = SUB0_ID5;		// populate ID field with ID Tag
-    104e:	89 e1       	ldi	r24, 0x19	; 25
-    1050:	90 e0       	ldi	r25, 0x00	; 0
-    1052:	90 93 03 01 	sts	0x0103, r25
-    1056:	80 93 02 01 	sts	0x0102, r24
+    104c:	89 e1       	ldi	r24, 0x19	; 25
+    104e:	90 e0       	ldi	r25, 0x00	; 0
+    1050:	90 93 03 01 	sts	0x0103, r25
+    1054:	80 93 02 01 	sts	0x0102, r24
 	message.cmd = CMD_RX_DATA;		// assign this as a producer message object (Housekeeping MOB).
-    105a:	85 e0       	ldi	r24, 0x05	; 5
-    105c:	80 93 01 01 	sts	0x0101, r24
+    1058:	85 e0       	ldi	r24, 0x05	; 5
+    105a:	80 93 01 01 	sts	0x0101, r24
 	message.dlc = 8;				// Max length of a CAN message.
-    1060:	88 e0       	ldi	r24, 0x08	; 8
-    1062:	80 93 06 01 	sts	0x0106, r24
+    105e:	88 e0       	ldi	r24, 0x08	; 8
+    1060:	80 93 06 01 	sts	0x0106, r24
 	mob_number = 5;
 		
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOB to configure
-    1066:	65 e0       	ldi	r22, 0x05	; 5
-    1068:	80 e0       	ldi	r24, 0x00	; 0
-    106a:	91 e0       	ldi	r25, 0x01	; 1
-    106c:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
-    1070:	81 11       	cpse	r24, r1
-    1072:	f9 cf       	rjmp	.-14     	; 0x1066 <main+0xca>
+    1064:	65 e0       	ldi	r22, 0x05	; 5
+    1066:	80 e0       	ldi	r24, 0x00	; 0
+    1068:	91 e0       	ldi	r25, 0x01	; 1
+    106a:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    106e:	81 11       	cpse	r24, r1
+    1070:	f9 cf       	rjmp	.-14     	; 0x1064 <main+0xc8>
+    1072:	1a 86       	std	Y+10, r1	; 0x0a
+    1074:	19 86       	std	Y+9, r1	; 0x09
 
 	
     while(1)
     {
 		
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
-    1074:	0f 2e       	mov	r0, r31
-    1076:	f7 e0       	ldi	r31, 0x07	; 7
-    1078:	cf 2e       	mov	r12, r31
-    107a:	f1 e0       	ldi	r31, 0x01	; 1
-    107c:	df 2e       	mov	r13, r31
-    107e:	f0 2d       	mov	r31, r0
+    1076:	0f 2e       	mov	r0, r31
+    1078:	f7 e0       	ldi	r31, 0x07	; 7
+    107a:	cf 2e       	mov	r12, r31
+    107c:	f1 e0       	ldi	r31, 0x01	; 1
+    107e:	df 2e       	mov	r13, r31
+    1080:	f0 2d       	mov	r31, r0
+    1082:	a4 e2       	ldi	r26, 0x24	; 36
+    1084:	b1 e0       	ldi	r27, 0x01	; 1
+    1086:	ad 87       	std	Y+13, r26	; 0x0d
+    1088:	be 87       	std	Y+14, r27	; 0x0e
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    1080:	0f 2e       	mov	r0, r31
-    1082:	fb e0       	ldi	r31, 0x0B	; 11
-    1084:	4f 2e       	mov	r4, r31
-    1086:	f1 e0       	ldi	r31, 0x01	; 1
-    1088:	5f 2e       	mov	r5, r31
-    108a:	f0 2d       	mov	r31, r0
+    108a:	0f 2e       	mov	r0, r31
+    108c:	fb e0       	ldi	r31, 0x0B	; 11
+    108e:	8f 2e       	mov	r8, r31
+    1090:	f1 e0       	ldi	r31, 0x01	; 1
+    1092:	9f 2e       	mov	r9, r31
+    1094:	f0 2d       	mov	r31, r0
 		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-    108c:	0f 2e       	mov	r0, r31
-    108e:	f2 e0       	ldi	r31, 0x02	; 2
-    1090:	ef 2e       	mov	r14, r31
-    1092:	f1 e0       	ldi	r31, 0x01	; 1
-    1094:	ff 2e       	mov	r15, r31
-    1096:	f0 2d       	mov	r31, r0
+    1096:	0f 2e       	mov	r0, r31
+    1098:	f2 e0       	ldi	r31, 0x02	; 2
+    109a:	ef 2e       	mov	r14, r31
+    109c:	f1 e0       	ldi	r31, 0x01	; 1
+    109e:	ff 2e       	mov	r15, r31
+    10a0:	f0 2d       	mov	r31, r0
+    10a2:	f4 e1       	ldi	r31, 0x14	; 20
+    10a4:	ff 87       	std	Y+15, r31	; 0x0f
+    10a6:	18 8a       	std	Y+16, r1	; 0x10
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-    1098:	0f 2e       	mov	r0, r31
-    109a:	f1 e0       	ldi	r31, 0x01	; 1
-    109c:	6f 2e       	mov	r6, r31
-    109e:	f1 e0       	ldi	r31, 0x01	; 1
-    10a0:	7f 2e       	mov	r7, r31
-    10a2:	f0 2d       	mov	r31, r0
-		message.dlc = 8;			 // Max length of a CAN message.
-    10a4:	0f 2e       	mov	r0, r31
-    10a6:	f6 e0       	ldi	r31, 0x06	; 6
-    10a8:	2f 2e       	mov	r2, r31
+    10a8:	0f 2e       	mov	r0, r31
     10aa:	f1 e0       	ldi	r31, 0x01	; 1
-    10ac:	3f 2e       	mov	r3, r31
-    10ae:	f0 2d       	mov	r31, r0
-
-	
-    while(1)
-    {
-		
-		message.pt_data = &data0[0]; // point message object to first element of data buffer
-    10b0:	a4 e2       	ldi	r26, 0x24	; 36
-    10b2:	b1 e0       	ldi	r27, 0x01	; 1
-    10b4:	ad 87       	std	Y+13, r26	; 0x0d
-    10b6:	be 87       	std	Y+14, r27	; 0x0e
-		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-    10b8:	f4 e1       	ldi	r31, 0x14	; 20
-    10ba:	ff 87       	std	Y+15, r31	; 0x0f
-    10bc:	18 8a       	std	Y+16, r1	; 0x10
-	sei();
-	
-	// Flash LEDs to indicate program startup
-	LED_Reg_Write(0x01);
-	delay_ms(250);
-	LED_Reg_Write(0x00);
-    10be:	a1 2c       	mov	r10, r1
-    {
-		
-		message.pt_data = &data0[0]; // point message object to first element of data buffer
-		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-    10c0:	0f 2e       	mov	r0, r31
-    10c2:	f5 e0       	ldi	r31, 0x05	; 5
-    10c4:	bf 2e       	mov	r11, r31
-    10c6:	f0 2d       	mov	r31, r0
-    10c8:	bb 8a       	std	Y+19, r11	; 0x13
+    10ac:	6f 2e       	mov	r6, r31
+    10ae:	f1 e0       	ldi	r31, 0x01	; 1
+    10b0:	7f 2e       	mov	r7, r31
+    10b2:	f0 2d       	mov	r31, r0
+    10b4:	0f 2e       	mov	r0, r31
+    10b6:	f5 e0       	ldi	r31, 0x05	; 5
+    10b8:	5f 2e       	mov	r5, r31
+    10ba:	f0 2d       	mov	r31, r0
+    10bc:	5b 86       	std	Y+11, r5	; 0x0b
 		message.dlc = 8;			 // Max length of a CAN message.
-    10ca:	88 e0       	ldi	r24, 0x08	; 8
-    10cc:	8c 87       	std	Y+12, r24	; 0x0c
+    10be:	0f 2e       	mov	r0, r31
+    10c0:	f6 e0       	ldi	r31, 0x06	; 6
+    10c2:	2f 2e       	mov	r2, r31
+    10c4:	f1 e0       	ldi	r31, 0x01	; 1
+    10c6:	3f 2e       	mov	r3, r31
+    10c8:	f0 2d       	mov	r31, r0
+    10ca:	68 94       	set
+    10cc:	44 24       	eor	r4, r4
+    10ce:	43 f8       	bld	r4, 3
+    10d0:	4c 86       	std	Y+12, r4	; 0x0c
 		{
 			if(message.status == MOB_RX_COMPLETED)
 			{
 				for (i = 0; i < 8; i ++)
 				{
 					message_arr[i] = *(message.pt_data + i);
-    10ce:	99 85       	ldd	r25, Y+9	; 0x09
-    10d0:	99 8b       	std	Y+17, r25	; 0x11
-    10d2:	aa 85       	ldd	r26, Y+10	; 0x0a
-    10d4:	aa 8b       	std	Y+18, r26	; 0x12
-			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure	
-		}
-		
-			message.pt_data = &data5[0]; // point message object to first element of data buffer
-			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-			message.id.std = SUB0_ID5;  // populate ID field with ID Tag
+    10d2:	a9 8a       	std	Y+17, r10	; 0x11
+    10d4:	ba 8a       	std	Y+18, r11	; 0x12
     10d6:	0f 2e       	mov	r0, r31
-    10d8:	f9 e1       	ldi	r31, 0x19	; 25
-    10da:	8f 2e       	mov	r8, r31
-    10dc:	91 2c       	mov	r9, r1
-    10de:	f0 2d       	mov	r31, r0
-    10e0:	ab 86       	std	Y+11, r10	; 0x0b
-    10e2:	0f 2e       	mov	r0, r31
-    10e4:	f5 e0       	ldi	r31, 0x05	; 5
-    10e6:	af 2e       	mov	r10, r31
-    10e8:	f0 2d       	mov	r31, r0
+    10d8:	f4 e2       	ldi	r31, 0x24	; 36
+    10da:	af 2e       	mov	r10, r31
+    10dc:	f1 e0       	ldi	r31, 0x01	; 1
+    10de:	bf 2e       	mov	r11, r31
+    10e0:	f0 2d       	mov	r31, r0
+    10e2:	01 c0       	rjmp	.+2      	; 0x10e6 <main+0x14a>
+		
+			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob5 to configure
+		
+			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
+		
+			send_hk = 0;
+    10e4:	1a 86       	std	Y+10, r1	; 0x0a
 
 	
     while(1)
     {
 		
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
-    10ea:	8d 85       	ldd	r24, Y+13	; 0x0d
-    10ec:	f6 01       	movw	r30, r12
-    10ee:	80 83       	st	Z, r24
-    10f0:	9e 85       	ldd	r25, Y+14	; 0x0e
-    10f2:	91 83       	std	Z+1, r25	; 0x01
+    10e6:	ed 85       	ldd	r30, Y+13	; 0x0d
+    10e8:	d6 01       	movw	r26, r12
+    10ea:	ec 93       	st	X, r30
+    10ec:	fe 85       	ldd	r31, Y+14	; 0x0e
+    10ee:	11 96       	adiw	r26, 0x01	; 1
+    10f0:	fc 93       	st	X, r31
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    10f4:	d2 01       	movw	r26, r4
-    10f6:	1c 92       	st	X, r1
+    10f2:	d4 01       	movw	r26, r8
+    10f4:	1c 92       	st	X, r1
 		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-    10f8:	8f 85       	ldd	r24, Y+15	; 0x0f
-    10fa:	f7 01       	movw	r30, r14
-    10fc:	80 83       	st	Z, r24
-    10fe:	98 89       	ldd	r25, Y+16	; 0x10
-    1100:	91 83       	std	Z+1, r25	; 0x01
+    10f6:	8f 85       	ldd	r24, Y+15	; 0x0f
+    10f8:	f7 01       	movw	r30, r14
+    10fa:	80 83       	st	Z, r24
+    10fc:	98 89       	ldd	r25, Y+16	; 0x10
+    10fe:	91 83       	std	Z+1, r25	; 0x01
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
+    1100:	eb 85       	ldd	r30, Y+11	; 0x0b
     1102:	d3 01       	movw	r26, r6
-    1104:	ac 92       	st	X, r10
+    1104:	ec 93       	st	X, r30
 		message.dlc = 8;			 // Max length of a CAN message.
-    1106:	8c 85       	ldd	r24, Y+12	; 0x0c
-    1108:	f1 01       	movw	r30, r2
-    110a:	80 83       	st	Z, r24
+    1106:	ec 85       	ldd	r30, Y+12	; 0x0c
+    1108:	d1 01       	movw	r26, r2
+    110a:	ec 93       	st	X, r30
 		mob_number = 0;
 		
 		
@@ -2768,7 +2747,7 @@ void io_init(void) {
     1112:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
     1116:	81 30       	cpi	r24, 0x01	; 1
     1118:	09 f4       	brne	.+2      	; 0x111c <main+0x180>
-    111a:	50 c0       	rjmp	.+160    	; 0x11bc <main+0x220>
+    111a:	4f c0       	rjmp	.+158    	; 0x11ba <main+0x21e>
 		{
 			if(message.status == MOB_RX_COMPLETED)
     111c:	a9 e0       	ldi	r26, 0x09	; 9
@@ -2833,13 +2812,13 @@ void io_init(void) {
 					delay_ms(500);
     1170:	84 ef       	ldi	r24, 0xF4	; 244
     1172:	91 e0       	ldi	r25, 0x01	; 1
-    1174:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
+    1174:	0e 94 c3 09 	call	0x1386	; 0x1386 <delay_ms>
 					LED_Reg_Write(0x00);
     1178:	80 e0       	ldi	r24, 0x00	; 0
     117a:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
 					send_now = 1;
     117e:	f1 e0       	ldi	r31, 0x01	; 1
-    1180:	fb 87       	std	Y+11, r31	; 0x0b
+    1180:	f9 87       	std	Y+9, r31	; 0x09
     1182:	e9 89       	ldd	r30, Y+17	; 0x11
     1184:	fa 89       	ldd	r31, Y+18	; 0x12
 				}
@@ -2867,7 +2846,7 @@ void io_init(void) {
     1194:	ed 93       	st	X+, r30
     1196:	fc 93       	st	X, r31
 			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    1198:	d2 01       	movw	r26, r4
+    1198:	d4 01       	movw	r26, r8
     119a:	1c 92       	st	X, r1
 			message.id.std = SUB0_ID0;  // populate ID field with ID Tag
     119c:	84 e1       	ldi	r24, 0x14	; 20
@@ -2876,53 +2855,53 @@ void io_init(void) {
     11a2:	11 82       	std	Z+1, r1	; 0x01
 			message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
     11a4:	d3 01       	movw	r26, r6
-    11a6:	bc 92       	st	X, r11
+    11a6:	5c 92       	st	X, r5
 			message.dlc = 8;			 // Max length of a CAN message.
-    11a8:	88 e0       	ldi	r24, 0x08	; 8
-    11aa:	f1 01       	movw	r30, r2
-    11ac:	80 83       	st	Z, r24
+    11a8:	f1 01       	movw	r30, r2
+    11aa:	40 82       	st	Z, r4
 			mob_number = 0;
 			
 			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure	
-    11ae:	60 e0       	ldi	r22, 0x00	; 0
-    11b0:	80 e0       	ldi	r24, 0x00	; 0
-    11b2:	91 e0       	ldi	r25, 0x01	; 1
-    11b4:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
-    11b8:	81 11       	cpse	r24, r1
-    11ba:	f9 cf       	rjmp	.-14     	; 0x11ae <main+0x212>
+    11ac:	60 e0       	ldi	r22, 0x00	; 0
+    11ae:	80 e0       	ldi	r24, 0x00	; 0
+    11b0:	91 e0       	ldi	r25, 0x01	; 1
+    11b2:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    11b6:	81 11       	cpse	r24, r1
+    11b8:	f9 cf       	rjmp	.-14     	; 0x11ac <main+0x210>
 		}
 		
 			message.pt_data = &data5[0]; // point message object to first element of data buffer
-    11bc:	e5 e3       	ldi	r30, 0x35	; 53
-    11be:	f1 e0       	ldi	r31, 0x01	; 1
-    11c0:	d6 01       	movw	r26, r12
-    11c2:	ed 93       	st	X+, r30
-    11c4:	fc 93       	st	X, r31
+    11ba:	e5 e3       	ldi	r30, 0x35	; 53
+    11bc:	f1 e0       	ldi	r31, 0x01	; 1
+    11be:	d6 01       	movw	r26, r12
+    11c0:	ed 93       	st	X+, r30
+    11c2:	fc 93       	st	X, r31
 			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    11c6:	d2 01       	movw	r26, r4
-    11c8:	1c 92       	st	X, r1
+    11c4:	d4 01       	movw	r26, r8
+    11c6:	1c 92       	st	X, r1
 			message.id.std = SUB0_ID5;  // populate ID field with ID Tag
-    11ca:	f7 01       	movw	r30, r14
-    11cc:	91 82       	std	Z+1, r9	; 0x01
-    11ce:	80 82       	st	Z, r8
+    11c8:	89 e1       	ldi	r24, 0x19	; 25
+    11ca:	90 e0       	ldi	r25, 0x00	; 0
+    11cc:	f7 01       	movw	r30, r14
+    11ce:	91 83       	std	Z+1, r25	; 0x01
+    11d0:	80 83       	st	Z, r24
 			message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-    11d0:	d3 01       	movw	r26, r6
-    11d2:	bc 92       	st	X, r11
+    11d2:	d3 01       	movw	r26, r6
+    11d4:	5c 92       	st	X, r5
 			message.dlc = 8;			 // Max length of a CAN message.
-    11d4:	88 e0       	ldi	r24, 0x08	; 8
     11d6:	f1 01       	movw	r30, r2
-    11d8:	80 83       	st	Z, r24
+    11d8:	40 82       	st	Z, r4
 			mob_number = 5;
 			
 			
 			if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a housekeeping request to come in.
-    11da:	6b 2d       	mov	r22, r11
+    11da:	65 2d       	mov	r22, r5
     11dc:	80 e0       	ldi	r24, 0x00	; 0
     11de:	91 e0       	ldi	r25, 0x01	; 1
     11e0:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
     11e4:	81 30       	cpi	r24, 0x01	; 1
     11e6:	09 f4       	brne	.+2      	; 0x11ea <main+0x24e>
-    11e8:	4f c0       	rjmp	.+158    	; 0x1288 <main+0x2ec>
+    11e8:	50 c0       	rjmp	.+160    	; 0x128a <main+0x2ee>
 			{
 				if(message.status == MOB_RX_COMPLETED)
     11ea:	a9 e0       	ldi	r26, 0x09	; 9
@@ -2982,18 +2961,18 @@ void io_init(void) {
     1236:	61 f4       	brne	.+24     	; 0x1250 <main+0x2b4>
 					{
 						LED_Reg_Write(0x08);	//Toggle LED3 when housekeeping was requested.
-    1238:	88 e0       	ldi	r24, 0x08	; 8
+    1238:	84 2d       	mov	r24, r4
     123a:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
 						delay_ms(500);
     123e:	84 ef       	ldi	r24, 0xF4	; 244
     1240:	91 e0       	ldi	r25, 0x01	; 1
-    1242:	0e 94 9b 09 	call	0x1336	; 0x1336 <delay_ms>
+    1242:	0e 94 c3 09 	call	0x1386	; 0x1386 <delay_ms>
 						LED_Reg_Write(0x00);
     1246:	80 e0       	ldi	r24, 0x00	; 0
     1248:	0e 94 cb 07 	call	0xf96	; 0xf96 <LED_Reg_Write>
-						send_now = 1;
+						send_hk = 1;
     124c:	f1 e0       	ldi	r31, 0x01	; 1
-    124e:	fb 87       	std	Y+11, r31	; 0x0b
+    124e:	fa 87       	std	Y+10, r31	; 0x0a
     1250:	e9 89       	ldd	r30, Y+17	; 0x11
     1252:	fa 89       	ldd	r31, Y+18	; 0x12
 					}
@@ -3004,7 +2983,7 @@ void io_init(void) {
 						LED_Reg_Write(0x08);	//Toggle LED3 when housekeeping was requested.
 						delay_ms(500);
 						LED_Reg_Write(0x00);
-						send_now = 1;
+						send_hk = 1;
 					}
 					for (i = 0; i < 8; i ++)
     1256:	0e 17       	cp	r16, r30
@@ -3021,213 +3000,280 @@ void io_init(void) {
     1262:	ed 93       	st	X+, r30
     1264:	fc 93       	st	X, r31
 				message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    1266:	d2 01       	movw	r26, r4
+    1266:	d4 01       	movw	r26, r8
     1268:	1c 92       	st	X, r1
 				message.id.std = SUB0_ID5;  // populate ID field with ID Tag
-    126a:	f7 01       	movw	r30, r14
-    126c:	91 82       	std	Z+1, r9	; 0x01
-    126e:	80 82       	st	Z, r8
+    126a:	89 e1       	ldi	r24, 0x19	; 25
+    126c:	90 e0       	ldi	r25, 0x00	; 0
+    126e:	f7 01       	movw	r30, r14
+    1270:	91 83       	std	Z+1, r25	; 0x01
+    1272:	80 83       	st	Z, r24
 				message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-    1270:	d3 01       	movw	r26, r6
-    1272:	bc 92       	st	X, r11
+    1274:	d3 01       	movw	r26, r6
+    1276:	5c 92       	st	X, r5
 				message.dlc = 8;			 // Max length of a CAN message.
-    1274:	88 e0       	ldi	r24, 0x08	; 8
-    1276:	f1 01       	movw	r30, r2
-    1278:	80 83       	st	Z, r24
+    1278:	f1 01       	movw	r30, r2
+    127a:	40 82       	st	Z, r4
 				mob_number = 5;
 				
 				while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
-    127a:	6b 2d       	mov	r22, r11
-    127c:	80 e0       	ldi	r24, 0x00	; 0
-    127e:	91 e0       	ldi	r25, 0x01	; 1
-    1280:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
-    1284:	81 11       	cpse	r24, r1
-    1286:	f9 cf       	rjmp	.-14     	; 0x127a <main+0x2de>
+    127c:	65 2d       	mov	r22, r5
+    127e:	80 e0       	ldi	r24, 0x00	; 0
+    1280:	91 e0       	ldi	r25, 0x01	; 1
+    1282:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    1286:	81 11       	cpse	r24, r1
+    1288:	f9 cf       	rjmp	.-14     	; 0x127c <main+0x2e0>
 			}	
 	
 		
 		/*	Message Object 4  */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
-    1288:	9b 85       	ldd	r25, Y+11	; 0x0b
-    128a:	91 30       	cpi	r25, 0x01	; 1
-    128c:	09 f0       	breq	.+2      	; 0x1290 <main+0x2f4>
-    128e:	2d cf       	rjmp	.-422    	; 0x10ea <main+0x14e>
+    128a:	f9 85       	ldd	r31, Y+9	; 0x09
+    128c:	f1 30       	cpi	r31, 0x01	; 1
+    128e:	39 f5       	brne	.+78     	; 0x12de <main+0x342>
 		{	
 			message.pt_data = &data4[0]; // point message object to first element of data buffer
-    1290:	8c e1       	ldi	r24, 0x1C	; 28
-    1292:	91 e0       	ldi	r25, 0x01	; 1
+    1290:	ec e1       	ldi	r30, 0x1C	; 28
+    1292:	f1 e0       	ldi	r31, 0x01	; 1
     1294:	d6 01       	movw	r26, r12
-    1296:	8d 93       	st	X+, r24
-    1298:	9c 93       	st	X, r25
+    1296:	ed 93       	st	X+, r30
+    1298:	fc 93       	st	X, r31
 			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-    129a:	f2 01       	movw	r30, r4
-    129c:	10 82       	st	Z, r1
+    129a:	d4 01       	movw	r26, r8
+    129c:	1c 92       	st	X, r1
 			message.id.std = NODE0_ID;  // populate ID field with ID Tag
     129e:	8a e0       	ldi	r24, 0x0A	; 10
     12a0:	90 e0       	ldi	r25, 0x00	; 0
-    12a2:	d7 01       	movw	r26, r14
-    12a4:	8d 93       	st	X+, r24
-    12a6:	9c 93       	st	X, r25
+    12a2:	f7 01       	movw	r30, r14
+    12a4:	91 83       	std	Z+1, r25	; 0x01
+    12a6:	80 83       	st	Z, r24
 			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
     12a8:	82 e0       	ldi	r24, 0x02	; 2
-    12aa:	f3 01       	movw	r30, r6
-    12ac:	80 83       	st	Z, r24
+    12aa:	d3 01       	movw	r26, r6
+    12ac:	8c 93       	st	X, r24
 			message.dlc = 8;			 // Max length of a CAN message.
-    12ae:	88 e0       	ldi	r24, 0x08	; 8
-    12b0:	d1 01       	movw	r26, r2
-    12b2:	8c 93       	st	X, r24
-    12b4:	ec e1       	ldi	r30, 0x1C	; 28
-    12b6:	f1 e0       	ldi	r31, 0x01	; 1
-    12b8:	84 e2       	ldi	r24, 0x24	; 36
-    12ba:	91 e0       	ldi	r25, 0x01	; 1
+    12ae:	f1 01       	movw	r30, r2
+    12b0:	40 82       	st	Z, r4
+    12b2:	ec e1       	ldi	r30, 0x1C	; 28
+    12b4:	f1 e0       	ldi	r31, 0x01	; 1
 			mob_number = 4;
 		
 			for (i = 0; i < 8; i ++)
 			{
 				data4[i] = 0xAB;		// Message to be sent back to the OBC.
-    12bc:	2b ea       	ldi	r18, 0xAB	; 171
-    12be:	21 93       	st	Z+, r18
+    12b6:	8b ea       	ldi	r24, 0xAB	; 171
+    12b8:	81 93       	st	Z+, r24
 			message.id.std = NODE0_ID;  // populate ID field with ID Tag
 			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
 			message.dlc = 8;			 // Max length of a CAN message.
 			mob_number = 4;
 		
 			for (i = 0; i < 8; i ++)
-    12c0:	e8 17       	cp	r30, r24
-    12c2:	f9 07       	cpc	r31, r25
-    12c4:	e1 f7       	brne	.-8      	; 0x12be <main+0x322>
+    12ba:	ea 15       	cp	r30, r10
+    12bc:	fb 05       	cpc	r31, r11
+    12be:	e1 f7       	brne	.-8      	; 0x12b8 <main+0x31c>
 			{
 				data4[i] = 0xAB;		// Message to be sent back to the OBC.
 			}
 			
 			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb4 to configure
-    12c6:	64 e0       	ldi	r22, 0x04	; 4
-    12c8:	80 e0       	ldi	r24, 0x00	; 0
-    12ca:	91 e0       	ldi	r25, 0x01	; 1
-    12cc:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
-    12d0:	81 11       	cpse	r24, r1
-    12d2:	f9 cf       	rjmp	.-14     	; 0x12c6 <main+0x32a>
+    12c0:	64 e0       	ldi	r22, 0x04	; 4
+    12c2:	80 e0       	ldi	r24, 0x00	; 0
+    12c4:	91 e0       	ldi	r25, 0x01	; 1
+    12c6:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    12ca:	81 11       	cpse	r24, r1
+    12cc:	f9 cf       	rjmp	.-14     	; 0x12c0 <main+0x324>
 
 			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
-    12d4:	64 e0       	ldi	r22, 0x04	; 4
-    12d6:	80 e0       	ldi	r24, 0x00	; 0
-    12d8:	91 e0       	ldi	r25, 0x01	; 1
-    12da:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
-    12de:	81 30       	cpi	r24, 0x01	; 1
-    12e0:	c9 f3       	breq	.-14     	; 0x12d4 <main+0x338>
-    12e2:	ed ce       	rjmp	.-550    	; 0x10be <main+0x122>
+    12ce:	64 e0       	ldi	r22, 0x04	; 4
+    12d0:	80 e0       	ldi	r24, 0x00	; 0
+    12d2:	91 e0       	ldi	r25, 0x01	; 1
+    12d4:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
+    12d8:	81 30       	cpi	r24, 0x01	; 1
+    12da:	c9 f3       	breq	.-14     	; 0x12ce <main+0x332>
+			
+			send_now = 0;
+    12dc:	19 86       	std	Y+9, r1	; 0x09
+		}
+				
+		if (send_hk == 1)		// send a reply to the message that was received!
+    12de:	fa 85       	ldd	r31, Y+10	; 0x0a
+    12e0:	f1 30       	cpi	r31, 0x01	; 1
+    12e2:	09 f0       	breq	.+2      	; 0x12e6 <main+0x34a>
+    12e4:	00 cf       	rjmp	.-512    	; 0x10e6 <main+0x14a>
+		{
+			message.pt_data = &data4[0]; // point message object to first element of data buffer
+    12e6:	ec e1       	ldi	r30, 0x1C	; 28
+    12e8:	f1 e0       	ldi	r31, 0x01	; 1
+    12ea:	d6 01       	movw	r26, r12
+    12ec:	ed 93       	st	X+, r30
+    12ee:	fc 93       	st	X, r31
+			message.ctrl.ide = 0;		 // standard can frame type (2.0a)
+    12f0:	d4 01       	movw	r26, r8
+    12f2:	1c 92       	st	X, r1
+			message.id.std = NODE0_ID;  // populate id field with id tag
+    12f4:	8a e0       	ldi	r24, 0x0A	; 10
+    12f6:	90 e0       	ldi	r25, 0x00	; 0
+    12f8:	f7 01       	movw	r30, r14
+    12fa:	91 83       	std	Z+1, r25	; 0x01
+    12fc:	80 83       	st	Z, r24
+			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
+    12fe:	82 e0       	ldi	r24, 0x02	; 2
+    1300:	d3 01       	movw	r26, r6
+    1302:	8c 93       	st	X, r24
+			message.dlc = 8;			 // max length of a can message.
+    1304:	f1 01       	movw	r30, r2
+    1306:	40 82       	st	Z, r4
+    1308:	ec e1       	ldi	r30, 0x1C	; 28
+    130a:	f1 e0       	ldi	r31, 0x01	; 1
+			mob_number = 4;
+		
+			for (i = 0; i < 8; i ++)
+			{
+				data4[i] = 0xF0;		// message to be sent back to the OBC.
+    130c:	80 ef       	ldi	r24, 0xF0	; 240
+    130e:	81 93       	st	Z+, r24
+			message.id.std = NODE0_ID;  // populate id field with id tag
+			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
+			message.dlc = 8;			 // max length of a can message.
+			mob_number = 4;
+		
+			for (i = 0; i < 8; i ++)
+    1310:	ea 15       	cp	r30, r10
+    1312:	fb 05       	cpc	r31, r11
+    1314:	e1 f7       	brne	.-8      	; 0x130e <main+0x372>
+			{
+				data4[i] = 0xF0;		// message to be sent back to the OBC.
+			}
+		
+			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob5 to configure
+    1316:	64 e0       	ldi	r22, 0x04	; 4
+    1318:	80 e0       	ldi	r24, 0x00	; 0
+    131a:	91 e0       	ldi	r25, 0x01	; 1
+    131c:	0e 94 ad 00 	call	0x15a	; 0x15a <can_cmd>
+    1320:	81 11       	cpse	r24, r1
+    1322:	f9 cf       	rjmp	.-14     	; 0x1316 <main+0x37a>
+		
+			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
+    1324:	64 e0       	ldi	r22, 0x04	; 4
+    1326:	80 e0       	ldi	r24, 0x00	; 0
+    1328:	91 e0       	ldi	r25, 0x01	; 1
+    132a:	0e 94 d9 06 	call	0xdb2	; 0xdb2 <can_get_status>
+    132e:	81 30       	cpi	r24, 0x01	; 1
+    1330:	c9 f3       	breq	.-14     	; 0x1324 <main+0x388>
+    1332:	d8 ce       	rjmp	.-592    	; 0x10e4 <main+0x148>
 
-000012e4 <__vector_12>:
+00001334 <__vector_12>:
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "Timer.h"
 
 ISR(TIMER1_COMPA_vect) {
-    12e4:	1f 92       	push	r1
-    12e6:	0f 92       	push	r0
-    12e8:	0f b6       	in	r0, 0x3f	; 63
-    12ea:	0f 92       	push	r0
-    12ec:	11 24       	eor	r1, r1
-    12ee:	8f 93       	push	r24
+    1334:	1f 92       	push	r1
+    1336:	0f 92       	push	r0
+    1338:	0f b6       	in	r0, 0x3f	; 63
+    133a:	0f 92       	push	r0
+    133c:	11 24       	eor	r1, r1
+    133e:	8f 93       	push	r24
 	CTC_flag = 1;
-    12f0:	81 e0       	ldi	r24, 0x01	; 1
-    12f2:	80 93 2c 01 	sts	0x012C, r24
+    1340:	81 e0       	ldi	r24, 0x01	; 1
+    1342:	80 93 2c 01 	sts	0x012C, r24
 }
-    12f6:	8f 91       	pop	r24
-    12f8:	0f 90       	pop	r0
-    12fa:	0f be       	out	0x3f, r0	; 63
-    12fc:	0f 90       	pop	r0
-    12fe:	1f 90       	pop	r1
-    1300:	18 95       	reti
+    1346:	8f 91       	pop	r24
+    1348:	0f 90       	pop	r0
+    134a:	0f be       	out	0x3f, r0	; 63
+    134c:	0f 90       	pop	r0
+    134e:	1f 90       	pop	r1
+    1350:	18 95       	reti
 
-00001302 <timer_init>:
+00001352 <timer_init>:
 
 // This function initializes a 16-bit timer used for delays.
 void timer_init(void) {
 	
 	TIMSK1 = 0x00; //Disable timer interrupts
-    1302:	10 92 6f 00 	sts	0x006F, r1
+    1352:	10 92 6f 00 	sts	0x006F, r1
 	TCCR1A = 0x00; //Timer not connected to any pins
-    1306:	10 92 80 00 	sts	0x0080, r1
+    1356:	10 92 80 00 	sts	0x0080, r1
 	TCCR1B = 0x0A; //CTC mode; Timer_Rate = System_CLK/8 = 1MHz
-    130a:	8a e0       	ldi	r24, 0x0A	; 10
-    130c:	80 93 81 00 	sts	0x0081, r24
-    1310:	08 95       	ret
+    135a:	8a e0       	ldi	r24, 0x0A	; 10
+    135c:	80 93 81 00 	sts	0x0081, r24
+    1360:	08 95       	ret
 
-00001312 <delay_us>:
+00001362 <delay_us>:
 // if timer rate is set to 1MHz frequency. For example, this 
 // project uses a system clock of 8MHz. Timer1 rate is set to
 // System Clock divided by 8 which is 1MHz (in timer_init). 
 // Therefore the "us" parameter truly is 1us.
 void delay_us(uint16_t us) {
 	CTC_flag = 0; //Clear CTC Interrupt flag
-    1312:	10 92 2c 01 	sts	0x012C, r1
+    1362:	10 92 2c 01 	sts	0x012C, r1
 	TCNT1 = 0x0000; //Clear timer
-    1316:	10 92 85 00 	sts	0x0085, r1
-    131a:	10 92 84 00 	sts	0x0084, r1
+    1366:	10 92 85 00 	sts	0x0085, r1
+    136a:	10 92 84 00 	sts	0x0084, r1
 	OCR1A = us; //Load compare value with desired delay in us
-    131e:	90 93 89 00 	sts	0x0089, r25
-    1322:	80 93 88 00 	sts	0x0088, r24
+    136e:	90 93 89 00 	sts	0x0089, r25
+    1372:	80 93 88 00 	sts	0x0088, r24
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
-    1326:	82 e0       	ldi	r24, 0x02	; 2
-    1328:	80 93 6f 00 	sts	0x006F, r24
+    1376:	82 e0       	ldi	r24, 0x02	; 2
+    1378:	80 93 6f 00 	sts	0x006F, r24
 	while(!CTC_flag); //wait for the designated number of us
-    132c:	80 91 2c 01 	lds	r24, 0x012C
-    1330:	88 23       	and	r24, r24
-    1332:	e1 f3       	breq	.-8      	; 0x132c <delay_us+0x1a>
+    137c:	80 91 2c 01 	lds	r24, 0x012C
+    1380:	88 23       	and	r24, r24
+    1382:	e1 f3       	breq	.-8      	; 0x137c <delay_us+0x1a>
 }
-    1334:	08 95       	ret
+    1384:	08 95       	ret
 
-00001336 <delay_ms>:
+00001386 <delay_ms>:
 
 void delay_ms(uint16_t ms) {
-    1336:	0f 93       	push	r16
-    1338:	1f 93       	push	r17
-    133a:	cf 93       	push	r28
-    133c:	df 93       	push	r29
-    133e:	8c 01       	movw	r16, r24
+    1386:	0f 93       	push	r16
+    1388:	1f 93       	push	r17
+    138a:	cf 93       	push	r28
+    138c:	df 93       	push	r29
+    138e:	8c 01       	movw	r16, r24
 	for(uint16_t i=0; i<ms; i++) {
-    1340:	00 97       	sbiw	r24, 0x00	; 0
-    1342:	51 f0       	breq	.+20     	; 0x1358 <delay_ms+0x22>
-    1344:	c0 e0       	ldi	r28, 0x00	; 0
-    1346:	d0 e0       	ldi	r29, 0x00	; 0
+    1390:	00 97       	sbiw	r24, 0x00	; 0
+    1392:	51 f0       	breq	.+20     	; 0x13a8 <delay_ms+0x22>
+    1394:	c0 e0       	ldi	r28, 0x00	; 0
+    1396:	d0 e0       	ldi	r29, 0x00	; 0
 		delay_us(1000);
-    1348:	88 ee       	ldi	r24, 0xE8	; 232
-    134a:	93 e0       	ldi	r25, 0x03	; 3
-    134c:	0e 94 89 09 	call	0x1312	; 0x1312 <delay_us>
+    1398:	88 ee       	ldi	r24, 0xE8	; 232
+    139a:	93 e0       	ldi	r25, 0x03	; 3
+    139c:	0e 94 b1 09 	call	0x1362	; 0x1362 <delay_us>
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
 	while(!CTC_flag); //wait for the designated number of us
 }
 
 void delay_ms(uint16_t ms) {
 	for(uint16_t i=0; i<ms; i++) {
-    1350:	21 96       	adiw	r28, 0x01	; 1
-    1352:	c0 17       	cp	r28, r16
-    1354:	d1 07       	cpc	r29, r17
-    1356:	c1 f7       	brne	.-16     	; 0x1348 <delay_ms+0x12>
+    13a0:	21 96       	adiw	r28, 0x01	; 1
+    13a2:	c0 17       	cp	r28, r16
+    13a4:	d1 07       	cpc	r29, r17
+    13a6:	c1 f7       	brne	.-16     	; 0x1398 <delay_ms+0x12>
 		delay_us(1000);
 	}
 }
-    1358:	df 91       	pop	r29
-    135a:	cf 91       	pop	r28
-    135c:	1f 91       	pop	r17
-    135e:	0f 91       	pop	r16
-    1360:	08 95       	ret
+    13a8:	df 91       	pop	r29
+    13aa:	cf 91       	pop	r28
+    13ac:	1f 91       	pop	r17
+    13ae:	0f 91       	pop	r16
+    13b0:	08 95       	ret
 
-00001362 <__tablejump2__>:
-    1362:	ee 0f       	add	r30, r30
-    1364:	ff 1f       	adc	r31, r31
+000013b2 <__tablejump2__>:
+    13b2:	ee 0f       	add	r30, r30
+    13b4:	ff 1f       	adc	r31, r31
 
-00001366 <__tablejump__>:
-    1366:	05 90       	lpm	r0, Z+
-    1368:	f4 91       	lpm	r31, Z
-    136a:	e0 2d       	mov	r30, r0
-    136c:	09 94       	ijmp
+000013b6 <__tablejump__>:
+    13b6:	05 90       	lpm	r0, Z+
+    13b8:	f4 91       	lpm	r31, Z
+    13ba:	e0 2d       	mov	r30, r0
+    13bc:	09 94       	ijmp
 
-0000136e <_exit>:
-    136e:	f8 94       	cli
+000013be <_exit>:
+    13be:	f8 94       	cli
 
-00001370 <__stop_program>:
-    1370:	ff cf       	rjmp	.-2      	; 0x1370 <__stop_program>
+000013c0 <__stop_program>:
+    13c0:	ff cf       	rjmp	.-2      	; 0x13c0 <__stop_program>
