@@ -5,11 +5,7 @@
 	***********************************************************************
 	*	FILE NAME:		can_lib.c
 	*
-	*	PURPOSE:		
-	*	This is the main program which shall be run on the ATMEGA32M1s to be used on subsystem
-	*	microcontrollers.
-	*
-	*	This file contains the library of functions of:
+	*	PURPOSE:	This file contains the library of functions of:
 	*			CAN (Controller Array Network)
 	*			AT90CAN128/64/32
 	*

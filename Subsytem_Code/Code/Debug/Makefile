@@ -37,6 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../adc_lic.c \
 ../can_drv.c \
 ../can_lib.c \
 ../LED.c \
@@ -51,6 +52,7 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+adc_lic.o \
 can_drv.o \
 can_lib.o \
 LED.o \
@@ -58,6 +60,7 @@ main.o \
 Timer.o
 
 OBJS_AS_ARGS +=  \
+adc_lic.o \
 can_drv.o \
 can_lib.o \
 LED.o \
@@ -65,6 +68,7 @@ main.o \
 Timer.o
 
 C_DEPS +=  \
+adc_lic.d \
 can_drv.d \
 can_lib.d \
 LED.d \
@@ -72,6 +76,7 @@ main.d \
 Timer.d
 
 C_DEPS_AS_ARGS +=  \
+adc_lic.d \
 can_drv.d \
 can_lib.d \
 LED.d \
@@ -92,6 +97,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

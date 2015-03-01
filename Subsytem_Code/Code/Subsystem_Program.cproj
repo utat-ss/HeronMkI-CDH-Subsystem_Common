@@ -67,6 +67,7 @@
       </ToolOptions>
     </com_atmel_avrdbg_tool_stk600>
     <preserveEEPROM>true</preserveEEPROM>
+    <UseGdb>False</UseGdb>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -123,6 +124,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="adc_lib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="adc_lic.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="can_drv.c">
       <SubType>compile</SubType>
     </Compile>

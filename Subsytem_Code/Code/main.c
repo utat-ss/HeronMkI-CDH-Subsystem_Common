@@ -29,6 +29,9 @@
 	*
 	*	02/06/2015		Edited the header.
 	*
+	*	02/28/2015		I am now editing the main program such that if command is received
+	*					which requests data from the ADC, it will be sent back over CAN.
+	*
 */
 
 
@@ -37,6 +40,7 @@
 #include "LED.h"
 #include "Timer.h"
 #include "can_lib.h"
+#include "adc_lib.h"
 
 #define DATA_BUFFER_SIZE 8 // 8 bytes max
 
@@ -57,7 +61,7 @@ int main(void)
 	// Initialize I/O, Timer, and CAN peripheral
 	sys_init();
 	
-	uint8_t	status, i, mob_number, send_now, send_hk;
+	uint8_t	status, i, mob_number, send_now, send_hk, send_data;
 	uint8_t message_arr[8];
 	
 	// Enable global interrupts for Timer execution
@@ -75,6 +79,7 @@ int main(void)
 			
 	send_now = 0;
 	send_hk = 0;
+	send_data = 0;
 	
 	/* INITIALIZE MOB0 */
 
@@ -102,6 +107,8 @@ int main(void)
     while(1)
     {
 		
+		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 */
+		
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
 		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
@@ -127,6 +134,16 @@ int main(void)
 					LED_Reg_Write(0x00);
 					send_now = 1;
 				}
+				
+				if ((message_arr[0] == 0x55) && (message_arr[1] == 0x55) && (message_arr[2] == 0x55) && (message_arr[3] == 0x55)
+				&& (message_arr[4] == 0x55) && (message_arr[5] == 0x55) && (message_arr[6] == 0x55) && (message_arr[7] == 0x55))
+				{
+					LED_Reg_Write(0x80);	//Toggle LED7 when the appropriate message is received.
+					delay_ms(500);
+					LED_Reg_Write(0x00);
+					send_data = 1;
+				}
+								
 				for (i = 0; i < 8; i ++)
 				{
 					message_arr[i] = 0;			// Reset the message array to zero after each message.
@@ -184,7 +201,7 @@ int main(void)
 			}	
 	
 		
-		/*	Message Object 4  */
+		/*	REPLY TO MESSAGES FROM MOB4 */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
 		{	
@@ -227,6 +244,31 @@ int main(void)
 		
 			send_hk = 0;
 		}
+		
+		if (send_data == 1)		// send housekeeping back to the OBC!
+		{
+			message.pt_data = &data4[0]; // point message object to first element of data buffer
+			message.ctrl.ide = 0;		 // standard can frame type (2.0a)
+			message.id.std = NODE0_ID;  // populate id field with id tag
+			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
+			message.dlc = 8;			 // max length of a can message.
+			mob_number = 4;
+			
+			for (i = 0; i < 8; i ++)
+			{
+				data4[i] = 0x00;		// Rest of the message should be zeros.
+			}
+			
+			adc_read(&data4[0]);		// Read data from the ADC. This will put 10 bits into data4.
+			
+			data4[3] = 0x55;				// Data message type indicator.
+			
+			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob4 to configure
+			
+			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
+			
+			send_data = 0;
+		}
 	}
 }
 
@@ -238,6 +280,7 @@ void sys_init(void) {
 	io_init();	
 	timer_init();
 	can_init(0);
+	adc_initialize();
 }
 
 void io_init(void) {
