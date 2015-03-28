@@ -1,4 +1,4 @@
-adc_lic.d adc_lic.o: .././adc_lic.c .././adc_lib.h .././config.h \
+spi_lib.d spi_lib.o: .././spi_lib.c .././spi_lib.h .././config.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -12,7 +12,7 @@ adc_lic.d adc_lic.o: .././adc_lic.c .././adc_lib.h .././config.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\lock.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\interrupt.h
 
-.././adc_lib.h:
+.././spi_lib.h:
 
 .././config.h:
 

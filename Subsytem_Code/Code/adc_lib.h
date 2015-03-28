@@ -5,8 +5,8 @@
 	*	FILE NAME:		adc_lib.h
 	*
 	*	PURPOSE:	This program contains includes and definitions related to adc_lib.c
-	*
-	*	FILE REFERENCES:
+	*	
+	*	FILE REFERENCES:		config.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*

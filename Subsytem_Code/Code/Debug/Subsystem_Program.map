@@ -5,27 +5,41 @@ c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-t
 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
                               can_lib.o (__tablejump2__)
 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_clear_bss.o)
-                              can_lib.o (__do_clear_bss)
+                              can_api.o (__do_clear_bss)
 
 Allocating common symbols
 Common symbol       size              file
 
-data1               0x8               main.o
-data2               0x8               main.o
-data4               0x8               main.o
-message             0xc               can_lib.o
-data0               0x8               main.o
+data1               0x8               can_api.o
+data2               0x8               can_api.o
+send_arr            0x8               can_api.o
+data4               0x8               can_api.o
+message             0xc               can_api.o
+send_now            0x1               can_api.o
+data0               0x8               can_api.o
+send_hk             0x1               can_api.o
 CTC_flag            0x1               main.o
-data3               0x8               main.o
-data5               0x8               main.o
+receive_arr         0x8               can_api.o
+data3               0x8               can_api.o
+send_data           0x1               can_api.o
+data5               0x8               can_api.o
+mob_number          0x1               can_api.o
+status              0x1               can_api.o
 
 Discarded input sections
 
  .data          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm32m1.o
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm32m1.o
- .text          0x00000000        0x0 adc_lic.o
- .data          0x00000000        0x0 adc_lic.o
- .bss           0x00000000        0x0 adc_lic.o
+ .text          0x00000000        0x0 adc_lib.o
+ .data          0x00000000        0x0 adc_lib.o
+ .bss           0x00000000        0x0 adc_lib.o
+ .text          0x00000000        0x0 can_api.o
+ .data          0x00000000        0x0 can_api.o
+ .bss           0x00000000        0x0 can_api.o
+ .text.can_check_general
+                0x00000000      0x18c can_api.o
+ .text.can_check_housekeep
+                0x00000000      0x120 can_api.o
  .text          0x00000000        0x0 can_drv.o
  .data          0x00000000        0x0 can_drv.o
  .bss           0x00000000        0x0 can_drv.o
@@ -46,6 +60,13 @@ Discarded input sections
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
+ .text          0x00000000        0x0 spi_lib.o
+ .data          0x00000000        0x0 spi_lib.o
+ .bss           0x00000000        0x0 spi_lib.o
+ .text.spi_receive
+                0x00000000       0x16 spi_lib.o
+ .text.spi_check
+                0x00000000       0x3e spi_lib.o
  .text          0x00000000        0x0 Timer.o
  .data          0x00000000        0x0 Timer.o
  .bss           0x00000000        0x0 Timer.o
@@ -113,11 +134,13 @@ Linker script and memory map
 
 Address of section .data set to 0x800100
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm32m1.o
-LOAD adc_lic.o
+LOAD adc_lib.o
+LOAD can_api.o
 LOAD can_drv.o
 LOAD can_lib.o
 LOAD LED.o
 LOAD main.o
+LOAD spi_lib.o
 LOAD Timer.o
 START GROUP
 LOAD c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libm.a
@@ -218,7 +241,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1492
+.text           0x00000000     0x12a8
  *(.vectors)
  .vectors       0x00000000       0x7c c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm32m1.o
                 0x00000000                __vector_default
@@ -308,56 +331,68 @@ END GROUP
                 0x000000ba                . = ALIGN (0x2)
  *(.text.*)
  .text.adc_initialize
-                0x000000ba        0xe adc_lic.o
+                0x000000ba        0xe adc_lib.o
                 0x000000ba                adc_initialize
  .text.adc_read
-                0x000000c8       0x12 adc_lic.o
+                0x000000c8       0x12 adc_lib.o
                 0x000000c8                adc_read
+ .text.can_send_message
+                0x000000da       0x64 can_api.o
+                0x000000da                can_send_message
+ .text.can_init_mobs
+                0x0000013e       0x7a can_api.o
+                0x0000013e                can_init_mobs
  .text.can_clear_all_mob
-                0x000000da       0x26 can_drv.o
-                0x000000da                can_clear_all_mob
+                0x000001b8       0x26 can_drv.o
+                0x000001b8                can_clear_all_mob
  .text.can_get_mob_status
-                0x00000100       0x2c can_drv.o
-                0x00000100                can_get_mob_status
+                0x000001de       0x2c can_drv.o
+                0x000001de                can_get_mob_status
  .text.can_get_data
-                0x0000012c       0x14 can_drv.o
-                0x0000012c                can_get_data
+                0x0000020a       0x14 can_drv.o
+                0x0000020a                can_get_data
  .text.can_fixed_baudrate
-                0x00000140       0x1c can_drv.o
-                0x00000140                can_fixed_baudrate
+                0x0000021e       0x1c can_drv.o
+                0x0000021e                can_fixed_baudrate
  .text.can_init
-                0x0000015c       0x1e can_lib.o
-                0x0000015c                can_init
- .text.can_cmd  0x0000017a      0xc58 can_lib.o
-                0x0000017a                can_cmd
+                0x0000023a       0x1e can_lib.o
+                0x0000023a                can_init
+ .text.can_cmd  0x00000258      0xc58 can_lib.o
+                0x00000258                can_cmd
  .text.can_get_status
-                0x00000dd2      0x1e4 can_lib.o
-                0x00000dd2                can_get_status
+                0x00000eb0      0x1e4 can_lib.o
+                0x00000eb0                can_get_status
  .text.LED_Reg_Write
-                0x00000fb6        0x6 LED.o
-                0x00000fb6                LED_Reg_Write
- .text.main     0x00000fbc      0x448 main.o
-                0x00000fbc                main
+                0x00001094        0x6 LED.o
+                0x00001094                LED_Reg_Write
+ .text.main     0x0000109a      0x122 main.o
+                0x0000109a                main
+ .text.spi_initialize
+                0x000011bc        0xc spi_lib.o
+                0x000011bc                spi_initialize
+ .text.spi_transfer
+                0x000011c8       0x52 spi_lib.o
+                0x000011c8                spi_transfer
  .text.__vector_12
-                0x00001404       0x1e Timer.o
-                0x00001404                __vector_12
+                0x0000121a       0x1e Timer.o
+                0x0000121a                __vector_12
  .text.timer_init
-                0x00001422       0x10 Timer.o
-                0x00001422                timer_init
+                0x00001238       0x10 Timer.o
+                0x00001238                timer_init
  .text.delay_us
-                0x00001432       0x24 Timer.o
-                0x00001432                delay_us
+                0x00001248       0x24 Timer.o
+                0x00001248                delay_us
  .text.delay_ms
-                0x00001456       0x2c Timer.o
-                0x00001456                delay_ms
- .text.libgcc   0x00001482        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
-                0x00001482                __tablejump2__
-                0x00001486                __tablejump__
-                0x0000148e                . = ALIGN (0x2)
+                0x0000126c       0x2c Timer.o
+                0x0000126c                delay_ms
+ .text.libgcc   0x00001298        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
+                0x00001298                __tablejump2__
+                0x0000129c                __tablejump__
+                0x000012a4                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000148e        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
-                0x0000148e                _exit
-                0x0000148e                exit
+ .fini9         0x000012a4        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+                0x000012a4                _exit
+                0x000012a4                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -376,11 +411,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000148e        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+ .fini0         0x000012a4        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00001492                _etext = .
+                0x000012a8                _etext = .
 
-.data           0x00800100        0x0 load address 0x00001492
+.data           0x00800100        0x0 load address 0x000012a8
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -391,31 +426,38 @@ END GROUP
                 0x00800100                _edata = .
                 0x00800100                PROVIDE (__data_end, .)
 
-.bss            0x00800100       0x3d
+.bss            0x00800100       0x52
                 0x00800100                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800100        0xc can_lib.o
-                0x00800100                message
- COMMON         0x0080010c       0x31 main.o
-                0x0080010c                data1
-                0x00800114                data2
-                0x0080011c                data4
-                0x00800124                data0
-                0x0080012c                CTC_flag
-                0x0080012d                data3
-                0x00800135                data5
-                0x0080013d                PROVIDE (__bss_end, .)
-                0x00001492                __data_load_start = LOADADDR (.data)
-                0x00001492                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800100       0x51 can_api.o
+                0x00800100                data1
+                0x00800108                data2
+                0x00800110                send_arr
+                0x00800118                data4
+                0x00800120                message
+                0x0080012c                send_now
+                0x0080012d                data0
+                0x00800135                send_hk
+                0x00800136                receive_arr
+                0x0080013e                data3
+                0x00800146                send_data
+                0x00800147                data5
+                0x0080014f                mob_number
+                0x00800150                status
+ COMMON         0x00800151        0x1 main.o
+                0x00800151                CTC_flag
+                0x00800152                PROVIDE (__bss_end, .)
+                0x000012a8                __data_load_start = LOADADDR (.data)
+                0x000012a8                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080013d        0x0
-                0x0080013d                PROVIDE (__noinit_start, .)
+.noinit         0x00800152        0x0
+                0x00800152                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0080013d                PROVIDE (__noinit_end, .)
-                0x0080013d                _end = .
-                0x0080013d                PROVIDE (__heap_start, .)
+                0x00800152                PROVIDE (__noinit_end, .)
+                0x00800152                _end = .
+                0x00800152                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -456,12 +498,14 @@ END GROUP
 
 .comment        0x00000000       0x30
  *(.comment)
- .comment       0x00000000       0x30 adc_lic.o
+ .comment       0x00000000       0x30 adc_lib.o
                                  0x31 (size before relaxing)
+ .comment       0x00000000       0x31 can_api.o
  .comment       0x00000000       0x31 can_drv.o
  .comment       0x00000000       0x31 can_lib.o
  .comment       0x00000000       0x31 LED.o
  .comment       0x00000000       0x31 main.o
+ .comment       0x00000000       0x31 spi_lib.o
  .comment       0x00000000       0x31 Timer.o
 
 .note.gnu.build-id
@@ -479,83 +523,101 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x130
+.debug_aranges  0x00000000      0x1a0
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x28 adc_lic.o
+                0x00000000       0x28 adc_lib.o
  .debug_aranges
-                0x00000028       0x48 can_drv.o
+                0x00000028       0x38 can_api.o
  .debug_aranges
-                0x00000070       0x30 can_lib.o
+                0x00000060       0x48 can_drv.o
  .debug_aranges
-                0x000000a0       0x38 LED.o
+                0x000000a8       0x30 can_lib.o
  .debug_aranges
-                0x000000d8       0x20 main.o
+                0x000000d8       0x38 LED.o
  .debug_aranges
-                0x000000f8       0x38 Timer.o
+                0x00000110       0x20 main.o
+ .debug_aranges
+                0x00000130       0x38 spi_lib.o
+ .debug_aranges
+                0x00000168       0x38 Timer.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x112a
+.debug_info     0x00000000     0x190e
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x00000000       0xdf adc_lic.o
- .debug_info    0x000000df      0x2e8 can_drv.o
- .debug_info    0x000003c7      0x447 can_lib.o
- .debug_info    0x0000080e      0x10f LED.o
- .debug_info    0x0000091d      0x6d8 main.o
- .debug_info    0x00000ff5      0x135 Timer.o
+ .debug_info    0x00000000       0xdf adc_lib.o
+ .debug_info    0x000000df      0x641 can_api.o
+ .debug_info    0x00000720      0x2e8 can_drv.o
+ .debug_info    0x00000a08      0x447 can_lib.o
+ .debug_info    0x00000e4f      0x10f LED.o
+ .debug_info    0x00000f5e      0x53e main.o
+ .debug_info    0x0000149c      0x33d spi_lib.o
+ .debug_info    0x000017d9      0x135 Timer.o
 
-.debug_abbrev   0x00000000      0x765
+.debug_abbrev   0x00000000      0x9e4
  *(.debug_abbrev)
- .debug_abbrev  0x00000000       0xa1 adc_lic.o
- .debug_abbrev  0x000000a1      0x12c can_drv.o
- .debug_abbrev  0x000001cd      0x24e can_lib.o
- .debug_abbrev  0x0000041b       0x89 LED.o
- .debug_abbrev  0x000004a4      0x1ce main.o
- .debug_abbrev  0x00000672       0xf3 Timer.o
+ .debug_abbrev  0x00000000       0xa1 adc_lib.o
+ .debug_abbrev  0x000000a1      0x188 can_api.o
+ .debug_abbrev  0x00000229      0x12c can_drv.o
+ .debug_abbrev  0x00000355      0x24e can_lib.o
+ .debug_abbrev  0x000005a3       0x89 LED.o
+ .debug_abbrev  0x0000062c      0x1b0 main.o
+ .debug_abbrev  0x000007dc      0x115 spi_lib.o
+ .debug_abbrev  0x000008f1       0xf3 Timer.o
 
-.debug_line     0x00000000      0x9e4
+.debug_line     0x00000000      0xbfa
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000       0xc0 adc_lic.o
- .debug_line    0x000000c0      0x2a2 can_drv.o
- .debug_line    0x00000362      0x297 can_lib.o
- .debug_line    0x000005f9       0xd9 LED.o
- .debug_line    0x000006d2      0x214 main.o
- .debug_line    0x000008e6       0xfe Timer.o
+ .debug_line    0x00000000       0xc0 adc_lib.o
+ .debug_line    0x000000c0      0x1d0 can_api.o
+ .debug_line    0x00000290      0x2a2 can_drv.o
+ .debug_line    0x00000532      0x297 can_lib.o
+ .debug_line    0x000007c9       0xd9 LED.o
+ .debug_line    0x000008a2      0x161 main.o
+ .debug_line    0x00000a03       0xf9 spi_lib.o
+ .debug_line    0x00000afc       0xfe Timer.o
 
-.debug_frame    0x00000000      0x268
+.debug_frame    0x00000000      0x318
  *(.debug_frame)
- .debug_frame   0x00000000       0x34 adc_lic.o
- .debug_frame   0x00000034       0xd4 can_drv.o
- .debug_frame   0x00000108       0x60 can_lib.o
- .debug_frame   0x00000168       0x54 LED.o
- .debug_frame   0x000001bc       0x34 main.o
- .debug_frame   0x000001f0       0x78 Timer.o
+ .debug_frame   0x00000000       0x34 adc_lib.o
+ .debug_frame   0x00000034       0x6c can_api.o
+ .debug_frame   0x000000a0       0xd4 can_drv.o
+ .debug_frame   0x00000174       0x60 can_lib.o
+ .debug_frame   0x000001d4       0x54 LED.o
+ .debug_frame   0x00000228       0x24 main.o
+ .debug_frame   0x0000024c       0x54 spi_lib.o
+ .debug_frame   0x000002a0       0x78 Timer.o
 
-.debug_str      0x00000000      0x4eb
+.debug_str      0x00000000      0x5b3
  *(.debug_str)
- .debug_str     0x00000000      0x158 adc_lic.o
+ .debug_str     0x00000000      0x158 adc_lib.o
                                 0x18c (size before relaxing)
- .debug_str     0x00000158      0x15b can_drv.o
+ .debug_str     0x00000158      0x1e6 can_api.o
+                                0x34f (size before relaxing)
+ .debug_str     0x0000033e      0x147 can_drv.o
                                 0x2b9 (size before relaxing)
- .debug_str     0x000002b3      0x16f can_lib.o
+ .debug_str     0x00000485       0x48 can_lib.o
                                 0x333 (size before relaxing)
- .debug_str     0x00000422       0x26 LED.o
+ .debug_str     0x000004cd       0x26 LED.o
                                 0x187 (size before relaxing)
- .debug_str     0x00000448       0x81 main.o
-                                0x33e (size before relaxing)
- .debug_str     0x000004c9       0x22 Timer.o
+ .debug_str     0x000004f3       0x5f main.o
+                                0x37e (size before relaxing)
+ .debug_str     0x00000552       0x3f spi_lib.o
+                                0x1e5 (size before relaxing)
+ .debug_str     0x00000591       0x22 Timer.o
                                 0x19b (size before relaxing)
 
-.debug_loc      0x00000000     0x11a8
+.debug_loc      0x00000000     0x12d4
  *(.debug_loc)
- .debug_loc     0x00000000       0x44 adc_lic.o
- .debug_loc     0x00000044      0x962 can_drv.o
- .debug_loc     0x000009a6      0x3ec can_lib.o
- .debug_loc     0x00000d92       0x63 LED.o
- .debug_loc     0x00000df5      0x2a2 main.o
- .debug_loc     0x00001097      0x111 Timer.o
+ .debug_loc     0x00000000       0x44 adc_lib.o
+ .debug_loc     0x00000044      0x1b2 can_api.o
+ .debug_loc     0x000001f6      0x962 can_drv.o
+ .debug_loc     0x00000b58      0x3ec can_lib.o
+ .debug_loc     0x00000f44       0x63 LED.o
+ .debug_loc     0x00000fa7       0x7f main.o
+ .debug_loc     0x00001026      0x19d spi_lib.o
+ .debug_loc     0x000011c3      0x111 Timer.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -575,14 +637,16 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x118
+.debug_ranges   0x00000000      0x168
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x18 adc_lic.o
- .debug_ranges  0x00000018       0x68 can_drv.o
- .debug_ranges  0x00000080       0x38 can_lib.o
- .debug_ranges  0x000000b8       0x28 LED.o
- .debug_ranges  0x000000e0       0x10 main.o
- .debug_ranges  0x000000f0       0x28 Timer.o
+ .debug_ranges  0x00000000       0x18 adc_lib.o
+ .debug_ranges  0x00000018       0x28 can_api.o
+ .debug_ranges  0x00000040       0x68 can_drv.o
+ .debug_ranges  0x000000a8       0x38 can_lib.o
+ .debug_ranges  0x000000e0       0x28 LED.o
+ .debug_ranges  0x00000108       0x10 main.o
+ .debug_ranges  0x00000118       0x28 spi_lib.o
+ .debug_ranges  0x00000140       0x28 Timer.o
 
 .debug_macro
  *(.debug_macro)

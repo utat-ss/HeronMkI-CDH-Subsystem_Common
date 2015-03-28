@@ -4,10 +4,10 @@
 	***********************************************************************
 	*	FILE NAME:		adc_lib.c
 	*
-	*	PURPOSE:	This program contains function related to the analog-to-digital
+	*	PURPOSE:	This program contains functions related to the analog-to-digital
 	*				converter in the ATMEGA32M1.
 	*
-	*	FILE REFERENCES:
+	*	FILE REFERENCES:		adc_lib.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -24,6 +24,10 @@
 	*
 	*	DEVELOPMENT HISTORY:
 	*	2/28/2015		Created.
+	*
+	*	3/28/2015		I added code to adc_initialize in order to change the
+	*					selected ADC pin from ADC0 to ADC2. After breadboarding
+	*					the ATMEGA32M1 I am now using pin PE2 for an external clock.
 	*
 */
 
@@ -42,6 +46,10 @@ void adc_initialize(void)
 {
 	uint8_t* ptr;
 	uint8_t x;
+	
+	ptr = ADMUX_BASE;		// Initialize ADMUX_BASE
+	x = 0b00000010;			// Choose ADC2
+	*ptr = x;
 	
 	ptr = ADCSRA_BASE;		// Initialize ADCSRA
 	x = 0b11100010;

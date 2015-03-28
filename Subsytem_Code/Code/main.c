@@ -9,7 +9,7 @@
 	*	This is the main program which shall be run on the ATMEGA32M1s to be used on subsystem
 	*	microcontrollers.
 	*
-	*	FILE REFERENCES:	io.h, interrupt, LED.h, Timer.h, can_lib.h
+	*	FILE REFERENCES:	io.h, interrupt, LED.h, Timer.h, can_lib.h, , adc_lib.h, can_api.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -32,6 +32,10 @@
 	*	02/28/2015		I am now editing the main program such that if command is received
 	*					which requests data from the ADC, it will be sent back over CAN.
 	*
+	*	03/07/2015		I have written a file called can_api.c which allows me to clean up
+	*					a lot of the code that was in main.c related to can. Now the main 
+	*					program is much easier to understand and I will likely make less
+	*					errors when developing code in the future.
 */
 
 
@@ -41,28 +45,27 @@
 #include "Timer.h"
 #include "can_lib.h"
 #include "adc_lib.h"
+#include "can_api.h"
+#include "spi_lib.h"
 
-#define DATA_BUFFER_SIZE 8 // 8 bytes max
-
+/* Function Prototypes for functions in this file */
 static void sys_init(void);
 static void io_init(void);
+/**************************************************/
 
 volatile uint8_t CTC_flag;
-
-uint8_t data0[DATA_BUFFER_SIZE];	// Data Buffer for MOb0
-uint8_t data1[DATA_BUFFER_SIZE];	// Data Buffer for MOb1
-uint8_t data2[DATA_BUFFER_SIZE];	// Data Buffer for MOb2
-uint8_t data3[DATA_BUFFER_SIZE];	// Data Buffer for MOb3
-uint8_t data4[DATA_BUFFER_SIZE];	// Data Buffer for MOb4
-uint8_t data5[DATA_BUFFER_SIZE];	// Data Buffer for MOb5
 
 int main(void)
 {		
 	// Initialize I/O, Timer, and CAN peripheral
 	sys_init();
 	
-	uint8_t	status, i, mob_number, send_now, send_hk, send_data;
-	uint8_t message_arr[8];
+	uint8_t	i = 0;
+	uint8_t check = 0;
+	uint8_t* receive_char;
+	
+	receive_char = SPDR_BASE;
+	*receive_char = 0x41;
 	
 	// Enable global interrupts for Timer execution
 	sei();
@@ -74,199 +77,74 @@ int main(void)
 	
 	for (i = 0; i < 8; i ++)
 	{
-		message_arr[i] = 0;			// Reset the message array to zero after each message.
+		receive_arr[i] = 0;			// Reset the message array to zero after each message.
 	}
 			
 	send_now = 0;
 	send_hk = 0;
-	send_data = 0;
+	send_data = 0;	
 	
-	/* INITIALIZE MOB0 */
+	/*		Initialize CAN Message Objects			*/
+	can_init_mobs();
+	
+	/*		Initialize SPI communications			*/
+	spi_initialize();
 
-	message.pt_data = &data0[0]; // point message object to first element of data buffer
-	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-	message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-	message.dlc = 8;			 // Max length of a CAN message.
-	mob_number = 0;
-		
-	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
-	
-	/* INITIALIZE MOB5 */
-	
-	message.pt_data = &data5[0];	// point message object to first element of data buffer
-	message.ctrl.ide = 0;			// standard CAN frame type (2.0A)
-	message.id.std = SUB0_ID5;		// populate ID field with ID Tag
-	message.cmd = CMD_RX_DATA;		// assign this as a producer message object (Housekeeping MOB).
-	message.dlc = 8;				// Max length of a CAN message.
-	mob_number = 5;
-		
-	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOB to configure
-
-	
+	/*		Begin Main Program Loop					*/	
     while(1)
     {
 		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 */
-		
-		message.pt_data = &data0[0]; // point message object to first element of data buffer
-		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-		message.dlc = 8;			 // Max length of a CAN message.
-		mob_number = 0;
-		
-		
-		if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a message to come in.
-		{
-			if(message.status == MOB_RX_COMPLETED)
-			{
-				for (i = 0; i < 8; i ++)
-				{
-					message_arr[i] = *(message.pt_data + i);
-				}
-				
-				if ((message_arr[0] == 0xFF) && (message_arr[1] == 0xFF) && (message_arr[2] == 0xFF) && (message_arr[3] == 0xFF)
-				&& (message_arr[4] == 0xFF) && (message_arr[5] == 0xFF) && (message_arr[6] == 0xFF) && (message_arr[7] == 0xFF))
-				{
-					LED_Reg_Write(0x04);	//Toggle LED2 when the appropriate message is received.
-					delay_ms(500);
-					LED_Reg_Write(0x00);
-					send_now = 1;
-				}
-				
-				if ((message_arr[0] == 0x55) && (message_arr[1] == 0x55) && (message_arr[2] == 0x55) && (message_arr[3] == 0x55)
-				&& (message_arr[4] == 0x55) && (message_arr[5] == 0x55) && (message_arr[6] == 0x55) && (message_arr[7] == 0x55))
-				{
-					LED_Reg_Write(0x80);	//Toggle LED7 when the appropriate message is received.
-					delay_ms(500);
-					LED_Reg_Write(0x00);
-					send_data = 1;
-				}
-								
-				for (i = 0; i < 8; i ++)
-				{
-					message_arr[i] = 0;			// Reset the message array to zero after each message.
-				}				
-			}
-			message.pt_data = &data0[0]; // point message object to first element of data buffer
-			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-			message.id.std = SUB0_ID0;  // populate ID field with ID Tag
-			message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-			message.dlc = 8;			 // Max length of a CAN message.
-			mob_number = 0;
-			
-			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure	
-		}
+		//can_check_general();
 		
 		/* CHECK FOR HOUSEKEEPING REQUEST */
+		//can_check_housekeep();
 		
-			message.pt_data = &data5[0]; // point message object to first element of data buffer
-			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-			message.id.std = SUB0_ID5;  // populate ID field with ID Tag
-			message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-			message.dlc = 8;			 // Max length of a CAN message.
-			mob_number = 5;
-			
-			if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a housekeeping request to come in.
-			{
-				if(message.status == MOB_RX_COMPLETED)
-				{
-					for (i = 0; i < 8; i ++)
-					{
-						message_arr[i] = *(message.pt_data + i);
-					}
-					
-					if ((message_arr[0] == 0x0F) && (message_arr[1] == 0x0F) && (message_arr[2] == 0x0F) && (message_arr[3] == 0x0F)
-					&& (message_arr[4] == 0x0F) && (message_arr[5] == 0x0F) && (message_arr[6] == 0x0F) && (message_arr[7] == 0x0F))
-					{
-						LED_Reg_Write(0x08);	//Toggle LED3 when housekeeping was requested.
-						delay_ms(500);
-						LED_Reg_Write(0x00);
-						send_hk = 1;
-					}
-					for (i = 0; i < 8; i ++)
-					{
-						message_arr[i] = 0;			// Reset the message array to zero after each message.
-					}
-				}
-				message.pt_data = &data5[0]; // point message object to first element of data buffer
-				message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-				message.id.std = SUB0_ID5;  // populate ID field with ID Tag
-				message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-				message.dlc = 8;			 // Max length of a CAN message.
-				mob_number = 5;
-				
-				while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
-			}	
-	
+		/* CHECK FOR AN INCOMING SPI BYTE AND ECHO IT */
+		//spi_check();
+		
+		check = spi_transfer(*receive_char);		// Echo the character back to the master.
+		
+		if(check)
+		{
+			LED_Reg_Write(0x40);					// Toggle LED1 when a character was sent.
+			delay_ms(500);
+			LED_Reg_Write(0x00);
+		}
 		
 		/*	REPLY TO MESSAGES FROM MOB4 */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
-		{	
-			message.pt_data = &data4[0]; // point message object to first element of data buffer
-			message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-			message.id.std = NODE0_ID;  // populate ID field with ID Tag
-			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
-			message.dlc = 8;			 // Max length of a CAN message.
-			mob_number = 4;
-		
+		{		
 			for (i = 0; i < 8; i ++)
 			{
-				data4[i] = 0xAB;		// Message to be sent back to the OBC.
+				send_arr[i] = 0xAB;		// Message to be sent back to the OBC.
 			}
-			
-			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb4 to configure
-
-			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
-			
+			can_send_message(&(send_arr[0]));
 			send_now = 0;
 		}
-				
-		if (send_hk == 1)		// send housekeeping back to the OBC!
-		{
-			message.pt_data = &data4[0]; // point message object to first element of data buffer
-			message.ctrl.ide = 0;		 // standard can frame type (2.0a)
-			message.id.std = NODE0_ID;  // populate id field with id tag
-			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
-			message.dlc = 8;			 // max length of a can message.
-			mob_number = 4;
 		
+		if (send_hk == 1)		// Send a reply to the message that was received!
+		{
 			for (i = 0; i < 8; i ++)
 			{
-				data4[i] = 0xF0;		// message to be sent back to the OBC.
+				send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
 			}
-		
-			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob4 to configure
-		
-			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
-		
+			can_send_message(&(send_arr[0]));
 			send_hk = 0;
 		}
 		
-		if (send_data == 1)		// send housekeeping back to the OBC!
+		if (send_data == 1)		// Send a reply to the message that was received!
 		{
-			message.pt_data = &data4[0]; // point message object to first element of data buffer
-			message.ctrl.ide = 0;		 // standard can frame type (2.0a)
-			message.id.std = NODE0_ID;  // populate id field with id tag
-			message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
-			message.dlc = 8;			 // max length of a can message.
-			mob_number = 4;
-			
 			for (i = 0; i < 8; i ++)
 			{
-				data4[i] = 0x00;		// Rest of the message should be zeros.
+				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
 			}
 			
-			adc_read(&data4[0]);		// Read data from the ADC. This will put 10 bits into data4.
+			adc_read(&send_arr[0]);
+			send_arr[3] = 0x55;
 			
-			data4[3] = 0x55;				// Data message type indicator.
-			
-			while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for mob4 to configure
-			
-			while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
-			
+			can_send_message(&(send_arr[0]));
 			send_data = 0;
 		}
 	}

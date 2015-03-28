@@ -37,7 +37,7 @@
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
-    <avrtool>com.atmel.avrdbg.tool.stk600</avrtool>
+    <avrtool>com.atmel.avrdbg.tool.stk500</avrtool>
     <avrtoolinterface>ISP</avrtoolinterface>
     <com_atmel_avrdbg_tool_stk600>
       <ToolType>com.atmel.avrdbg.tool.stk600</ToolType>
@@ -68,6 +68,18 @@
     </com_atmel_avrdbg_tool_stk600>
     <preserveEEPROM>true</preserveEEPROM>
     <UseGdb>False</UseGdb>
+    <com_atmel_avrdbg_tool_stk500>
+      <ToolOptions>
+        <InterfaceProperties>
+          <IspClock>125000</IspClock>
+        </InterfaceProperties>
+        <InterfaceName>ISP</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.stk500</ToolType>
+      <ToolNumber>
+      </ToolNumber>
+      <ToolName>STK500</ToolName>
+    </com_atmel_avrdbg_tool_stk500>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -124,10 +136,16 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="adc_lib.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="adc_lib.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="adc_lic.c">
+    <Compile Include="can_api.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="can_api.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="can_drv.c">
@@ -152,6 +170,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi_lib.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi_lib.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Timer.c">
