@@ -54,6 +54,15 @@
 #define NODE0_ID				10
 #define NODE1_ID				9
 
+#define CAN1_MB0				10
+#define CAN1_MB1				11
+#define CAN1_MB2				12
+#define CAN1_MB3				13
+#define CAN1_MB4				14
+#define CAN1_MB5				15
+#define CAN1_MB6				16
+#define CAN1_MB7				17
+
 #define SUB0_ID0				20
 #define SUB0_ID1				21
 #define SUB0_ID2				22

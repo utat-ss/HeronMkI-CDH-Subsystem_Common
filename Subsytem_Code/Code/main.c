@@ -95,22 +95,22 @@ int main(void)
     {
 		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 */
-		//can_check_general();
+		can_check_general();
 		
 		/* CHECK FOR HOUSEKEEPING REQUEST */
-		//can_check_housekeep();
+		can_check_housekeep();
 		
 		/* CHECK FOR AN INCOMING SPI BYTE AND ECHO IT */
 		//spi_check();
 		
-		check = spi_transfer(*receive_char);		// Echo the character back to the master.
-		
-		if(check)
-		{
-			LED_Reg_Write(0x40);					// Toggle LED1 when a character was sent.
-			delay_ms(500);
-			LED_Reg_Write(0x00);
-		}
+		//check = spi_transfer(*receive_char);		// Echo the character back to the master.
+		//
+		//if(check)
+		//{
+			//LED_Reg_Write(0x40);					// Toggle LED1 when a character was sent.
+			//delay_ms(500);
+			//LED_Reg_Write(0x00);
+		//}
 		
 		/*	REPLY TO MESSAGES FROM MOB4 */
 		
@@ -120,7 +120,7 @@ int main(void)
 			{
 				send_arr[i] = 0xAB;		// Message to be sent back to the OBC.
 			}
-			can_send_message(&(send_arr[0]));
+			can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
 			send_now = 0;
 		}
 		
@@ -130,7 +130,7 @@ int main(void)
 			{
 				send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
 			}
-			can_send_message(&(send_arr[0]));
+			can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 			send_hk = 0;
 		}
 		
@@ -144,7 +144,7 @@ int main(void)
 			adc_read(&send_arr[0]);
 			send_arr[3] = 0x55;
 			
-			can_send_message(&(send_arr[0]));
+			can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
 			send_data = 0;
 		}
 	}

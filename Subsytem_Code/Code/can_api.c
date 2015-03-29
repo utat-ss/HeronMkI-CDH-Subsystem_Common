@@ -24,6 +24,11 @@
 	*	DEVELOPMENT HISTORY:
 	*	03/07/2015		Created.
 	*
+	*	03/28/2015		I edited can_send_message so that it now takes in an id as a
+	*					parameter. This is due to the fact that we are now actually
+	*					using different mailboxes in the OBC for different functions
+	*					now.
+	*
 */
 
 /************************************************************************/
@@ -156,13 +161,13 @@ void can_check_housekeep(void)
 /*		and data array being used should be parameters to this function.*/
 /************************************************************************/
 
-void can_send_message(uint8_t* data_array)
+void can_send_message(uint8_t* data_array, uint8_t id)
 {
 	uint8_t i = 0;
 
 	message.pt_data = &data4[0]; // point message object to first element of data buffer
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-	message.id.std = NODE0_ID;  // populate ID field with ID Tag
+	message.id.std = id;  // populate ID field with ID Tag
 	message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
 	message.dlc = 8;			 // Max length of a CAN message.
 	mob_number = 4;

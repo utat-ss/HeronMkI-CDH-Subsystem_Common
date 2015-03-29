@@ -45,7 +45,7 @@ uint8_t data5[DATA_BUFFER_SIZE];	// Data Buffer for MOb5
 /* Function Prototypes								 */	
 void can_check_general(void);
 void can_check_housekeep(void);
-void can_send_message(uint8_t* data_array);
+void can_send_message(uint8_t* data_array, uint8_t id);
 void can_init_mobs(void);
 /*****************************************************/
 
