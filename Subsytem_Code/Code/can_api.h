@@ -27,6 +27,7 @@
 */
 #include "config.h"
 #include "can_lib.h"
+#include "LED.h"
 
 #define DATA_BUFFER_SIZE 8 // 8 bytes max
 

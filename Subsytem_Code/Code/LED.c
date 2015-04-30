@@ -36,6 +36,7 @@ void LED_Reg_Write(uint8_t val) {
 }
 
 void LED_set(uint8_t LED) {
+
 	LEDPORT &= ~(1 << LED);
 }
 
@@ -44,6 +45,16 @@ void LED_clr(uint8_t LED) {
 }
 
 void LED_toggle(uint8_t LED) {
-	LEDPORT ^= (1 << LED);
+	
+	if(LED == 7)
+	{
+		PORTD ^= 0x01;
+	}
+	if(LED == 3)
+	{
+		PORTC ^= 0x01;
+	}
+	else
+		LEDPORT ^= (1 << LED);
 }
 

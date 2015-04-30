@@ -29,13 +29,14 @@
 
 //-----------FILE INCLUDES---------------
 #include "config.h"
+#include "LED.h"
 //---------------------------------------
 
 //-----------CONSTANT DEFINES------------
-#define	MCUCR_BASE	0x35
-#define SPCR_BASE	0X2C
-#define SPSR_BASE	0x2D
-#define SPDR_BASE	0x2E
+#define	MCUCR_BASE	0x55
+#define SPCR_BASE	0X4C
+#define SPSR_BASE	0x4D
+#define SPDR_BASE	0x4E
 
 #define SPI_TIMEOUT	1000				// Timeout for SPI polling operations.
 #define SPI_SPSR_SPIF (0x1u << 7)		// SPIF flag in the SPSR register.
@@ -44,4 +45,6 @@ void spi_initialize(void);
 uint8_t spi_transfer(uint8_t message);
 uint8_t spi_receive(uint8_t* r_message);
 void spi_check(void);
+void SS_set_high(void);
+void SS_set_low(void);
 

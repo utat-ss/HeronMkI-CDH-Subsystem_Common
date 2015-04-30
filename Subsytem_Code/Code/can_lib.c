@@ -55,6 +55,7 @@
 #include "config.h"
 #include "can_lib.h"
 #include "can_drv.h"
+#include "LED.h"
 
 //_____ D E F I N I T I O N S __________________________________________________
 
@@ -320,9 +321,10 @@ uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number)
             break;
 			 
         case MOB_RX_COMPLETED:
-			LED_Reg_Write(0x01);	//Toggle LED0 when the appropriate message is received.
-			delay_ms(500);
-			LED_Reg_Write(0x00);
+			LED_toggle(LED7);	//Toggle LED0 when the appropriate message is received.
+			delay_ms(100);
+			LED_toggle(LED7);
+			delay_ms(100);
 	    
             cmd->ctrl.rtr = Can_get_rtr();
             if (Can_get_ide()) // if extended frame

@@ -68,18 +68,20 @@ void can_check_general(void)
 			if ((receive_arr[0] == 0xFF) && (receive_arr[1] == 0xFF) && (receive_arr[2] == 0xFF) && (receive_arr[3] == 0xFF)
 			&& (receive_arr[4] == 0xFF) && (receive_arr[5] == 0xFF) && (receive_arr[6] == 0xFF) && (receive_arr[7] == 0xFF))
 			{
-				LED_Reg_Write(0x04);	//Toggle LED2 when the appropriate message is received.
-				delay_ms(500);
-				LED_Reg_Write(0x00);
+				LED_toggle(LED3);	//Toggle LED3 when the appropriate message is received.
+				delay_ms(100);
+				LED_toggle(LED3);
+				delay_ms(100);
 				send_now = 1;
 			}
 			
 			if ((receive_arr[0] == 0x55) && (receive_arr[1] == 0x55) && (receive_arr[2] == 0x55) && (receive_arr[3] == 0x55)
 			&& (receive_arr[4] == 0x55) && (receive_arr[5] == 0x55) && (receive_arr[6] == 0x55) && (receive_arr[7] == 0x55))
 			{
-				LED_Reg_Write(0x80);	//Toggle LED7 when the appropriate message is received.
-				delay_ms(500);
-				LED_Reg_Write(0x00);
+				LED_toggle(LED7);	//Toggle LED7 when the appropriate message is received.
+				delay_ms(100);
+				LED_toggle(LED7);
+				delay_ms(100);
 				send_data = 1;
 			}
 			
@@ -129,9 +131,10 @@ void can_check_housekeep(void)
 			if ((receive_arr[0] == 0x0F) && (receive_arr[1] == 0x0F) && (receive_arr[2] == 0x0F) && (receive_arr[3] == 0x0F)
 			&& (receive_arr[4] == 0x0F) && (receive_arr[5] == 0x0F) && (receive_arr[6] == 0x0F) && (receive_arr[7] == 0x0F))
 			{
-				LED_Reg_Write(0x40);	//Toggle LED6 when housekeeping was requested.
-				delay_ms(500);
-				LED_Reg_Write(0x00);
+				LED_toggle(LED6);	//Toggle LED5 when housekeeping was requested.
+				delay_ms(100);
+				LED_toggle(LED6);
+				delay_ms(100);
 				send_hk = 1;
 			}
 			for (i = 0; i < 8; i ++)
