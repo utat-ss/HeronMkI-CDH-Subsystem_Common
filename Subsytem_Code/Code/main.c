@@ -37,16 +37,16 @@
 	*					program is much easier to understand and I will likely make less
 	*					errors when developing code in the future.
 	*
-	*	04/05/2015		I am adding code in order to allow the subsystem micro to comminicate
-	*					with SPI devices. At this time, I am operating the subsytem micro as a 
-	*					master and the OBC as a slave in order to test the subsytem's capabilities
+	*	04/05/2015		I am adding code in order to allow the subsystem micro to communicate
+	*					with SPI devices. At this time, I am operating the subsystem micro as a 
+	*					master and the OBC as a slave in order to test the subsystem's capabilities
 	*					as an SPI master. Later, we will be using the ATMEGA32M1 for relaying 
 	*					data from SPI sensors to the OBC.
 	*
-	*	
+	*	04/30/2015		The SPI library that I wrote is now operational and is being used to communicate
+	*					with the OBC (ATSAM3X8E) as its slave.
 	*
 */
-
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -62,20 +62,16 @@ static void sys_init(void);
 static void io_init(void);
 /**************************************************/
 
-volatile uint8_t CTC_flag;
+volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
-	// Initialize I/O, Timer, and CAN peripheral
+	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
 	
 	uint8_t	i = 0;
-	uint8_t check = 0;
 	uint8_t spi_char = 0;
-	uint8_t spi_s_message, spi_r_message = 0;
-	uint8_t spi_flag = 0;	// 0 = sending, 1 = receiving.
-
-	spi_s_message = 0xAA;
+	uint8_t spi_s_message = 0xAA;	// Message to be sent to the slave via SPI.
 	
 	// Enable global interrupts for Timer execution
 	sei();
@@ -96,12 +92,6 @@ int main(void)
 	send_hk = 0;
 	send_data = 0;	
 	
-	/*		Initialize CAN Message Objects			*/
-	//can_init_mobs();
-	
-	/*		Initialize SPI communications			*/
-	spi_initialize();
-
 	/*		Begin Main Program Loop					*/	
     while(1)
     {
@@ -111,56 +101,20 @@ int main(void)
 		
 		/* CHECK FOR HOUSEKEEPING REQUEST */
 		//can_check_housekeep();
-		LED_toggle(LED7);
-		delay_ms(125);
-		LED_toggle(LED7);
-		delay_ms(125);
-		//
-		//if(!spi_flag)
-		//{
-			spi_char = spi_transfer(spi_s_message);		// Send a character to the slave.
-			if(spi_char)
-			{
-				LED_toggle(LED3);					// Toggle LED3 when a character was sent properly.
-				delay_ms(125);
-				LED_toggle(LED3);
-				delay_ms(125);
-				spi_flag = 1;
-			}
-			
-			if(spi_char == 0xFF)
-			{				
-				LED_toggle(LED6);					// Toggle LED6 when the correct character was received.
-				delay_ms(125);
-				LED_toggle(LED6);
-				delay_ms(125);
-			}
-			spi_char = 0;
-		//}
 		
-		//if(spi_flag)
-		//{
-			//check = spi_receive(&spi_r_message);			// A character has been received, and was loaded into the receive pointer.
-			//if(check)
-			//{
-				////LED_toggle(LED6);					// Toggle LED0 when a character was received.
-				////delay_ms(125);
-				////LED_toggle(LED6);
-				////delay_ms(125);
-				//if (spi_r_message == spi_s_message)
-				//{
-					//LED_toggle(LED6);					// Toggle LED0 when a character was received.
-					//delay_ms(125);
-					//LED_toggle(LED6);
-					//delay_ms(125);
-				//}
-				//spi_flag = 0;
-				//spi_r_message = 0;
-			//}			
-		//}
-		/* CHECK FOR AN INCOMING SPI BYTE */
+		/*		SPI TRANSFER		*/
 
-		
+		spi_char = spi_transfer(spi_s_message);		// Initiate an SPI transfer with a slave, receive a char into spi_char.
+						
+		if(spi_char == 0xBB)					// Right now, I have the OCB sending back 0xBB as a proof of concept.
+		{				
+			LED_toggle(LED6);					// Toggle LED6 when the correct character was received.
+			delay_ms(125);
+			LED_toggle(LED6);
+			delay_ms(125);
+		}
+		spi_char = 0;
+
 		/*	REPLY TO MESSAGES FROM MOB4 */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
@@ -206,23 +160,24 @@ void sys_init(void) {
 	
 	io_init();	
 	timer_init();
-	can_init(0);
 	adc_initialize();
+	can_init(0);
+	can_init_mobs();
+	spi_initialize_master();
 }
 
 void io_init(void) {
 	
 	// Init PORTB[7:0] // LED port
 	DDRB = 0xFE;
-	//LED_Reg_Write(0x00); // clear all LEDs
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
 	DDRC = 0x01;
 	PORTC = 0x00;
 	
 	// Init PORTD[7:0]
-	DDRD = 0x09;		// PD3 is the SS for SPI communicatons.
-	PORTD = 0x01;		// PD3 should only go low during an SPI message.
+	DDRD = 0x09;		// PD3 is the SS for SPI communications.
+	PORTD = 0x01;		// PD3 should only go high during an SPI message.
 	
 	// Init PORTE[2:0]
 	DDRE = 0x00;

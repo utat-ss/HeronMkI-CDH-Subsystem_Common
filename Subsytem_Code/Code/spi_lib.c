@@ -7,17 +7,25 @@
 	*	PURPOSE:	This program contains functions related to SPI communication
 	*				in the ATMEGA32M1.
 	*
-	*	FILE REFERENCES:
+	*	FILE REFERENCES:		spi_lib.h
 	*
-	*	EXTERNAL VARIABLES:	
+	*	EXTERNAL VARIABLES:		None.
 	*
 	*	EXTERNAL REFERENCES:	Same a File References.
 	*
-	*	ABORNOMAL TERMINATION CONDITIONS, ERROR AND WARNING MESSAGES: None yet.
+	*	ABORNOMAL TERMINATION CONDITIONS, ERROR AND WARNING MESSAGES: None.
 	*
 	*	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
 	*
-	*	NOTES:	
+	*	NOTES:
+	*					When reading the SPI documentation for the ATMEGA32M1, note that they 
+	*					give signals in terms of !SS as opposed to SS.
+	*
+	*					This library is incomplete, if the user wants the ATMEGA32M1 to communicate
+	*					over SPI as a slave, more code needs to be written.
+	*
+	*					Pin 2 on the 32M1 corresponds to the SS, and DP10 on the ATSAM3X8E corresponds 
+	*					to the Slave-Select for that microcontroller (hence you should connect them).
 	*
 	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
 	*	None so far.
@@ -25,19 +33,35 @@
 	*	DEVELOPMENT HISTORY:
 	*	2/28/2015		Created.
 	*
+	*	4/30/2015		I have edited and fixed several things regarding the SPI_transfer function.
+	*
+	*					The first thing was that SS needs to be kept low when no communication is 
+	*					going on, it will then go high to indicate to the slave that a transfer
+	*					is starting.
+	*
+	*					The second thing is that when an SPI transfer occurs, a byte is sent out by
+	*					the master on the MOSI line and simultaneously, a byte is received on the 
+	*					MISO line and placed on the SPI receive buffer.
+	*
+	*					Third, is that you need to wait for the transfer to complete (when SPIF goes high)
+	*					before you can read the data register for the received byte. Otherwise, the byte
+	*					read will be the one that was just sent on the MOSI line.
+	*
+	*					I got rid of the 'receive' function because there is no need for it. 
+	*
 */
 
 #include "spi_lib.h"
 
 /************************************************************************/
-/*      SPI INITIALIZE                                                  */
+/*      SPI INITIALIZE MASTER                                           */
 /*																		*/
 /*		Initialize SPI by setting interrupts off, setting the enable	*/
 /*		bit, select the main SPI lines (don't end in _A), setting it as	*/
 /*		an SPI master, communicating with MSB first, clock = MCK / 4.	*/
 /*																		*/
 /************************************************************************/
-void spi_initialize(void)
+void spi_initialize_master(void)
 {
 	uint8_t* reg_ptr;
 	uint8_t temp = 0;
@@ -54,7 +78,6 @@ void spi_initialize(void)
 	
 	return;
 }
-
 
 /* Slave Initialize */
 
@@ -76,17 +99,15 @@ void spi_initialize(void)
 	//return;
 //}
 
-
-
-
 /************************************************************************/
-/*		SPI TRANSFER                                                    */
+/*		SPI TRANSFER (as a master)                                      */
 /*																		*/
 /*		This function takes in a single byte as a parameter and then	*/
 /*		proceeds to load this byte into the SPDR register in order to	*/
 /*		initiate transmission. It will then loop until the transmission	*/
 /*		is completed. If the transmission times out, it returns 0.		*/
-/*		A successful transmission corresponds to a return value of 1.	*/
+/*		A successful transmission will return the byte which was		*/
+/*		received on the MISO line during the transfer.					*/
 /*																		*/
 /************************************************************************/
 uint8_t spi_transfer(uint8_t message)
@@ -94,6 +115,7 @@ uint8_t spi_transfer(uint8_t message)
 	uint8_t* reg_ptr;
 	uint8_t timeout = SPI_TIMEOUT;
 	uint8_t receive_char;
+	uint8_t i, temp;
 	
 	reg_ptr = SPDR_BASE;
 	
@@ -114,9 +136,16 @@ uint8_t spi_transfer(uint8_t message)
 	reg_ptr = SPDR_BASE;
 	receive_char = *reg_ptr;
 	
+	// I was assuming that SPI messages would be received MSB first.
+	// Comment out the following if that is not the case.
+	
+	for (i = 0; i < 8; i ++)
+	{
+		temp += ( (receive_char << 7) >> (2 * i) );
+	}
+	
 	return receive_char;					// Transmission was successful, return the character that was received.
 }
-
 
 /************************************************************************/
 /*		SS_set_high                                                     */
@@ -144,59 +173,5 @@ void SS_set_high(void)
 void SS_set_low(void)
 {
 	PORTD &= (0 << 3);
-}
-
-
-/************************************************************************/
-/*		SPI RECEIVE                                                     */
-/*																		*/
-/*		This function takes in a pointer which shall be used to store	*/
-/*		the incoming byte. This function will wait until a character	*/
-/*		is received and the SPIF flag goes high. If the while loop		*/
-/*		times out, 0 is returned.1 corresponds to a successful reception*/
-/*																		*/
-/************************************************************************/
-uint8_t spi_receive(uint8_t* r_message)
-{
-	uint8_t* reg_ptr;
-	uint8_t timeout = SPI_TIMEOUT;
-	reg_ptr = SPSR_BASE;
-	
-	//while(!(*reg_ptr & SPI_SPSR_SPIF))		// Wait for a character to received => SPIF goes high.
-	//{
-		//if(!timeout--)
-		//return 0;							// Something went wrong, so the function times out.
-	//}
-	
-	reg_ptr = SPDR_BASE;
-	*r_message = *reg_ptr;					// Load the received byte into the message pointer.
-	
-	return 1;								// Reception was successful.
-}
-
-void spi_check(void)
-{
-	uint8_t* reg_ptr;
-	uint8_t* receive_char;
-	uint8_t	check = 0;
-	reg_ptr = SPSR_BASE;
-	
-	if(*reg_ptr & SPI_SPSR_SPIF)
-		check = spi_receive(receive_char);			// A character has been received, and was loaded into the receive pointer.
-		
-	if(check)
-	{
-		LED_toggle(LED0);						// Toggle LED0 when a character was received.
-		delay_ms(100);
-		LED_toggle(LED0);
-		//check = spi_transfer(*receive_char);		// Echo the character back to the master.		
-		//
-		//if(check)
-		//{
-			//LED_Reg_Write(0x02);					// Toggle LED1 when a character was sent.
-			//delay_ms(500);
-		//}
-	}
-	return;
 }
 

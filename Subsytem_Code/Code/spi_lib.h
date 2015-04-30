@@ -24,6 +24,9 @@
 	*	DEVELOPMENT HISTORY:
 	*	2/28/2015		Created.
 	*
+	*	4/30/2015		I got rid of the 'receive', and 'check' functions because 
+	*					there was no need for them anymore.
+	*
 */
 
 
@@ -41,10 +44,8 @@
 #define SPI_TIMEOUT	1000				// Timeout for SPI polling operations.
 #define SPI_SPSR_SPIF (0x1u << 7)		// SPIF flag in the SPSR register.
 
-void spi_initialize(void);
+void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);
-uint8_t spi_receive(uint8_t* r_message);
-void spi_check(void);
 void SS_set_high(void);
 void SS_set_low(void);
 
