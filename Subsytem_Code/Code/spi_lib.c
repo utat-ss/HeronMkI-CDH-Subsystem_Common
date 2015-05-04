@@ -115,7 +115,7 @@ uint8_t spi_transfer(uint8_t message)
 	uint8_t* reg_ptr;
 	uint8_t timeout = SPI_TIMEOUT;
 	uint8_t receive_char;
-	uint8_t i, temp;
+	uint8_t i, temp, temp2;
 	
 	reg_ptr = SPDR_BASE;
 	
@@ -139,12 +139,17 @@ uint8_t spi_transfer(uint8_t message)
 	// I was assuming that SPI messages would be received MSB first.
 	// Comment out the following if that is not the case.
 	
+	temp = 0, temp2 = 0;
+	
 	for (i = 0; i < 8; i ++)
 	{
-		temp += ( (receive_char << 7) >> (2 * i) );
+		temp2 = receive_char << (7 - i);	// reverses the order of the bits.
+		temp2 = temp2 >> 7;
+		temp2 = temp2 << (7 - i);		
+		temp += temp2;
 	}
 	
-	return receive_char;					// Transmission was successful, return the character that was received.
+	return temp;					// Transmission was successful, return the character that was received.
 }
 
 /************************************************************************/

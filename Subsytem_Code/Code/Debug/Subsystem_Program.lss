@@ -3,27 +3,27 @@ Subsystem_Program.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000012ca  00000000  00000000  00000074  2**1
+  0 .text         000012fc  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          00000052  00800100  00800100  0000133e  2**0
+  1 .bss          00000052  00800100  00800100  00001370  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  0000133e  2**0
+  2 .comment      00000030  00000000  00000000  00001370  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 000001a0  00000000  00000000  0000136e  2**0
+  3 .debug_aranges 000001a0  00000000  00000000  000013a0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00001762  00000000  00000000  0000150e  2**0
+  4 .debug_info   00001779  00000000  00000000  00001540  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 000009f5  00000000  00000000  00002c70  2**0
+  5 .debug_abbrev 000009e8  00000000  00000000  00002cb9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   00000c09  00000000  00000000  00003665  2**0
+  6 .debug_line   00000c25  00000000  00000000  000036a1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  00000320  00000000  00000000  00004270  2**2
+  7 .debug_frame  00000320  00000000  00000000  000042c8  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000005c8  00000000  00000000  00004590  2**0
+  8 .debug_str    000005ce  00000000  00000000  000045e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    00001278  00000000  00000000  00004b58  2**0
+  9 .debug_loc    0000131a  00000000  00000000  00004bb6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000168  00000000  00000000  00005dd0  2**0
+ 10 .debug_ranges 00000168  00000000  00000000  00005ed0  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -41,7 +41,7 @@ Disassembly of section .text:
       24:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       28:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       2c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
-      30:	0c 94 1e 09 	jmp	0x123c	; 0x123c <__vector_12>
+      30:	0c 94 37 09 	jmp	0x126e	; 0x126e <__vector_12>
       34:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       38:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       3c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
@@ -94,7 +94,7 @@ Disassembly of section .text:
       aa:	b2 07       	cpc	r27, r18
       ac:	e1 f7       	brne	.-8      	; 0xa6 <.do_clear_bss_loop>
       ae:	0e 94 69 08 	call	0x10d2	; 0x10d2 <main>
-      b2:	0c 94 63 09 	jmp	0x12c6	; 0x12c6 <_exit>
+      b2:	0c 94 7c 09 	jmp	0x12f8	; 0x12f8 <_exit>
 
 000000b6 <__bad_interrupt>:
       b6:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -543,7 +543,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
      2da:	e0 c5       	rjmp	.+3008   	; 0xe9c <__stack+0x59d>
      2dc:	e2 5c       	subi	r30, 0xC2	; 194
      2de:	ff 4f       	sbci	r31, 0xFF	; 255
-     2e0:	0c 94 5d 09 	jmp	0x12ba	; 0x12ba <__tablejump2__>
+     2e0:	0c 94 76 09 	jmp	0x12ec	; 0x12ec <__tablejump2__>
           Can_set_idemsk();
           Can_config_rx();       
           break;
@@ -2339,14 +2339,14 @@ uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number)
 			delay_ms(100);
      efc:	84 e6       	ldi	r24, 0x64	; 100
      efe:	90 e0       	ldi	r25, 0x00	; 0
-     f00:	0e 94 47 09 	call	0x128e	; 0x128e <delay_ms>
+     f00:	0e 94 60 09 	call	0x12c0	; 0x12c0 <delay_ms>
 			LED_toggle(LED7);
      f04:	87 e0       	ldi	r24, 0x07	; 7
      f06:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
 			delay_ms(100);
      f0a:	84 e6       	ldi	r24, 0x64	; 100
      f0c:	90 e0       	ldi	r25, 0x00	; 0
-     f0e:	0e 94 47 09 	call	0x128e	; 0x128e <delay_ms>
+     f0e:	0e 94 60 09 	call	0x12c0	; 0x12c0 <delay_ms>
 	    
             cmd->ctrl.rtr = Can_get_rtr();
      f12:	80 91 f0 00 	lds	r24, 0x00F0
@@ -2710,7 +2710,7 @@ void io_init(void) {
 	
 	io_init();	
 	timer_init();
-    10f0:	0e 94 2d 09 	call	0x125a	; 0x125a <timer_init>
+    10f0:	0e 94 46 09 	call	0x128c	; 0x128c <timer_init>
 	adc_initialize();
     10f4:	0e 94 5d 00 	call	0xba	; 0xba <adc_initialize>
 	can_init(0);
@@ -2735,14 +2735,14 @@ void io_init(void) {
 	delay_ms(500);
     110e:	84 ef       	ldi	r24, 0xF4	; 244
     1110:	91 e0       	ldi	r25, 0x01	; 1
-    1112:	0e 94 47 09 	call	0x128e	; 0x128e <delay_ms>
+    1112:	0e 94 60 09 	call	0x12c0	; 0x12c0 <delay_ms>
 	LED_toggle(LED3);
     1116:	83 e0       	ldi	r24, 0x03	; 3
     1118:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
 	delay_ms(250);
     111c:	8a ef       	ldi	r24, 0xFA	; 250
     111e:	90 e0       	ldi	r25, 0x00	; 0
-    1120:	0e 94 47 09 	call	0x128e	; 0x128e <delay_ms>
+    1120:	0e 94 60 09 	call	0x12c0	; 0x12c0 <delay_ms>
     1124:	e6 e3       	ldi	r30, 0x36	; 54
     1126:	f1 e0       	ldi	r31, 0x01	; 1
     1128:	8e e3       	ldi	r24, 0x3E	; 62
@@ -2833,15 +2833,15 @@ void io_init(void) {
 			delay_ms(125);
     1180:	8d e7       	ldi	r24, 0x7D	; 125
     1182:	90 e0       	ldi	r25, 0x00	; 0
-    1184:	0e 94 47 09 	call	0x128e	; 0x128e <delay_ms>
+    1184:	0e 94 60 09 	call	0x12c0	; 0x12c0 <delay_ms>
 			LED_toggle(LED6);
     1188:	86 e0       	ldi	r24, 0x06	; 6
     118a:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
 			delay_ms(125);
     118e:	8d e7       	ldi	r24, 0x7D	; 125
     1190:	90 e0       	ldi	r25, 0x00	; 0
-    1192:	0e 94 47 09 	call	0x128e	; 0x128e <delay_ms>
-		}
+    1192:	0e 94 60 09 	call	0x12c0	; 0x12c0 <delay_ms>
+		//}
 		spi_char = 0;
 
 		/*	REPLY TO MESSAGES FROM MOB4 */
@@ -3000,7 +3000,7 @@ uint8_t spi_transfer(uint8_t message)
 {
     121e:	cf 93       	push	r28
     1220:	c8 2f       	mov	r28, r24
-	uint8_t i, temp;
+	uint8_t i, temp, temp2;
 	
 	reg_ptr = SPDR_BASE;
 	
@@ -3015,7 +3015,7 @@ uint8_t spi_transfer(uint8_t message)
 	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
     1228:	0d b4       	in	r0, 0x2d	; 45
     122a:	07 fe       	sbrs	r0, 7
-    122c:	04 c0       	rjmp	.+8      	; 0x1236 <spi_transfer+0x18>
+    122c:	1d c0       	rjmp	.+58     	; 0x1268 <spi_transfer+0x4a>
 	{
 		if(!timeout--)
 			SS_set_low();
@@ -3026,134 +3026,171 @@ uint8_t spi_transfer(uint8_t message)
 	
 	reg_ptr = SPDR_BASE;
 	receive_char = *reg_ptr;
-    1232:	8e b5       	in	r24, 0x2e	; 46
-    1234:	01 c0       	rjmp	.+2      	; 0x1238 <spi_transfer+0x1a>
+    1232:	6e b5       	in	r22, 0x2e	; 46
+    1234:	27 e0       	ldi	r18, 0x07	; 7
+    1236:	30 e0       	ldi	r19, 0x00	; 0
+	
+	// I was assuming that SPI messages would be received MSB first.
+	// Comment out the following if that is not the case.
+	
+	temp = 0, temp2 = 0;
+    1238:	80 e0       	ldi	r24, 0x00	; 0
+	
+	for (i = 0; i < 8; i ++)
+	{
+		temp2 = receive_char << (7 - i);	// reverses the order of the bits.
+    123a:	70 e0       	ldi	r23, 0x00	; 0
+    123c:	ab 01       	movw	r20, r22
+    123e:	02 2e       	mov	r0, r18
+    1240:	02 c0       	rjmp	.+4      	; 0x1246 <spi_transfer+0x28>
+    1242:	44 0f       	add	r20, r20
+    1244:	55 1f       	adc	r21, r21
+    1246:	0a 94       	dec	r0
+    1248:	e2 f7       	brpl	.-8      	; 0x1242 <spi_transfer+0x24>
+		temp2 = temp2 >> 7;
+    124a:	44 1f       	adc	r20, r20
+    124c:	44 27       	eor	r20, r20
+    124e:	44 1f       	adc	r20, r20
+		temp2 = temp2 << (7 - i);		
+    1250:	50 e0       	ldi	r21, 0x00	; 0
+    1252:	02 2e       	mov	r0, r18
+    1254:	02 c0       	rjmp	.+4      	; 0x125a <spi_transfer+0x3c>
+    1256:	44 0f       	add	r20, r20
+    1258:	55 1f       	adc	r21, r21
+    125a:	0a 94       	dec	r0
+    125c:	e2 f7       	brpl	.-8      	; 0x1256 <spi_transfer+0x38>
+		temp += temp2;
+    125e:	84 0f       	add	r24, r20
+    1260:	21 50       	subi	r18, 0x01	; 1
+    1262:	31 09       	sbc	r19, r1
+    1264:	58 f7       	brcc	.-42     	; 0x123c <spi_transfer+0x1e>
+    1266:	01 c0       	rjmp	.+2      	; 0x126a <spi_transfer+0x4c>
 
 	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
 	{
 		if(!timeout--)
 			SS_set_low();
 			return 0;						// Something went wrong, so the function times out.
-    1236:	80 e0       	ldi	r24, 0x00	; 0
-	{
-		temp += ( (receive_char << 7) >> (2 * i) );
+    1268:	80 e0       	ldi	r24, 0x00	; 0
+		temp2 = temp2 << (7 - i);		
+		temp += temp2;
 	}
 	
-	return receive_char;					// Transmission was successful, return the character that was received.
+	return temp;					// Transmission was successful, return the character that was received.
 }
-    1238:	cf 91       	pop	r28
-    123a:	08 95       	ret
+    126a:	cf 91       	pop	r28
+    126c:	08 95       	ret
 
-0000123c <__vector_12>:
+0000126e <__vector_12>:
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "Timer.h"
 
 ISR(TIMER1_COMPA_vect) {
-    123c:	1f 92       	push	r1
-    123e:	0f 92       	push	r0
-    1240:	0f b6       	in	r0, 0x3f	; 63
-    1242:	0f 92       	push	r0
-    1244:	11 24       	eor	r1, r1
-    1246:	8f 93       	push	r24
+    126e:	1f 92       	push	r1
+    1270:	0f 92       	push	r0
+    1272:	0f b6       	in	r0, 0x3f	; 63
+    1274:	0f 92       	push	r0
+    1276:	11 24       	eor	r1, r1
+    1278:	8f 93       	push	r24
 	CTC_flag = 1;
-    1248:	81 e0       	ldi	r24, 0x01	; 1
-    124a:	80 93 51 01 	sts	0x0151, r24
+    127a:	81 e0       	ldi	r24, 0x01	; 1
+    127c:	80 93 51 01 	sts	0x0151, r24
 }
-    124e:	8f 91       	pop	r24
-    1250:	0f 90       	pop	r0
-    1252:	0f be       	out	0x3f, r0	; 63
-    1254:	0f 90       	pop	r0
-    1256:	1f 90       	pop	r1
-    1258:	18 95       	reti
+    1280:	8f 91       	pop	r24
+    1282:	0f 90       	pop	r0
+    1284:	0f be       	out	0x3f, r0	; 63
+    1286:	0f 90       	pop	r0
+    1288:	1f 90       	pop	r1
+    128a:	18 95       	reti
 
-0000125a <timer_init>:
+0000128c <timer_init>:
 
 // This function initializes a 16-bit timer used for delays.
 void timer_init(void) {
 	
 	TIMSK1 = 0x00; //Disable timer interrupts
-    125a:	10 92 6f 00 	sts	0x006F, r1
+    128c:	10 92 6f 00 	sts	0x006F, r1
 	TCCR1A = 0x00; //Timer not connected to any pins
-    125e:	10 92 80 00 	sts	0x0080, r1
+    1290:	10 92 80 00 	sts	0x0080, r1
 	TCCR1B = 0x0A; //CTC mode; Timer_Rate = System_CLK/8 = 1MHz
-    1262:	8a e0       	ldi	r24, 0x0A	; 10
-    1264:	80 93 81 00 	sts	0x0081, r24
-    1268:	08 95       	ret
+    1294:	8a e0       	ldi	r24, 0x0A	; 10
+    1296:	80 93 81 00 	sts	0x0081, r24
+    129a:	08 95       	ret
 
-0000126a <delay_us>:
+0000129c <delay_us>:
 // if timer rate is set to 1MHz frequency. For example, this 
 // project uses a system clock of 8MHz. Timer1 rate is set to
 // System Clock divided by 8 which is 1MHz (in timer_init). 
 // Therefore the "us" parameter truly is 1us.
 void delay_us(uint16_t us) {
 	CTC_flag = 0; //Clear CTC Interrupt flag
-    126a:	10 92 51 01 	sts	0x0151, r1
+    129c:	10 92 51 01 	sts	0x0151, r1
 	TCNT1 = 0x0000; //Clear timer
-    126e:	10 92 85 00 	sts	0x0085, r1
-    1272:	10 92 84 00 	sts	0x0084, r1
+    12a0:	10 92 85 00 	sts	0x0085, r1
+    12a4:	10 92 84 00 	sts	0x0084, r1
 	OCR1A = us; //Load compare value with desired delay in us
-    1276:	90 93 89 00 	sts	0x0089, r25
-    127a:	80 93 88 00 	sts	0x0088, r24
+    12a8:	90 93 89 00 	sts	0x0089, r25
+    12ac:	80 93 88 00 	sts	0x0088, r24
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
-    127e:	82 e0       	ldi	r24, 0x02	; 2
-    1280:	80 93 6f 00 	sts	0x006F, r24
+    12b0:	82 e0       	ldi	r24, 0x02	; 2
+    12b2:	80 93 6f 00 	sts	0x006F, r24
 	while(!CTC_flag); //wait for the designated number of us
-    1284:	80 91 51 01 	lds	r24, 0x0151
-    1288:	88 23       	and	r24, r24
-    128a:	e1 f3       	breq	.-8      	; 0x1284 <delay_us+0x1a>
+    12b6:	80 91 51 01 	lds	r24, 0x0151
+    12ba:	88 23       	and	r24, r24
+    12bc:	e1 f3       	breq	.-8      	; 0x12b6 <delay_us+0x1a>
 }
-    128c:	08 95       	ret
+    12be:	08 95       	ret
 
-0000128e <delay_ms>:
+000012c0 <delay_ms>:
 
 void delay_ms(uint16_t ms) {
-    128e:	0f 93       	push	r16
-    1290:	1f 93       	push	r17
-    1292:	cf 93       	push	r28
-    1294:	df 93       	push	r29
-    1296:	8c 01       	movw	r16, r24
+    12c0:	0f 93       	push	r16
+    12c2:	1f 93       	push	r17
+    12c4:	cf 93       	push	r28
+    12c6:	df 93       	push	r29
+    12c8:	8c 01       	movw	r16, r24
 	for(uint16_t i=0; i<ms; i++) {
-    1298:	00 97       	sbiw	r24, 0x00	; 0
-    129a:	51 f0       	breq	.+20     	; 0x12b0 <delay_ms+0x22>
-    129c:	c0 e0       	ldi	r28, 0x00	; 0
-    129e:	d0 e0       	ldi	r29, 0x00	; 0
+    12ca:	00 97       	sbiw	r24, 0x00	; 0
+    12cc:	51 f0       	breq	.+20     	; 0x12e2 <delay_ms+0x22>
+    12ce:	c0 e0       	ldi	r28, 0x00	; 0
+    12d0:	d0 e0       	ldi	r29, 0x00	; 0
 		delay_us(1000);
-    12a0:	88 ee       	ldi	r24, 0xE8	; 232
-    12a2:	93 e0       	ldi	r25, 0x03	; 3
-    12a4:	0e 94 35 09 	call	0x126a	; 0x126a <delay_us>
+    12d2:	88 ee       	ldi	r24, 0xE8	; 232
+    12d4:	93 e0       	ldi	r25, 0x03	; 3
+    12d6:	0e 94 4e 09 	call	0x129c	; 0x129c <delay_us>
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
 	while(!CTC_flag); //wait for the designated number of us
 }
 
 void delay_ms(uint16_t ms) {
 	for(uint16_t i=0; i<ms; i++) {
-    12a8:	21 96       	adiw	r28, 0x01	; 1
-    12aa:	c0 17       	cp	r28, r16
-    12ac:	d1 07       	cpc	r29, r17
-    12ae:	c1 f7       	brne	.-16     	; 0x12a0 <delay_ms+0x12>
+    12da:	21 96       	adiw	r28, 0x01	; 1
+    12dc:	c0 17       	cp	r28, r16
+    12de:	d1 07       	cpc	r29, r17
+    12e0:	c1 f7       	brne	.-16     	; 0x12d2 <delay_ms+0x12>
 		delay_us(1000);
 	}
 }
-    12b0:	df 91       	pop	r29
-    12b2:	cf 91       	pop	r28
-    12b4:	1f 91       	pop	r17
-    12b6:	0f 91       	pop	r16
-    12b8:	08 95       	ret
+    12e2:	df 91       	pop	r29
+    12e4:	cf 91       	pop	r28
+    12e6:	1f 91       	pop	r17
+    12e8:	0f 91       	pop	r16
+    12ea:	08 95       	ret
 
-000012ba <__tablejump2__>:
-    12ba:	ee 0f       	add	r30, r30
-    12bc:	ff 1f       	adc	r31, r31
+000012ec <__tablejump2__>:
+    12ec:	ee 0f       	add	r30, r30
+    12ee:	ff 1f       	adc	r31, r31
 
-000012be <__tablejump__>:
-    12be:	05 90       	lpm	r0, Z+
-    12c0:	f4 91       	lpm	r31, Z
-    12c2:	e0 2d       	mov	r30, r0
-    12c4:	09 94       	ijmp
+000012f0 <__tablejump__>:
+    12f0:	05 90       	lpm	r0, Z+
+    12f2:	f4 91       	lpm	r31, Z
+    12f4:	e0 2d       	mov	r30, r0
+    12f6:	09 94       	ijmp
 
-000012c6 <_exit>:
-    12c6:	f8 94       	cli
+000012f8 <_exit>:
+    12f8:	f8 94       	cli
 
-000012c8 <__stop_program>:
-    12c8:	ff cf       	rjmp	.-2      	; 0x12c8 <__stop_program>
+000012fa <__stop_program>:
+    12fa:	ff cf       	rjmp	.-2      	; 0x12fa <__stop_program>

@@ -113,6 +113,11 @@ int main(void)
 			LED_toggle(LED6);
 			delay_ms(125);
 		}
+		
+		//if(!spi_char)
+		//{
+			//delay_ms(100);
+		//}
 		spi_char = 0;
 
 		/*	REPLY TO MESSAGES FROM MOB4 */
