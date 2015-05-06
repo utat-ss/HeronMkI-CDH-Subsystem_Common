@@ -97,27 +97,23 @@ int main(void)
     {
 		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 */
-		//can_check_general();
+		can_check_general();
 		
 		/* CHECK FOR HOUSEKEEPING REQUEST */
-		//can_check_housekeep();
+		can_check_housekeep();
 		
 		/*		SPI TRANSFER		*/
 
-		spi_char = spi_transfer(spi_s_message);		// Initiate an SPI transfer with a slave, receive a char into spi_char.
-						
-		if(spi_char == 0xBB)					// Right now, I have the OCB sending back 0xBB as a proof of concept.
-		{				
-			LED_toggle(LED6);					// Toggle LED6 when the correct character was received.
-			delay_ms(125);
-			LED_toggle(LED6);
-			delay_ms(125);
-		}
-		
-		//if(!spi_char)
-		//{
-			//delay_ms(100);
+		//spi_char = spi_transfer(spi_s_message);		// Initiate an SPI transfer with a slave, receive a char into spi_char.
+						//
+		//if(spi_char == 0xBB)					// Right now, I have the OCB sending back 0xBB as a proof of concept.
+		//{				
+			//LED_toggle(LED6);					// Toggle LED6 when the correct character was received.
+			//delay_ms(125);
+			//LED_toggle(LED6);
+			//delay_ms(125);
 		//}
+
 		spi_char = 0;
 
 		/*	REPLY TO MESSAGES FROM MOB4 */
