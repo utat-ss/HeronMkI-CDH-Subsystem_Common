@@ -54,12 +54,34 @@
 #include "spi_lib.h"
 
 /************************************************************************/
-/*      SPI INITIALIZE MASTER                                           */
+/*      SPI INITIALIZE MASTER (With OBC)                                */
 /*																		*/
 /*		Initialize SPI by setting interrupts off, setting the enable	*/
 /*		bit, select the main SPI lines (don't end in _A), setting it as	*/
 /*		an SPI master, communicating with MSB first, clock = MCK / 4.	*/
 /*																		*/
+/************************************************************************/
+//void spi_initialize_master(void)
+//{
+	//uint8_t* reg_ptr;
+	//uint8_t temp = 0;
+	//
+	//reg_ptr = MCUCR_BASE;
+	//temp = 0b01111111;
+	//*reg_ptr = *reg_ptr & (temp);	// We set SPIPS to 0 (select MISO, so NOT MISO_A)
+	//
+	//reg_ptr = SPCR_BASE;
+	//temp = 0b01111111;
+	//*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle)
+	//temp = 0b01011111;
+	//*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
+	//
+	//return;
+//}
+
+
+// SPI Initialize (with tranceiver)
+
 /************************************************************************/
 void spi_initialize_master(void)
 {
@@ -120,7 +142,7 @@ uint8_t spi_transfer(uint8_t message)
 	reg_ptr = SPDR_BASE;
 	
 	// Commence the SPI message.
-	SS_set_high();
+	//SS_set_high();
 	*reg_ptr = message;
 		
 	reg_ptr = SPSR_BASE;
@@ -128,10 +150,12 @@ uint8_t spi_transfer(uint8_t message)
 	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
 	{
 		if(!timeout--)
-			SS_set_low();
+		{
+			//SS_set_low();
 			return 0;						// Something went wrong, so the function times out.
+		}
 	}	
-	SS_set_low();
+	//SS_set_low();
 	
 	reg_ptr = SPDR_BASE;
 	receive_char = *reg_ptr;

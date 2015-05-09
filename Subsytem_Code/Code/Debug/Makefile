@@ -44,7 +44,8 @@ C_SRCS +=  \
 ../LED.c \
 ../main.c \
 ../spi_lib.c \
-../Timer.c
+../Timer.c \
+../trans_lib.c
 
 
 PREPROCESSING_SRCS += 
@@ -61,7 +62,8 @@ can_lib.o \
 LED.o \
 main.o \
 spi_lib.o \
-Timer.o
+Timer.o \
+trans_lib.o
 
 OBJS_AS_ARGS +=  \
 adc_lib.o \
@@ -71,7 +73,8 @@ can_lib.o \
 LED.o \
 main.o \
 spi_lib.o \
-Timer.o
+Timer.o \
+trans_lib.o
 
 C_DEPS +=  \
 adc_lib.d \
@@ -81,7 +84,8 @@ can_lib.d \
 LED.d \
 main.d \
 spi_lib.d \
-Timer.d
+Timer.d \
+trans_lib.d
 
 C_DEPS_AS_ARGS +=  \
 adc_lib.d \
@@ -91,7 +95,8 @@ can_lib.d \
 LED.d \
 main.d \
 spi_lib.d \
-Timer.d
+Timer.d \
+trans_lib.d
 
 OUTPUT_FILE_PATH +=Subsystem_Program.elf
 
@@ -107,6 +112,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 
