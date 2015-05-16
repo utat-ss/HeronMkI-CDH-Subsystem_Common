@@ -70,7 +70,9 @@ int main(void)
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
 	
-	cmd_str(SIDLE);
+	//cmd_str(SIDLE);
+	
+	//SS_set_high();
 	
 	uint8_t	i = 0;
 	uint8_t spi_char = 0;
@@ -84,10 +86,10 @@ int main(void)
 	sei();
 	
 	// Flash LEDs to indicate program startup
-	LED_toggle(LED3);
-	delay_ms(500);
-	LED_toggle(LED3);
-	delay_ms(250);
+	//LED_toggle(LED3);
+	//delay_ms(500);
+	//LED_toggle(LED3);
+	//delay_ms(250);
 	//LED_toggle(LED6);
 	
 	//LED_toggle(LED6);
@@ -101,7 +103,9 @@ int main(void)
 			
 	send_now = 0;
 	send_hk = 0;
-	send_data = 0;	
+	send_data = 0;
+	
+	reg_write(0x0A, 0xFF);
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
@@ -129,41 +133,61 @@ int main(void)
 		
 		/* Testing the COMS Transceiver */
 		
-		SS_set_high();
-		delay_us(80);
-		reg_write(0x0A, 0XFF);
-		SS_set_low();
+		//SS_set_low();
+		//delay_ms(500);
+		//SS_set_high();
+		//delay_ms(500);
+		//set_CSn(0);
+		//spi_transfer(0x70);
+//
+		//delay_us(1);
+//
+		//spi_transfer(0x80);
 		
-		SS_set_high();
-		delay_us(80);
+		
+		//SS_set_low();
+		//reg_write(0x0A, 0xFF);
+		//delay_us(80);
+		
+	// ****************
+		
+		reg_write(0x0A, 0xAA);
+			
+		//delay_cycles(2);
+		
 		trans_msg = reg_read(0x0A);
-		SS_set_low();
+	
+		//delay_us(1000);
+	// ********************
+
 		
-		if(trans_msg)
-		{
-			LED_toggle(LED3);
-			delay_ms(100);
-			LED_toggle(LED3);
-			delay_ms(100);
-		}
+	//	SS_set_high();
+		
+		//if(trans_msg == 0x1F)
+		//{
+			//LED_toggle(LED3);
+			//delay_ms(100);
+			//LED_toggle(LED3);
+			//delay_ms(100);
+		//}
 		
 		//monitor_LEDs();
 		//get_status(&CHIP_RDYn, &state);
-		//
-		//if(state == 0b110)
-		//{	
+		
+		if(state == 0b110)
+		{	
 			//cmd_str(SIDLE);
 			//// Here we would send our message to the OBC.
 			//
 			//trans_msg = dir_FIFO_read(0x80);
 			//
-			//if(trans_msg == 0xA)
-			//{
-				//LED_toggle(LED3);
-				//delay_ms(100);
-				//LED_toggle(LED3);
-				//delay_ms(100);
-			//}
+			////if(trans_msg == 0xA)
+			////{
+				////LED_toggle(LED3);
+				////delay_ms(100);
+				////LED_toggle(LED3);
+				////delay_ms(100);
+			////}
 			//
 			//cmd_str(SFRX);
 			//
@@ -182,7 +206,7 @@ int main(void)
 			////cmd_str(SFTX);
 			//
 			//cmd_str(SRX);
-		//}
+		}
 
 
 		/*	REPLY TO MESSAGES FROM MOB4 */
@@ -235,7 +259,7 @@ void sys_init(void) {
 	can_init_mobs();
 	spi_initialize_master();
 	
-	transceiver_initialize();
+	//transceiver_initialize();
 }
 
 void io_init(void) {

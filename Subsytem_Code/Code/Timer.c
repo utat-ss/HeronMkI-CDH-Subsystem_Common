@@ -68,3 +68,14 @@ void delay_ms(uint16_t ms) {
 	}
 }
 
+void delay_cycles(uint8_t cycles)	// @ 8 MHz, 1 cycle = 125 ns
+{
+	uint8_t i;
+	
+	for (i = 0; i < cycles; i++)
+	{
+		i = i;	// NOP
+	}
+	return;
+}
+

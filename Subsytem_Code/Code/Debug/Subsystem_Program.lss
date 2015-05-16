@@ -3,27 +3,27 @@ Subsystem_Program.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000017ee  00000000  00000000  00000074  2**1
+  0 .text         00001324  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          00000052  00800100  00800100  00001862  2**0
+  1 .bss          00000052  00800100  00800100  00001398  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  00001862  2**0
+  2 .comment      00000030  00000000  00000000  00001398  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 00000230  00000000  00000000  00001892  2**0
+  3 .debug_aranges 00000238  00000000  00000000  000013c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   00002b11  00000000  00000000  00001ac2  2**0
+  4 .debug_info   00002aba  00000000  00000000  00001600  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 00000c69  00000000  00000000  000045d3  2**0
+  5 .debug_abbrev 00000c5d  00000000  00000000  000040ba  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   00000ea8  00000000  00000000  0000523c  2**0
+  6 .debug_line   00000ead  00000000  00000000  00004d17  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  000004b4  00000000  00000000  000060e4  2**2
+  7 .debug_frame  000004d0  00000000  00000000  00005bc4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    000006e7  00000000  00000000  00006598  2**0
+  8 .debug_str    000006f4  00000000  00000000  00006094  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    00001bfd  00000000  00000000  00006c7f  2**0
+  9 .debug_loc    00001c55  00000000  00000000  00006788  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 000001e8  00000000  00000000  0000887c  2**0
+ 10 .debug_ranges 000001f0  00000000  00000000  000083dd  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -41,7 +41,7 @@ Disassembly of section .text:
       24:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       28:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       2c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
-      30:	0c 94 4f 09 	jmp	0x129e	; 0x129e <__vector_12>
+      30:	0c 94 0e 09 	jmp	0x121c	; 0x121c <__vector_12>
       34:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       38:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
       3c:	0c 94 5b 00 	jmp	0xb6	; 0xb6 <__bad_interrupt>
@@ -94,7 +94,7 @@ Disassembly of section .text:
       aa:	b2 07       	cpc	r27, r18
       ac:	e1 f7       	brne	.-8      	; 0xa6 <.do_clear_bss_loop>
       ae:	0e 94 69 08 	call	0x10d2	; 0x10d2 <main>
-      b2:	0c 94 f5 0b 	jmp	0x17ea	; 0x17ea <_exit>
+      b2:	0c 94 90 09 	jmp	0x1320	; 0x1320 <_exit>
 
 000000b6 <__bad_interrupt>:
       b6:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -543,7 +543,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
      2da:	e0 c5       	rjmp	.+3008   	; 0xe9c <__stack+0x59d>
      2dc:	e2 5c       	subi	r30, 0xC2	; 194
      2de:	ff 4f       	sbci	r31, 0xFF	; 255
-     2e0:	0c 94 db 0b 	jmp	0x17b6	; 0x17b6 <__tablejump2__>
+     2e0:	0c 94 8a 09 	jmp	0x1314	; 0x1314 <__tablejump2__>
           Can_set_idemsk();
           Can_config_rx();       
           break;
@@ -2339,14 +2339,14 @@ uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number)
 			delay_ms(100);
      efc:	84 e6       	ldi	r24, 0x64	; 100
      efe:	90 e0       	ldi	r25, 0x00	; 0
-     f00:	0e 94 78 09 	call	0x12f0	; 0x12f0 <delay_ms>
+     f00:	0e 94 37 09 	call	0x126e	; 0x126e <delay_ms>
 			LED_toggle(LED7);
      f04:	87 e0       	ldi	r24, 0x07	; 7
      f06:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
 			delay_ms(100);
      f0a:	84 e6       	ldi	r24, 0x64	; 100
      f0c:	90 e0       	ldi	r25, 0x00	; 0
-     f0e:	0e 94 78 09 	call	0x12f0	; 0x12f0 <delay_ms>
+     f0e:	0e 94 37 09 	call	0x126e	; 0x126e <delay_ms>
 	    
             cmd->ctrl.rtr = Can_get_rtr();
      f12:	80 91 f0 00 	lds	r24, 0x00F0
@@ -2710,7 +2710,7 @@ void io_init(void) {
 	
 	io_init();	
 	timer_init();
-    10f0:	0e 94 5e 09 	call	0x12bc	; 0x12bc <timer_init>
+    10f0:	0e 94 1d 09 	call	0x123a	; 0x123a <timer_init>
 	adc_initialize();
     10f4:	0e 94 5d 00 	call	0xba	; 0xba <adc_initialize>
 	can_init(0);
@@ -2719,1241 +2719,518 @@ void io_init(void) {
 	can_init_mobs();
     10fe:	0e 94 a1 00 	call	0x142	; 0x142 <can_init_mobs>
 	spi_initialize_master();
-    1102:	0e 94 1d 09 	call	0x123a	; 0x123a <spi_initialize_master>
-	
-	transceiver_initialize();
-    1106:	0e 94 09 0a 	call	0x1412	; 0x1412 <transceiver_initialize>
-int main(void)
-{		
-	// Initialize I/O, Timer, ADC, CAN, and SPI
-	sys_init();
-	
-	cmd_str(SIDLE);
-    110a:	86 e3       	ldi	r24, 0x36	; 54
-    110c:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
+    1102:	0e 94 ec 08 	call	0x11d8	; 0x11d8 <spi_initialize_master>
 	/* Transceiver testing vars */
 	uint8_t state, CHIP_RDYn;
 	uint8_t trans_msg = 0;
 	
 	// Enable global interrupts for Timer execution
 	sei();
-    1110:	78 94       	sei
-	
-	// Flash LEDs to indicate program startup
-	LED_toggle(LED3);
-    1112:	83 e0       	ldi	r24, 0x03	; 3
-    1114:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
-	delay_ms(500);
-    1118:	84 ef       	ldi	r24, 0xF4	; 244
-    111a:	91 e0       	ldi	r25, 0x01	; 1
-    111c:	0e 94 78 09 	call	0x12f0	; 0x12f0 <delay_ms>
-	LED_toggle(LED3);
-    1120:	83 e0       	ldi	r24, 0x03	; 3
-    1122:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
-	delay_ms(250);
-    1126:	8a ef       	ldi	r24, 0xFA	; 250
-    1128:	90 e0       	ldi	r25, 0x00	; 0
-    112a:	0e 94 78 09 	call	0x12f0	; 0x12f0 <delay_ms>
-    112e:	e6 e3       	ldi	r30, 0x36	; 54
-    1130:	f1 e0       	ldi	r31, 0x01	; 1
-    1132:	8e e3       	ldi	r24, 0x3E	; 62
-    1134:	91 e0       	ldi	r25, 0x01	; 1
+    1106:	78 94       	sei
+    1108:	e6 e3       	ldi	r30, 0x36	; 54
+    110a:	f1 e0       	ldi	r31, 0x01	; 1
+    110c:	8e e3       	ldi	r24, 0x3E	; 62
+    110e:	91 e0       	ldi	r25, 0x01	; 1
 	//LED_set(LED6);
 	//LED_set(LED7);
 	
 	for (i = 0; i < 8; i ++)
 	{
 		receive_arr[i] = 0;			// Reset the message array to zero after each message.
-    1136:	11 92       	st	Z+, r1
+    1110:	11 92       	st	Z+, r1
 	
 	//LED_toggle(LED6);
 	//LED_set(LED6);
 	//LED_set(LED7);
 	
 	for (i = 0; i < 8; i ++)
-    1138:	e8 17       	cp	r30, r24
-    113a:	f9 07       	cpc	r31, r25
-    113c:	e1 f7       	brne	.-8      	; 0x1136 <main+0x64>
+    1112:	e8 17       	cp	r30, r24
+    1114:	f9 07       	cpc	r31, r25
+    1116:	e1 f7       	brne	.-8      	; 0x1110 <main+0x3e>
 	{
 		receive_arr[i] = 0;			// Reset the message array to zero after each message.
 	}
 			
 	send_now = 0;
-    113e:	10 92 2c 01 	sts	0x012C, r1
+    1118:	10 92 2c 01 	sts	0x012C, r1
 	send_hk = 0;
-    1142:	10 92 35 01 	sts	0x0135, r1
-	send_data = 0;	
-    1146:	10 92 46 01 	sts	0x0146, r1
-    114a:	00 e1       	ldi	r16, 0x10	; 16
-    114c:	11 e0       	ldi	r17, 0x01	; 1
-    114e:	c8 e1       	ldi	r28, 0x18	; 24
-    1150:	d1 e0       	ldi	r29, 0x01	; 1
+    111c:	10 92 35 01 	sts	0x0135, r1
+	send_data = 0;
+    1120:	10 92 46 01 	sts	0x0146, r1
+	
+	reg_write(0x0A, 0xFF);
+    1124:	6f ef       	ldi	r22, 0xFF	; 255
+    1126:	8a e0       	ldi	r24, 0x0A	; 10
+    1128:	0e 94 79 09 	call	0x12f2	; 0x12f2 <reg_write>
+    112c:	00 e1       	ldi	r16, 0x10	; 16
+    112e:	11 e0       	ldi	r17, 0x01	; 1
+    1130:	c8 e1       	ldi	r28, 0x18	; 24
+    1132:	d1 e0       	ldi	r29, 0x01	; 1
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
 		{		
 			for (i = 0; i < 8; i ++)
 			{
 				send_arr[i] = 0xAB;		// Message to be sent back to the OBC.
-    1152:	0f 2e       	mov	r0, r31
-    1154:	fb ea       	ldi	r31, 0xAB	; 171
-    1156:	cf 2e       	mov	r12, r31
-    1158:	f0 2d       	mov	r31, r0
+    1134:	0f 2e       	mov	r0, r31
+    1136:	fb ea       	ldi	r31, 0xAB	; 171
+    1138:	cf 2e       	mov	r12, r31
+    113a:	f0 2d       	mov	r31, r0
 		
 		if (send_hk == 1)		// Send a reply to the message that was received!
 		{
 			for (i = 0; i < 8; i ++)
 			{
 				send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
-    115a:	0f 2e       	mov	r0, r31
-    115c:	f0 ef       	ldi	r31, 0xF0	; 240
-    115e:	df 2e       	mov	r13, r31
-    1160:	f0 2d       	mov	r31, r0
-    1162:	90 2e       	mov	r9, r16
-    1164:	a1 2e       	mov	r10, r17
+    113c:	0f 2e       	mov	r0, r31
+    113e:	f0 ef       	ldi	r31, 0xF0	; 240
+    1140:	df 2e       	mov	r13, r31
+    1142:	f0 2d       	mov	r31, r0
+    1144:	a0 2e       	mov	r10, r16
+    1146:	b1 2e       	mov	r11, r17
 			{
 				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
 			}
 			
 			adc_read(&send_arr[0]);
 			send_arr[3] = 0x55;
-    1166:	0f 2e       	mov	r0, r31
-    1168:	f3 e1       	ldi	r31, 0x13	; 19
-    116a:	ef 2e       	mov	r14, r31
-    116c:	f1 e0       	ldi	r31, 0x01	; 1
-    116e:	ff 2e       	mov	r15, r31
-    1170:	f0 2d       	mov	r31, r0
-    1172:	0f 2e       	mov	r0, r31
-    1174:	f5 e5       	ldi	r31, 0x55	; 85
-    1176:	8f 2e       	mov	r8, r31
-    1178:	f0 2d       	mov	r31, r0
-//
-		//spi_char = 0;
+    1148:	0f 2e       	mov	r0, r31
+    114a:	f3 e1       	ldi	r31, 0x13	; 19
+    114c:	ef 2e       	mov	r14, r31
+    114e:	f1 e0       	ldi	r31, 0x01	; 1
+    1150:	ff 2e       	mov	r15, r31
+    1152:	f0 2d       	mov	r31, r0
+    1154:	0f 2e       	mov	r0, r31
+    1156:	f5 e5       	ldi	r31, 0x55	; 85
+    1158:	9f 2e       	mov	r9, r31
+    115a:	f0 2d       	mov	r31, r0
+		//reg_write(0x0A, 0xFF);
+		//delay_us(80);
 		
-		/* Testing the COMS Transceiver */
+	// ****************
 		
-		SS_set_high();
-    117a:	0e 94 48 09 	call	0x1290	; 0x1290 <SS_set_high>
-		delay_us(80);
-    117e:	80 e5       	ldi	r24, 0x50	; 80
-    1180:	90 e0       	ldi	r25, 0x00	; 0
-    1182:	0e 94 66 09 	call	0x12cc	; 0x12cc <delay_us>
-		reg_write(0x0A, 0XFF);
-    1186:	6f ef       	ldi	r22, 0xFF	; 255
-    1188:	8a e0       	ldi	r24, 0x0A	; 10
-    118a:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-		SS_set_low();
-    118e:	0e 94 4c 09 	call	0x1298	; 0x1298 <SS_set_low>
+		reg_write(0x0A, 0xAA);
+    115c:	6a ea       	ldi	r22, 0xAA	; 170
+    115e:	8a e0       	ldi	r24, 0x0A	; 10
+    1160:	0e 94 79 09 	call	0x12f2	; 0x12f2 <reg_write>
+			
+		//delay_cycles(2);
 		
-		SS_set_high();
-    1192:	0e 94 48 09 	call	0x1290	; 0x1290 <SS_set_high>
-		delay_us(80);
-    1196:	80 e5       	ldi	r24, 0x50	; 80
-    1198:	90 e0       	ldi	r25, 0x00	; 0
-    119a:	0e 94 66 09 	call	0x12cc	; 0x12cc <delay_us>
 		trans_msg = reg_read(0x0A);
-    119e:	8a e0       	ldi	r24, 0x0A	; 10
-    11a0:	0e 94 8e 09 	call	0x131c	; 0x131c <reg_read>
-    11a4:	b8 2e       	mov	r11, r24
-		SS_set_low();
-    11a6:	0e 94 4c 09 	call	0x1298	; 0x1298 <SS_set_low>
-		
-		if(trans_msg)
-    11aa:	bb 20       	and	r11, r11
-    11ac:	71 f0       	breq	.+28     	; 0x11ca <main+0xf8>
-		{
-			LED_toggle(LED3);
-    11ae:	83 e0       	ldi	r24, 0x03	; 3
-    11b0:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
-			delay_ms(100);
-    11b4:	84 e6       	ldi	r24, 0x64	; 100
-    11b6:	90 e0       	ldi	r25, 0x00	; 0
-    11b8:	0e 94 78 09 	call	0x12f0	; 0x12f0 <delay_ms>
-			LED_toggle(LED3);
-    11bc:	83 e0       	ldi	r24, 0x03	; 3
-    11be:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
-			delay_ms(100);
-    11c2:	84 e6       	ldi	r24, 0x64	; 100
-    11c4:	90 e0       	ldi	r25, 0x00	; 0
-    11c6:	0e 94 78 09 	call	0x12f0	; 0x12f0 <delay_ms>
-		//}
+    1164:	8a e0       	ldi	r24, 0x0A	; 10
+    1166:	0e 94 54 09 	call	0x12a8	; 0x12a8 <reg_read>
+		}
 
 
 		/*	REPLY TO MESSAGES FROM MOB4 */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
-    11ca:	80 91 2c 01 	lds	r24, 0x012C
-    11ce:	81 30       	cpi	r24, 0x01	; 1
-    11d0:	69 f4       	brne	.+26     	; 0x11ec <main+0x11a>
-    11d2:	e9 2d       	mov	r30, r9
-    11d4:	fa 2d       	mov	r31, r10
+    116a:	80 91 2c 01 	lds	r24, 0x012C
+    116e:	81 30       	cpi	r24, 0x01	; 1
+    1170:	69 f4       	brne	.+26     	; 0x118c <main+0xba>
+    1172:	ea 2d       	mov	r30, r10
+    1174:	fb 2d       	mov	r31, r11
 		{		
 			for (i = 0; i < 8; i ++)
 			{
 				send_arr[i] = 0xAB;		// Message to be sent back to the OBC.
-    11d6:	c1 92       	st	Z+, r12
+    1176:	c1 92       	st	Z+, r12
 
 		/*	REPLY TO MESSAGES FROM MOB4 */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
 		{		
 			for (i = 0; i < 8; i ++)
-    11d8:	ec 17       	cp	r30, r28
-    11da:	fd 07       	cpc	r31, r29
-    11dc:	e1 f7       	brne	.-8      	; 0x11d6 <main+0x104>
+    1178:	ec 17       	cp	r30, r28
+    117a:	fd 07       	cpc	r31, r29
+    117c:	e1 f7       	brne	.-8      	; 0x1176 <main+0xa4>
 			{
 				send_arr[i] = 0xAB;		// Message to be sent back to the OBC.
 			}
 			can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
-    11de:	61 e1       	ldi	r22, 0x11	; 17
-    11e0:	89 2d       	mov	r24, r9
-    11e2:	9a 2d       	mov	r25, r10
-    11e4:	0e 94 70 00 	call	0xe0	; 0xe0 <can_send_message>
+    117e:	61 e1       	ldi	r22, 0x11	; 17
+    1180:	8a 2d       	mov	r24, r10
+    1182:	9b 2d       	mov	r25, r11
+    1184:	0e 94 70 00 	call	0xe0	; 0xe0 <can_send_message>
 			send_now = 0;
-    11e8:	10 92 2c 01 	sts	0x012C, r1
+    1188:	10 92 2c 01 	sts	0x012C, r1
 		}
 		
 		if (send_hk == 1)		// Send a reply to the message that was received!
-    11ec:	80 91 35 01 	lds	r24, 0x0135
-    11f0:	81 30       	cpi	r24, 0x01	; 1
-    11f2:	69 f4       	brne	.+26     	; 0x120e <main+0x13c>
-    11f4:	e9 2d       	mov	r30, r9
-    11f6:	fa 2d       	mov	r31, r10
+    118c:	80 91 35 01 	lds	r24, 0x0135
+    1190:	81 30       	cpi	r24, 0x01	; 1
+    1192:	69 f4       	brne	.+26     	; 0x11ae <main+0xdc>
+    1194:	ea 2d       	mov	r30, r10
+    1196:	fb 2d       	mov	r31, r11
 		{
 			for (i = 0; i < 8; i ++)
 			{
 				send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
-    11f8:	d1 92       	st	Z+, r13
+    1198:	d1 92       	st	Z+, r13
 			send_now = 0;
 		}
 		
 		if (send_hk == 1)		// Send a reply to the message that was received!
 		{
 			for (i = 0; i < 8; i ++)
-    11fa:	ec 17       	cp	r30, r28
-    11fc:	fd 07       	cpc	r31, r29
-    11fe:	e1 f7       	brne	.-8      	; 0x11f8 <main+0x126>
+    119a:	ec 17       	cp	r30, r28
+    119c:	fd 07       	cpc	r31, r29
+    119e:	e1 f7       	brne	.-8      	; 0x1198 <main+0xc6>
 			{
 				send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
 			}
 			can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-    1200:	60 e1       	ldi	r22, 0x10	; 16
-    1202:	89 2d       	mov	r24, r9
-    1204:	9a 2d       	mov	r25, r10
-    1206:	0e 94 70 00 	call	0xe0	; 0xe0 <can_send_message>
+    11a0:	60 e1       	ldi	r22, 0x10	; 16
+    11a2:	8a 2d       	mov	r24, r10
+    11a4:	9b 2d       	mov	r25, r11
+    11a6:	0e 94 70 00 	call	0xe0	; 0xe0 <can_send_message>
 			send_hk = 0;
-    120a:	10 92 35 01 	sts	0x0135, r1
+    11aa:	10 92 35 01 	sts	0x0135, r1
 		}
 		
 		if (send_data == 1)		// Send a reply to the message that was received!
-    120e:	80 91 46 01 	lds	r24, 0x0146
-    1212:	81 30       	cpi	r24, 0x01	; 1
-    1214:	09 f0       	breq	.+2      	; 0x1218 <main+0x146>
-    1216:	b1 cf       	rjmp	.-158    	; 0x117a <main+0xa8>
-    1218:	f8 01       	movw	r30, r16
+    11ae:	20 91 46 01 	lds	r18, 0x0146
+    11b2:	21 30       	cpi	r18, 0x01	; 1
+    11b4:	99 f6       	brne	.-90     	; 0x115c <main+0x8a>
+    11b6:	f8 01       	movw	r30, r16
 		{
 			for (i = 0; i < 8; i ++)
 			{
 				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
-    121a:	11 92       	st	Z+, r1
+    11b8:	11 92       	st	Z+, r1
 			send_hk = 0;
 		}
 		
 		if (send_data == 1)		// Send a reply to the message that was received!
 		{
 			for (i = 0; i < 8; i ++)
-    121c:	ec 17       	cp	r30, r28
-    121e:	fd 07       	cpc	r31, r29
-    1220:	e1 f7       	brne	.-8      	; 0x121a <main+0x148>
+    11ba:	ec 17       	cp	r30, r28
+    11bc:	fd 07       	cpc	r31, r29
+    11be:	e1 f7       	brne	.-8      	; 0x11b8 <main+0xe6>
 			{
 				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
 			}
 			
 			adc_read(&send_arr[0]);
-    1222:	c8 01       	movw	r24, r16
-    1224:	0e 94 67 00 	call	0xce	; 0xce <adc_read>
+    11c0:	c8 01       	movw	r24, r16
+    11c2:	0e 94 67 00 	call	0xce	; 0xce <adc_read>
 			send_arr[3] = 0x55;
-    1228:	f7 01       	movw	r30, r14
-    122a:	80 82       	st	Z, r8
+    11c6:	f7 01       	movw	r30, r14
+    11c8:	90 82       	st	Z, r9
 			
 			can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
-    122c:	6a e0       	ldi	r22, 0x0A	; 10
-    122e:	c8 01       	movw	r24, r16
-    1230:	0e 94 70 00 	call	0xe0	; 0xe0 <can_send_message>
+    11ca:	6a e0       	ldi	r22, 0x0A	; 10
+    11cc:	c8 01       	movw	r24, r16
+    11ce:	0e 94 70 00 	call	0xe0	; 0xe0 <can_send_message>
 			send_data = 0;
-    1234:	10 92 46 01 	sts	0x0146, r1
-    1238:	a0 cf       	rjmp	.-192    	; 0x117a <main+0xa8>
+    11d2:	10 92 46 01 	sts	0x0146, r1
+    11d6:	c2 cf       	rjmp	.-124    	; 0x115c <main+0x8a>
 
-0000123a <spi_initialize_master>:
+000011d8 <spi_initialize_master>:
 	uint8_t* reg_ptr;
 	uint8_t temp = 0;
 	
 	reg_ptr = MCUCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr & (temp);	// We set SPIPS to 0 (select MISO, so NOT MISO_A)
-    123a:	85 b7       	in	r24, 0x35	; 53
-    123c:	8f 77       	andi	r24, 0x7F	; 127
-    123e:	85 bf       	out	0x35, r24	; 53
+    11d8:	85 b7       	in	r24, 0x35	; 53
+    11da:	8f 77       	andi	r24, 0x7F	; 127
+    11dc:	85 bf       	out	0x35, r24	; 53
 	
 	reg_ptr = SPCR_BASE;
-	temp = 0b01111011;
-	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle)
-	temp = 0b01011111;
+	temp = 0b01111111;
+	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 0 (SCK high when idle), CPHA = 0
+	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
-    1240:	8c b5       	in	r24, 0x2c	; 44
-    1242:	8f 75       	andi	r24, 0x5F	; 95
-    1244:	8b 65       	ori	r24, 0x5B	; 91
-    1246:	8c bd       	out	0x2c, r24	; 44
-    1248:	08 95       	ret
+    11de:	83 e5       	ldi	r24, 0x53	; 83
+    11e0:	8c bd       	out	0x2c, r24	; 44
+    11e2:	08 95       	ret
 
-0000124a <spi_transfer>:
+000011e4 <spi_transfer>:
 	
 	reg_ptr = SPDR_BASE;
 	
 	// Commence the SPI message.
-	//SS_set_high();
+	//SS_set_low();
 	*reg_ptr = message;
-    124a:	8e bd       	out	0x2e, r24	; 46
+    11e4:	8e bd       	out	0x2e, r24	; 46
 		
 	reg_ptr = SPSR_BASE;
 
 	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
-    124c:	0d b4       	in	r0, 0x2d	; 45
-    124e:	07 fc       	sbrc	r0, 7
-    1250:	04 c0       	rjmp	.+8      	; 0x125a <spi_transfer+0x10>
-    1252:	89 ee       	ldi	r24, 0xE9	; 233
-    1254:	81 50       	subi	r24, 0x01	; 1
+    11e6:	0d b4       	in	r0, 0x2d	; 45
+    11e8:	07 fc       	sbrc	r0, 7
+    11ea:	04 c0       	rjmp	.+8      	; 0x11f4 <spi_transfer+0x10>
+    11ec:	89 ee       	ldi	r24, 0xE9	; 233
+    11ee:	81 50       	subi	r24, 0x01	; 1
 	{
 		if(!timeout--)
-    1256:	f1 f7       	brne	.-4      	; 0x1254 <spi_transfer+0xa>
-    1258:	08 95       	ret
+    11f0:	f1 f7       	brne	.-4      	; 0x11ee <spi_transfer+0xa>
+    11f2:	08 95       	ret
+			return 0;						// Something went wrong, so the function times out.
+		}
+	}	
 	//SS_set_high();
-	*reg_ptr = message;
-		
-	reg_ptr = SPSR_BASE;
-
-	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
-    125a:	27 e0       	ldi	r18, 0x07	; 7
-    125c:	30 e0       	ldi	r19, 0x00	; 0
-    125e:	60 e0       	ldi	r22, 0x00	; 0
 	
-	temp = 0, temp2 = 0;
+	delay_cycles(10);
+    11f4:	8a e0       	ldi	r24, 0x0A	; 10
+    11f6:	0e 94 4d 09 	call	0x129a	; 0x129a <delay_cycles>
 	
-	for (i = 0; i < 8; i ++)
-	{
-		temp2 = receive_char << (7 - i);	// reverses the order of the bits.
-    1260:	90 e0       	ldi	r25, 0x00	; 0
-    1262:	ac 01       	movw	r20, r24
-    1264:	02 2e       	mov	r0, r18
-    1266:	02 c0       	rjmp	.+4      	; 0x126c <spi_transfer+0x22>
-    1268:	44 0f       	add	r20, r20
-    126a:	55 1f       	adc	r21, r21
-    126c:	0a 94       	dec	r0
-    126e:	e2 f7       	brpl	.-8      	; 0x1268 <spi_transfer+0x1e>
-		temp2 = temp2 >> 7;
-    1270:	44 1f       	adc	r20, r20
-    1272:	44 27       	eor	r20, r20
-    1274:	44 1f       	adc	r20, r20
-		temp2 = temp2 << (7 - i);		
-    1276:	50 e0       	ldi	r21, 0x00	; 0
-    1278:	02 2e       	mov	r0, r18
-    127a:	02 c0       	rjmp	.+4      	; 0x1280 <spi_transfer+0x36>
-    127c:	44 0f       	add	r20, r20
-    127e:	55 1f       	adc	r21, r21
-    1280:	0a 94       	dec	r0
-    1282:	e2 f7       	brpl	.-8      	; 0x127c <spi_transfer+0x32>
-		temp += temp2;
-    1284:	64 0f       	add	r22, r20
-    1286:	21 50       	subi	r18, 0x01	; 1
-    1288:	31 09       	sbc	r19, r1
-    128a:	58 f7       	brcc	.-42     	; 0x1262 <spi_transfer+0x18>
-    128c:	86 2f       	mov	r24, r22
-	}
+	reg_ptr = SPDR_BASE;
+	receive_char = *reg_ptr;
+    11fa:	8e b5       	in	r24, 0x2e	; 46
+		//temp2 = temp2 << (7 - i);		
+		//temp += temp2;
+	//}
 	
-	return temp;					// Transmission was successful, return the character that was received.
+	return receive_char;					// Transmission was successful, return the character that was received.
 }
-    128e:	08 95       	ret
+    11fc:	08 95       	ret
 
-00001290 <SS_set_high>:
+000011fe <SS_set_high>:
 /*																		*/
 /************************************************************************/
 
 void SS_set_high(void) 
 {
-	PORTD &= (1 << 3);
-    1290:	8b b1       	in	r24, 0x0b	; 11
-    1292:	88 70       	andi	r24, 0x08	; 8
-    1294:	8b b9       	out	0x0b, r24	; 11
-    1296:	08 95       	ret
+	PORTB &= (1 << 6);
+    11fe:	85 b1       	in	r24, 0x05	; 5
+    1200:	80 74       	andi	r24, 0x40	; 64
+    1202:	85 b9       	out	0x05, r24	; 5
+	delay_us(1);
+    1204:	81 e0       	ldi	r24, 0x01	; 1
+    1206:	90 e0       	ldi	r25, 0x00	; 0
+    1208:	0e 94 25 09 	call	0x124a	; 0x124a <delay_us>
+    120c:	08 95       	ret
 
-00001298 <SS_set_low>:
+0000120e <SS_set_low>:
 /*																		*/
 /************************************************************************/
 
 void SS_set_low(void)
 {
-	PORTD &= (0 << 3);
-    1298:	8b b1       	in	r24, 0x0b	; 11
-    129a:	1b b8       	out	0x0b, r1	; 11
-    129c:	08 95       	ret
+	PORTB &= (0 << 6);
+    120e:	85 b1       	in	r24, 0x05	; 5
+    1210:	15 b8       	out	0x05, r1	; 5
+	delay_us(1);
+    1212:	81 e0       	ldi	r24, 0x01	; 1
+    1214:	90 e0       	ldi	r25, 0x00	; 0
+    1216:	0e 94 25 09 	call	0x124a	; 0x124a <delay_us>
+    121a:	08 95       	ret
 
-0000129e <__vector_12>:
+0000121c <__vector_12>:
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "Timer.h"
 
 ISR(TIMER1_COMPA_vect) {
-    129e:	1f 92       	push	r1
-    12a0:	0f 92       	push	r0
-    12a2:	0f b6       	in	r0, 0x3f	; 63
-    12a4:	0f 92       	push	r0
-    12a6:	11 24       	eor	r1, r1
-    12a8:	8f 93       	push	r24
+    121c:	1f 92       	push	r1
+    121e:	0f 92       	push	r0
+    1220:	0f b6       	in	r0, 0x3f	; 63
+    1222:	0f 92       	push	r0
+    1224:	11 24       	eor	r1, r1
+    1226:	8f 93       	push	r24
 	CTC_flag = 1;
-    12aa:	81 e0       	ldi	r24, 0x01	; 1
-    12ac:	80 93 51 01 	sts	0x0151, r24
+    1228:	81 e0       	ldi	r24, 0x01	; 1
+    122a:	80 93 51 01 	sts	0x0151, r24
 }
-    12b0:	8f 91       	pop	r24
-    12b2:	0f 90       	pop	r0
-    12b4:	0f be       	out	0x3f, r0	; 63
-    12b6:	0f 90       	pop	r0
-    12b8:	1f 90       	pop	r1
-    12ba:	18 95       	reti
+    122e:	8f 91       	pop	r24
+    1230:	0f 90       	pop	r0
+    1232:	0f be       	out	0x3f, r0	; 63
+    1234:	0f 90       	pop	r0
+    1236:	1f 90       	pop	r1
+    1238:	18 95       	reti
 
-000012bc <timer_init>:
+0000123a <timer_init>:
 
 // This function initializes a 16-bit timer used for delays.
 void timer_init(void) {
 	
 	TIMSK1 = 0x00; //Disable timer interrupts
-    12bc:	10 92 6f 00 	sts	0x006F, r1
+    123a:	10 92 6f 00 	sts	0x006F, r1
 	TCCR1A = 0x00; //Timer not connected to any pins
-    12c0:	10 92 80 00 	sts	0x0080, r1
+    123e:	10 92 80 00 	sts	0x0080, r1
 	TCCR1B = 0x0A; //CTC mode; Timer_Rate = System_CLK/8 = 1MHz
-    12c4:	8a e0       	ldi	r24, 0x0A	; 10
-    12c6:	80 93 81 00 	sts	0x0081, r24
-    12ca:	08 95       	ret
+    1242:	8a e0       	ldi	r24, 0x0A	; 10
+    1244:	80 93 81 00 	sts	0x0081, r24
+    1248:	08 95       	ret
 
-000012cc <delay_us>:
+0000124a <delay_us>:
 // if timer rate is set to 1MHz frequency. For example, this 
 // project uses a system clock of 8MHz. Timer1 rate is set to
 // System Clock divided by 8 which is 1MHz (in timer_init). 
 // Therefore the "us" parameter truly is 1us.
 void delay_us(uint16_t us) {
 	CTC_flag = 0; //Clear CTC Interrupt flag
-    12cc:	10 92 51 01 	sts	0x0151, r1
+    124a:	10 92 51 01 	sts	0x0151, r1
 	TCNT1 = 0x0000; //Clear timer
-    12d0:	10 92 85 00 	sts	0x0085, r1
-    12d4:	10 92 84 00 	sts	0x0084, r1
+    124e:	10 92 85 00 	sts	0x0085, r1
+    1252:	10 92 84 00 	sts	0x0084, r1
 	OCR1A = us; //Load compare value with desired delay in us
-    12d8:	90 93 89 00 	sts	0x0089, r25
-    12dc:	80 93 88 00 	sts	0x0088, r24
+    1256:	90 93 89 00 	sts	0x0089, r25
+    125a:	80 93 88 00 	sts	0x0088, r24
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
-    12e0:	82 e0       	ldi	r24, 0x02	; 2
-    12e2:	80 93 6f 00 	sts	0x006F, r24
+    125e:	82 e0       	ldi	r24, 0x02	; 2
+    1260:	80 93 6f 00 	sts	0x006F, r24
 	while(!CTC_flag); //wait for the designated number of us
-    12e6:	80 91 51 01 	lds	r24, 0x0151
-    12ea:	88 23       	and	r24, r24
-    12ec:	e1 f3       	breq	.-8      	; 0x12e6 <delay_us+0x1a>
+    1264:	80 91 51 01 	lds	r24, 0x0151
+    1268:	88 23       	and	r24, r24
+    126a:	e1 f3       	breq	.-8      	; 0x1264 <delay_us+0x1a>
 }
-    12ee:	08 95       	ret
+    126c:	08 95       	ret
 
-000012f0 <delay_ms>:
+0000126e <delay_ms>:
 
 void delay_ms(uint16_t ms) {
-    12f0:	0f 93       	push	r16
-    12f2:	1f 93       	push	r17
-    12f4:	cf 93       	push	r28
-    12f6:	df 93       	push	r29
-    12f8:	8c 01       	movw	r16, r24
+    126e:	0f 93       	push	r16
+    1270:	1f 93       	push	r17
+    1272:	cf 93       	push	r28
+    1274:	df 93       	push	r29
+    1276:	8c 01       	movw	r16, r24
 	for(uint16_t i=0; i<ms; i++) {
-    12fa:	00 97       	sbiw	r24, 0x00	; 0
-    12fc:	51 f0       	breq	.+20     	; 0x1312 <delay_ms+0x22>
-    12fe:	c0 e0       	ldi	r28, 0x00	; 0
-    1300:	d0 e0       	ldi	r29, 0x00	; 0
+    1278:	00 97       	sbiw	r24, 0x00	; 0
+    127a:	51 f0       	breq	.+20     	; 0x1290 <delay_ms+0x22>
+    127c:	c0 e0       	ldi	r28, 0x00	; 0
+    127e:	d0 e0       	ldi	r29, 0x00	; 0
 		delay_us(1000);
-    1302:	88 ee       	ldi	r24, 0xE8	; 232
-    1304:	93 e0       	ldi	r25, 0x03	; 3
-    1306:	0e 94 66 09 	call	0x12cc	; 0x12cc <delay_us>
+    1280:	88 ee       	ldi	r24, 0xE8	; 232
+    1282:	93 e0       	ldi	r25, 0x03	; 3
+    1284:	0e 94 25 09 	call	0x124a	; 0x124a <delay_us>
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
 	while(!CTC_flag); //wait for the designated number of us
 }
 
 void delay_ms(uint16_t ms) {
 	for(uint16_t i=0; i<ms; i++) {
-    130a:	21 96       	adiw	r28, 0x01	; 1
-    130c:	c0 17       	cp	r28, r16
-    130e:	d1 07       	cpc	r29, r17
-    1310:	c1 f7       	brne	.-16     	; 0x1302 <delay_ms+0x12>
+    1288:	21 96       	adiw	r28, 0x01	; 1
+    128a:	c0 17       	cp	r28, r16
+    128c:	d1 07       	cpc	r29, r17
+    128e:	c1 f7       	brne	.-16     	; 0x1280 <delay_ms+0x12>
 		delay_us(1000);
 	}
 }
-    1312:	df 91       	pop	r29
-    1314:	cf 91       	pop	r28
-    1316:	1f 91       	pop	r17
-    1318:	0f 91       	pop	r16
-    131a:	08 95       	ret
+    1290:	df 91       	pop	r29
+    1292:	cf 91       	pop	r28
+    1294:	1f 91       	pop	r17
+    1296:	0f 91       	pop	r16
+    1298:	08 95       	ret
 
-0000131c <reg_read>:
+0000129a <delay_cycles>:
+
+void delay_cycles(uint8_t cycles)	// @ 8 MHz, 1 cycle = 125 ns
+{
+	uint8_t i;
+	
+	for (i = 0; i < cycles; i++)
+    129a:	88 23       	and	r24, r24
+    129c:	21 f0       	breq	.+8      	; 0x12a6 <delay_cycles+0xc>
+    129e:	90 e0       	ldi	r25, 0x00	; 0
+    12a0:	9f 5f       	subi	r25, 0xFF	; 255
+    12a2:	98 13       	cpse	r25, r24
+    12a4:	fd cf       	rjmp	.-6      	; 0x12a0 <delay_cycles+0x6>
+    12a6:	08 95       	ret
+
+000012a8 <reg_read>:
+/*		HIGH depending on param: state.									*/
+/*																		*/
+/************************************************************************/
+
 uint8_t reg_read(uint8_t addr)
 {
+    12a8:	cf 93       	push	r28
+    12aa:	c8 2f       	mov	r28, r24
 	uint8_t addr_new, msg;
 	addr_new = addr + 0b10000000;
 
-	msg = spi_transfer(addr);		// Send the desired address
-    131c:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	msg = spi_transfer(0);			// Read back
-    1320:	80 e0       	ldi	r24, 0x00	; 0
-    1322:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
+	SS_set_low();
+    12ac:	0e 94 07 09 	call	0x120e	; 0x120e <SS_set_low>
+	msg = spi_transfer(addr_new);		// Send the desired address
+    12b0:	80 e8       	ldi	r24, 0x80	; 128
+    12b2:	8c 0f       	add	r24, r28
+    12b4:	0e 94 f2 08 	call	0x11e4	; 0x11e4 <spi_transfer>
+	delay_us(1);
+    12b8:	81 e0       	ldi	r24, 0x01	; 1
+    12ba:	90 e0       	ldi	r25, 0x00	; 0
+    12bc:	0e 94 25 09 	call	0x124a	; 0x124a <delay_us>
+			//LED_toggle(LED3);
+			//delay_ms(100);
+			//LED_toggle(LED3);
+			//delay_ms(100);
+		//}
+	msg = spi_transfer(0x00);
+    12c0:	80 e0       	ldi	r24, 0x00	; 0
+    12c2:	0e 94 f2 08 	call	0x11e4	; 0x11e4 <spi_transfer>
+    12c6:	c8 2f       	mov	r28, r24
+		if(msg == 0xAA)
+    12c8:	8a 3a       	cpi	r24, 0xAA	; 170
+    12ca:	71 f4       	brne	.+28     	; 0x12e8 <reg_read+0x40>
+		{
+			LED_toggle(LED3);
+    12cc:	83 e0       	ldi	r24, 0x03	; 3
+    12ce:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
+			delay_ms(100);
+    12d2:	84 e6       	ldi	r24, 0x64	; 100
+    12d4:	90 e0       	ldi	r25, 0x00	; 0
+    12d6:	0e 94 37 09 	call	0x126e	; 0x126e <delay_ms>
+			LED_toggle(LED3);
+    12da:	83 e0       	ldi	r24, 0x03	; 3
+    12dc:	0e 94 4e 08 	call	0x109c	; 0x109c <LED_toggle>
+			delay_ms(100);
+    12e0:	84 e6       	ldi	r24, 0x64	; 100
+    12e2:	90 e0       	ldi	r25, 0x00	; 0
+    12e4:	0e 94 37 09 	call	0x126e	; 0x126e <delay_ms>
+		}
+	SS_set_high();
+    12e8:	0e 94 ff 08 	call	0x11fe	; 0x11fe <SS_set_high>
 	
 	return msg;
 }
-    1326:	08 95       	ret
+    12ec:	8c 2f       	mov	r24, r28
+    12ee:	cf 91       	pop	r28
+    12f0:	08 95       	ret
 
-00001328 <reg_write>:
+000012f2 <reg_write>:
 
 void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 {
-    1328:	cf 93       	push	r28
-    132a:	c6 2f       	mov	r28, r22
+    12f2:	cf 93       	push	r28
+    12f4:	df 93       	push	r29
+    12f6:	d8 2f       	mov	r29, r24
+    12f8:	c6 2f       	mov	r28, r22
 	uint8_t msg;
 	
-	msg = spi_transfer(addr);		// Send the desired address
-    132c:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	msg = spi_transfer(data);		// Send the desired data
-    1330:	8c 2f       	mov	r24, r28
-    1332:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	
-	return;
-}
-    1336:	cf 91       	pop	r28
-    1338:	08 95       	ret
-
-0000133a <reg_read2F>:
-
-uint8_t reg_read2F(uint8_t addr)
-{
-    133a:	cf 93       	push	r28
-    133c:	c8 2f       	mov	r28, r24
-	uint8_t msg;
-	msg = 0b1010111;
-	
-	msg = spi_transfer(msg);		// Address extension command
-    133e:	87 e5       	ldi	r24, 0x57	; 87
-    1340:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	msg = spi_transfer(addr);		// Send the desired address
-    1344:	8c 2f       	mov	r24, r28
-    1346:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	msg = spi_transfer(0);			// Read back
-    134a:	80 e0       	ldi	r24, 0x00	; 0
-    134c:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	
-	return msg;
-}
-    1350:	cf 91       	pop	r28
-    1352:	08 95       	ret
-
-00001354 <reg_write2F>:
-
-void reg_write2F(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
-{
-    1354:	cf 93       	push	r28
-    1356:	df 93       	push	r29
-    1358:	d8 2f       	mov	r29, r24
-    135a:	c6 2f       	mov	r28, r22
-	uint8_t msg;
-		
-	msg = 0b1010111;
-	
-	msg = spi_transfer(msg);		// Address extension command
-    135c:	87 e5       	ldi	r24, 0x57	; 87
-    135e:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	msg = spi_transfer(addr);		// Send the desired address
-    1362:	8d 2f       	mov	r24, r29
-    1364:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	msg = spi_transfer(data);		// Send the desired data
-    1368:	8c 2f       	mov	r24, r28
-    136a:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-	
-	return;
-}
-    136e:	df 91       	pop	r29
-    1370:	cf 91       	pop	r28
-    1372:	08 95       	ret
-
-00001374 <cmd_str>:
-}
-
-
-uint8_t cmd_str(uint8_t addr)
-{
-	return spi_transfer(addr);
-    1374:	0e 94 25 09 	call	0x124a	; 0x124a <spi_transfer>
-}
-    1378:	08 95       	ret
-
-0000137a <reg_write_bit>:
-		
-	return;
-}
-
-void reg_write_bit(uint8_t reg, uint8_t n, uint8_t data)
-{
-    137a:	1f 93       	push	r17
-    137c:	cf 93       	push	r28
-    137e:	df 93       	push	r29
-    1380:	c8 2f       	mov	r28, r24
-    1382:	16 2f       	mov	r17, r22
-    1384:	d4 2f       	mov	r29, r20
-	uint8_t old_value = reg_read(reg);
-    1386:	0e 94 8e 09 	call	0x131c	; 0x131c <reg_read>
-    138a:	28 2f       	mov	r18, r24
-	uint8_t	power = 2^n;
-    138c:	52 e0       	ldi	r21, 0x02	; 2
-    138e:	51 27       	eor	r21, r17
-	uint8_t	new_value = old_value - (old_value % (2 * power)) + data*power + old_value%power;
-    1390:	38 2f       	mov	r19, r24
-    1392:	5d 9f       	mul	r21, r29
-    1394:	30 0d       	add	r19, r0
-    1396:	11 24       	eor	r1, r1
-    1398:	65 2f       	mov	r22, r21
-    139a:	0e 94 bb 0b 	call	0x1776	; 0x1776 <__udivmodqi4>
-    139e:	e3 2f       	mov	r30, r19
-    13a0:	e9 0f       	add	r30, r25
-    13a2:	82 2f       	mov	r24, r18
-    13a4:	90 e0       	ldi	r25, 0x00	; 0
-    13a6:	45 2f       	mov	r20, r21
-    13a8:	50 e0       	ldi	r21, 0x00	; 0
-    13aa:	ba 01       	movw	r22, r20
-    13ac:	66 0f       	add	r22, r22
-    13ae:	77 1f       	adc	r23, r23
-    13b0:	0e 94 c7 0b 	call	0x178e	; 0x178e <__divmodhi4>
-    13b4:	6e 2f       	mov	r22, r30
-    13b6:	68 1b       	sub	r22, r24
-	reg_write(reg, new_value);
-    13b8:	8c 2f       	mov	r24, r28
-    13ba:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	return;
-}
-    13be:	df 91       	pop	r29
-    13c0:	cf 91       	pop	r28
-    13c2:	1f 91       	pop	r17
-    13c4:	08 95       	ret
-
-000013c6 <reg_write_bit2F>:
-	
-	return nth_bit;
-}
-
-void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data)
-{
-    13c6:	1f 93       	push	r17
-    13c8:	cf 93       	push	r28
-    13ca:	df 93       	push	r29
-    13cc:	c8 2f       	mov	r28, r24
-    13ce:	16 2f       	mov	r17, r22
-    13d0:	d4 2f       	mov	r29, r20
-	uint8_t old_value = reg_read2F(reg);
-    13d2:	0e 94 9d 09 	call	0x133a	; 0x133a <reg_read2F>
-    13d6:	28 2f       	mov	r18, r24
-	uint8_t	power = 2^n;
-    13d8:	52 e0       	ldi	r21, 0x02	; 2
-    13da:	51 27       	eor	r21, r17
-	uint8_t	new_value = old_value - (old_value % (2 * power)) + data*power + old_value%power;
-    13dc:	38 2f       	mov	r19, r24
-    13de:	5d 9f       	mul	r21, r29
-    13e0:	30 0d       	add	r19, r0
-    13e2:	11 24       	eor	r1, r1
-    13e4:	65 2f       	mov	r22, r21
-    13e6:	0e 94 bb 0b 	call	0x1776	; 0x1776 <__udivmodqi4>
-    13ea:	e3 2f       	mov	r30, r19
-    13ec:	e9 0f       	add	r30, r25
-    13ee:	82 2f       	mov	r24, r18
-    13f0:	90 e0       	ldi	r25, 0x00	; 0
-    13f2:	45 2f       	mov	r20, r21
-    13f4:	50 e0       	ldi	r21, 0x00	; 0
-    13f6:	ba 01       	movw	r22, r20
-    13f8:	66 0f       	add	r22, r22
-    13fa:	77 1f       	adc	r23, r23
-    13fc:	0e 94 c7 0b 	call	0x178e	; 0x178e <__divmodhi4>
-    1400:	6e 2f       	mov	r22, r30
-    1402:	68 1b       	sub	r22, r24
-	reg_write2F(reg, new_value);
-    1404:	8c 2f       	mov	r24, r28
-    1406:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	return;
-}
-    140a:	df 91       	pop	r29
-    140c:	cf 91       	pop	r28
-    140e:	1f 91       	pop	r17
-    1410:	08 95       	ret
-
-00001412 <transceiver_initialize>:
-void set_CSn(uint8_t state)
-{
-	if(state)
-	SS_set_high();
-	else
 	SS_set_low();
-    1412:	0e 94 4c 09 	call	0x1298	; 0x1298 <SS_set_low>
-	set_CSn(0);
+    12fa:	0e 94 07 09 	call	0x120e	; 0x120e <SS_set_low>
+	msg = spi_transfer(addr);		// Send the desired address
+    12fe:	8d 2f       	mov	r24, r29
+    1300:	0e 94 f2 08 	call	0x11e4	; 0x11e4 <spi_transfer>
+	//delay_us(1);
+	msg = spi_transfer(data);		// Send the desired data
+    1304:	8c 2f       	mov	r24, r28
+    1306:	0e 94 f2 08 	call	0x11e4	; 0x11e4 <spi_transfer>
+	SS_set_high();
+    130a:	0e 94 ff 08 	call	0x11fe	; 0x11fe <SS_set_high>
 	
-	// Don't need the while loop that was here.
 	
-	// RESET
-	cmd_str(SRES);				// SRES			Reset Chip
-    1416:	80 e3       	ldi	r24, 0x30	; 48
-    1418:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
-	
-	cmd_str(SIDLE);
-    141c:	86 e3       	ldi	r24, 0x36	; 54
-    141e:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
-	
-	// Reset RX FIFO
-	cmd_str(SFRX);				// SRFX			Flush RX FIFO
-    1422:	8a e3       	ldi	r24, 0x3A	; 58
-    1424:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
-	
-	// Reset TX FIFO
-	cmd_str(SFTX);				// STFX			Flush TX FIFO
-    1428:	8b e3       	ldi	r24, 0x3B	; 59
-    142a:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
-	
-	//********** SETTINGS **********//
-	
-	//high performance settings
-	reg_write2F(0x12, 0x00);          //FS_DIG1: 0x00         Frequency Synthesizer Digital Reg. 1
-    142e:	60 e0       	ldi	r22, 0x00	; 0
-    1430:	82 e1       	ldi	r24, 0x12	; 18
-    1432:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x13, 0x5F);          //FS_DIG0: 0x5F         Frequency Synthesizer Digital Reg. 0
-    1436:	6f e5       	ldi	r22, 0x5F	; 95
-    1438:	83 e1       	ldi	r24, 0x13	; 19
-    143a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x16, 0x40);          //FS_CAL1: 0x40         Frequency Synthesizer Calibration Reg. 1
-    143e:	60 e4       	ldi	r22, 0x40	; 64
-    1440:	86 e1       	ldi	r24, 0x16	; 22
-    1442:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x17, 0x0E);          //FS_CAL0: 0x0E         Frequency Synthesizer Calibration Reg. 0
-    1446:	6e e0       	ldi	r22, 0x0E	; 14
-    1448:	87 e1       	ldi	r24, 0x17	; 23
-    144a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x19, 0x03);          //FS_DIVTWO: 0x03       Frequency Synthesizer Divide by 2
-    144e:	63 e0       	ldi	r22, 0x03	; 3
-    1450:	89 e1       	ldi	r24, 0x19	; 25
-    1452:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x1B, 0x33);          //FS_DSM0: 0x33         FS Digital Synthesizer Module Configuration Reg. 0
-    1456:	63 e3       	ldi	r22, 0x33	; 51
-    1458:	8b e1       	ldi	r24, 0x1B	; 27
-    145a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x1D, 0x17);          //FS_DVCO: 0x17         Frequency Synthesizer Divider Chain Configuration ..
-    145e:	67 e1       	ldi	r22, 0x17	; 23
-    1460:	8d e1       	ldi	r24, 0x1D	; 29
-    1462:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x1F, 0x50);          //FS_PFD: 0x50          Frequency Synthesizer Phase Frequency Detector Con..
-    1466:	60 e5       	ldi	r22, 0x50	; 80
-    1468:	8f e1       	ldi	r24, 0x1F	; 31
-    146a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x20, 0x6E);          //FS_PRE: 0x6E          Frequency Synthesizer Prescaler Configuration
-    146e:	6e e6       	ldi	r22, 0x6E	; 110
-    1470:	80 e2       	ldi	r24, 0x20	; 32
-    1472:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x21, 0x14);          //FS_REG_DIV_CML: 0x14  Frequency Synthesizer Divider Regulator Configurat..
-    1476:	64 e1       	ldi	r22, 0x14	; 20
-    1478:	81 e2       	ldi	r24, 0x21	; 33
-    147a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x22, 0xAC);          //FS_SPARE: 0xAC        Set up Frequency Synthesizer Spare
-    147e:	6c ea       	ldi	r22, 0xAC	; 172
-    1480:	82 e2       	ldi	r24, 0x22	; 34
-    1482:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x27, 0xB4);          //FS_VCO0: 0xB4         FS Voltage Controlled Oscillator Configuration Reg..
-    1486:	64 eb       	ldi	r22, 0xB4	; 180
-    1488:	87 e2       	ldi	r24, 0x27	; 39
-    148a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x32, 0x0E);          //XOSC5: 0x0E           Crystal Oscillator Configuration Reg. 5
-    148e:	6e e0       	ldi	r22, 0x0E	; 14
-    1490:	82 e3       	ldi	r24, 0x32	; 50
-    1492:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x36, 0x03);          //XOSC1: 0x03           Crystal Oscillator Configuration Reg. 0
-    1496:	63 e0       	ldi	r22, 0x03	; 3
-    1498:	86 e3       	ldi	r24, 0x36	; 54
-    149a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
+	return;
+}
+    130e:	df 91       	pop	r29
+    1310:	cf 91       	pop	r28
+    1312:	08 95       	ret
 
-	//For test purposes only, use values from SmartRF for all bits
-	reg_write2F(0x00, 0x04);          //
-    149e:	64 e0       	ldi	r22, 0x04	; 4
-    14a0:	80 e0       	ldi	r24, 0x00	; 0
-    14a2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x03, 0x00);          //
-    14a6:	60 e0       	ldi	r22, 0x00	; 0
-    14a8:	83 e0       	ldi	r24, 0x03	; 3
-    14aa:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x09, 0x00);          //
-    14ae:	60 e0       	ldi	r22, 0x00	; 0
-    14b0:	89 e0       	ldi	r24, 0x09	; 9
-    14b2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x0F, 0x02);          //
-    14b6:	62 e0       	ldi	r22, 0x02	; 2
-    14b8:	8f e0       	ldi	r24, 0x0F	; 15
-    14ba:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x10, 0xA6);          //
-    14be:	66 ea       	ldi	r22, 0xA6	; 166
-    14c0:	80 e1       	ldi	r24, 0x10	; 16
-    14c2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x11, 0x04);          //
-    14c6:	64 e0       	ldi	r22, 0x04	; 4
-    14c8:	81 e1       	ldi	r24, 0x11	; 17
-    14ca:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x1A, 0x00);          //
-    14ce:	60 e0       	ldi	r22, 0x00	; 0
-    14d0:	8a e1       	ldi	r24, 0x1A	; 26
-    14d2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x1C, 0xFF);          //
-    14d6:	6f ef       	ldi	r22, 0xFF	; 255
-    14d8:	8c e1       	ldi	r24, 0x1C	; 28
-    14da:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x1E, 0x00);          //
-    14de:	60 e0       	ldi	r22, 0x00	; 0
-    14e0:	8e e1       	ldi	r24, 0x1E	; 30
-    14e2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x20, 0x6E);          //
-    14e6:	6e e6       	ldi	r22, 0x6E	; 110
-    14e8:	80 e2       	ldi	r24, 0x20	; 32
-    14ea:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x23, 0x14);          //
-    14ee:	64 e1       	ldi	r22, 0x14	; 20
-    14f0:	83 e2       	ldi	r24, 0x23	; 35
-    14f2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x24, 0x00);          //
-    14f6:	60 e0       	ldi	r22, 0x00	; 0
-    14f8:	84 e2       	ldi	r24, 0x24	; 36
-    14fa:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x28, 0x00);          //
-    14fe:	60 e0       	ldi	r22, 0x00	; 0
-    1500:	88 e2       	ldi	r24, 0x28	; 40
-    1502:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x29, 0x02);          //
-    1506:	62 e0       	ldi	r22, 0x02	; 2
-    1508:	89 e2       	ldi	r24, 0x29	; 41
-    150a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x2A, 0x00);          //
-    150e:	60 e0       	ldi	r22, 0x00	; 0
-    1510:	8a e2       	ldi	r24, 0x2A	; 42
-    1512:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x2B, 0x00);          //
-    1516:	60 e0       	ldi	r22, 0x00	; 0
-    1518:	8b e2       	ldi	r24, 0x2B	; 43
-    151a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x2C, 0x10);          //
-    151e:	60 e1       	ldi	r22, 0x10	; 16
-    1520:	8c e2       	ldi	r24, 0x2C	; 44
-    1522:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x2D, 0x00);          //
-    1526:	60 e0       	ldi	r22, 0x00	; 0
-    1528:	8d e2       	ldi	r24, 0x2D	; 45
-    152a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x2E, 0x00);          //
-    152e:	60 e0       	ldi	r22, 0x00	; 0
-    1530:	8e e2       	ldi	r24, 0x2E	; 46
-    1532:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x2F, 0x01);          //
-    1536:	61 e0       	ldi	r22, 0x01	; 1
-    1538:	8f e2       	ldi	r24, 0x2F	; 47
-    153a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x30, 0x01);          //
-    153e:	61 e0       	ldi	r22, 0x01	; 1
-    1540:	80 e3       	ldi	r24, 0x30	; 48
-    1542:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x31, 0x01);          //
-    1546:	61 e0       	ldi	r22, 0x01	; 1
-    1548:	81 e3       	ldi	r24, 0x31	; 49
-    154a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x33, 0xA0);          //
-    154e:	60 ea       	ldi	r22, 0xA0	; 160
-    1550:	83 e3       	ldi	r24, 0x33	; 51
-    1552:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x34, 0x03);          //
-    1556:	63 e0       	ldi	r22, 0x03	; 3
-    1558:	84 e3       	ldi	r24, 0x34	; 52
-    155a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x38, 0x00);          //
-    155e:	60 e0       	ldi	r22, 0x00	; 0
-    1560:	88 e3       	ldi	r24, 0x38	; 56
-    1562:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x39, 0x00);          //
-    1566:	60 e0       	ldi	r22, 0x00	; 0
-    1568:	89 e3       	ldi	r24, 0x39	; 57
-    156a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x68, 0x00);          //
-    156e:	60 e0       	ldi	r22, 0x00	; 0
-    1570:	88 e6       	ldi	r24, 0x68	; 104
-    1572:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x7B, 0x00);          //
-    1576:	60 e0       	ldi	r22, 0x00	; 0
-    1578:	8b e7       	ldi	r24, 0x7B	; 123
-    157a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x7C, 0x3F);          //
-    157e:	6f e3       	ldi	r22, 0x3F	; 63
-    1580:	8c e7       	ldi	r24, 0x7C	; 124
-    1582:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x96, 0x00);          //
-    1586:	60 e0       	ldi	r22, 0x00	; 0
-    1588:	86 e9       	ldi	r24, 0x96	; 150
-    158a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x97, 0x00);          //
-    158e:	60 e0       	ldi	r22, 0x00	; 0
-    1590:	87 e9       	ldi	r24, 0x97	; 151
-    1592:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x98, 0x00);          //
-    1596:	60 e0       	ldi	r22, 0x00	; 0
-    1598:	88 e9       	ldi	r24, 0x98	; 152
-    159a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x99, 0x00);          //
-    159e:	60 e0       	ldi	r22, 0x00	; 0
-    15a0:	89 e9       	ldi	r24, 0x99	; 153
-    15a2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x9A, 0x00);          //
-    15a6:	60 e0       	ldi	r22, 0x00	; 0
-    15a8:	8a e9       	ldi	r24, 0x9A	; 154
-    15aa:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x9B, 0x0B);          //
-    15ae:	6b e0       	ldi	r22, 0x0B	; 11
-    15b0:	8b e9       	ldi	r24, 0x9B	; 155
-    15b2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x9C, 0x40);          //
-    15b6:	60 e4       	ldi	r22, 0x40	; 64
-    15b8:	8c e9       	ldi	r24, 0x9C	; 156
-    15ba:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x9D, 0x00);          //
-    15be:	60 e0       	ldi	r22, 0x00	; 0
-    15c0:	8d e9       	ldi	r24, 0x9D	; 157
-    15c2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x9E, 0x00);          //
-    15c6:	60 e0       	ldi	r22, 0x00	; 0
-    15c8:	8e e9       	ldi	r24, 0x9E	; 158
-    15ca:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x9F, 0x3C);          //
-    15ce:	6c e3       	ldi	r22, 0x3C	; 60
-    15d0:	8f e9       	ldi	r24, 0x9F	; 159
-    15d2:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0xA0, 0x00);          //
-    15d6:	60 e0       	ldi	r22, 0x00	; 0
-    15d8:	80 ea       	ldi	r24, 0xA0	; 160
-    15da:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
+00001314 <__tablejump2__>:
+    1314:	ee 0f       	add	r30, r30
+    1316:	ff 1f       	adc	r31, r31
 
-	//For test purposes only, use values from SmartRF for some bits
-	reg_write(0x08, 0x0B);            //*Changed on line 152
-    15de:	6b e0       	ldi	r22, 0x0B	; 11
-    15e0:	88 e0       	ldi	r24, 0x08	; 8
-    15e2:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x13, 0x0D);            //
-    15e6:	6d e0       	ldi	r22, 0x0D	; 13
-    15e8:	83 e1       	ldi	r24, 0x13	; 19
-    15ea:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x26, 0x04);            //*Changed on line 144
-    15ee:	64 e0       	ldi	r22, 0x04	; 4
-    15f0:	86 e2       	ldi	r24, 0x26	; 38
-    15f2:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x28, 0x00);            //*Changed on line 145
-    15f6:	60 e0       	ldi	r22, 0x00	; 0
-    15f8:	88 e2       	ldi	r24, 0x28	; 40
-    15fa:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x2B, 0x7F);            //
-    15fe:	6f e7       	ldi	r22, 0x7F	; 127
-    1600:	8b e2       	ldi	r24, 0x2B	; 43
-    1602:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write2F(0x05, 0x00);          //
-    1606:	60 e0       	ldi	r22, 0x00	; 0
-    1608:	85 e0       	ldi	r24, 0x05	; 5
-    160a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x14, 0x00);          //
-    160e:	60 e0       	ldi	r22, 0x00	; 0
-    1610:	84 e1       	ldi	r24, 0x14	; 20
-    1612:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x26, 0x00);          //
-    1616:	60 e0       	ldi	r22, 0x00	; 0
-    1618:	86 e2       	ldi	r24, 0x26	; 38
-    161a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x35, 0x04);          //
-    161e:	64 e0       	ldi	r22, 0x04	; 4
-    1620:	85 e3       	ldi	r24, 0x35	; 53
-    1622:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x7A, 0xD1);          //
-    1626:	61 ed       	ldi	r22, 0xD1	; 209
-    1628:	8a e7       	ldi	r24, 0x7A	; 122
-    162a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x8D, 0x01);          //
-    162e:	61 e0       	ldi	r22, 0x01	; 1
-    1630:	8d e8       	ldi	r24, 0x8D	; 141
-    1632:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
+00001318 <__tablejump__>:
+    1318:	05 90       	lpm	r0, Z+
+    131a:	f4 91       	lpm	r31, Z
+    131c:	e0 2d       	mov	r30, r0
+    131e:	09 94       	ijmp
 
-	//High performance RX
-	reg_write(0x08, 0x0B);            //
-    1636:	6b e0       	ldi	r22, 0x0B	; 11
-    1638:	88 e0       	ldi	r24, 0x08	; 8
-    163a:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x0C, 0x1C);            //
-    163e:	6c e1       	ldi	r22, 0x1C	; 28
-    1640:	8c e0       	ldi	r24, 0x0C	; 12
-    1642:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x10, 0x00);            //
-    1646:	60 e0       	ldi	r22, 0x00	; 0
-    1648:	80 e1       	ldi	r24, 0x10	; 16
-    164a:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x11, 0x04);            //
-    164e:	64 e0       	ldi	r22, 0x04	; 4
-    1650:	81 e1       	ldi	r24, 0x11	; 17
-    1652:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x13, 0x05);            //
-    1656:	65 e0       	ldi	r22, 0x05	; 5
-    1658:	83 e1       	ldi	r24, 0x13	; 19
-    165a:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x1C, 0xA9);            //
-    165e:	69 ea       	ldi	r22, 0xA9	; 169
-    1660:	8c e1       	ldi	r24, 0x1C	; 28
-    1662:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x1D, 0xCF);            //
-    1666:	6f ec       	ldi	r22, 0xCF	; 207
-    1668:	8d e1       	ldi	r24, 0x1D	; 29
-    166a:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x1E, 0x00);            //
-    166e:	60 e0       	ldi	r22, 0x00	; 0
-    1670:	8e e1       	ldi	r24, 0x1E	; 30
-    1672:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x20, 0x03);            //
-    1676:	63 e0       	ldi	r22, 0x03	; 3
-    1678:	80 e2       	ldi	r24, 0x20	; 32
-    167a:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x2E, 0x00);            //
-    167e:	60 e0       	ldi	r22, 0x00	; 0
-    1680:	8e e2       	ldi	r24, 0x2E	; 46
-    1682:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write2F(0x00, 0x00);          //
-    1686:	60 e0       	ldi	r22, 0x00	; 0
-    1688:	80 e0       	ldi	r24, 0x00	; 0
-    168a:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	
-	//modulation and freq deviation settings
-	reg_write(0x0A, 0b01001000);       //DEVIATION_M: 0x48      set DEV_M to 72 which sets freq deviation to 20.019531kHz (with DEV_M=5)
-    168e:	68 e4       	ldi	r22, 0x48	; 72
-    1690:	8a e0       	ldi	r24, 0x0A	; 10
-    1692:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x0B, 0b00000101);       //MODCFG_DEV_E: 0x05     set up modulation mode and DEV_E to 5 (see DEV_M register)
-    1696:	65 e0       	ldi	r22, 0x05	; 5
-    1698:	8b e0       	ldi	r24, 0x0B	; 11
-    169a:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x21, 0b00000100);       //FS_CFG: B00010100      set up LO divider to 8 (410.0 - 480.0 MHz band), out of lock detector enabled	
-    169e:	64 e0       	ldi	r22, 0x04	; 4
-    16a0:	81 e2       	ldi	r24, 0x21	; 33
-    16a2:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
+00001320 <_exit>:
+    1320:	f8 94       	cli
 
-	//set preamble
-	reg_write(0x0D, 0x00);            //PREAMBLE_CFG1: 0x00    No preamble
-    16a6:	60 e0       	ldi	r22, 0x00	; 0
-    16a8:	8d e0       	ldi	r24, 0x0D	; 13
-    16aa:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write_bit(0x0E, 5, 0);        //PQT_EN: 0x00           Preamble detection disabled
-    16ae:	40 e0       	ldi	r20, 0x00	; 0
-    16b0:	65 e0       	ldi	r22, 0x05	; 5
-    16b2:	8e e0       	ldi	r24, 0x0E	; 14
-    16b4:	0e 94 bd 09 	call	0x137a	; 0x137a <reg_write_bit>
-
-	//TOC_LIMIT
-	reg_write_bit2F(0x02, 7, 0);      //TOC_LIMIT: 0x00        Using the low tolerance setting (TOC_LIMIT = 0) greatly reduces system settling times and system power consumption as no preamble bits are needed for bit synchronization or frequency offset compensation (4 bits preamble needed for AGC settling).
-    16b8:	40 e0       	ldi	r20, 0x00	; 0
-    16ba:	67 e0       	ldi	r22, 0x07	; 7
-    16bc:	82 e0       	ldi	r24, 0x02	; 2
-    16be:	0e 94 e3 09 	call	0x13c6	; 0x13c6 <reg_write_bit2F>
-	reg_write_bit2F(0x02, 6, 0);      //TOC_LIMIT: 0x00        Using the low tolerance setting (TOC_LIMIT = 0) greatly reduces system settling times and system power consumption as no preamble bits are needed for bit synchronization or frequency offset compensation (4 bits preamble needed for AGC settling).
-    16c2:	40 e0       	ldi	r20, 0x00	; 0
-    16c4:	66 e0       	ldi	r22, 0x06	; 6
-    16c6:	82 e0       	ldi	r24, 0x02	; 2
-    16c8:	0e 94 e3 09 	call	0x13c6	; 0x13c6 <reg_write_bit2F>
-
-	//set SYNC word
-	reg_write_bit(0x08, 6, 0);        //PQT_GATING_EN: 0       PQT gating disabled (preamble not required)
-    16cc:	40 e0       	ldi	r20, 0x00	; 0
-    16ce:	66 e0       	ldi	r22, 0x06	; 6
-    16d0:	88 e0       	ldi	r24, 0x08	; 8
-    16d2:	0e 94 bd 09 	call	0x137a	; 0x137a <reg_write_bit>
-	reg_write(0x09, 0b00010111);       //SYNC_CFG0: B00010111   32 bit SYNC word. Bit error qualifier disabled. No check on bit errors
-    16d6:	67 e1       	ldi	r22, 0x17	; 23
-    16d8:	89 e0       	ldi	r24, 0x09	; 9
-    16da:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x04, 0x93);            //SYNC3: 0x93            Set SYNC word bits 31:24
-    16de:	63 e9       	ldi	r22, 0x93	; 147
-    16e0:	84 e0       	ldi	r24, 0x04	; 4
-    16e2:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x05, 0x0B);            //SYNC2: 0x0B            Set SYNC word bits 23:16
-    16e6:	6b e0       	ldi	r22, 0x0B	; 11
-    16e8:	85 e0       	ldi	r24, 0x05	; 5
-    16ea:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x06, 0x51);            //SYNC1: 0x51            Set SYNC word bits 15:8
-    16ee:	61 e5       	ldi	r22, 0x51	; 81
-    16f0:	86 e0       	ldi	r24, 0x06	; 6
-    16f2:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x07, 0xDE);            //SYNC0: 0xDE            Set SYNC word bits 7:0
-    16f6:	6e ed       	ldi	r22, 0xDE	; 222
-    16f8:	87 e0       	ldi	r24, 0x07	; 7
-    16fa:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-
-	//set packets
-	reg_write_bit(0x12, 6, 1);        //FIFO_EN: 1             FIFO enable set to true
-    16fe:	41 e0       	ldi	r20, 0x01	; 1
-    1700:	66 e0       	ldi	r22, 0x06	; 6
-    1702:	82 e1       	ldi	r24, 0x12	; 18
-    1704:	0e 94 bd 09 	call	0x137a	; 0x137a <reg_write_bit>
-	reg_write_bit(0x13, 6, 0);        //TRANSPARENT_MODE_EN: 0 Disable transparent mode
-    1708:	40 e0       	ldi	r20, 0x00	; 0
-    170a:	66 e0       	ldi	r22, 0x06	; 6
-    170c:	83 e1       	ldi	r24, 0x13	; 19
-    170e:	0e 94 bd 09 	call	0x137a	; 0x137a <reg_write_bit>
-	reg_write(0x26, 0x00);            //PKT_CFG2: 0x00         set FIFO mode
-    1712:	60 e0       	ldi	r22, 0x00	; 0
-    1714:	86 e2       	ldi	r24, 0x26	; 38
-    1716:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x28, 0x00);            //PKT_CFG0: 0x00         set fixed packet length
-    171a:	60 e0       	ldi	r22, 0x00	; 0
-    171c:	88 e2       	ldi	r24, 0x28	; 40
-    171e:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	reg_write(0x2E, 0xFF);            //PKT_LEN: 0xFF          set packet length to 0xFF (max)
-    1722:	6f ef       	ldi	r22, 0xFF	; 255
-    1724:	8e e2       	ldi	r24, 0x2E	; 46
-    1726:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-
-	//set power level
-	reg_write(0x2B, 0b01111111);       //PA_CFG2: 0x7F          set POWER_RAMP to 64 (output power to 14.5dBm, equation 21)
-    172a:	6f e7       	ldi	r22, 0x7F	; 127
-    172c:	8b e2       	ldi	r24, 0x2B	; 43
-    172e:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-
-	//frequency offset setting
-	reg_write2F(0x0A, 0);             //FREQOFF1: 0x00         set frequency offset to 0
-    1732:	60 e0       	ldi	r22, 0x00	; 0
-    1734:	8a e0       	ldi	r24, 0x0A	; 10
-    1736:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x0B, 0);             //FREQOFF0: 0x00
-    173a:	60 e0       	ldi	r22, 0x00	; 0
-    173c:	8b e0       	ldi	r24, 0x0B	; 11
-    173e:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-
-	//Frequency setting
-	reg_write2F(0x0C, 0x6C);          //FREQ2: 0x6C            set frequency to 434MHz (sets Vco, see equation from FREQ2 section of user guide)
-    1742:	6c e6       	ldi	r22, 0x6C	; 108
-    1744:	8c e0       	ldi	r24, 0x0C	; 12
-    1746:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x0D, 0x80);          //FREQ1: 0x80
-    174a:	60 e8       	ldi	r22, 0x80	; 128
-    174c:	8d e0       	ldi	r24, 0x0D	; 13
-    174e:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-	reg_write2F(0x0E, 0x00);          //FREQ0: 0x00
-    1752:	60 e0       	ldi	r22, 0x00	; 0
-    1754:	8e e0       	ldi	r24, 0x0E	; 14
-    1756:	0e 94 aa 09 	call	0x1354	; 0x1354 <reg_write2F>
-
-	//set up GPIO1 to 17
-	reg_write(0x00, 17);
-    175a:	61 e1       	ldi	r22, 0x11	; 17
-    175c:	80 e0       	ldi	r24, 0x00	; 0
-    175e:	0e 94 94 09 	call	0x1328	; 0x1328 <reg_write>
-	
-	//strobe commands to start RX
-	cmd_str(SCAL);                   // Calibrate frequency synthesizer
-    1762:	83 e3       	ldi	r24, 0x33	; 51
-    1764:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
-
-	cmd_str(SAFC);					 // Automatic frequency control
-    1768:	87 e3       	ldi	r24, 0x37	; 55
-    176a:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
-
-	cmd_str(SRX);                    // Put in RX mode
-    176e:	84 e3       	ldi	r24, 0x34	; 52
-    1770:	0e 94 ba 09 	call	0x1374	; 0x1374 <cmd_str>
-    1774:	08 95       	ret
-
-00001776 <__udivmodqi4>:
-    1776:	99 1b       	sub	r25, r25
-    1778:	79 e0       	ldi	r23, 0x09	; 9
-    177a:	04 c0       	rjmp	.+8      	; 0x1784 <__udivmodqi4_ep>
-
-0000177c <__udivmodqi4_loop>:
-    177c:	99 1f       	adc	r25, r25
-    177e:	96 17       	cp	r25, r22
-    1780:	08 f0       	brcs	.+2      	; 0x1784 <__udivmodqi4_ep>
-    1782:	96 1b       	sub	r25, r22
-
-00001784 <__udivmodqi4_ep>:
-    1784:	88 1f       	adc	r24, r24
-    1786:	7a 95       	dec	r23
-    1788:	c9 f7       	brne	.-14     	; 0x177c <__udivmodqi4_loop>
-    178a:	80 95       	com	r24
-    178c:	08 95       	ret
-
-0000178e <__divmodhi4>:
-    178e:	97 fb       	bst	r25, 7
-    1790:	07 2e       	mov	r0, r23
-    1792:	16 f4       	brtc	.+4      	; 0x1798 <__divmodhi4+0xa>
-    1794:	00 94       	com	r0
-    1796:	07 d0       	rcall	.+14     	; 0x17a6 <__divmodhi4_neg1>
-    1798:	77 fd       	sbrc	r23, 7
-    179a:	09 d0       	rcall	.+18     	; 0x17ae <__divmodhi4_neg2>
-    179c:	0e 94 e1 0b 	call	0x17c2	; 0x17c2 <__udivmodhi4>
-    17a0:	07 fc       	sbrc	r0, 7
-    17a2:	05 d0       	rcall	.+10     	; 0x17ae <__divmodhi4_neg2>
-    17a4:	3e f4       	brtc	.+14     	; 0x17b4 <__divmodhi4_exit>
-
-000017a6 <__divmodhi4_neg1>:
-    17a6:	90 95       	com	r25
-    17a8:	81 95       	neg	r24
-    17aa:	9f 4f       	sbci	r25, 0xFF	; 255
-    17ac:	08 95       	ret
-
-000017ae <__divmodhi4_neg2>:
-    17ae:	70 95       	com	r23
-    17b0:	61 95       	neg	r22
-    17b2:	7f 4f       	sbci	r23, 0xFF	; 255
-
-000017b4 <__divmodhi4_exit>:
-    17b4:	08 95       	ret
-
-000017b6 <__tablejump2__>:
-    17b6:	ee 0f       	add	r30, r30
-    17b8:	ff 1f       	adc	r31, r31
-
-000017ba <__tablejump__>:
-    17ba:	05 90       	lpm	r0, Z+
-    17bc:	f4 91       	lpm	r31, Z
-    17be:	e0 2d       	mov	r30, r0
-    17c0:	09 94       	ijmp
-
-000017c2 <__udivmodhi4>:
-    17c2:	aa 1b       	sub	r26, r26
-    17c4:	bb 1b       	sub	r27, r27
-    17c6:	51 e1       	ldi	r21, 0x11	; 17
-    17c8:	07 c0       	rjmp	.+14     	; 0x17d8 <__udivmodhi4_ep>
-
-000017ca <__udivmodhi4_loop>:
-    17ca:	aa 1f       	adc	r26, r26
-    17cc:	bb 1f       	adc	r27, r27
-    17ce:	a6 17       	cp	r26, r22
-    17d0:	b7 07       	cpc	r27, r23
-    17d2:	10 f0       	brcs	.+4      	; 0x17d8 <__udivmodhi4_ep>
-    17d4:	a6 1b       	sub	r26, r22
-    17d6:	b7 0b       	sbc	r27, r23
-
-000017d8 <__udivmodhi4_ep>:
-    17d8:	88 1f       	adc	r24, r24
-    17da:	99 1f       	adc	r25, r25
-    17dc:	5a 95       	dec	r21
-    17de:	a9 f7       	brne	.-22     	; 0x17ca <__udivmodhi4_loop>
-    17e0:	80 95       	com	r24
-    17e2:	90 95       	com	r25
-    17e4:	bc 01       	movw	r22, r24
-    17e6:	cd 01       	movw	r24, r26
-    17e8:	08 95       	ret
-
-000017ea <_exit>:
-    17ea:	f8 94       	cli
-
-000017ec <__stop_program>:
-    17ec:	ff cf       	rjmp	.-2      	; 0x17ec <__stop_program>
+00001322 <__stop_program>:
+    1322:	ff cf       	rjmp	.-2      	; 0x1322 <__stop_program>

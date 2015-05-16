@@ -33,6 +33,7 @@
 //-----------FILE INCLUDES---------------
 #include "config.h"
 #include "LED.h"
+#include "Timer.h"
 //---------------------------------------
 
 //-----------CONSTANT DEFINES------------

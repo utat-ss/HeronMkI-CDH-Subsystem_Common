@@ -94,8 +94,8 @@ void spi_initialize_master(void)
 	
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
-	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle)
-	temp = 0b01011111;
+	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 0 (SCK high when idle), CPHA = 0
+	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
 	
 	return;
@@ -142,7 +142,7 @@ uint8_t spi_transfer(uint8_t message)
 	reg_ptr = SPDR_BASE;
 	
 	// Commence the SPI message.
-	//SS_set_high();
+	//SS_set_low();
 	*reg_ptr = message;
 		
 	reg_ptr = SPSR_BASE;
@@ -151,11 +151,13 @@ uint8_t spi_transfer(uint8_t message)
 	{
 		if(!timeout--)
 		{
-			//SS_set_low();
+			//SS_set_high();
 			return 0;						// Something went wrong, so the function times out.
 		}
 	}	
-	//SS_set_low();
+	//SS_set_high();
+	
+	delay_cycles(10);
 	
 	reg_ptr = SPDR_BASE;
 	receive_char = *reg_ptr;
@@ -163,17 +165,17 @@ uint8_t spi_transfer(uint8_t message)
 	// I was assuming that SPI messages would be received MSB first.
 	// Comment out the following if that is not the case.
 	
-	temp = 0, temp2 = 0;
+	//temp = 0, temp2 = 0;
+	//
+	//for (i = 0; i < 8; i ++)
+	//{
+		//temp2 = receive_char << (7 - i);	// reverses the order of the bits.
+		//temp2 = temp2 >> 7;
+		//temp2 = temp2 << (7 - i);		
+		//temp += temp2;
+	//}
 	
-	for (i = 0; i < 8; i ++)
-	{
-		temp2 = receive_char << (7 - i);	// reverses the order of the bits.
-		temp2 = temp2 >> 7;
-		temp2 = temp2 << (7 - i);		
-		temp += temp2;
-	}
-	
-	return temp;					// Transmission was successful, return the character that was received.
+	return receive_char;					// Transmission was successful, return the character that was received.
 }
 
 /************************************************************************/
@@ -187,7 +189,8 @@ uint8_t spi_transfer(uint8_t message)
 
 void SS_set_high(void) 
 {
-	PORTD &= (1 << 3);
+	PORTB &= (1 << 6);
+	delay_us(1);
 }
 
 /************************************************************************/
@@ -201,6 +204,7 @@ void SS_set_high(void)
 
 void SS_set_low(void)
 {
-	PORTD &= (0 << 3);
+	PORTB &= (0 << 6);
+	delay_us(1);
 }
 

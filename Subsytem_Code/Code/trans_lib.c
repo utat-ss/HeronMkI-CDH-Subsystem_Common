@@ -27,6 +27,8 @@
 */
 
 #include "trans_lib.h"
+#include "Timer.h"
+#include "spi_lib.h"
 
 void transceiver_initialize(void)
 {
@@ -198,8 +200,25 @@ uint8_t reg_read(uint8_t addr)
 	uint8_t addr_new, msg;
 	addr_new = addr + 0b10000000;
 
-	msg = spi_transfer(addr);		// Send the desired address
-	msg = spi_transfer(0);			// Read back
+	SS_set_low();
+	msg = spi_transfer(addr_new);		// Send the desired address
+	delay_us(1);
+		//if(msg == 0x00)
+		//{
+			//LED_toggle(LED3);
+			//delay_ms(100);
+			//LED_toggle(LED3);
+			//delay_ms(100);
+		//}
+	msg = spi_transfer(0x00);
+		if(msg == 0xAA)
+		{
+			LED_toggle(LED3);
+			delay_ms(100);
+			LED_toggle(LED3);
+			delay_ms(100);
+		}
+	SS_set_high();
 	
 	return msg;
 }
@@ -208,8 +227,12 @@ void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 {
 	uint8_t msg;
 	
+	SS_set_low();
 	msg = spi_transfer(addr);		// Send the desired address
+	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
+	SS_set_high();
+	
 	
 	return;
 }
