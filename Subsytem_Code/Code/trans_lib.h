@@ -95,4 +95,5 @@ void reg_write_bit(uint8_t reg, uint8_t n, uint8_t data);
 uint8_t reg_read_bit(uint8_t reg, uint8_t n);
 void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data);
 uint8_t reg_read_bit2F(uint8_t reg, uint8_t n);
+void trans_reset(void);
 

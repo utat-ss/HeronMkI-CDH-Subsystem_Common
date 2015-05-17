@@ -47,6 +47,7 @@
 
 void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);
+uint8_t spi_transfer2(uint8_t message);
 void SS_set_high(void);
 void SS_set_low(void);
 

@@ -178,6 +178,40 @@ uint8_t spi_transfer(uint8_t message)
 	return receive_char;					// Transmission was successful, return the character that was received.
 }
 
+uint8_t spi_transfer2(uint8_t message)
+{
+	uint8_t* reg_ptr;
+	uint8_t timeout = SPI_TIMEOUT;
+	uint8_t receive_char;
+	uint8_t i, temp, temp2;
+	
+	reg_ptr = SPDR_BASE;
+	
+	// Commence the SPI message.
+	SS_set_low();
+	*reg_ptr = message;
+	
+	reg_ptr = SPSR_BASE;
+
+	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
+	{
+		if(!timeout--)
+		{
+			SS_set_high();
+			return 0;						// Something went wrong, so the function times out.
+		}
+	}
+	SS_set_high();
+	
+	delay_cycles(10);
+		
+	reg_ptr = SPDR_BASE;
+	receive_char = *reg_ptr;
+		
+	return receive_char;					// Transmission was successful, return the character that was received.
+}
+
+
 /************************************************************************/
 /*		SS_set_high                                                     */
 /*																		*/
@@ -189,7 +223,7 @@ uint8_t spi_transfer(uint8_t message)
 
 void SS_set_high(void) 
 {
-	PORTB &= (1 << 6);
+	PORTD |= (1 << 3);
 	delay_us(1);
 }
 
@@ -204,7 +238,7 @@ void SS_set_high(void)
 
 void SS_set_low(void)
 {
-	PORTB &= (0 << 6);
+	PORTD &= (0xF7);
 	delay_us(1);
 }
 

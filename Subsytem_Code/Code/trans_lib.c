@@ -32,6 +32,8 @@
 
 void transceiver_initialize(void)
 {
+	uint8_t msg;
+	
 	// SPI is already in MSB first, which is correct for the CC1120.
 	
 	set_CSn(0);
@@ -39,15 +41,15 @@ void transceiver_initialize(void)
 	// Don't need the while loop that was here.
 	
 	// RESET
-	cmd_str(SRES);				// SRES			Reset Chip
-	
-	cmd_str(SIDLE);
-	
-	// Reset RX FIFO
-	cmd_str(SFRX);				// SRFX			Flush RX FIFO
-	
-	// Reset TX FIFO
-	cmd_str(SFTX);				// STFX			Flush TX FIFO
+	//cmd_str(SRES);				// SRES			Reset Chip
+//
+	//cmd_str(SIDLE);
+//
+	//// Reset RX FIFO
+	//cmd_str(SFRX);				// SRFX			Flush RX FIFO
+	//
+	//// Reset TX FIFO
+	//cmd_str(SFTX);				// STFX			Flush TX FIFO
 	
 	//********** SETTINGS **********//
 	
@@ -108,9 +110,9 @@ void transceiver_initialize(void)
 	reg_write2F(0x9E, 0x00);          //
 	reg_write2F(0x9F, 0x3C);          //
 	reg_write2F(0xA0, 0x00);          //
-
+	
 	//For test purposes only, use values from SmartRF for some bits
-	reg_write(0x08, 0x0B);            //*Changed on line 152
+	reg_write(0x08, 0x0B);            //*Changed on line 152	
 	reg_write(0x13, 0x0D);            //
 	reg_write(0x26, 0x04);            //*Changed on line 144
 	reg_write(0x28, 0x00);            //*Changed on line 145
@@ -169,21 +171,24 @@ void transceiver_initialize(void)
 	//frequency offset setting
 	reg_write2F(0x0A, 0);             //FREQOFF1: 0x00         set frequency offset to 0
 	reg_write2F(0x0B, 0);             //FREQOFF0: 0x00
-
+		
 	//Frequency setting
 	reg_write2F(0x0C, 0x6C);          //FREQ2: 0x6C            set frequency to 434MHz (sets Vco, see equation from FREQ2 section of user guide)
 	reg_write2F(0x0D, 0x80);          //FREQ1: 0x80
 	reg_write2F(0x0E, 0x00);          //FREQ0: 0x00
 
 	//set up GPIO1 to 17
-	reg_write(0x00, 17);
+	//reg_write(0x00, 17);
 	
 	//strobe commands to start RX
 	cmd_str(SCAL);                   // Calibrate frequency synthesizer
-
+	//delay_ms(10);
+//
 	cmd_str(SAFC);					 // Automatic frequency control
-
+	//delay_ms(10);
+//
 	cmd_str(SRX);                    // Put in RX mode
+	//delay_ms(10);
 	
 }
 
@@ -203,13 +208,6 @@ uint8_t reg_read(uint8_t addr)
 	SS_set_low();
 	msg = spi_transfer(addr_new);		// Send the desired address
 	delay_us(1);
-		//if(msg == 0x00)
-		//{
-			//LED_toggle(LED3);
-			//delay_ms(100);
-			//LED_toggle(LED3);
-			//delay_ms(100);
-		//}
 	msg = spi_transfer(0x00);
 		if(msg == 0xAA)
 		{
@@ -220,6 +218,8 @@ uint8_t reg_read(uint8_t addr)
 		}
 	SS_set_high();
 	
+	delay_us(1);
+	
 	return msg;
 }
 
@@ -229,10 +229,11 @@ void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 	
 	SS_set_low();
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
 	
+	delay_us(1);
 	
 	return;
 }
@@ -240,11 +241,13 @@ void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 uint8_t reg_read2F(uint8_t addr)
 {
 	uint8_t msg;
-	msg = 0b1010111;
+	msg = 0b10101111;
 	
-	msg = spi_transfer(msg);		// Address extension command
-	msg = spi_transfer(addr);		// Send the desired address
-	msg = spi_transfer(0);			// Read back
+	spi_transfer2(msg);
+	delay_us(1);
+	reg_read(addr);
+	
+	delay_us(1);
 	
 	return msg;
 }
@@ -252,13 +255,14 @@ uint8_t reg_read2F(uint8_t addr)
 void reg_write2F(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 {
 	uint8_t msg;
-		
-	msg = 0b1010111;
+	msg = 0b00101111;
 	
-	msg = spi_transfer(msg);		// Address extension command
-	msg = spi_transfer(addr);		// Send the desired address
-	msg = spi_transfer(data);		// Send the desired data
+	spi_transfer2(msg);
+	delay_us(1);
+	reg_write(addr, data);
 	
+	delay_us(1);
+
 	return;
 }
 
@@ -274,7 +278,12 @@ void get_status(uint8_t *CHIP_RDYn, uint8_t *state)
 
 uint8_t cmd_str(uint8_t addr)
 {
-	return spi_transfer(addr);
+	uint8_t msg;
+	
+	reg_read(addr);
+	
+	delay_us(1);
+	return msg;
 }
 
 
@@ -283,24 +292,27 @@ uint8_t dir_FIFO_read(uint8_t addr)
 	uint8_t msg;
 	msg = 0b10111110;
 		
-	msg = spi_transfer(msg);		// Address extension command
-	msg = spi_transfer(addr);		// Send the desired address
-	msg = spi_transfer(0);			// Read back
+	msg = spi_transfer2(msg);		// Address extension command
+	delay_us(1);
+	reg_read(addr);
+	
+	delay_us(1);
 		
 	return msg;
 }
 
 void dir_FIFO_write(uint8_t addr, uint8_t data)
 {
-		uint8_t msg;
-		
-		msg = 0b00111110;
-		
-		msg = spi_transfer(msg);		// Address extension command
-		msg = spi_transfer(addr);		// Send the desired address
-		msg = spi_transfer(data);		// Send the desired data
-		
-		return;
+	uint8_t msg;
+	msg = 0b00111110;
+	
+	msg = spi_transfer2(msg);
+	delay_us(1);
+	reg_write(addr, data);
+	
+	delay_us(1);
+			
+	return;
 }
 
 void set_CSn(uint8_t state)
@@ -381,3 +393,9 @@ uint8_t reg_read_bit2F(uint8_t reg, uint8_t n)
 	return nth_bit;
 }
 
+void trans_reset(void)
+{
+	PORTB |= (1 << 6);
+	delay_us(1);
+	PORTB &= 0xBF;
+}

@@ -69,11 +69,7 @@ int main(void)
 {		
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
-	
-	//cmd_str(SIDLE);
-	
-	//SS_set_high();
-	
+
 	uint8_t	i = 0;
 	uint8_t spi_char = 0;
 	uint8_t spi_s_message = 0xAA;	// Message to be sent to the slave via SPI.
@@ -81,9 +77,6 @@ int main(void)
 	/* Transceiver testing vars */
 	uint8_t state, CHIP_RDYn;
 	uint8_t trans_msg = 0;
-	
-	// Enable global interrupts for Timer execution
-	sei();
 	
 	// Flash LEDs to indicate program startup
 	//LED_toggle(LED3);
@@ -104,8 +97,6 @@ int main(void)
 	send_now = 0;
 	send_hk = 0;
 	send_data = 0;
-	
-	reg_write(0x0A, 0xFF);
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
@@ -132,80 +123,79 @@ int main(void)
 		//spi_char = 0;
 		
 		/* Testing the COMS Transceiver */
-		
-		//SS_set_low();
-		//delay_ms(500);
-		//SS_set_high();
-		//delay_ms(500);
-		//set_CSn(0);
-		//spi_transfer(0x70);
-//
-		//delay_us(1);
-//
-		//spi_transfer(0x80);
-		
-		
-		//SS_set_low();
-		//reg_write(0x0A, 0xFF);
-		//delay_us(80);
-		
+				
 	// ****************
 		
-		reg_write(0x0A, 0xAA);
-			
-		//delay_cycles(2);
-		
-		trans_msg = reg_read(0x0A);
-	
-		//delay_us(1000);
-	// ********************
-
-		
-	//	SS_set_high();
-		
-		//if(trans_msg == 0x1F)
+		//reg_write(0x0A, 0x48);
+			//
+		////delay_cycles(2);
+		//
+		//trans_msg = reg_read(0x0A);
+	//
+		////delay_us(1);
+		//
+		//if(trans_msg == 0x48)
 		//{
-			//LED_toggle(LED3);
-			//delay_ms(100);
-			//LED_toggle(LED3);
-			//delay_ms(100);
+		//LED_toggle(LED3);
+		//delay_ms(100);
+		//LED_toggle(LED3);
+		//delay_ms(100);
 		//}
 		
-		//monitor_LEDs();
-		//get_status(&CHIP_RDYn, &state);
+	//reg_write2F(0x0B, 0xAA);             //FREQOFF0: 0x00
+	//
+	//trans_msg = reg_read2F(0x0B);
+	//
+	//if(trans_msg == 0xAA)
+	//{
+		//LED_toggle(LED3);
+		//delay_ms(100);
+		//LED_toggle(LED3);
+		//delay_ms(100);
+	//}		
+
+		
+		
+	// ********************
+		
+		monitor_LEDs();
+		get_status(&CHIP_RDYn, &state);
 		
 		if(state == 0b110)
 		{	
-			//cmd_str(SIDLE);
-			//// Here we would send our message to the OBC.
-			//
+			cmd_str(SIDLE);
+			delay_ms(10);
+			// Here we would send our message to the OBC.
+			
 			//trans_msg = dir_FIFO_read(0x80);
-			//
-			////if(trans_msg == 0xA)
-			////{
-				////LED_toggle(LED3);
-				////delay_ms(100);
-				////LED_toggle(LED3);
-				////delay_ms(100);
-			////}
-			//
-			//cmd_str(SFRX);
-			//
+			
+			//if(trans_msg == 0xA)
+			//{
+				LED_toggle(LED3);
+				delay_ms(100);
+				LED_toggle(LED3);
+				delay_ms(100);
+			//}
+			
+			cmd_str(SFRX);
+			//delay_ms(10);
+			
 			//reg_write2F(0xD2, 0x00);
 			//reg_write2F(0xD4, 0xFF);
-			//
-			////if (reg_read2F(0xD2) == 0x00 && reg_read2F(0xD4) == 0xFF)
-			////{
-				////LED_toggle(LED3);
-				////delay_ms(100);
-				////LED_toggle(LED3);
-				////delay_ms(100);				
-			////}
-			//
-			//
-			////cmd_str(SFTX);
-			//
-			//cmd_str(SRX);
+			
+			//if (reg_read2F(0xD2) == 0x00 && reg_read2F(0xD4) == 0xFF)
+			//{
+				//LED_toggle(LED3);
+				//delay_ms(100);
+				//LED_toggle(LED3);
+				//delay_ms(100);				
+			//}
+			
+			
+			//cmd_str(SFTX);
+			
+			cmd_str(SRX);
+			//delay_ms(10);
 		}
 
 
@@ -259,7 +249,10 @@ void sys_init(void) {
 	can_init_mobs();
 	spi_initialize_master();
 	
-	//transceiver_initialize();
+	// Enable global interrupts for Timer execution
+	sei();
+	
+	transceiver_initialize();
 }
 
 void io_init(void) {
