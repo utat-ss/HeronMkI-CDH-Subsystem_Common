@@ -59,8 +59,8 @@
 #include "trans_lib.h"
 
 /* Function Prototypes for functions in this file */
-static void sys_init(void);
 static void io_init(void);
+static void sys_init(void);
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
@@ -97,6 +97,8 @@ int main(void)
 	send_now = 0;
 	send_hk = 0;
 	send_data = 0;
+	
+	uint8_t msg1, msg2;
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
@@ -142,40 +144,116 @@ int main(void)
 		//delay_ms(100);
 		//}
 		
+
+	
+	//cmd_str(SRX);
+	
 	//reg_write2F(0x0B, 0xAA);             //FREQOFF0: 0x00
-	//
+	//reg_write2F(0x0A, 0xFF);
+	//get_status(&CHIP_RDYn, &state);
+	
 	//trans_msg = reg_read2F(0x0B);
-	//
 	//if(trans_msg == 0xAA)
 	//{
 		//LED_toggle(LED3);
 		//delay_ms(100);
 		//LED_toggle(LED3);
 		//delay_ms(100);
-	//}		
+	//}
+	//trans_msg = reg_read2F(0x0A);
+	//if(trans_msg == 0xFF)
+	//{
+		//LED_toggle(LED6);
+		//delay_ms(100);
+		//LED_toggle(LED6);
+		//delay_ms(100);
+	//}
+	//if(state == 0b000)
+	//{
+		//LED_toggle(LED6);
+		//delay_ms(100);
+		//LED_toggle(LED6);
+		//delay_ms(100);
+	//}
+
+/***************/
+	trans_msg = 0b00101111;
+	
+	
+ /** write **/
+ 
+	//delay_us(1);
+	SS_set_low();
+	spi_transfer(trans_msg);
+	delay_us(1);
+	trans_msg = spi_transfer(0x0C);		// Send the desired address
+	delay_us(5);
+	trans_msg = spi_transfer(0x6C);		// Send the desired data
+	SS_set_high();
+	
+	//delay_us(1);
+	//delay_us(1);
+	
+/**  Read   **/
+
+	trans_msg = 0b10101111;
+	
+	SS_set_low();
+	trans_msg = spi_transfer(trans_msg);
+	delay_us(1);
+	trans_msg = spi_transfer(0x0C);		// Send the desired address
+	delay_us(1);
+	trans_msg = spi_transfer(0x00);
+	SS_set_high();
+	
+	//delay_us(1);
+	
+	//msg = msg & 0x1F;
+	//get_status(&CHIP_RDYn, &state);
+	if (trans_msg == 0x6C)
+	{
+		LED_toggle(LED3);
+		delay_ms(100);
+		LED_toggle(LED3);
+		delay_ms(100);
+	}
+	if(state == 0x001)
+	{
+		LED_toggle(LED6);
+		delay_ms(100);
+		LED_toggle(LED6);
+		delay_ms(100);
+	}
 
 		
 		
 	// ********************
 		
-		monitor_LEDs();
-		get_status(&CHIP_RDYn, &state);
+		//get_status(&CHIP_RDYn, &state);
+		//cmd_str(SRX);
+		//monitor_LEDs();
+
 		
-		if(state == 0b110)
+		if(state == 0b110 || state == 0b111)
 		{	
 			cmd_str(SIDLE);
-			delay_ms(10);
+			//delay_ms(10);
+			LED_toggle(LED3);
+			delay_ms(100);
+			LED_toggle(LED3);
+			delay_ms(100);
+			
 			// Here we would send our message to the OBC.
 			
-			//trans_msg = dir_FIFO_read(0x80);
+			trans_msg = dir_FIFO_read(0x80);
 			
-			//if(trans_msg == 0xA)
-			//{
-				LED_toggle(LED3);
+			if(trans_msg == 0xA)
+			{
+				LED_toggle(LED6);
 				delay_ms(100);
-				LED_toggle(LED3);
+				LED_toggle(LED6);
 				delay_ms(100);
-			//}
+			}
 			
 			cmd_str(SFRX);
 			//delay_ms(10);
@@ -243,6 +321,7 @@ void sys_init(void) {
 	CLKPR = 0x00;
 	
 	io_init();	
+	
 	timer_init();
 	adc_initialize();
 	can_init(0);
@@ -270,6 +349,6 @@ void io_init(void) {
 	
 	// Init PORTE[2:0]
 	DDRE = 0x00;
-	PORTD = 0x00;
+	PORTE = 0x00;
 }
 

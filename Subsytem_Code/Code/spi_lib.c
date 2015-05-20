@@ -152,7 +152,7 @@ uint8_t spi_transfer(uint8_t message)
 		if(!timeout--)
 		{
 			//SS_set_high();
-			return 0;						// Something went wrong, so the function times out.
+			return 0x00;						// Something went wrong, so the function times out.
 		}
 	}	
 	//SS_set_high();
@@ -185,12 +185,15 @@ uint8_t spi_transfer2(uint8_t message)
 	uint8_t receive_char;
 	uint8_t i, temp, temp2;
 	
+	//cmd_str(SRES);
+	
 	reg_ptr = SPDR_BASE;
 	
 	// Commence the SPI message.
-	SS_set_low();
+	PORTD &= (0xF7);
+	//delay_cycles(10);
 	*reg_ptr = message;
-	
+	//delay_cycles(10);
 	reg_ptr = SPSR_BASE;
 
 	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
@@ -198,9 +201,10 @@ uint8_t spi_transfer2(uint8_t message)
 		if(!timeout--)
 		{
 			SS_set_high();
-			return 0;						// Something went wrong, so the function times out.
+			return 0xAA;						// Something went wrong, so the function times out.
 		}
 	}
+	delay_cycles(10);
 	SS_set_high();
 	
 	delay_cycles(10);

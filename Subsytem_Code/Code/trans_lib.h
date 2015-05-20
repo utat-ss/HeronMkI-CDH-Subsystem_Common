@@ -29,6 +29,7 @@
 
 #include "spi_lib.h"
 #include "LED.h"
+#include "can_api.h"
 
 /*********** DEFINITIONS ******************/
 
@@ -92,8 +93,8 @@ void dir_FIFO_write(uint8_t addr, uint8_t data);
 void set_CSn(uint8_t state);
 void monitor_LEDs(void);
 void reg_write_bit(uint8_t reg, uint8_t n, uint8_t data);
-uint8_t reg_read_bit(uint8_t reg, uint8_t n);
+//uint8_t reg_read_bit(uint8_t reg, uint8_t n);
 void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data);
-uint8_t reg_read_bit2F(uint8_t reg, uint8_t n);
+//uint8_t reg_read_bit2F(uint8_t reg, uint8_t n);
 void trans_reset(void);
 
