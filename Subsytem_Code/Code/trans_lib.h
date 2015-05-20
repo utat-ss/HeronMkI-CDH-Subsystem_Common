@@ -84,8 +84,10 @@
 void transceiver_initialize(void);
 uint8_t reg_read(uint8_t addr);
 void reg_write(uint8_t addr, uint8_t data);
+//void reg_write_h(uint8_t addr, uint8_t data);
 uint8_t reg_read2F(uint8_t addr);
 void reg_write2F(uint8_t addr, uint8_t data);
+//void reg_write2F_h(uint8_t addr, uint8_t data);
 void get_status(uint8_t *CHIP_RDYn, uint8_t *state);
 uint8_t cmd_str(uint8_t addr);
 uint8_t dir_FIFO_read(uint8_t addr);

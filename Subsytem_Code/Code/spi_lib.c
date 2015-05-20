@@ -153,6 +153,10 @@ uint8_t spi_transfer(uint8_t message)
 		{
 			//SS_set_high();
 			return 0x00;						// Something went wrong, so the function times out.
+			LED_toggle(LED6);
+			delay_ms(100);
+			LED_toggle(LED6);
+			delay_ms(100);
 		}
 	}	
 	//SS_set_high();
@@ -201,10 +205,10 @@ uint8_t spi_transfer2(uint8_t message)
 		if(!timeout--)
 		{
 			SS_set_high();
-			return 0xAA;						// Something went wrong, so the function times out.
+			return 0x00;						// Something went wrong, so the function times out.
 		}
 	}
-	delay_cycles(10);
+	delay_cycles(7);
 	SS_set_high();
 	
 	delay_cycles(10);
@@ -227,7 +231,7 @@ uint8_t spi_transfer2(uint8_t message)
 
 void SS_set_high(void) 
 {
-	PORTD |= (1 << 3);
+	//PORTD |= (1 << 3);
 	delay_us(1);
 }
 
@@ -242,7 +246,7 @@ void SS_set_high(void)
 
 void SS_set_low(void)
 {
-	PORTD &= (0xF7);
+	//PORTD &= (0xF7);
 	delay_us(1);
 }
 

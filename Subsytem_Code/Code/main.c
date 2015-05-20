@@ -177,53 +177,27 @@ int main(void)
 	//}
 
 /***************/
-	trans_msg = 0b00101111;
-	
-	
- /** write **/
- 
-	//delay_us(1);
-	SS_set_low();
-	spi_transfer(trans_msg);
-	delay_us(1);
-	trans_msg = spi_transfer(0x0C);		// Send the desired address
-	delay_us(5);
-	trans_msg = spi_transfer(0x6C);		// Send the desired data
-	SS_set_high();
-	
-	//delay_us(1);
-	//delay_us(1);
-	
-/**  Read   **/
+	//reg_write2F(0x13, 0x5F);          //FS_DIG0: 0x5F         Frequency Synthesizer Digital Reg. 0
+	//trans_msg = reg_read2F(0x13);
 
-	trans_msg = 0b10101111;
-	
-	SS_set_low();
-	trans_msg = spi_transfer(trans_msg);
-	delay_us(1);
-	trans_msg = spi_transfer(0x0C);		// Send the desired address
-	delay_us(1);
-	trans_msg = spi_transfer(0x00);
-	SS_set_high();
-	
-	//delay_us(1);
-	
-	//msg = msg & 0x1F;
-	//get_status(&CHIP_RDYn, &state);
-	if (trans_msg == 0x6C)
-	{
-		LED_toggle(LED3);
-		delay_ms(100);
-		LED_toggle(LED3);
-		delay_ms(100);
-	}
-	if(state == 0x001)
-	{
-		LED_toggle(LED6);
-		delay_ms(100);
-		LED_toggle(LED6);
-		delay_ms(100);
-	}
+	get_status(&CHIP_RDYn, &state);
+	//if (state == 0b000)
+	//{
+		//cmd_str(SRX);
+		//delay_ms(250);
+	//}
+	//cmd_str(SRX);
+	//delay_ms(250);
+  //reg_write2F(0x16, 0x40);          //FS_CAL1: 0x40         Frequency Synthesizer Calibration Reg. 1
+  //trans_msg = reg_read2F(0x16);
+  //
+  //if (trans_msg == 0x40)
+  //{
+	  //LED_toggle(LED3);
+	  //delay_ms(100);
+	  //LED_toggle(LED3);
+	  //delay_ms(100);
+  //}
 
 		
 		
@@ -245,9 +219,10 @@ int main(void)
 			
 			// Here we would send our message to the OBC.
 			
+			cmd_str(SNOP);
 			trans_msg = dir_FIFO_read(0x80);
 			
-			if(trans_msg == 0xA)
+			if(trans_msg == 0x0A)
 			{
 				LED_toggle(LED6);
 				delay_ms(100);
@@ -345,7 +320,7 @@ void io_init(void) {
 	
 	// Init PORTD[7:0]
 	DDRD = 0x09;		// PD3 is the SS for SPI communications.
-	PORTD = 0x01;		// PD3 should only go high during an SPI message.
+	PORTD = 0x09;		// PD3 should only go low during an SPI message.
 	
 	// Init PORTE[2:0]
 	DDRE = 0x00;
