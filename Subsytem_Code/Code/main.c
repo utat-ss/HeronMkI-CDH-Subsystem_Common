@@ -9,7 +9,8 @@
 	*	This is the main program which shall be run on the ATMEGA32M1s to be used on subsystem
 	*	microcontrollers.
 	*
-	*	FILE REFERENCES:	io.h, interrupt, LED.h, Timer.h, can_lib.h, , adc_lib.h, can_api.h
+	*	FILE REFERENCES:	io.h, interrupt, LED.h, Timer.h, can_lib.h, adc_lib.h, can_api.h,
+	*						spi_lib.h, trans_lib.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -46,6 +47,11 @@
 	*	04/30/2015		The SPI library that I wrote is now operational and is being used to communicate
 	*					with the OBC (ATSAM3X8E) as its slave.
 	*
+	*	05/21/2015		I am adding a section which corresponds to checking whether the COMS transceiver
+	*					has experience an RX buffer overflow and consequently reading an ASCII character
+	*					and sending it to the OBC via CAN.
+	*
+	*
 */
 
 #include <avr/io.h>
@@ -67,97 +73,23 @@ volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
+	uint8_t	i = 0;
+
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
-
-	uint8_t	i = 0;
-	uint8_t spi_char = 0;
-	uint8_t spi_s_message = 0xAA;	// Message to be sent to the slave via SPI.
-	
-	/* Transceiver testing vars */
-	uint8_t state, CHIP_RDYn;
-	uint8_t trans_msg = 0;
-	
-	// Flash LEDs to indicate program startup
-	//LED_toggle(LED3);
-	//delay_ms(500);
-	//LED_toggle(LED3);
-	//delay_ms(250);
-	//LED_toggle(LED6);
-	
-	//LED_toggle(LED6);
-	//LED_set(LED6);
-	//LED_set(LED7);
-	
-	for (i = 0; i < 8; i ++)
-	{
-		receive_arr[i] = 0;			// Reset the message array to zero after each message.
-	}
-			
-	send_now = 0;
-	send_hk = 0;
-	send_data = 0;
-	
-	uint8_t msg1, msg2;
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
     {
 		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 */
-		//can_check_general();
+		can_check_general();
 		
 		/* CHECK FOR HOUSEKEEPING REQUEST */
-		//can_check_housekeep();
-		
-		/*		SPI TRANSFER		*/
-
-		//spi_char = spi_transfer(spi_s_message);		// Initiate an SPI transfer with a slave, receive a char into spi_char.
-						//
-		//if(spi_char == 0xBB)					// Right now, I have the OCB sending back 0xBB as a proof of concept.
-		//{				
-			//LED_toggle(LED6);					// Toggle LED6 when the correct character was received.
-			//delay_ms(125);
-			//LED_toggle(LED6);
-			//delay_ms(125);
-		//}
+		can_check_housekeep();
 
 		/*		TRANSCEIVER COMMUNICATION	*/
-
-	get_status(&CHIP_RDYn, &state);
-
-		if(state == 0b110 || state == 0b111)
-		{	
-			cmd_str(SIDLE);
-
-			LED_toggle(LED3);
-			delay_ms(100);
-			LED_toggle(LED3);
-			delay_ms(100);
-			
-			// Here we would send our message to the OBC.
-			
-			cmd_str(SNOP);
-			trans_msg = dir_FIFO_read(0x80);
-			
-			if(trans_msg == 0x0A)
-			{
-				LED_toggle(LED6);
-				delay_ms(100);
-				LED_toggle(LED6);
-				delay_ms(100);
-			}
-			
-			cmd_str(SFRX);
-			
-			//reg_write2F(0xD2, 0x00);
-			//reg_write2F(0xD4, 0xFF);
-					
-			//cmd_str(SFTX);
-			
-			cmd_str(SRX);
-		}
-
+		trans_check();
 
 		/*	REPLY TO MESSAGES FROM MOB4 */
 		
@@ -189,15 +121,30 @@ int main(void)
 			}
 			
 			adc_read(&send_arr[0]);
-			send_arr[3] = 0x55;
+			send_arr[3] = 0x55;			// Temperature indicator.
 			
 			can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
+			send_data = 0;
+		}
+		
+		if (send_coms == 1)		// Send a reply to the message that was received!
+		{
+			for (i = 0; i < 8; i ++)
+			{
+				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
+			}
+			
+			send_arr[0] = trans_msg;	// ASCII character which was received.
+			send_arr[3] = 0x66;			// Coms indicator.
+			
+			can_send_message(&(send_arr[0]), CAN1_MB5);		//CAN1_MB0 is the data reception MB.
 			send_data = 0;
 		}
 	}
 }
 
-void sys_init(void) {
+void sys_init(void) 
+{
 	// Make sure sys clock is at least 8MHz
 	CLKPR = 0x80;  
 	CLKPR = 0x00;
@@ -214,10 +161,12 @@ void sys_init(void) {
 	sei();
 	
 	transceiver_initialize();
+	
+	LED_toggle(LED7);
 }
 
-void io_init(void) {
-	
+void io_init(void) 
+{	
 	// Init PORTB[7:0] // LED port
 	DDRB = 0xFE;
 	
@@ -227,7 +176,7 @@ void io_init(void) {
 	
 	// Init PORTD[7:0]
 	DDRD = 0x09;		// PD3 is the SS for SPI communications.
-	PORTD = 0x09;		// PD3 should only go low during an SPI message.
+	PORTD = 0x01;		// PD3 should only go low during an SPI message.
 	
 	// Init PORTE[2:0]
 	DDRE = 0x00;

@@ -197,6 +197,7 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 void can_init_mobs(void)
 {
 	/* INITIALIZE MOB0 */
+	uint8_t i;
 
 	message.pt_data = &data0[0]; // point message object to first element of data buffer
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
@@ -217,4 +218,13 @@ void can_init_mobs(void)
 	mob_number = 5;
 	
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOB to configure
+	
+	for (i = 0; i < 8; i ++)
+	{
+		receive_arr[i] = 0;			// Reset the message array to zero after each message.
+	}
+	
+	send_now = 0;
+	send_hk = 0;
+	send_data = 0;
 }

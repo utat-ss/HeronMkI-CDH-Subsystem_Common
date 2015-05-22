@@ -30,6 +30,10 @@
 #include "spi_lib.h"
 #include "LED.h"
 #include "can_api.h"
+#include "Timer.h"
+
+/* Global variables to be used for CAN communication */
+uint8_t send_coms, trans_msg;
 
 /*********** DEFINITIONS ******************/
 

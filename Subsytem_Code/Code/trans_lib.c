@@ -146,8 +146,6 @@
 */
 
 #include "trans_lib.h"
-#include "Timer.h"
-#include "spi_lib.h"
 
 void transceiver_initialize(void)
 {
@@ -246,6 +244,8 @@ void transceiver_initialize(void)
 	
 	//reg_write2F(0xD2, 0x00);
 	//reg_write2F(0xD4, 0xFF);
+	
+	send_coms = 0;
 
 	cmd_str(SRX);                    // Put in RX mode
 	
@@ -508,3 +508,45 @@ void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data)
 	return;
 }
 
+void trans_check(void)
+{
+	uint8_t msg = 0, CHIP_RDYn, state;
+	
+	get_status(&CHIP_RDYn, &state);
+
+	if(state == 0b110 || state == 0b111)
+	{
+		cmd_str(SIDLE);
+
+		//LED_toggle(LED3);
+		//delay_ms(100);
+		//LED_toggle(LED3);
+		//delay_ms(100);
+		
+		// Here we would send our message to the OBC.
+		
+		cmd_str(SNOP);
+		msg = dir_FIFO_read(0x80);
+		
+		//if(msg == 0x0A)
+		//{
+			//LED_toggle(LED6);
+			//delay_ms(100);
+			//LED_toggle(LED6);
+			//delay_ms(100);
+		//}
+		
+		cmd_str(SFRX);
+		
+		trans_msg = msg;	// Global variable used in main.c
+		send_coms = 1;		// Indicates that in main() we will send trans_msg to the OBC via CAN.
+		
+		//reg_write2F(0xD2, 0x00);
+		//reg_write2F(0xD4, 0xFF);
+		
+		//cmd_str(SFTX);
+		
+		cmd_str(SRX);
+	}
+	return;
+}
