@@ -84,19 +84,13 @@
 void transceiver_initialize(void);
 uint8_t reg_read(uint8_t addr);
 void reg_write(uint8_t addr, uint8_t data);
-//void reg_write_h(uint8_t addr, uint8_t data);
 uint8_t reg_read2F(uint8_t addr);
 void reg_write2F(uint8_t addr, uint8_t data);
-//void reg_write2F_h(uint8_t addr, uint8_t data);
 void get_status(uint8_t *CHIP_RDYn, uint8_t *state);
 uint8_t cmd_str(uint8_t addr);
 uint8_t dir_FIFO_read(uint8_t addr);
 void dir_FIFO_write(uint8_t addr, uint8_t data);
 void set_CSn(uint8_t state);
-void monitor_LEDs(void);
 void reg_write_bit(uint8_t reg, uint8_t n, uint8_t data);
-//uint8_t reg_read_bit(uint8_t reg, uint8_t n);
 void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data);
-//uint8_t reg_read_bit2F(uint8_t reg, uint8_t n);
-void trans_reset(void);
 

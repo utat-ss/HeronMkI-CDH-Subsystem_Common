@@ -49,6 +49,25 @@
 	*
 	*					I got rid of the 'receive' function because there is no need for it. 
 	*
+	*	5/04/2015		SPI is now on both the OBC and the SSM and they are communicating well.
+	*
+	*	5/06/2015		Today I started porting over Louis' code which he uses to allow an Arduino Pro Mini
+	*					to communicate with a TI CC1120 transceiver. 
+	*
+	*					After finishing the initial porting of the code, it didn't work (as expected).
+	*
+	*					In order to rectify this, I tried simply adding a delay after !SS is set low, didn't work.
+	*
+	*					I also tried several different combinations of CPOL and CPHA which alter when the bits are
+	*					sampled and whether SCK is low/high when idle. Still didn't work, in fact I can't even
+	*					read or write to regisers on the transceiver.
+	*
+	*					I have commented out my first spi_initialize function which was used for communication with
+	*					the OBC. The current one is to be used for communication with the CC1120. In the future, these
+	*					will be two different initialization functions and I will label them.
+	*
+	*		
+	*
 */
 
 #include "spi_lib.h"
@@ -94,7 +113,7 @@ void spi_initialize_master(void)
 	
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
-	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 0 (SCK high when idle), CPHA = 0
+	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
 	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
 	
