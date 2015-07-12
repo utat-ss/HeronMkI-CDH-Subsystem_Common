@@ -526,7 +526,12 @@ void trans_check(void)
 		// Here we would send our message to the OBC.
 		
 		cmd_str(SNOP);
-		msg = dir_FIFO_read(0x80);
+		trans_msg[0] = dir_FIFO_read(0x80);
+		trans_msg[1] = dir_FIFO_read(0x81);
+		trans_msg[2] = dir_FIFO_read(0x82);
+		trans_msg[3] = dir_FIFO_read(0x83);
+		trans_msg[4] = dir_FIFO_read(0x84);
+		trans_msg[5] = dir_FIFO_read(0x85);
 		
 		//if(msg == 0x0A)
 		//{
@@ -535,11 +540,9 @@ void trans_check(void)
 			//LED_toggle(LED6);
 			//delay_ms(100);
 		//}
+		send_coms = 1;		// Indicates that in main() we will send trans_msg to the OBC via CAN.
 		
 		cmd_str(SFRX);
-		
-		trans_msg = msg;	// Global variable used in main.c
-		send_coms = 1;		// Indicates that in main() we will send trans_msg to the OBC via CAN.
 		
 		//reg_write2F(0xD2, 0x00);
 		//reg_write2F(0xD4, 0xFF);

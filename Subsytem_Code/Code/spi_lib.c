@@ -27,6 +27,9 @@
 	*					Pin 2 on the 32M1 corresponds to the SS, and DP10 on the ATSAM3X8E corresponds 
 	*					to the Slave-Select for that microcontroller (hence you should connect them).
 	*
+	*					With SPR0, SPR1 = 11, SPI clock frequency will be set to internal clock/128
+	*					which is equal to 62.5 KHz. 
+	*
 	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
 	*	None so far.
 	*
@@ -238,7 +241,27 @@ uint8_t spi_transfer2(uint8_t message)
 	return receive_char;					// Transmission was successful, return the character that was received.
 }
 
+void spi_retrieve_temp(uint8_t* high, uint8_t* low)
+{
+	uint8_t* reg_ptr;
+	uint8_t timeout = SPI_TIMEOUT;
+	uint8_t receive_char;
+	uint8_t i, temp, temp2;
+	
+	reg_ptr = SPDR_BASE;
+	
+	// Commence the SPI message.
 
+	SS1_set_low();
+	*reg_ptr = 0;	// We don't want to pass a message during the first SCK cycles.
+	delay_ms(128);
+	*high = *reg_ptr;
+	delay_ms(128);
+	*low = *reg_ptr;	
+	SS1_set_high();
+	
+	return;
+}
 /************************************************************************/
 /*		SS_set_high                                                     */
 /*																		*/
@@ -254,6 +277,12 @@ void SS_set_high(void)
 	delay_us(1);
 }
 
+void SS1_set_high(void)
+{
+	PORTC |= (1 << 4);
+	//delay_us(1);
+}
+
 /************************************************************************/
 /*		SS_set_low	                                                    */
 /*																		*/
@@ -267,5 +296,11 @@ void SS_set_low(void)
 {
 	//PORTD &= (0xF7);
 	delay_us(1);
+}
+
+void SS1_set_low(void)
+{
+	PORTC &= (0xEF);
+	//delay_us(1);
 }
 

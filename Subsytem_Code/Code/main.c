@@ -51,6 +51,10 @@
 	*					has experience an RX buffer overflow and consequently reading an ASCII character
 	*					and sending it to the OBC via CAN.
 	*
+	*	07/10/2015		I am working on getting the new SPI temperature sensor working with the 32M1. This
+	*					SPI device has its own slave select == SS2 == PC5 == Pin 18 on the new PCB dev boards.
+	*					Hence, instead of reading an analog temperature we will now be switching to digital.
+	*
 	*
 */
 
@@ -74,14 +78,17 @@ volatile uint8_t CTC_flag;	// Variable used in timer.c
 int main(void)
 {		
 	uint8_t	i = 0;
+	
+	uint8_t msg_low = 0, msg_high = 0;
+	
+	uint8_t high = 0, low = 0;
 
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
-    {
-		
+    {		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 */
 		can_check_general();
 		
@@ -89,8 +96,9 @@ int main(void)
 		can_check_housekeep();
 
 		/*		TRANSCEIVER COMMUNICATION	*/
-		trans_check();
-
+		//trans_check();
+		
+		
 		/*	REPLY TO MESSAGES FROM MOB4 */
 		
 		if (send_now == 1)		// Send a reply to the message that was received!
@@ -120,11 +128,20 @@ int main(void)
 				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
 			}
 			
-			adc_read(&send_arr[0]);
-			send_arr[3] = 0x55;			// Temperature indicator.
+			//adc_read(&send_arr[0]);	// This line was used to acquire temp from an analog sensor.
+
+			spi_retrieve_temp(&high, &low);
+			
+			send_arr[1] = high;			// SPI temperature sensor readings.
+			send_arr[0] = low;
+			
+			send_arr[4] = 0x55;			// Temperature indicator.
 			
 			can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
 			send_data = 0;
+			
+			low = 0;
+			high = 0;
 		}
 		
 		if (send_coms == 1)		// Send a reply to the message that was received!
@@ -134,11 +151,15 @@ int main(void)
 				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
 			}
 			
-			send_arr[0] = trans_msg;	// ASCII character which was received.
-			send_arr[3] = 0x66;			// Coms indicator.
+			send_arr[0] = trans_msg[0];	// ASCII character which was received.
+			send_arr[1] = trans_msg[1];
+			send_arr[2] = trans_msg[2];
+			send_arr[3] = trans_msg[3];
+			send_arr[4] = trans_msg[4];
+			send_arr[5] = trans_msg[5];
 			
 			can_send_message(&(send_arr[0]), CAN1_MB5);		//CAN1_MB0 is the data reception MB.
-			send_data = 0;
+			send_coms = 0;
 		}
 	}
 }
@@ -162,6 +183,8 @@ void sys_init(void)
 	
 	transceiver_initialize();
 	
+	SS1_set_high();		// SPI Temp Sensor.
+	
 	LED_toggle(LED7);
 }
 
@@ -171,7 +194,7 @@ void io_init(void)
 	DDRB = 0xFE;
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
-	DDRC = 0x01;
+	DDRC = 0x11;		// PC4 == SS1 for SPI_TEMP
 	PORTC = 0x00;
 	
 	// Init PORTD[7:0]

@@ -33,7 +33,8 @@
 #include "Timer.h"
 
 /* Global variables to be used for CAN communication */
-uint8_t send_coms, trans_msg;
+uint8_t send_coms; 
+uint8_t trans_msg [6];
 
 /*********** DEFINITIONS ******************/
 
