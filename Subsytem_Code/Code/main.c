@@ -55,6 +55,9 @@
 	*					SPI device has its own slave select == SS2 == PC5 == Pin 18 on the new PCB dev boards.
 	*					Hence, instead of reading an analog temperature we will now be switching to digital.
 	*
+	*	07/12/2015		The new SPI sensor is now working and SPI temperature data is now being sent to the OBC
+	*					as opposed to analog data. I am also working on getting the transceiver and SPI sensor
+	*					to work at the same time on SPI.
 	*
 */
 
@@ -96,7 +99,7 @@ int main(void)
 		can_check_housekeep();
 
 		/*		TRANSCEIVER COMMUNICATION	*/
-		//trans_check();
+		trans_check();
 		
 		
 		/*	REPLY TO MESSAGES FROM MOB4 */
@@ -152,11 +155,6 @@ int main(void)
 			}
 			
 			send_arr[0] = trans_msg[0];	// ASCII character which was received.
-			send_arr[1] = trans_msg[1];
-			send_arr[2] = trans_msg[2];
-			send_arr[3] = trans_msg[3];
-			send_arr[4] = trans_msg[4];
-			send_arr[5] = trans_msg[5];
 			
 			can_send_message(&(send_arr[0]), CAN1_MB5);		//CAN1_MB0 is the data reception MB.
 			send_coms = 0;
