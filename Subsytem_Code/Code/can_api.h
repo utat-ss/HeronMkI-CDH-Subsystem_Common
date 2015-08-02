@@ -48,5 +48,8 @@ void can_check_general(void);
 void can_check_housekeep(void);
 void can_send_message(uint8_t* data_array, uint8_t id);
 void can_init_mobs(void);
+void decode_command(uint8_t command);
+void set_up_msg(uint8_t mailbox);
+void clean_up_msg(uint8_t mailbox);
 /*****************************************************/
 

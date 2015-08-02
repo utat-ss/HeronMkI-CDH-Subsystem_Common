@@ -82,8 +82,6 @@ int main(void)
 {		
 	uint8_t	i = 0;
 	
-	uint8_t msg_low = 0, msg_high = 0;
-	
 	uint8_t high = 0, low = 0;
 
 	// Initialize I/O, Timer, ADC, CAN, and SPI
@@ -96,7 +94,7 @@ int main(void)
 		can_check_general();
 		
 		/* CHECK FOR HOUSEKEEPING REQUEST */
-		can_check_housekeep();
+		//can_check_housekeep();
 
 		/*		TRANSCEIVER COMMUNICATION	*/
 		trans_check();

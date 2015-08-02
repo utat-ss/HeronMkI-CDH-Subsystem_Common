@@ -1,6 +1,5 @@
 /*
 	Author: Keenan Burnett
-
 	***********************************************************************
 	*	FILE NAME:		can_api.c
 	*
@@ -50,7 +49,7 @@ void can_check_general(void)
 	
 	message.pt_data = &data0[0]; // point message object to first element of data buffer
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-	message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+	message.id.std = SUB0_MB0;  // populate ID field with ID Tag
 	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
 	message.dlc = 8;			 // Max length of a CAN message.
 	mob_number = 0;
@@ -92,7 +91,7 @@ void can_check_general(void)
 		}
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+		message.id.std = SUB0_MB0;  // populate ID field with ID Tag
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
 		message.dlc = 8;			 // Max length of a CAN message.
 		mob_number = 0;
@@ -201,7 +200,7 @@ void can_init_mobs(void)
 
 	message.pt_data = &data0[0]; // point message object to first element of data buffer
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-	message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+	message.id.std = SUB0_MB0;  // populate ID field with ID Tag
 	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
 	message.dlc = 8;			 // Max length of a CAN message.
 	mob_number = 0;
