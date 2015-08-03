@@ -54,46 +54,38 @@
 #define NODE0_ID				10
 #define NODE1_ID				9
 
-/* IDs for receiving OBC mailboxes */
-#define CAN1_MB0				0x00
-#define CAN1_MB1				0x01
-#define CAN1_MB2				0x02
-#define CAN1_MB3				0x03
-#define CAN1_MB4				0x04
-#define CAN1_MB5				0x05
-#define CAN1_MB6				0x06
-#define CAN1_MB7				0x07
+#define CAN1_MB0				10
+#define CAN1_MB1				11
+#define CAN1_MB2				12
+#define CAN1_MB3				13
+#define CAN1_MB4				14
+#define CAN1_MB5				15
+#define CAN1_MB6				16
+#define CAN1_MB7				17
 
 /* IDs for COMS/SUB0 mailboxes */
-#define SUB0_MB0				0x10
-#define SUB0_MB1				0x11
-#define SUB0_MB2				0x12
-#define SUB0_MB3				0x13
-#define SUB0_MB4				0x14
-#define SUB0_MB5				0x15
-
-/* IDs for EPS/SUB1 mailboxes */
-#define SUB1_MB0				0x16
-#define SUB1_MB1				0x17
-#define SUB1_MB2				0x18
-#define SUB1_MB3				0x19
-#define SUB1_MB4				0x1A
-#define SUB1_MB5				0x1B
-
-/* IDs for PAYLOAD/SUB2 mailboxes */
-#define SUB2_MB0				0x1C
-#define SUB2_MB1				0x1D
-#define SUB2_MB2				0x1E
-#define SUB2_MB3				0x1F
-#define SUB2_MB4				0x20
-#define SUB2_MB5				0x21
-
-#define SUB0_MB0				20
+#define SUB0_ID0				20
 #define SUB0_ID1				21
 #define SUB0_ID2				22
 #define SUB0_ID3				23
 #define SUB0_ID4				24
 #define SUB0_ID5				25
+
+/* IDs for EPS/SUB1 mailboxes */
+#define SUB1_ID0				26
+#define SUB1_ID1				27
+#define SUB1_ID2				28
+#define SUB1_ID3				29
+#define SUB1_ID4				30
+#define SUB1_ID5				31
+
+/* IDs for PAYLOAD/SUB2 mailboxes */
+#define SUB2_ID0				32
+#define SUB2_ID1				33
+#define SUB2_ID2				34
+#define SUB2_ID3				35
+#define SUB2_ID4				36
+#define SUB2_ID5				37
 
 /* MessageType_ID  */
 #define MT_DATA					0x00
@@ -110,6 +102,7 @@
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01
 #define REQ_DATA				0x02
+#define REQ_HK					0x03
 
 #define SMALLTYPE_DEFAULT		0x00
 

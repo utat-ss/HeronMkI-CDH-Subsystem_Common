@@ -27,4 +27,13 @@
 */
 
 #include "can_api.h"
+#include "trans_lib.h"
+#include <stdint.h>
 
+/* Function Prototypes								 */	
+void run_commands(void);
+void send_response(void);
+void send_housekeeping(void);
+void send_sensor_data(void);
+void send_coms_packet(void);
+/*****************************************************/

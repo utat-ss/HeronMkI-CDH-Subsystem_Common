@@ -41,6 +41,7 @@ C_SRCS +=  \
 ../can_api.c \
 ../can_drv.c \
 ../can_lib.c \
+../commands.c \
 ../LED.c \
 ../main.c \
 ../spi_lib.c \
@@ -59,6 +60,7 @@ adc_lib.o \
 can_api.o \
 can_drv.o \
 can_lib.o \
+commands.o \
 LED.o \
 main.o \
 spi_lib.o \
@@ -70,6 +72,7 @@ adc_lib.o \
 can_api.o \
 can_drv.o \
 can_lib.o \
+commands.o \
 LED.o \
 main.o \
 spi_lib.o \
@@ -81,6 +84,7 @@ adc_lib.d \
 can_api.d \
 can_drv.d \
 can_lib.d \
+commands.d \
 LED.d \
 main.d \
 spi_lib.d \
@@ -92,6 +96,7 @@ adc_lib.d \
 can_api.d \
 can_drv.d \
 can_lib.d \
+commands.d \
 LED.d \
 main.d \
 spi_lib.d \
@@ -112,6 +117,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 
