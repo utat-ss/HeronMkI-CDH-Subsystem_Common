@@ -51,6 +51,8 @@
 //_____ D E F I N I T I O N S __________________________________________________
 
 /*				MY CAN DEFINES								*/
+#define SELF_ID					0 // Current SSM is COMS.
+
 #define NODE0_ID				10
 #define NODE1_ID				9
 
@@ -103,6 +105,11 @@
 #define REQ_RESPONSE			0x01
 #define REQ_DATA				0x02
 #define REQ_HK					0x03
+#define RESPONSE 				0x04
+
+/* DATA SMALL-TYPE	   */
+#define SPI_TEMP1				0x01
+#define COMS_PACKET				0x02
 
 #define SMALLTYPE_DEFAULT		0x00
 

@@ -82,6 +82,7 @@ void can_check_general(void)
 						{
 							case MT_COM :
 								decode_command(receive_arr[5]); // SMALL TYPE
+								break;
 							case MT_HK :
 								break;
 							case MT_DATA :

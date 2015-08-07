@@ -47,24 +47,20 @@ void run_commands(void)
 
 void send_response(void)
 {
-	uint8_t i;
-	for (i = 0; i < 8; i ++)
-	{
-		send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
-	}
-	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	send_hk = 0;
+	send_arr[7] = SELF_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = RESPONSE;
+
+	can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
+	send_now = 0;
 	return;
 }
 
 void send_housekeeping(void)
 {	
-	uint8_t i;
-		
-	for (i = 0; i < 8; i ++)
-	{
-		send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
-	}
+	send_arr[7] = SELF_ID;
+	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
+
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	send_hk = 0;
 	return;
@@ -72,17 +68,13 @@ void send_housekeeping(void)
 
 void send_sensor_data(void)
 {
-	uint8_t i, high, low;
-	
-	for (i = 0; i < 8; i ++)
-	{
-		send_arr[i] = 0x00;		// Message to be sent back to the OBC.
-	}
-			
+	uint8_t high, low;			
 	//adc_read(&send_arr[0]);	// This line was used to acquire temp from an analog sensor.
-
 	spi_retrieve_temp(&high, &low);
-			
+
+	send_arr[7] = SELF_ID;
+	send_arr[6] = MT_DATA;
+	send_arr[5] = SPI_TEMP1		
 	send_arr[1] = high;			// SPI temperature sensor readings.
 	send_arr[0] = low;
 			
@@ -96,16 +88,12 @@ void send_sensor_data(void)
 
 void send_coms_packet(void)
 {			
-	uint8_t i;
-	
-	for (i = 0; i < 8; i ++)
-	{
-		send_arr[i] = 0x00;		// Message to be sent back to the OBC.
-	}
-	
+	send_arr[7] = SELF_ID;
+	send_arr[6] = MT_DATA;
+	send_arr[5] = COMS_PACKET;
 	send_arr[0] = trans_msg[0];	// ASCII character which was received.
 	
-	can_send_message(&(send_arr[0]), CAN1_MB5);		//CAN1_MB0 is the data reception MB.
+	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
 	send_coms = 0;
 	return;
 }

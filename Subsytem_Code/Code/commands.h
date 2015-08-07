@@ -27,6 +27,7 @@
 */
 
 #include "can_api.h"
+#include "can_lib.h"
 #include "trans_lib.h"
 #include <stdint.h>
 
