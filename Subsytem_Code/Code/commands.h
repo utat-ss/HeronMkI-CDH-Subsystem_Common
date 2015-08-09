@@ -22,9 +22,14 @@
 	*	None so far.
 	*
 	*	DEVELOPMENT HISTORY:
-	*	08/2/2015		Created.	
+	*	08/2/2015		Created.
+	*
+	*	08/08/2015		Added functions send_read_response() and send_write_response().
 	*
 */
+
+#ifndef COMMANDS_H
+#define COMMANDS_H
 
 #include "can_api.h"
 #include "can_lib.h"
@@ -37,4 +42,7 @@ void send_response(void);
 void send_housekeeping(void);
 void send_sensor_data(void);
 void send_coms_packet(void);
+void send_read_response(void);
+void send_write_response(void);
 /*****************************************************/
+#endif

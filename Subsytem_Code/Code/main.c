@@ -1,6 +1,5 @@
 /*
     Author: Keenan Burnett
-	(Originally taken from Digi-Key Design Support)
 
 	***********************************************************************
 	*	FILE NAME:		main.c

@@ -99,13 +99,23 @@
 #define COMS_ID					0x00
 #define EPS_ID					0x01
 #define PAYL_ID					0x02
-#define OBC_ID					0xFF
+#define OBC_ID					0x03
+#define HK_TASK_ID				0x04
+#define DATA_TASK_ID			0x05
+#define TC_TASK_ID				0x06
+#define COMS_TASK_ID			0x07
+#define EPS_TASK_ID				0x08
+#define PAYL_TASK_ID			0x09
 
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01
 #define REQ_DATA				0x02
 #define REQ_HK					0x03
 #define RESPONSE 				0x04
+#define REQ_READ				0x05
+#define ACK_READ				0x06
+#define REQ_WRITE				0x07
+#define ACK_WRITE				0x08
 
 /* DATA SMALL-TYPE	   */
 #define SPI_TEMP1				0x01

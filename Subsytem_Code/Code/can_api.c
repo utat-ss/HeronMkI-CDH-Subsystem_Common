@@ -42,6 +42,11 @@
 	*					MB3: Receives Time Checks
 	*					MB4,5: Used for sending messages.
 	*
+	*	08/07/2015		I have been working at formalizing the CAN responses which the SSM sends to the 
+	*					OBC so that it follows that same format that the OBC has been using to send messages 
+	*					to the SSM. I changed the contents of several send...() functions within commands.c 
+	*					in order to meet this requirement. I also added a few new definitions to can_lib.h
+	*
 */
 
 /************************************************************************/
@@ -75,32 +80,20 @@ void can_check_general(void)
 					receive_arr[i] = *(message.pt_data + i);
 				}
 				
-				switch(receive_arr[7])	// FROM WHO
-				{
-					case OBC_ID :
-						switch(receive_arr[6]) // BIG TYPE
-						{
-							case MT_COM :
-								decode_command(receive_arr[5]); // SMALL TYPE
-								break;
-							case MT_HK :
-								break;
-							case MT_DATA :
-								break;
-							case MT_TC :
-								break;
-							default:
-								break;
-						}
-					case EPS_ID :
-						break;
-					case COMS_ID :
-						break;
-					case PAYL_ID :
-						break;
-					default:
-						break;
-				}
+					switch(receive_arr[6]) // BIG TYPE
+					{
+						case MT_COM :
+							decode_command(&receive_arr[0]); // SMALL TYPE
+							break;
+						case MT_HK :
+							break;
+						case MT_DATA :
+							break;
+						case MT_TC :
+							break;
+						default:
+							break;
+					}
 				for (i = 0; i < 8; i ++)
 				{
 					receive_arr[i] = 0;			// Reset the message array to zero after each message.
@@ -138,30 +131,18 @@ void can_check_housekeep(void)
 				receive_arr[i] = *(message.pt_data + i);
 			}
 				
-			switch(receive_arr[7])	// FROM WHO
+			switch(receive_arr[6]) // BIG TYPE
 			{
-				case OBC_ID :
-				switch(receive_arr[6]) // BIG TYPE
-				{
-					case MT_COM :
-					decode_command(receive_arr[5]); // SMALL TYPE
-					case MT_HK :
-						break;
-					case MT_DATA :
-						break;
-					case MT_TC :
-						break;
-					default:
+				case MT_COM :
+					decode_command(&receive_arr[0]); // SMALL TYPE
+				case MT_HK :
 					break;
-				}
-				case EPS_ID :
+				case MT_DATA :
 					break;
-				case COMS_ID :
-					break;
-				case PAYL_ID :
+				case MT_TC :
 					break;
 				default:
-					break;
+				break;
 			}
 			for (i = 0; i < 8; i ++)
 			{
@@ -207,8 +188,10 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 	return;
 }
 
-void decode_command(uint8_t command)
-{
+void decode_command(uint8_t* command_array)
+{		
+	uint8_t i, command  = *(command_array + 5);
+
 	switch(command)
 	{
 		case REQ_RESPONSE :
@@ -231,6 +214,20 @@ void decode_command(uint8_t command)
 			LED_toggle(LED6);
 			delay_ms(100);
 			send_hk = 1;
+			return;
+		case REQ_READ:
+			read_response = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				read_arr[i] = *(command_array + i);
+			}
+			return;
+		case REQ_WRITE:
+			write_response = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				write_arr[i] = *(command_array + i);
+			}
 			return;
 		case SMALLTYPE_DEFAULT :
 			return;
@@ -402,11 +399,17 @@ void can_init_mobs(void)
 	for (i = 0; i < 8; i ++)
 	{
 		receive_arr[i] = 0;			// Reset the message array to zero after each message.
+		send_arr[i] = 0;
+		read_arr[i] = 0;
+		write_arr[i] = 0;
 	}
 	
+	/* Initialize Global Command Flags to zero */
 	send_now = 0;
 	send_hk = 0;
 	send_data = 0;
+	read_response = 0;
+	write_response = 0;
 	
 	return;
 }
