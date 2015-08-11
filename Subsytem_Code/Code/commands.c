@@ -111,17 +111,32 @@ void send_housekeeping(void)
 
 void send_sensor_data(void)
 {
-	uint8_t high, low;			
-	//adc_read(&send_arr[0]);	// This line was used to acquire temp from an analog sensor.
-	spi_retrieve_temp(&high, &low);
+	uint8_t high, low, sensor_name, req_by;			
+	sensor_name = data_req_arr[3];
+	req_by = data_req_arr[7] >> 4;
+	
+	if(sensor_name == SPI_TEMP1)
+	{
+		spi_retrieve_temp(&high, &low);
+		send_arr[1] = high;			// SPI temperature sensor readings.
+		send_arr[0] = low;
+	}
+	
+	if(sensor_name == BATT_TOP)
+	{
+		//adc_read(&send_arr[0]);
+		send_arr[0] = 0x55;
+	}
+	
+	if(sensor_name == BATT_BOTTOM)
+	{
+		//adc_read(&send_arr[0]);
+		send_arr[0] = 0x66;
+	}
 
-	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_DATA;
-	send_arr[5] = SPI_TEMP1;	
-	send_arr[1] = high;			// SPI temperature sensor readings.
-	send_arr[0] = low;
-			
-	send_arr[4] = 0x55;			// Temperature indicator.
+	send_arr[5] = sensor_name;				
 			
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
 	send_data = 0;

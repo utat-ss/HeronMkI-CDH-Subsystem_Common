@@ -47,6 +47,10 @@
 	*					to the SSM. I changed the contents of several send...() functions within commands.c 
 	*					in order to meet this requirement. I also added a few new definitions to can_lib.h
 	*
+	*	08/10/2015		I am making changes to can_init_mobs because I need the mailboxes to be initialized
+	*					to different values depending on the value of SELF_ID which determines whether
+	*					this SSM is EPS or COMS or PAYL.
+	*
 */
 
 /************************************************************************/
@@ -207,6 +211,10 @@ void decode_command(uint8_t* command_array)
 			LED_toggle(LED7);
 			delay_ms(100);
 			send_data = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				data_req_arr[i] = *(command_array + i);
+			}
 			return;
 		case REQ_HK :
 			LED_toggle(LED6);	//Toggle LED6 when housekeeping was requested.
@@ -246,31 +254,31 @@ void set_up_msg(uint8_t mailbox)
 	if(mailbox == 0)
 	{
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+		message.id.std = id_array[0];  // populate ID field with ID Tag
 		return;
 	}
 	if(mailbox == 1)
 	{
 		message.pt_data = &data1[0];
-		message.id.std = SUB0_ID1;
+		message.id.std = id_array[1];
 		return;
 	}
 	if(mailbox == 2)
 	{
 		message.pt_data = &data2[0];
-		message.id.std = SUB0_ID2;
+		message.id.std = id_array[2];
 		return;
 	}
 	if(mailbox == 3)
 	{
 		message.pt_data = &data3[0];
-		message.id.std = SUB0_ID3;
+		message.id.std = id_array[3];
 		return;
 	}
 	if(mailbox == 5)
 	{
 		message.pt_data = &data5[0];
-		message.id.std = SUB0_ID5;
+		message.id.std = id_array[5];
 		return;
 	}	
 	return;
@@ -286,7 +294,7 @@ void clean_up_msg(uint8_t mailbox)
 		message.dlc = 8;			 // Max length of a CAN message.
 		mob_number = mailbox;
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
-		message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+		message.id.std = id_array[0];  // populate ID field with ID Tag
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
 		return;
 	}
@@ -308,7 +316,7 @@ void clean_up_msg(uint8_t mailbox)
 		message.dlc = 8;			 // Max length of a CAN message.
 		mob_number = mailbox;
 		message.pt_data = &data2[0];
-		message.id.std = SUB0_ID2;
+		message.id.std = id_array[2];
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
 		return;
 	}
@@ -319,7 +327,7 @@ void clean_up_msg(uint8_t mailbox)
 		message.dlc = 8;			 // Max length of a CAN message.
 		mob_number = mailbox;
 		message.pt_data = &data3[0];
-		message.id.std = SUB0_ID3;
+		message.id.std = id_array[3];
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
 		return;
 	}
@@ -330,7 +338,7 @@ void clean_up_msg(uint8_t mailbox)
 		message.dlc = 8;			 // Max length of a CAN message.
 		mob_number = mailbox;
 		message.pt_data = &data5[0];
-		message.id.std = SUB0_ID5;
+		message.id.std = id_array[5];
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
 		return;
 		
@@ -348,11 +356,40 @@ void clean_up_msg(uint8_t mailbox)
 void can_init_mobs(void)
 {
 	uint8_t i;
-
+	if (SELF_ID == 0)
+	{
+		id_array[0] = SUB0_ID0;
+		id_array[1] = SUB0_ID1;
+		id_array[2] = SUB0_ID2;
+		id_array[3] = SUB0_ID3;
+		id_array[4] = SUB0_ID4;
+		id_array[5] = SUB0_ID5;
+	}
+	
+	if(SELF_ID == 1)
+	{
+		id_array[0] = SUB1_ID0;
+		id_array[1] = SUB1_ID1;
+		id_array[2] = SUB1_ID2;
+		id_array[3] = SUB1_ID3;
+		id_array[4] = SUB1_ID4;
+		id_array[5] = SUB1_ID5;
+	}
+	
+	if(SELF_ID == 2)
+	{
+		id_array[0] = SUB2_ID0;
+		id_array[1] = SUB2_ID1;
+		id_array[2] = SUB2_ID2;
+		id_array[3] = SUB2_ID3;
+		id_array[4] = SUB2_ID4;
+		id_array[5] = SUB2_ID5;
+	}
+	
 	/* INITIALIZE MOB0 */		 // Data reception mailbox.
 	message.pt_data = &data0[0]; // point message object to first element of data buffer
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-	message.id.std = SUB0_ID0;  // populate ID field with ID Tag
+	message.id.std = id_array[0];  // populate ID field with ID Tag
 	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
 	message.dlc = 8;			 // Max length of a CAN message.
 	mob_number = 0;
@@ -361,7 +398,7 @@ void can_init_mobs(void)
 	/* INITIALIZE MOB1 */		 // Command reception mailbox.
 	message.pt_data = &data1[0];
 	message.ctrl.ide = 0;
-	message.id.std = SUB0_ID1;
+	message.id.std = id_array[1];
 	message.cmd = CMD_RX_DATA;
 	message.dlc = 8;
 	mob_number = 1;
@@ -370,7 +407,7 @@ void can_init_mobs(void)
 	/* INITIALIZE MOB2 */		 // Housekeeping request mailbox.
 	message.pt_data = &data2[0];
 	message.ctrl.ide = 0;
-	message.id.std = SUB0_ID2;
+	message.id.std = id_array[2];
 	message.cmd = CMD_RX_DATA;
 	message.dlc = 8;
 	mob_number = 2;
@@ -379,7 +416,7 @@ void can_init_mobs(void)
 	/* INITIALIZE MOB3 */		 // Time-check mailbox.
 	message.pt_data = &data3[0];
 	message.ctrl.ide = 0;
-	message.id.std = SUB0_ID3;
+	message.id.std = id_array[3];
 	message.cmd = CMD_RX_DATA;
 	message.dlc = 8;
 	mob_number = 3;
@@ -389,7 +426,7 @@ void can_init_mobs(void)
 	
 	message.pt_data = &data5[0];	// point message object to first element of data buffer
 	message.ctrl.ide = 0;			// standard CAN frame type (2.0A)
-	message.id.std = SUB0_ID5;		// populate ID field with ID Tag
+	message.id.std = id_array[5];		// populate ID field with ID Tag
 	message.cmd = CMD_RX_DATA;		// assign this as a producer message object (Housekeeping MOB).
 	message.dlc = 8;				// Max length of a CAN message.
 	mob_number = 5;
