@@ -518,7 +518,10 @@ void trans_check(void)
 	{
 		cmd_str(SIDLE);
 
-		LED_blink(LED3);
+		if(SELF_ID != 1)
+		{
+			LED_toggle(LED3);
+		}
 		
 		// Here we would send our message to the OBC.
 		

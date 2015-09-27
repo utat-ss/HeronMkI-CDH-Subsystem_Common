@@ -199,11 +199,17 @@ void decode_command(uint8_t* command_array)
 	switch(command)
 	{
 		case REQ_RESPONSE :
-			LED_blink(LED3);
+			if(SELF_ID != 1)
+			{
+				LED_toggle(LED3);
+			}
 			send_now = 1;
 			return;
 		case REQ_DATA :
-			LED_blink(LED1);
+			if(SELF_ID != 1)
+			{
+				LED_toggle(LED1);
+			}
 			send_data = 1;
 			for (i = 0; i < 8; i ++)
 			{
@@ -211,7 +217,10 @@ void decode_command(uint8_t* command_array)
 			}
 			return;
 		case REQ_HK :
-			LED_blink(LED2);
+			if(SELF_ID != 1)
+			{
+				LED_toggle(LED2);
+			}
 			send_hk = 1;
 			return;
 		case REQ_READ:

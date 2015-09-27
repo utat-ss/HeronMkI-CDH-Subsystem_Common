@@ -131,7 +131,11 @@ void sys_init(void)
 	
 	SS1_set_high();		// SPI Temp Sensor.
 	
-	LED_toggle(LED1);
+	if(SELF_ID != 1)
+	{
+		LED_toggle(LED1);
+	}
+	
 }
 
 void io_init(void) 
