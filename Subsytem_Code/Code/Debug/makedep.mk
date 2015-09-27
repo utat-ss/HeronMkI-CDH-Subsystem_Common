@@ -10,6 +10,8 @@ can_drv.c
 
 can_lib.c
 
+commands.c
+
 LED.c
 
 main.c

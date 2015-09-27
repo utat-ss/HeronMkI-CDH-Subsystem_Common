@@ -29,12 +29,11 @@
 
 #include "spi_lib.h"
 #include "LED.h"
-#include "can_api.h"
 #include "Timer.h"
 
 /* Global variables to be used for CAN communication */
-uint8_t send_coms; 
-uint8_t trans_msg [6];
+uint8_t msg_received; 
+uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a fixed size.
 
 /*********** DEFINITIONS ******************/
 

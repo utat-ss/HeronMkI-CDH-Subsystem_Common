@@ -1,6 +1,5 @@
 /*
     Author: Keenan Burnett
-	(Originally taken from Digi-Key Design Support)
 
 	***********************************************************************
 	*	FILE NAME:		main.c
@@ -59,6 +58,15 @@
 	*					as opposed to analog data. I am also working on getting the transceiver and SPI sensor
 	*					to work at the same time on SPI.
 	*
+	*	08/02/2015	    I have added a couple files named commands.c and commands.h where we will store the 
+	*					various different operations that the SSM can act upon when requested by the OBC or
+	*					prompted by its own sensor readings. Hence, the series of 'if' statements that existed
+	*					within the main while loop has now been replaced by run_commands().
+	*
+	*	09/20/2015		At this point, we want this program to be used for PAY, COMS, as well as EPS with the 
+	*					the only difference being that SELF_ID is defined to different values. Hence if your
+	*					SSM requires functionality specific only to it, you must use an if statement including SELF_ID.
+	*
 */
 
 #include <avr/io.h>
@@ -70,6 +78,7 @@
 #include "can_api.h"
 #include "spi_lib.h"
 #include "trans_lib.h"
+#include "commands.h"
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
@@ -80,6 +89,7 @@ volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
+<<<<<<< HEAD
 	uint8_t	i = 0;
 	
 	uint8_t msg_low = 0, msg_high = 0;
@@ -88,79 +98,26 @@ int main(void)
 	
 	uint8_t msg = 0x66;
 
+=======
+>>>>>>> c68b6eef38f69d73c1ae39eb946e39efcd29f84b
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
     {		
-		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 */
+		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();
-		
-		/* CHECK FOR HOUSEKEEPING REQUEST */
-		can_check_housekeep();
-
+	
 		/*		TRANSCEIVER COMMUNICATION	*/
-		trans_check();
-		
-		
-		/*	REPLY TO MESSAGES FROM MOB4 */
-		
-		if (send_now == 1)		// Send a reply to the message that was received!
-		{		
-			for (i = 0; i < 8; i ++)
-			{
-				send_arr[i] = 0xAB;		// Message to be sent back to the OBC.
-			}
-			can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
-			send_now = 0;
-		}
-		
-		if (send_hk == 1)		// Send a reply to the message that was received!
+		if(SELF_ID == 0)
 		{
-			for (i = 0; i < 8; i ++)
-			{
-				send_arr[i] = 0xF0;		// Message to be sent back to the OBC.
-			}
-			can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-			send_hk = 0;
+			trans_check();		// Check for incoming packets.	
 		}
-		
-		if (send_data == 1)		// Send a reply to the message that was received!
-		{
-			for (i = 0; i < 8; i ++)
-			{
-				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
-			}
-			
-			//adc_read(&send_arr[0]);	// This line was used to acquire temp from an analog sensor.
 
-			spi_retrieve_temp(&high, &low);
-			
-			send_arr[1] = high;			// SPI temperature sensor readings.
-			send_arr[0] = low;
-			
-			send_arr[4] = 0x55;			// Temperature indicator.
-			
-			can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
-			send_data = 0;
-			
-			low = 0;
-			high = 0;
-		}
 		
-		if (send_coms == 1)		// Send a reply to the message that was received!
-		{
-			for (i = 0; i < 8; i ++)
-			{
-				send_arr[i] = 0x00;		// Message to be sent back to the OBC.
-			}
-			
-			send_arr[0] = trans_msg[0];	// ASCII character which was received.
-			
-			can_send_message(&(send_arr[0]), CAN1_MB5);		//CAN1_MB0 is the data reception MB.
-			send_coms = 0;
-		}
+		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
+		run_commands();
 	}
 }
 
@@ -185,7 +142,7 @@ void sys_init(void)
 	
 	SS1_set_high();		// SPI Temp Sensor.
 	
-	LED_toggle(LED7);
+	LED_toggle(LED1);
 }
 
 void io_init(void) 

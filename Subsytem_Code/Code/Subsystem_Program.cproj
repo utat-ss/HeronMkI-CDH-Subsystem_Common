@@ -72,6 +72,7 @@
       <ToolOptions>
         <InterfaceProperties>
           <IspClock>125000</IspClock>
+          <HvppClock>1206</HvppClock>
         </InterfaceProperties>
         <InterfaceName>ISP</InterfaceName>
       </ToolOptions>
@@ -158,6 +159,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="can_lib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="commands.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="commands.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="config.h">

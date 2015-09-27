@@ -51,6 +51,8 @@
 //_____ D E F I N I T I O N S __________________________________________________
 
 /*				MY CAN DEFINES								*/
+#define SELF_ID					1 // Current SSM is EPS.
+
 #define NODE0_ID				10
 #define NODE1_ID				9
 
@@ -63,12 +65,65 @@
 #define CAN1_MB6				16
 #define CAN1_MB7				17
 
+/* IDs for COMS/SUB0 mailboxes */
 #define SUB0_ID0				20
 #define SUB0_ID1				21
 #define SUB0_ID2				22
 #define SUB0_ID3				23
 #define SUB0_ID4				24
 #define SUB0_ID5				25
+
+/* IDs for EPS/SUB1 mailboxes */
+#define SUB1_ID0				26
+#define SUB1_ID1				27
+#define SUB1_ID2				28
+#define SUB1_ID3				29
+#define SUB1_ID4				30
+#define SUB1_ID5				31
+
+/* IDs for PAYLOAD/SUB2 mailboxes */
+#define SUB2_ID0				32
+#define SUB2_ID1				33
+#define SUB2_ID2				34
+#define SUB2_ID3				35
+#define SUB2_ID4				36
+#define SUB2_ID5				37
+
+/* MessageType_ID  */
+#define MT_DATA					0x00
+#define MT_HK					0x01
+#define MT_COM					0x02
+#define MT_TC					0x03
+
+/* SENDER_ID */
+#define COMS_ID					0x00
+#define EPS_ID					0x01
+#define PAYL_ID					0x02
+#define OBC_ID					0x03
+#define HK_TASK_ID				0x04
+#define DATA_TASK_ID			0x05
+#define TC_TASK_ID				0x06
+#define COMS_TASK_ID			0x07
+#define EPS_TASK_ID				0x08
+#define PAYL_TASK_ID			0x09
+
+/* COMMAND SMALL-TYPE: */
+#define REQ_RESPONSE			0x01
+#define REQ_DATA				0x02
+#define REQ_HK					0x03
+#define RESPONSE 				0x04
+#define REQ_READ				0x05
+#define ACK_READ				0x06
+#define REQ_WRITE				0x07
+#define ACK_WRITE				0x08
+
+/* DATA SMALL-TYPE	   */
+#define SPI_TEMP1				0x01
+#define COMS_PACKET				0x02
+#define BATT_TOP				0x03
+#define BATT_BOTTOM				0x04
+
+#define SMALLTYPE_DEFAULT		0x00
 
 /*********************************************************************/
 
