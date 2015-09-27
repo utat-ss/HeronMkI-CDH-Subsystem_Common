@@ -45,8 +45,7 @@ void LED_Reg_Write(uint8_t val);
 void LED_set(uint8_t LED);
 void LED_clr(uint8_t LED);
 void LED_toggle(uint8_t LED);
-
-
+void LED_blink(uint8_t LED);
 
 #endif /* LED_H_ */
 

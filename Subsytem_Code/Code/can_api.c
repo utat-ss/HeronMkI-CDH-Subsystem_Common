@@ -199,17 +199,11 @@ void decode_command(uint8_t* command_array)
 	switch(command)
 	{
 		case REQ_RESPONSE :
-			LED_toggle(LED3);	//Toggle LED3 when a response is requested.
-			delay_ms(100);
-			LED_toggle(LED3);
-			delay_ms(100);
+			LED_blink(LED3);
 			send_now = 1;
 			return;
 		case REQ_DATA :
-			LED_toggle(LED7);	//Toggle LED7 when data is requested.
-			delay_ms(100);
-			LED_toggle(LED7);
-			delay_ms(100);
+			LED_blink(LED1);
 			send_data = 1;
 			for (i = 0; i < 8; i ++)
 			{
@@ -217,10 +211,7 @@ void decode_command(uint8_t* command_array)
 			}
 			return;
 		case REQ_HK :
-			LED_toggle(LED6);	//Toggle LED6 when housekeeping was requested.
-			delay_ms(100);
-			LED_toggle(LED6);
-			delay_ms(100);
+			LED_blink(LED2);
 			send_hk = 1;
 			return;
 		case REQ_READ:

@@ -63,6 +63,10 @@
 	*					prompted by its own sensor readings. Hence, the series of 'if' statements that existed
 	*					within the main while loop has now been replaced by run_commands().
 	*
+	*	09/20/2015		At this point, we want this program to be used for PAY, COMS, as well as EPS with the 
+	*					the only difference being that SELF_ID is defined to different values. Hence if your
+	*					SSM requires functionality specific only to it, you must use an if statement including SELF_ID.
+	*
 */
 
 #include <avr/io.h>
@@ -95,7 +99,11 @@ int main(void)
 		can_check_general();
 	
 		/*		TRANSCEIVER COMMUNICATION	*/
-		trans_check();
+		if(SELF_ID == 0)
+		{
+			trans_check();		// Check for incoming packets.	
+		}
+
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
@@ -123,7 +131,7 @@ void sys_init(void)
 	
 	SS1_set_high();		// SPI Temp Sensor.
 	
-	LED_toggle(LED7);
+	LED_toggle(LED1);
 }
 
 void io_init(void) 

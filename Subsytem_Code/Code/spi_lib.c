@@ -175,10 +175,7 @@ uint8_t spi_transfer(uint8_t message)
 		{
 			//SS_set_high();
 			return 0x00;						// Something went wrong, so the function times out.
-			LED_toggle(LED6);
-			delay_ms(100);
-			LED_toggle(LED6);
-			delay_ms(100);
+			LED_blink(LED2);
 		}
 	}	
 	//SS_set_high();

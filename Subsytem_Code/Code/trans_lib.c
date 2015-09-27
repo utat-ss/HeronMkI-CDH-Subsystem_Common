@@ -245,7 +245,7 @@ void transceiver_initialize(void)
 	//reg_write2F(0xD2, 0x00);
 	//reg_write2F(0xD4, 0xFF);
 	
-	send_coms = 0;
+	msg_received = 0;
 
 	cmd_str(SRX);                    // Put in RX mode
 	
@@ -518,10 +518,7 @@ void trans_check(void)
 	{
 		cmd_str(SIDLE);
 
-		//LED_toggle(LED3);
-		//delay_ms(100);
-		//LED_toggle(LED3);
-		//delay_ms(100);
+		LED_blink(LED3);
 		
 		// Here we would send our message to the OBC.
 		
@@ -540,7 +537,7 @@ void trans_check(void)
 			//LED_toggle(LED6);
 			//delay_ms(100);
 		//}
-		send_coms = 1;		// Indicates that in main() we will send trans_msg to the OBC via CAN.
+		msg_received = 1;		// Indicates that in main() we will send trans_msg to the OBC via CAN.
 		
 		cmd_str(SFRX);
 		

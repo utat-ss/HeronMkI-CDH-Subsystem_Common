@@ -1,6 +1,5 @@
 /*
 	Author: Keenan Burnett
-	(Originally taken from Digi-Key Design Support)
 
 	***********************************************************************
 	*	FILE NAME:		LED.c
@@ -27,15 +26,20 @@
 	*
 	*	02/06/2015		Edited the header.
 	*
+	*	09/20/2015		All uses of LED7 --> LED1, all uses of LED6 --> LED2.
+	*
 */
 #include <avr/io.h>
 #include "LED.h"
 
-void LED_Reg_Write(uint8_t val) {
+void LED_Reg_Write(uint8_t val) 
+{
 	LEDPORT = ~val;
+	return;
 }
 
-void LED_set(uint8_t LED) {
+void LED_set(uint8_t LED) 
+{
 	
 	if(LED == 7)
 	{
@@ -47,9 +51,11 @@ void LED_set(uint8_t LED) {
 	}
 
 	LEDPORT &= ~(1 << LED);
+	return;
 }
 
-void LED_clr(uint8_t LED) {
+void LED_clr(uint8_t LED) 
+{
 	
 	if(LED == 7)
 	{
@@ -60,19 +66,32 @@ void LED_clr(uint8_t LED) {
 		PORTC |= 0x01;
 	}
 	LEDPORT |= (1 << LED);
+	return;
 }
 
-void LED_toggle(uint8_t LED) {
-	
-	if(LED == 7)
+void LED_toggle(uint8_t LED) 
+{
+	if(LED == 1)
 	{
 		PORTD ^= 0x01;
+	}
+	if(LED == 2)
+	{
+		LEDPORT ^= (1 << 6);
 	}
 	if(LED == 3)
 	{
 		PORTC ^= 0x01;
 	}
-	else
-		LEDPORT ^= (1 << LED);
+	return;
+}
+
+void LED_blink(uint8_t LED)
+{
+	LED_toggle(LED);
+	delay_ms(25);
+	LED_toggle(LED);
+	delay_ms(25);
+	return;
 }
 
