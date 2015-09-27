@@ -89,6 +89,17 @@ volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
+<<<<<<< HEAD
+	uint8_t	i = 0;
+	
+	uint8_t msg_low = 0, msg_high = 0;
+	
+	uint8_t high = 0, low = 0;
+	
+	uint8_t msg = 0x66;
+
+=======
+>>>>>>> c68b6eef38f69d73c1ae39eb946e39efcd29f84b
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
 	
