@@ -55,7 +55,7 @@ void run_commands(void)
 		send_housekeeping();
 	if (send_data == 1)
 		send_sensor_data();
-	if (send_coms == 1)
+	if (msg_received == 1)
 		send_coms_packet();
 	if (read_response == 1)
 		send_read_response();
@@ -160,7 +160,7 @@ void send_coms_packet(void)
 	send_arr[0] = trans_msg[0];	// ASCII character which was received.
 	
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
-	send_coms = 0;
+	msg_received = 0;
 	return;
 }
 /************************************************************************/

@@ -72,6 +72,7 @@
       <ToolOptions>
         <InterfaceProperties>
           <IspClock>125000</IspClock>
+          <HvppClock>1206</HvppClock>
         </InterfaceProperties>
         <InterfaceName>ISP</InterfaceName>
       </ToolOptions>

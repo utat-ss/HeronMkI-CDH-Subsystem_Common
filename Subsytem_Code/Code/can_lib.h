@@ -51,7 +51,7 @@
 //_____ D E F I N I T I O N S __________________________________________________
 
 /*				MY CAN DEFINES								*/
-#define SELF_ID					0 // Current SSM is COMS.
+#define SELF_ID					1 // Current SSM is EPS.
 
 #define NODE0_ID				10
 #define NODE1_ID				9
