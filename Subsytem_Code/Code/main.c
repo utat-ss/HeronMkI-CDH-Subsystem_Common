@@ -98,8 +98,6 @@ int main(void)
 	
 	uint8_t msg = 0x66;
 
-=======
->>>>>>> c68b6eef38f69d73c1ae39eb946e39efcd29f84b
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
 	
