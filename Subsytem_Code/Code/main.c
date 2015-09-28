@@ -89,7 +89,6 @@ volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
-<<<<<<< HEAD
 	uint8_t	i = 0;
 	
 	uint8_t msg_low = 0, msg_high = 0;

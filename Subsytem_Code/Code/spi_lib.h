@@ -34,6 +34,7 @@
 #include "config.h"
 #include "LED.h"
 #include "Timer.h"
+#include "can_lib.h"
 //---------------------------------------
 
 //-----------CONSTANT DEFINES------------
