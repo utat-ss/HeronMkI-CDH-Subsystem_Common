@@ -2,7 +2,7 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-
+SHELL := cmd.exe
 RM := rm -rf
 
 USER_OBJS :=
@@ -44,6 +44,7 @@ C_SRCS +=  \
 ../commands.c \
 ../LED.c \
 ../main.c \
+../mppt_timer.c \
 ../spi_lib.c \
 ../Timer.c \
 ../trans_lib.c
@@ -63,6 +64,7 @@ can_lib.o \
 commands.o \
 LED.o \
 main.o \
+mppt_timer.o \
 spi_lib.o \
 Timer.o \
 trans_lib.o
@@ -75,6 +77,7 @@ can_lib.o \
 commands.o \
 LED.o \
 main.o \
+mppt_timer.o \
 spi_lib.o \
 Timer.o \
 trans_lib.o
@@ -87,6 +90,7 @@ can_lib.d \
 commands.d \
 LED.d \
 main.d \
+mppt_timer.d \
 spi_lib.d \
 Timer.d \
 trans_lib.d
@@ -99,6 +103,7 @@ can_lib.d \
 commands.d \
 LED.d \
 main.d \
+mppt_timer.d \
 spi_lib.d \
 Timer.d \
 trans_lib.d
@@ -117,6 +122,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

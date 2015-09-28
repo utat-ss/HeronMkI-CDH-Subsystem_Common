@@ -61,4 +61,5 @@
 
 void adc_initialize(void);
 void adc_read(uint8_t* array_ptr);
+void adc_set_pin(uint8_t ADC_num);
 

@@ -43,7 +43,7 @@ void LED_set(uint8_t LED)
 	
 	if(LED == 1)
 	{
-		PORTD &= ~(0x01);
+		PORTD |= 0x01;
 	}
 	if(LED == 2)
 	{
@@ -61,7 +61,7 @@ void LED_clr(uint8_t LED)
 	
 	if(LED == 1)
 	{
-		PORTD |= 0x01;
+		PORTD &= ~(0x01);
 	}
 	if(LED == 2)
 	{

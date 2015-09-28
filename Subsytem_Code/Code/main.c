@@ -79,6 +79,7 @@
 #include "spi_lib.h"
 #include "trans_lib.h"
 #include "commands.h"
+#include "mppt_timer.h"
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
@@ -89,7 +90,6 @@ volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
-<<<<<<< HEAD
 	uint8_t	i = 0;
 	
 	uint8_t msg_low = 0, msg_high = 0;
@@ -97,6 +97,8 @@ int main(void)
 	uint8_t high = 0, low = 0;
 	
 	uint8_t msg = 0x66;
+	
+	uint8_t* adc_result;
 
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
@@ -106,13 +108,44 @@ int main(void)
     {		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();
-	
+		
 		/*		TRANSCEIVER COMMUNICATION	*/
 		if(SELF_ID == 0)
 		{
 			trans_check();		// Check for incoming packets.	
 		}
 
+		if(SELF_ID == 1)
+		{
+			LED_clr(LED1);
+			delay_ms(1000);
+			adc_set_pin(2);
+			adc_read(adc_result);
+			if(*adc_result > 0x10)
+			{
+				LED_set(LED1);
+			}
+			else
+			{
+				LED_clr(LED1);
+			}
+			set_duty_cycleA(0xBF);
+			set_duty_cycleB(0x1F);
+			delay_ms(1000);
+			adc_set_pin(3);
+			adc_read(adc_result);
+			if(*adc_result > 0x10)
+			{
+				LED_set(LED1);
+			}
+			else
+			{
+				LED_clr(LED1);
+			}
+			set_duty_cycleA(0x1F);
+			set_duty_cycleB(0xBF);
+			
+		}
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
@@ -126,25 +159,35 @@ void sys_init(void)
 	CLKPR = 0x00;
 	
 	io_init();	
-	
 	timer_init();
+
 	adc_initialize();
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
+
+	// Enable the timer for mppt
+	if(SELF_ID == 1)
+	{
+		LED_set(LED1);
+		mppt_timer_init();
+	}
 	
 	// Enable global interrupts for Timer execution
 	sei();
 	
-	transceiver_initialize();
-	
+	if (SELF_ID == 0)
+	{
+		transceiver_initialize();
+	}
+
 	SS1_set_high();		// SPI Temp Sensor.
 	
 	if(SELF_ID != 1)
 	{
 		LED_toggle(LED1);
 	}
-	
+
 }
 
 void io_init(void) 

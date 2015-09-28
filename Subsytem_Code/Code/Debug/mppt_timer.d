@@ -1,4 +1,4 @@
-main.d main.o: .././main.c \
+mppt_timer.d mppt_timer.o: .././mppt_timer.c \
  c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -11,9 +11,7 @@ main.d main.o: .././main.c \
  c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\lock.h \
  c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
- .././LED.h .././Timer.h .././can_lib.h .././can_drv.h .././config.h \
- .././adc_lib.h .././can_api.h .././commands.h .././trans_lib.h \
- .././spi_lib.h .././mppt_timer.h
+ .././mppt_timer.h .././LED.h
 
 c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -39,24 +37,6 @@ c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-tool
 
 c:\program\ files\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\interrupt.h:
 
-.././LED.h:
-
-.././Timer.h:
-
-.././can_lib.h:
-
-.././can_drv.h:
-
-.././config.h:
-
-.././adc_lib.h:
-
-.././can_api.h:
-
-.././commands.h:
-
-.././trans_lib.h:
-
-.././spi_lib.h:
-
 .././mppt_timer.h:
+
+.././LED.h:
