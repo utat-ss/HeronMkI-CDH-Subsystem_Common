@@ -61,6 +61,13 @@ void run_commands(void)
 		send_read_response();
 	if (write_response == 1)
 		send_write_response();
+	if (set_sens_h == 1)
+		set_sensor_highf();
+	if (set_sens_l == 1)
+		set_sensor_lowf();
+	if (set_var == 1)
+		set_varf();
+	
 
 	return;	
 }
@@ -115,24 +122,55 @@ void send_sensor_data(void)
 	sensor_name = data_req_arr[3];
 	req_by = data_req_arr[7] >> 4;
 	
-	if(sensor_name == SPI_TEMP1)
+	if(sensor_name == EPS_TEMP)
 	{
 		spi_retrieve_temp(&high, &low);
 		send_arr[1] = high;			// SPI temperature sensor readings.
 		send_arr[0] = low;
 	}
 	
-	if(sensor_name == BATT_TOP)
-	{
-		//adc_read(&send_arr[0]);
-		send_arr[0] = 0x55;
-	}
-	
-	if(sensor_name == BATT_BOTTOM)
-	{
-		//adc_read(&send_arr[0]);
-		send_arr[0] = 0x66;
-	}
+	//if(sensor_name == PANELX_V)
+	//{
+	//}
+	//if(sensor_name == PANELX_I)
+	//{
+	//}
+	//if(sensor_name == PANELY_V)
+	//{
+	//}
+	//if(sensor_name == PANELY_I)
+	//{
+	//}
+	//if(sensor_name == BATTM_V)
+	//{
+	//}
+	//if(sensor_name == BATT_V)
+	//{
+	//}
+	//if(sensor_name == BATT_I)
+	//{
+	//}
+	//if(sensor_name == BATT_TEMP)
+	//{
+	//}
+	//if(sensor_name == COMS_V)
+	//{
+	//}
+	//if(sensor_name == COMS_I)
+	//{
+	//}
+	//if(sensor_name == PAY_V)
+	//{
+	//}
+	//if(sensor_name == PAY_I)
+	//{
+	//}
+	//if(sensor_name == OBC_V)
+	//{
+	//}
+	//if(sensor_name == OBC_I)
+	//{
+	//}
 
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_DATA;
@@ -231,4 +269,224 @@ void send_write_response(void)
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	write_response = 0;
 	return;	
+}
+
+
+void set_sensor_highf(void)
+{
+	uint8_t low, sensor_name, req_by;
+	sensor_name = sensh_arr[3];
+	req_by = sensh_arr[7] >> 4;
+	
+	if(sensor_name == EPS_TEMP)
+	{
+		epstemp_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		epstemp_high |= (low << 8);
+	}
+	
+	if(sensor_name == PANELX_V)
+	{
+		pxv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		pxv_high |= (low << 8);		
+	}
+	
+	if(sensor_name == PANELX_I)
+	{
+		pxi_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		pxi_high |= (low << 8);
+	}
+	if(sensor_name == PANELY_V)
+	{
+		pyv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		pyv_high |= (low << 8);
+	}
+	if(sensor_name == PANELY_I)
+	{
+		pyi_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		pyi_high |= (low << 8);
+	}
+	if(sensor_name == BATTM_V)
+	{
+		battmv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		battmv_high |= (low << 8);
+	}
+	if(sensor_name == BATT_V)
+	{
+		battv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		battv_high |= (low << 8);
+	}
+	if(sensor_name == BATT_I)
+	{
+		pxv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		pxv_high |= (low << 8);
+	}
+	if(sensor_name == BATT_TEMP)
+	{
+		battemp_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		battemp_high |= (low << 8);
+	}
+	if(sensor_name == COMS_V)
+	{
+		comsv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		comsv_high |= (low << 8);
+	}
+	if(sensor_name == COMS_I)
+	{
+		comsi_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		comsi_high |= (low << 8);
+	}
+	if(sensor_name == PAY_V)
+	{
+		payv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		payv_high |= (low << 8);
+	}
+	if(sensor_name == PAY_I)
+	{
+		payi_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		payi_high |= (low << 8);
+	}
+	if(sensor_name == OBC_V)
+	{
+		obcv_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		obcv_high |= (low << 8);
+	}
+	if(sensor_name == OBC_I)
+	{
+		obci_high = sensh_arr[0];
+		low = (uint16_t)sensh_arr[1];
+		obci_high |= (low << 8);
+	}
+		
+	return;
+}
+
+void set_sensor_lowf(void)
+{
+	uint8_t low, sensor_name, req_by;
+	sensor_name = sensl_arr[3];
+	req_by = sensl_arr[7] >> 4;
+	
+	if(sensor_name == EPS_TEMP)
+	{
+		epstemp_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		epstemp_low |= (low << 8);
+	}
+	
+	if(sensor_name == PANELX_V)
+	{
+		pxv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		pxv_low |= (low << 8);
+	}
+	
+	if(sensor_name == PANELX_I)
+	{
+		pxi_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		pxi_low |= (low << 8);
+	}
+	if(sensor_name == PANELY_V)
+	{
+		pyv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		pyv_low |= (low << 8);
+	}
+	if(sensor_name == PANELY_I)
+	{
+		pyi_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		pyi_low |= (low << 8);
+	}
+	if(sensor_name == BATTM_V)
+	{
+		battmv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		battmv_low |= (low << 8);
+	}
+	if(sensor_name == BATT_V)
+	{
+		battv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		battv_low |= (low << 8);
+	}
+	if(sensor_name == BATT_I)
+	{
+		pxv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		pxv_low |= (low << 8);
+	}
+	if(sensor_name == BATT_TEMP)
+	{
+		battemp_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		battemp_low |= (low << 8);
+	}
+	if(sensor_name == COMS_V)
+	{
+		comsv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		comsv_low |= (low << 8);
+	}
+	if(sensor_name == COMS_I)
+	{
+		comsi_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		comsi_low |= (low << 8);
+	}
+	if(sensor_name == PAY_V)
+	{
+		payv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		payv_low |= (low << 8);
+	}
+	if(sensor_name == PAY_I)
+	{
+		payi_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		payi_low |= (low << 8);
+	}
+	if(sensor_name == OBC_V)
+	{
+		obcv_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		obcv_low |= (low << 8);
+	}
+	if(sensor_name == OBC_I)
+	{
+		obci_low = sensl_arr[0];
+		low = (uint16_t)sensl_arr[1];
+		obci_low |= (low << 8);
+	}
+	
+	return;
+}
+
+void set_varf(void)
+{
+	uint8_t low, var_name;
+	var_name = setv_arr[3];
+	
+	if(var_name == MPPTA)
+	{
+		mppta = setv_arr[0];
+	}
+	if(var_name == MPPTB)
+	{
+		mpptb = setv_arr[0];
+	}
 }
