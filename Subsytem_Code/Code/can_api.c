@@ -237,8 +237,28 @@ void decode_command(uint8_t* command_array)
 				write_arr[i] = *(command_array + i);
 			}
 			return;
-		case SMALLTYPE_DEFAULT :
+		case SET_SENSOR_HIGH:
+			set_sens_h = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				sensh_arr[i] = *(command_array + i);
+			}
 			return;
+		case SET_SENSOR_LOW:
+			set_sens_l = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				sensl_arr[i] = *(command_array + i);
+			}
+			return;
+		case SET_VAR:
+			set_var = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				setv_arr[i] = *(command_array + i);
+			}
+			return;
+			
 		default:
 			return;
 	}

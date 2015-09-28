@@ -53,8 +53,31 @@
 /*				MY CAN DEFINES								*/
 #define SELF_ID					1 // Current SSM is EPS.
 
-#define NODE0_ID				10
-#define NODE1_ID				9
+#define COMMAND_OUT					0X01010101
+#define COMMAND_IN					0x11111111
+
+#define HK_TRANSMIT					0x12345678
+#define CAN_MSG_DUMMY_DATA          0xFFFFFFFF
+
+#define DUMMY_COMMAND				0XFFFFFFFF
+#define MSG_ACK						0xABABABAB
+
+#define HK_RETURNED					0XF0F0F0F0
+#define HK_REQUEST					0x0F0F0F0F
+
+#define DATA_REQUEST				0x55555555
+#define DATA_RETURNED				0x00000055
+
+#define MESSAGE_RETURNED			0X00000000
+
+#define CAN0_MB0				1
+#define CAN0_MB1				2
+#define CAN0_MB2				3
+#define CAN0_MB3				4
+#define CAN0_MB4				5
+#define CAN0_MB5				6
+#define CAN0_MB6				7
+#define CAN0_MB7				8
 
 #define CAN1_MB0				10
 #define CAN1_MB1				11
@@ -116,6 +139,14 @@
 #define ACK_READ				0x06
 #define REQ_WRITE				0x07
 #define ACK_WRITE				0x08
+#define SET_SENSOR_HIGH			0x09	// Remember to put SENSOR_NAME into Byte 3.
+#define SET_SENSOR_LOW			0x0A
+#define SET_VAR					0x0B	// Remember to put VAR_NAME into Byte 3.
+
+/* Checksum only */
+#define SAFE_MODE_VAR			0x09
+
+#define SMALLTYPE_DEFAULT		0x00
 
 /* DATA SMALL-TYPE	   */
 #define SPI_TEMP1				0x01
@@ -123,7 +154,37 @@
 #define BATT_TOP				0x03
 #define BATT_BOTTOM				0x04
 
-#define SMALLTYPE_DEFAULT		0x00
+/* MESSAGE PRIORITIES	*/
+#define COMMAND_PRIO			25
+#define HK_REQUEST_PRIO			20
+#define DATA_PRIO				10
+#define DEF_PRIO				10
+
+/* SENSOR NAMES			*/
+#define PANELX_V				0x01
+#define PANELX_I				0x02
+#define PANELY_V				0x03
+#define PANELY_I				0x04
+#define BATTM_V					0x05
+#define BATT_V					0x06
+#define BATTIN_I				0x07
+#define BATTOUT_I				0x08
+#define BATT_TEMP				0x09
+#define EPS_TEMP				0x0A
+#define COMS_V					0x0B
+#define COMS_I					0x0C
+#define PAY_V					0x0D
+#define PAY_I					0x0E
+#define OBC_V					0x0F
+#define OBC_I					0x10
+#define BATT_I					0x11
+
+/* VARIABLE NAMES		*/
+#define MPPTA					0x01
+#define MPPTB					0x02
+
+/* CAN frame max data length */
+#define MAX_CAN_FRAME_DATA_LEN      8
 
 /*********************************************************************/
 
