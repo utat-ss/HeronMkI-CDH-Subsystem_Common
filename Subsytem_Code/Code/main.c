@@ -117,6 +117,9 @@ int main(void)
 
 		if(SELF_ID == 1)
 		{
+			can_check_general();
+			can_actions_eps();
+			
 			LED_clr(LED1);
 			delay_ms(1000);
 			adc_set_pin(2);
@@ -208,3 +211,20 @@ void io_init(void)
 	PORTE = 0x00;
 }
 
+void can_actions_eps(void)
+{
+	if (set_sens_h == 1)
+	{
+		set_sensor_highf();
+	}
+	
+	if (set_sens_l == 1)
+	{
+		set_sensor_lowf();
+	}
+	
+	if (set_var == 1)
+	{
+		set_varf();
+	}
+}
