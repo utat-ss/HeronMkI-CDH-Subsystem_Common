@@ -80,6 +80,7 @@
 #include "trans_lib.h"
 #include "commands.h"
 #include "mppt_timer.h"
+#include "comsTimer.h"
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
@@ -179,6 +180,7 @@ void sys_init(void)
 	if (SELF_ID == 0)
 	{
 		transceiver_initialize();
+		coms_timer_init();
 	}
 
 	SS1_set_high();		// SPI Temp Sensor.

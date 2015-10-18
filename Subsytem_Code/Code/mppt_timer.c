@@ -27,11 +27,10 @@
 	*
 */
 
-
-#include <avr/io.h>
-#include <avr/interrupt.h>
 #include "mppt_timer.h"
 
+
+#if (SELF_ID == 1)
 //When the A compare register is reached, turn on one of the LEDs
 ISR(TIMER0_COMPA_vect) {
 	//MPPTA_flag = 1;
@@ -50,8 +49,8 @@ ISR(TIMER0_OVF_vect) {
 	LED_set(LED3);
 	//MPPTA_flag = 0;
 	//MPPTB_flag = 0;
-
 }
+#endif
 
 // This function initializes a 8-bit timer used for generating PWM for mppt.
 void mppt_timer_init(void) {
