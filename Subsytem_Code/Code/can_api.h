@@ -46,6 +46,8 @@ uint16_t battemp_low, epstemp_high, epstemp_low, comsv_high, comsv_low, comsi_hi
 uint16_t payv_high, payv_low, payi_high, payi_low, obcv_high, obcv_low, obci_high, obci_low;
 uint8_t mppta, mpptb;
 
+uint8_t CURRENT_MINUTE;
+
 uint8_t data0[DATA_BUFFER_SIZE];	// Data Buffer for MOb0
 uint8_t data1[DATA_BUFFER_SIZE];	// Data Buffer for MOb1
 uint8_t data2[DATA_BUFFER_SIZE];	// Data Buffer for MOb2

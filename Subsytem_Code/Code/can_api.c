@@ -204,7 +204,6 @@ void decode_command(uint8_t* command_array)
 				LED_toggle(LED3);
 			}
 			send_now = 1;
-			return;
 		case REQ_DATA :
 			if(SELF_ID != 1)
 			{
@@ -215,53 +214,48 @@ void decode_command(uint8_t* command_array)
 			{
 				data_req_arr[i] = *(command_array + i);
 			}
-			return;
 		case REQ_HK :
 			if(SELF_ID != 1)
 			{
 				LED_toggle(LED2);
 			}
 			send_hk = 1;
-			return;
 		case REQ_READ:
 			read_response = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				read_arr[i] = *(command_array + i);
 			}
-			return;
 		case REQ_WRITE:
 			write_response = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				write_arr[i] = *(command_array + i);
 			}
-			return;
 		case SET_SENSOR_HIGH:
 			set_sens_h = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				sensh_arr[i] = *(command_array + i);
 			}
-			return;
 		case SET_SENSOR_LOW:
 			set_sens_l = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				sensl_arr[i] = *(command_array + i);
 			}
-			return;
 		case SET_VAR:
 			set_var = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				setv_arr[i] = *(command_array + i);
 			}
-			return;
-			
+		case SET_TIME:
+			CURRENT_MINUTE = *(command_array);	
 		default:
 			return;
 	}
+	return;
 }
 
 void set_up_msg(uint8_t mailbox)

@@ -83,6 +83,7 @@ void send_response(void)
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
 	send_arr[6] = MT_COM;
 	send_arr[5] = RESPONSE;
+	send_arr[4] = CURRENT_MINUTE;
 
 	can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
 	send_now = 0;
@@ -102,6 +103,7 @@ void send_housekeeping(void)
 {	
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
 	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
+	send_arr[4] = CURRENT_MINUTE;
 
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	send_hk = 0;
@@ -174,7 +176,8 @@ void send_sensor_data(void)
 
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_DATA;
-	send_arr[5] = sensor_name;				
+	send_arr[5] = sensor_name;
+	send_arr[4] = CURRENT_MINUTE			
 			
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
 	send_data = 0;
@@ -195,6 +198,7 @@ void send_coms_packet(void)
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
 	send_arr[6] = MT_DATA;
 	send_arr[5] = COMS_PACKET;
+	send_arr[4] = CURRENT_MINUTE;
 	send_arr[0] = trans_msg[0];	// ASCII character which was received.
 	
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
@@ -224,6 +228,7 @@ void send_read_response(void)
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_COM;
 	send_arr[5] = ACK_READ;
+	send_arr[4] = CURRENT_MINUTE;
 	send_arr[3] = passkey;
 	send_arr[0] = read_val;
 	
@@ -263,6 +268,7 @@ void send_write_response(void)
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_COM;
 	send_arr[5] = ACK_WRITE;
+	send_arr[4] = CURRENT_MINUTE;
 	send_arr[3] = passkey;
 	send_arr[0] = ret_val;
 	
@@ -370,7 +376,8 @@ void set_sensor_highf(void)
 		low = (uint16_t)sensh_arr[1];
 		obci_high |= (low << 8);
 	}
-		
+	
+	set_sens_h = 0;
 	return;
 }
 
@@ -473,6 +480,7 @@ void set_sensor_lowf(void)
 		obci_low |= (low << 8);
 	}
 	
+	set_sens_l = 0;
 	return;
 }
 
@@ -489,4 +497,7 @@ void set_varf(void)
 	{
 		mpptb = setv_arr[0];
 	}
+	
+	set_var = 0;
+	return;
 }

@@ -121,14 +121,14 @@
 /* SENDER_ID */
 #define COMS_ID					0x00
 #define EPS_ID					0x01
-#define PAYL_ID					0x02
+#define PAY_ID					0x02
 #define OBC_ID					0x03
 #define HK_TASK_ID				0x04
 #define DATA_TASK_ID			0x05
 #define TC_TASK_ID				0x06
 #define COMS_TASK_ID			0x07
 #define EPS_TASK_ID				0x08
-#define PAYL_TASK_ID			0x09
+#define PAY_TASK_ID			0x09
 
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01
@@ -142,6 +142,7 @@
 #define SET_SENSOR_HIGH			0x09	// Remember to put SENSOR_NAME into Byte 3.
 #define SET_SENSOR_LOW			0x0A
 #define SET_VAR					0x0B	// Remember to put VAR_NAME into Byte 3.
+#define SET_TIME				0x0C
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
