@@ -39,6 +39,10 @@ uint8_t receive_arr[8], send_arr[8], read_arr[8], write_arr[8], data_req_arr[8];
 uint8_t sensh_arr[8], sensl_arr[8], setv_arr[8];
 uint8_t id_array[6];	// Necessary due to the different mailbox IDs for COMS, EPS, PAYL.
 
+/* Global variables used for PUS packet communication */
+uint8_t new_tm_msg[8], new_tc_msg[8], tm_sequence_count, new_tm_msgf, current_tm_fullf, tc_packet_readyf;
+uint8_t current_tm[143], current_tc[143];
+
 /* Global Variables for EPS		*/
 uint16_t pxv_high, pxv_low, pxi_high, pxi_low, pyv_high, pyv_low, pyi_high, pyi_low;
 uint16_t battmv_high, battmv_low, battv_high, battv_low, batti_high, batti_low, battemp_high;

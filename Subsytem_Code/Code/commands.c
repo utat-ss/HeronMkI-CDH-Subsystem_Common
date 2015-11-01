@@ -67,7 +67,10 @@ void run_commands(void)
 		set_sensor_lowf();
 	if (set_var == 1)
 		set_varf();
-	
+	if (new_tm_msgf == 1)
+		receive_tm_msg();
+	//if (tc_packet_readyf == 1)
+	//	alert_obc_tcp_ready();
 
 	return;	
 }
@@ -101,7 +104,7 @@ void send_response(void)
 
 void send_housekeeping(void)
 {	
-	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[7] = (SELF_ID << 4)|HK_TASK_ID;
 	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
 	send_arr[4] = CURRENT_MINUTE;
 
@@ -177,7 +180,7 @@ void send_sensor_data(void)
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_DATA;
 	send_arr[5] = sensor_name;
-	send_arr[4] = CURRENT_MINUTE			
+	send_arr[4] = CURRENT_MINUTE;			
 			
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
 	send_data = 0;
@@ -280,101 +283,102 @@ void send_write_response(void)
 
 void set_sensor_highf(void)
 {
-	uint8_t low, sensor_name, req_by;
+	uint8_t sensor_name, req_by;
+	uint16_t high = 0;
 	sensor_name = sensh_arr[3];
 	req_by = sensh_arr[7] >> 4;
 	
 	if(sensor_name == EPS_TEMP)
 	{
 		epstemp_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		epstemp_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		epstemp_high |= (high << 8);
 	}
 	
 	if(sensor_name == PANELX_V)
 	{
 		pxv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		pxv_high |= (low << 8);		
+		high = (uint16_t)sensh_arr[1];
+		pxv_high |= (high << 8);		
 	}
 	
 	if(sensor_name == PANELX_I)
 	{
 		pxi_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		pxi_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		pxi_high |= (high << 8);
 	}
 	if(sensor_name == PANELY_V)
 	{
 		pyv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		pyv_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		pyv_high |= (high << 8);
 	}
 	if(sensor_name == PANELY_I)
 	{
 		pyi_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		pyi_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		pyi_high |= (high << 8);
 	}
 	if(sensor_name == BATTM_V)
 	{
 		battmv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		battmv_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		battmv_high |= (high << 8);
 	}
 	if(sensor_name == BATT_V)
 	{
 		battv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		battv_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		battv_high |= (high << 8);
 	}
 	if(sensor_name == BATT_I)
 	{
 		pxv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		pxv_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		pxv_high |= (high << 8);
 	}
 	if(sensor_name == BATT_TEMP)
 	{
 		battemp_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		battemp_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		battemp_high |= (high << 8);
 	}
 	if(sensor_name == COMS_V)
 	{
 		comsv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		comsv_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		comsv_high |= (high << 8);
 	}
 	if(sensor_name == COMS_I)
 	{
 		comsi_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		comsi_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		comsi_high |= (high << 8);
 	}
 	if(sensor_name == PAY_V)
 	{
 		payv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		payv_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		payv_high |= (high << 8);
 	}
 	if(sensor_name == PAY_I)
 	{
 		payi_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		payi_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		payi_high |= (high << 8);
 	}
 	if(sensor_name == OBC_V)
 	{
 		obcv_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		obcv_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		obcv_high |= (high << 8);
 	}
 	if(sensor_name == OBC_I)
 	{
 		obci_high = sensh_arr[0];
-		low = (uint16_t)sensh_arr[1];
-		obci_high |= (low << 8);
+		high = (uint16_t)sensh_arr[1];
+		obci_high |= (high << 8);
 	}
 	
 	set_sens_h = 0;
@@ -383,7 +387,8 @@ void set_sensor_highf(void)
 
 void set_sensor_lowf(void)
 {
-	uint8_t low, sensor_name, req_by;
+	uint8_t sensor_name, req_by;
+	uint16_t low = 0;
 	sensor_name = sensl_arr[3];
 	req_by = sensl_arr[7] >> 4;
 	
@@ -486,7 +491,7 @@ void set_sensor_lowf(void)
 
 void set_varf(void)
 {
-	uint8_t low, var_name;
+	uint8_t var_name;
 	var_name = setv_arr[3];
 	
 	if(var_name == MPPTA)
@@ -501,3 +506,85 @@ void set_varf(void)
 	set_var = 0;
 	return;
 }
+
+// Helper
+static void send_tm_transaction_response(uint8_t req_by, uint8_t code)
+{			
+	send_arr[7] = (SELF_ID << 4)|req_by;
+	send_arr[6] = MT_COM;
+	send_arr[5] = TM_TRANSACTION_RESP;
+	send_arr[4] = CURRENT_MINUTE;
+	send_arr[3] = 0;
+	send_arr[2] = 0;
+	send_arr[1] = 0;
+	send_arr[0] = code;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+//Helper
+static void clear_current_tm(void)
+{
+	uint8_t i;
+	for(i = 0; i < 143; i++)
+	{
+		current_tm[i] = 0;
+	}
+	return;
+}
+
+void receive_tm_msg(void)
+{
+	uint8_t req_by, obc_seq_count;
+	req_by = new_tm_msg[7] >> 4;
+	obc_seq_count = new_tm_msg[4];
+
+	if(obc_seq_count > (tm_sequence_count + 1))
+	{
+		send_tm_transaction_response(req_by, 0xFF);		// Let the OBC know that the transaction failed.
+		tm_sequence_count = 0;
+		new_tm_msgf = 0;
+		clear_current_tm();
+		return;
+	}
+	if(current_tm_fullf == 1)
+	{
+		send_tm_transaction_response(req_by, 0xFF);
+		tm_sequence_count = 0;
+		new_tm_msgf = 0;
+		return;
+	}
+	
+	if(((obc_seq_count == 0) && (tm_sequence_count == 0)) || (obc_seq_count == (tm_sequence_count + 1)))
+	{
+		tm_sequence_count = obc_seq_count;
+		if(obc_seq_count < 35)
+		{
+			current_tm[(obc_seq_count * 4)]		= new_tm_msg[0];
+			current_tm[(obc_seq_count * 4) + 1] = new_tm_msg[1];
+			current_tm[(obc_seq_count * 4) + 2] = new_tm_msg[2];
+			current_tm[(obc_seq_count * 4) + 3] = new_tm_msg[3];
+		}
+		if(obc_seq_count == 35)
+		{
+			tm_sequence_count = 0;									// Reset tm_sequence_count, transmission has completed.
+			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
+			current_tm[(obc_seq_count * 4)]		= new_tm_msg[0];
+			current_tm[(obc_seq_count * 4) + 1] = new_tm_msg[1];
+			current_tm[(obc_seq_count * 4) + 2] = new_tm_msg[2];
+			send_tm_transaction_response(req_by, obc_seq_count);	// Let the OBC know that the transaction succeeded.
+		}
+		new_tm_msgf = 0;
+		return;
+	}
+	else
+	{
+		send_tm_transaction_response(req_by, 0xFF);
+		tm_sequence_count = 0;
+		new_tm_msgf = 0;
+		clear_current_tm();
+		return;
+	}
+}
+
+//void 	alert_obc_tcp_ready(void)

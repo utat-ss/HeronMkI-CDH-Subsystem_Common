@@ -128,7 +128,7 @@
 #define TC_TASK_ID				0x06
 #define COMS_TASK_ID			0x07
 #define EPS_TASK_ID				0x08
-#define PAY_TASK_ID			0x09
+#define PAY_TASK_ID				0x09
 
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01
@@ -143,6 +143,14 @@
 #define SET_SENSOR_LOW			0x0A
 #define SET_VAR					0x0B	// Remember to put VAR_NAME into Byte 3.
 #define SET_TIME				0x0C
+#define SEND_TM					0x0D
+#define SEND_TC					0x0E
+#define TM_PACKET_READY			0x0F
+#define OK_START_TM_PACKET		0x10
+#define TC_PACKET_READY			0x11
+#define OK_START_TC_PACKET		0x12
+#define TM_TRANSACTION_RESP		0x13
+#define TC_TRANSACTION_RESP		0x14
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09

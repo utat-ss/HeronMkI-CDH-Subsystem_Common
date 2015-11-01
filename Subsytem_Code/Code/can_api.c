@@ -195,6 +195,7 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 void decode_command(uint8_t* command_array)
 {		
 	uint8_t i, command  = *(command_array + 5);
+	uint8_t req_by = (*(command_array + 7)) >> 4;
 
 	switch(command)
 	{
@@ -251,7 +252,19 @@ void decode_command(uint8_t* command_array)
 				setv_arr[i] = *(command_array + i);
 			}
 		case SET_TIME:
-			CURRENT_MINUTE = *(command_array);	
+			CURRENT_MINUTE = *(command_array);
+		case SEND_TM:
+			new_tm_msgf = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				new_tm_msg[i] = *(command_array + i);
+			}
+		case TM_PACKET_READY:
+			send_arr[7] = (SELF_ID << 4)|req_by;			// Let the OBC know that you are ready to receive TM packet.
+			send_arr[6] = MT_COM;
+			send_arr[5] = OK_START_TM_PACKET;
+			send_arr[4] = CURRENT_MINUTE;
+			can_send_message(&(send_arr[0]), CAN1_MB7);
 		default:
 			return;
 	}
@@ -453,6 +466,18 @@ void can_init_mobs(void)
 		send_arr[i] = 0;
 		read_arr[i] = 0;
 		write_arr[i] = 0;
+		data_req_arr[i] = 0;
+		sensh_arr[i] = 0;
+		sensl_arr[i] = 0;
+		setv_arr[i] = 0;
+		new_tm_msg[i] = 0;
+		new_tc_msg[i] = 0;
+	}
+	
+	for (i = 0; i < 143; i++)		// Initialize the TM/TC Packet arrays.
+	{
+		current_tm[i] = 0;
+		current_tc[i] = 0;
 	}
 	
 	/* Initialize Global Command Flags to zero */
@@ -461,6 +486,13 @@ void can_init_mobs(void)
 	send_data = 0;
 	read_response = 0;
 	write_response = 0;
+	set_sens_h = 0;
+	set_sens_l = 0;
+	set_var = 0;
+	new_tm_msgf = 0;
+	tm_sequence_count = 0;
+	current_tm_fullf = 0;
+	tc_packet_readyf = 0;
 	
 	return;
 }
