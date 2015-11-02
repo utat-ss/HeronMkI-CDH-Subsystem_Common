@@ -3,27 +3,27 @@ Subsystem_Program.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00001fbc  00000000  00000000  00000074  2**1
+  0 .text         00001f92  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .bss          00000205  00800100  00800100  00002030  2**0
+  1 .bss          00000205  00800100  00800100  00002006  2**0
                   ALLOC
-  2 .comment      00000030  00000000  00000000  00002030  2**0
+  2 .comment      00000030  00000000  00000000  00002006  2**0
                   CONTENTS, READONLY
-  3 .debug_aranges 000002a8  00000000  00000000  00002060  2**0
+  3 .debug_aranges 000002a8  00000000  00000000  00002036  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_info   000033c0  00000000  00000000  00002308  2**0
+  4 .debug_info   0000325f  00000000  00000000  000022de  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_abbrev 00000fde  00000000  00000000  000056c8  2**0
+  5 .debug_abbrev 00000f82  00000000  00000000  0000553d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_line   000011b5  00000000  00000000  000066a6  2**0
+  6 .debug_line   000011ae  00000000  00000000  000064bf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_frame  000005a0  00000000  00000000  0000785c  2**2
+  7 .debug_frame  000005a0  00000000  00000000  00007670  2**2
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_str    00000a49  00000000  00000000  00007dfc  2**0
+  8 .debug_str    00000a4b  00000000  00000000  00007c10  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    00001f20  00000000  00000000  00008845  2**0
+  9 .debug_loc    00001f20  00000000  00000000  0000865b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000238  00000000  00000000  0000a765  2**0
+ 10 .debug_ranges 00000238  00000000  00000000  0000a57b  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -41,7 +41,7 @@ Disassembly of section .text:
       24:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <__bad_interrupt>
       28:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <__bad_interrupt>
       2c:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <__bad_interrupt>
-      30:	0c 94 97 0f 	jmp	0x1f2e	; 0x1f2e <__vector_12>
+      30:	0c 94 82 0f 	jmp	0x1f04	; 0x1f04 <__vector_12>
       34:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <__bad_interrupt>
       38:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <__bad_interrupt>
       3c:	0c 94 6a 00 	jmp	0xd4	; 0xd4 <__bad_interrupt>
@@ -108,8 +108,8 @@ Disassembly of section .text:
       c6:	a5 30       	cpi	r26, 0x05	; 5
       c8:	b2 07       	cpc	r27, r18
       ca:	e1 f7       	brne	.-8      	; 0xc4 <.do_clear_bss_loop>
-      cc:	0e 94 ed 0e 	call	0x1dda	; 0x1dda <main>
-      d0:	0c 94 dc 0f 	jmp	0x1fb8	; 0x1fb8 <_exit>
+      cc:	0e 94 da 0e 	call	0x1db4	; 0x1db4 <main>
+      d0:	0c 94 c7 0f 	jmp	0x1f8e	; 0x1f8e <_exit>
 
 000000d4 <__bad_interrupt>:
       d4:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -172,29 +172,29 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 	uint8_t i = 0;
 
 	message.pt_data = &data4[0]; // point message object to first element of data buffer
-     104:	22 e3       	ldi	r18, 0x32	; 50
+     104:	21 e3       	ldi	r18, 0x31	; 49
      106:	31 e0       	ldi	r19, 0x01	; 1
-     108:	30 93 5d 01 	sts	0x015D, r19
-     10c:	20 93 5c 01 	sts	0x015C, r18
+     108:	30 93 5c 01 	sts	0x015C, r19
+     10c:	20 93 5b 01 	sts	0x015B, r18
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     110:	10 92 60 01 	sts	0x0160, r1
+     110:	10 92 5f 01 	sts	0x015F, r1
 	message.id.std = id;  // populate ID field with ID Tag
      114:	70 e0       	ldi	r23, 0x00	; 0
-     116:	70 93 58 01 	sts	0x0158, r23
-     11a:	60 93 57 01 	sts	0x0157, r22
+     116:	70 93 57 01 	sts	0x0157, r23
+     11a:	60 93 56 01 	sts	0x0156, r22
 	message.cmd = CMD_TX_DATA;   // assign this as a transmitting message object.
      11e:	22 e0       	ldi	r18, 0x02	; 2
-     120:	20 93 56 01 	sts	0x0156, r18
+     120:	20 93 55 01 	sts	0x0155, r18
 	message.dlc = 8;			 // Max length of a CAN message.
      124:	28 e0       	ldi	r18, 0x08	; 8
-     126:	20 93 5b 01 	sts	0x015B, r18
+     126:	20 93 5a 01 	sts	0x015A, r18
 	mob_number = 4;
      12a:	24 e0       	ldi	r18, 0x04	; 4
      12c:	20 93 50 02 	sts	0x0250, r18
      130:	dc 01       	movw	r26, r24
-     132:	e2 e3       	ldi	r30, 0x32	; 50
+     132:	e1 e3       	ldi	r30, 0x31	; 49
      134:	f1 e0       	ldi	r31, 0x01	; 1
-     136:	8a e3       	ldi	r24, 0x3A	; 58
+     136:	89 e3       	ldi	r24, 0x39	; 57
      138:	91 e0       	ldi	r25, 0x01	; 1
 	
 	for (i = 0; i < 8; i ++)
@@ -217,7 +217,7 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 	
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb4 to configure
      144:	60 91 50 02 	lds	r22, 0x0250
-     148:	85 e5       	ldi	r24, 0x55	; 85
+     148:	84 e5       	ldi	r24, 0x54	; 84
      14a:	91 e0       	ldi	r25, 0x01	; 1
      14c:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      150:	81 11       	cpse	r24, r1
@@ -225,7 +225,7 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 
 	while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
      154:	60 91 50 02 	lds	r22, 0x0250
-     158:	85 e5       	ldi	r24, 0x55	; 85
+     158:	84 e5       	ldi	r24, 0x54	; 84
      15a:	91 e0       	ldi	r25, 0x01	; 1
      15c:	0e 94 77 0a 	call	0x14ee	; 0x14ee <can_get_status>
      160:	81 30       	cpi	r24, 0x01	; 1
@@ -263,7 +263,7 @@ void decode_command(uint8_t* command_array)
      188:	79 c0       	rjmp	.+242    	; 0x27c <decode_command+0x116>
      18a:	e2 5c       	subi	r30, 0xC2	; 194
      18c:	ff 4f       	sbci	r31, 0xFF	; 255
-     18e:	0c 94 d6 0f 	jmp	0x1fac	; 0x1fac <__tablejump2__>
+     18e:	0c 94 c1 0f 	jmp	0x1f82	; 0x1f82 <__tablejump2__>
 		case REQ_RESPONSE :
 			if(SELF_ID != 1)
 			{
@@ -271,7 +271,7 @@ void decode_command(uint8_t* command_array)
 			}
 			send_now = 1;
      192:	81 e0       	ldi	r24, 0x01	; 1
-     194:	80 93 72 01 	sts	0x0172, r24
+     194:	80 93 71 01 	sts	0x0171, r24
 		case REQ_DATA :
 			if(SELF_ID != 1)
 			{
@@ -279,11 +279,11 @@ void decode_command(uint8_t* command_array)
 			}
 			send_data = 1;
      198:	81 e0       	ldi	r24, 0x01	; 1
-     19a:	80 93 36 02 	sts	0x0236, r24
+     19a:	80 93 35 02 	sts	0x0235, r24
      19e:	ed 01       	movw	r28, r26
-     1a0:	e1 e6       	ldi	r30, 0x61	; 97
+     1a0:	e0 e6       	ldi	r30, 0x60	; 96
      1a2:	f1 e0       	ldi	r31, 0x01	; 1
-     1a4:	89 e6       	ldi	r24, 0x69	; 105
+     1a4:	88 e6       	ldi	r24, 0x68	; 104
      1a6:	91 e0       	ldi	r25, 0x01	; 1
 			for (i = 0; i < 8; i ++)
 			{
@@ -306,11 +306,11 @@ void decode_command(uint8_t* command_array)
 			}
 			send_hk = 1;
      1b2:	81 e0       	ldi	r24, 0x01	; 1
-     1b4:	80 93 14 02 	sts	0x0214, r24
+     1b4:	80 93 13 02 	sts	0x0213, r24
 		case REQ_READ:
 			read_response = 1;
      1b8:	81 e0       	ldi	r24, 0x01	; 1
-     1ba:	80 93 7c 01 	sts	0x017C, r24
+     1ba:	80 93 7b 01 	sts	0x017B, r24
      1be:	ed 01       	movw	r28, r26
      1c0:	ec ef       	ldi	r30, 0xFC	; 252
      1c2:	f2 e0       	ldi	r31, 0x02	; 2
@@ -336,7 +336,7 @@ void decode_command(uint8_t* command_array)
 		case REQ_WRITE:
 			write_response = 1;
      1d2:	81 e0       	ldi	r24, 0x01	; 1
-     1d4:	80 93 48 01 	sts	0x0148, r24
+     1d4:	80 93 47 01 	sts	0x0147, r24
      1d8:	ed 01       	movw	r28, r26
      1da:	e1 e0       	ldi	r30, 0x01	; 1
      1dc:	f1 e0       	ldi	r31, 0x01	; 1
@@ -362,11 +362,11 @@ void decode_command(uint8_t* command_array)
 		case SET_SENSOR_HIGH:
 			set_sens_h = 1;
      1ec:	81 e0       	ldi	r24, 0x01	; 1
-     1ee:	80 93 33 02 	sts	0x0233, r24
+     1ee:	80 93 32 02 	sts	0x0232, r24
      1f2:	ed 01       	movw	r28, r26
-     1f4:	e9 e4       	ldi	r30, 0x49	; 73
+     1f4:	e8 e4       	ldi	r30, 0x48	; 72
      1f6:	f1 e0       	ldi	r31, 0x01	; 1
-     1f8:	81 e5       	ldi	r24, 0x51	; 81
+     1f8:	80 e5       	ldi	r24, 0x50	; 80
      1fa:	91 e0       	ldi	r25, 0x01	; 1
 			for (i = 0; i < 8; i ++)
 			{
@@ -412,13 +412,13 @@ void decode_command(uint8_t* command_array)
 				sensl_arr[i] = *(command_array + i);
 			}
 		case SET_VAR:
-			set_var = 1;
+			set_varf = 1;
      220:	81 e0       	ldi	r24, 0x01	; 1
-     222:	80 93 24 01 	sts	0x0124, r24
+     222:	80 93 36 02 	sts	0x0236, r24
      226:	ed 01       	movw	r28, r26
-     228:	ec e3       	ldi	r30, 0x3C	; 60
+     228:	eb e3       	ldi	r30, 0x3B	; 59
      22a:	f1 e0       	ldi	r31, 0x01	; 1
-     22c:	84 e4       	ldi	r24, 0x44	; 68
+     22c:	83 e4       	ldi	r24, 0x43	; 67
      22e:	91 e0       	ldi	r25, 0x01	; 1
 			for (i = 0; i < 8; i ++)
 			{
@@ -429,7 +429,7 @@ void decode_command(uint8_t* command_array)
 				sensl_arr[i] = *(command_array + i);
 			}
 		case SET_VAR:
-			set_var = 1;
+			set_varf = 1;
 			for (i = 0; i < 8; i ++)
      234:	e8 17       	cp	r30, r24
      236:	f9 07       	cpc	r31, r25
@@ -440,11 +440,11 @@ void decode_command(uint8_t* command_array)
 		case SET_TIME:
 			CURRENT_MINUTE = *(command_array);
      23a:	8c 91       	ld	r24, X
-     23c:	80 93 6f 01 	sts	0x016F, r24
+     23c:	80 93 6e 01 	sts	0x016E, r24
 		case SEND_TM:
 			new_tm_msgf = 1;
      240:	81 e0       	ldi	r24, 0x01	; 1
-     242:	80 93 73 01 	sts	0x0173, r24
+     242:	80 93 72 01 	sts	0x0172, r24
      246:	e8 e3       	ldi	r30, 0x38	; 56
      248:	f2 e0       	ldi	r31, 0x02	; 2
      24a:	80 e4       	ldi	r24, 0x40	; 64
@@ -469,19 +469,19 @@ void decode_command(uint8_t* command_array)
 		case TM_PACKET_READY:
 			send_arr[7] = (SELF_ID << 4)|req_by;			// Let the OBC know that you are ready to receive TM packet.
      258:	20 61       	ori	r18, 0x10	; 16
-     25a:	20 93 2d 01 	sts	0x012D, r18
+     25a:	20 93 2c 01 	sts	0x012C, r18
 			send_arr[6] = MT_COM;
      25e:	82 e0       	ldi	r24, 0x02	; 2
-     260:	80 93 2c 01 	sts	0x012C, r24
+     260:	80 93 2b 01 	sts	0x012B, r24
 			send_arr[5] = OK_START_TM_PACKET;
      264:	80 e1       	ldi	r24, 0x10	; 16
-     266:	80 93 2b 01 	sts	0x012B, r24
+     266:	80 93 2a 01 	sts	0x012A, r24
 			send_arr[4] = CURRENT_MINUTE;
-     26a:	80 91 6f 01 	lds	r24, 0x016F
-     26e:	80 93 2a 01 	sts	0x012A, r24
+     26a:	80 91 6e 01 	lds	r24, 0x016E
+     26e:	80 93 29 01 	sts	0x0129, r24
 			can_send_message(&(send_arr[0]), CAN1_MB7);
      272:	61 e1       	ldi	r22, 0x11	; 17
-     274:	86 e2       	ldi	r24, 0x26	; 38
+     274:	85 e2       	ldi	r24, 0x25	; 37
      276:	91 e0       	ldi	r25, 0x01	; 1
      278:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
 		default:
@@ -498,13 +498,13 @@ void decode_command(uint8_t* command_array)
 void set_up_msg(uint8_t mailbox)
 {
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     282:	10 92 60 01 	sts	0x0160, r1
+     282:	10 92 5f 01 	sts	0x015F, r1
 	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
      286:	95 e0       	ldi	r25, 0x05	; 5
-     288:	90 93 56 01 	sts	0x0156, r25
+     288:	90 93 55 01 	sts	0x0155, r25
 	message.dlc = 8;			 // Max length of a CAN message.
      28c:	98 e0       	ldi	r25, 0x08	; 8
-     28e:	90 93 5b 01 	sts	0x015B, r25
+     28e:	90 93 5a 01 	sts	0x015A, r25
 	mob_number = mailbox;
      292:	80 93 50 02 	sts	0x0250, r24
 	
@@ -513,15 +513,15 @@ void set_up_msg(uint8_t mailbox)
      298:	0e c0       	rjmp	.+28     	; 0x2b6 <set_up_msg+0x34>
 	{
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
-     29a:	8c e0       	ldi	r24, 0x0C	; 12
+     29a:	8b e0       	ldi	r24, 0x0B	; 11
      29c:	92 e0       	ldi	r25, 0x02	; 2
-     29e:	90 93 5d 01 	sts	0x015D, r25
-     2a2:	80 93 5c 01 	sts	0x015C, r24
+     29e:	90 93 5c 01 	sts	0x015C, r25
+     2a2:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[0];  // populate ID field with ID Tag
-     2a6:	80 91 23 02 	lds	r24, 0x0223
+     2a6:	80 91 22 02 	lds	r24, 0x0222
      2aa:	90 e0       	ldi	r25, 0x00	; 0
-     2ac:	90 93 58 01 	sts	0x0158, r25
-     2b0:	80 93 57 01 	sts	0x0157, r24
+     2ac:	90 93 57 01 	sts	0x0157, r25
+     2b0:	80 93 56 01 	sts	0x0156, r24
 		return;
      2b4:	08 95       	ret
 	}
@@ -532,13 +532,13 @@ void set_up_msg(uint8_t mailbox)
 		message.pt_data = &data1[0];
      2ba:	84 e1       	ldi	r24, 0x14	; 20
      2bc:	91 e0       	ldi	r25, 0x01	; 1
-     2be:	90 93 5d 01 	sts	0x015D, r25
-     2c2:	80 93 5c 01 	sts	0x015C, r24
+     2be:	90 93 5c 01 	sts	0x015C, r25
+     2c2:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[1];
-     2c6:	80 91 24 02 	lds	r24, 0x0224
+     2c6:	80 91 23 02 	lds	r24, 0x0223
      2ca:	90 e0       	ldi	r25, 0x00	; 0
-     2cc:	90 93 58 01 	sts	0x0158, r25
-     2d0:	80 93 57 01 	sts	0x0157, r24
+     2cc:	90 93 57 01 	sts	0x0157, r25
+     2d0:	80 93 56 01 	sts	0x0156, r24
 		return;
      2d4:	08 95       	ret
 	}
@@ -549,13 +549,13 @@ void set_up_msg(uint8_t mailbox)
 		message.pt_data = &data2[0];
      2da:	8c e1       	ldi	r24, 0x1C	; 28
      2dc:	91 e0       	ldi	r25, 0x01	; 1
-     2de:	90 93 5d 01 	sts	0x015D, r25
-     2e2:	80 93 5c 01 	sts	0x015C, r24
+     2de:	90 93 5c 01 	sts	0x015C, r25
+     2e2:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[2];
-     2e6:	80 91 25 02 	lds	r24, 0x0225
+     2e6:	80 91 24 02 	lds	r24, 0x0224
      2ea:	90 e0       	ldi	r25, 0x00	; 0
-     2ec:	90 93 58 01 	sts	0x0158, r25
-     2f0:	80 93 57 01 	sts	0x0157, r24
+     2ec:	90 93 57 01 	sts	0x0157, r25
+     2f0:	80 93 56 01 	sts	0x0156, r24
 		return;
      2f4:	08 95       	ret
 	}
@@ -564,15 +564,15 @@ void set_up_msg(uint8_t mailbox)
      2f8:	71 f4       	brne	.+28     	; 0x316 <set_up_msg+0x94>
 	{
 		message.pt_data = &data3[0];
-     2fa:	8b e2       	ldi	r24, 0x2B	; 43
+     2fa:	8a e2       	ldi	r24, 0x2A	; 42
      2fc:	92 e0       	ldi	r25, 0x02	; 2
-     2fe:	90 93 5d 01 	sts	0x015D, r25
-     302:	80 93 5c 01 	sts	0x015C, r24
+     2fe:	90 93 5c 01 	sts	0x015C, r25
+     302:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[3];
-     306:	80 91 26 02 	lds	r24, 0x0226
+     306:	80 91 25 02 	lds	r24, 0x0225
      30a:	90 e0       	ldi	r25, 0x00	; 0
-     30c:	90 93 58 01 	sts	0x0158, r25
-     310:	80 93 57 01 	sts	0x0157, r24
+     30c:	90 93 57 01 	sts	0x0157, r25
+     310:	80 93 56 01 	sts	0x0156, r24
 		return;
      314:	08 95       	ret
 	}
@@ -583,13 +583,13 @@ void set_up_msg(uint8_t mailbox)
 		message.pt_data = &data5[0];
      31a:	84 e4       	ldi	r24, 0x44	; 68
      31c:	92 e0       	ldi	r25, 0x02	; 2
-     31e:	90 93 5d 01 	sts	0x015D, r25
-     322:	80 93 5c 01 	sts	0x015C, r24
+     31e:	90 93 5c 01 	sts	0x015C, r25
+     322:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[5];
-     326:	80 91 28 02 	lds	r24, 0x0228
+     326:	80 91 27 02 	lds	r24, 0x0227
      32a:	90 e0       	ldi	r25, 0x00	; 0
-     32c:	90 93 58 01 	sts	0x0158, r25
-     330:	80 93 57 01 	sts	0x0157, r24
+     32c:	90 93 57 01 	sts	0x0157, r25
+     330:	80 93 56 01 	sts	0x0156, r24
      334:	08 95       	ret
 
 00000336 <clean_up_msg>:
@@ -603,28 +603,28 @@ void clean_up_msg(uint8_t mailbox)
      338:	20 c0       	rjmp	.+64     	; 0x37a <clean_up_msg+0x44>
 	{
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     33a:	10 92 60 01 	sts	0x0160, r1
+     33a:	10 92 5f 01 	sts	0x015F, r1
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
      33e:	85 e0       	ldi	r24, 0x05	; 5
-     340:	80 93 56 01 	sts	0x0156, r24
+     340:	80 93 55 01 	sts	0x0155, r24
 		message.dlc = 8;			 // Max length of a CAN message.
      344:	88 e0       	ldi	r24, 0x08	; 8
-     346:	80 93 5b 01 	sts	0x015B, r24
+     346:	80 93 5a 01 	sts	0x015A, r24
 		mob_number = mailbox;
      34a:	10 92 50 02 	sts	0x0250, r1
 		message.pt_data = &data0[0]; // point message object to first element of data buffer
-     34e:	8c e0       	ldi	r24, 0x0C	; 12
+     34e:	8b e0       	ldi	r24, 0x0B	; 11
      350:	92 e0       	ldi	r25, 0x02	; 2
-     352:	90 93 5d 01 	sts	0x015D, r25
-     356:	80 93 5c 01 	sts	0x015C, r24
+     352:	90 93 5c 01 	sts	0x015C, r25
+     356:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[0];  // populate ID field with ID Tag
-     35a:	80 91 23 02 	lds	r24, 0x0223
+     35a:	80 91 22 02 	lds	r24, 0x0222
      35e:	90 e0       	ldi	r25, 0x00	; 0
-     360:	90 93 58 01 	sts	0x0158, r25
-     364:	80 93 57 01 	sts	0x0157, r24
+     360:	90 93 57 01 	sts	0x0157, r25
+     364:	80 93 56 01 	sts	0x0156, r24
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
      368:	60 91 50 02 	lds	r22, 0x0250
-     36c:	85 e5       	ldi	r24, 0x55	; 85
+     36c:	84 e5       	ldi	r24, 0x54	; 84
      36e:	91 e0       	ldi	r25, 0x01	; 1
      370:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      374:	81 11       	cpse	r24, r1
@@ -637,29 +637,29 @@ void clean_up_msg(uint8_t mailbox)
      37c:	01 f5       	brne	.+64     	; 0x3be <clean_up_msg+0x88>
 	{
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     37e:	10 92 60 01 	sts	0x0160, r1
+     37e:	10 92 5f 01 	sts	0x015F, r1
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
      382:	85 e0       	ldi	r24, 0x05	; 5
-     384:	80 93 56 01 	sts	0x0156, r24
+     384:	80 93 55 01 	sts	0x0155, r24
 		message.dlc = 8;			 // Max length of a CAN message.
      388:	88 e0       	ldi	r24, 0x08	; 8
-     38a:	80 93 5b 01 	sts	0x015B, r24
+     38a:	80 93 5a 01 	sts	0x015A, r24
 		mob_number = mailbox;
      38e:	81 e0       	ldi	r24, 0x01	; 1
      390:	80 93 50 02 	sts	0x0250, r24
 		message.pt_data = &data1[0];
      394:	84 e1       	ldi	r24, 0x14	; 20
      396:	91 e0       	ldi	r25, 0x01	; 1
-     398:	90 93 5d 01 	sts	0x015D, r25
-     39c:	80 93 5c 01 	sts	0x015C, r24
+     398:	90 93 5c 01 	sts	0x015C, r25
+     39c:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = SUB0_ID1;
      3a0:	85 e1       	ldi	r24, 0x15	; 21
      3a2:	90 e0       	ldi	r25, 0x00	; 0
-     3a4:	90 93 58 01 	sts	0x0158, r25
-     3a8:	80 93 57 01 	sts	0x0157, r24
+     3a4:	90 93 57 01 	sts	0x0157, r25
+     3a8:	80 93 56 01 	sts	0x0156, r24
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
      3ac:	60 91 50 02 	lds	r22, 0x0250
-     3b0:	85 e5       	ldi	r24, 0x55	; 85
+     3b0:	84 e5       	ldi	r24, 0x54	; 84
      3b2:	91 e0       	ldi	r25, 0x01	; 1
      3b4:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      3b8:	81 11       	cpse	r24, r1
@@ -672,29 +672,29 @@ void clean_up_msg(uint8_t mailbox)
      3c0:	09 f5       	brne	.+66     	; 0x404 <clean_up_msg+0xce>
 	{
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     3c2:	10 92 60 01 	sts	0x0160, r1
+     3c2:	10 92 5f 01 	sts	0x015F, r1
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
      3c6:	85 e0       	ldi	r24, 0x05	; 5
-     3c8:	80 93 56 01 	sts	0x0156, r24
+     3c8:	80 93 55 01 	sts	0x0155, r24
 		message.dlc = 8;			 // Max length of a CAN message.
      3cc:	88 e0       	ldi	r24, 0x08	; 8
-     3ce:	80 93 5b 01 	sts	0x015B, r24
+     3ce:	80 93 5a 01 	sts	0x015A, r24
 		mob_number = mailbox;
      3d2:	82 e0       	ldi	r24, 0x02	; 2
      3d4:	80 93 50 02 	sts	0x0250, r24
 		message.pt_data = &data2[0];
      3d8:	8c e1       	ldi	r24, 0x1C	; 28
      3da:	91 e0       	ldi	r25, 0x01	; 1
-     3dc:	90 93 5d 01 	sts	0x015D, r25
-     3e0:	80 93 5c 01 	sts	0x015C, r24
+     3dc:	90 93 5c 01 	sts	0x015C, r25
+     3e0:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[2];
-     3e4:	80 91 25 02 	lds	r24, 0x0225
+     3e4:	80 91 24 02 	lds	r24, 0x0224
      3e8:	90 e0       	ldi	r25, 0x00	; 0
-     3ea:	90 93 58 01 	sts	0x0158, r25
-     3ee:	80 93 57 01 	sts	0x0157, r24
+     3ea:	90 93 57 01 	sts	0x0157, r25
+     3ee:	80 93 56 01 	sts	0x0156, r24
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
      3f2:	60 91 50 02 	lds	r22, 0x0250
-     3f6:	85 e5       	ldi	r24, 0x55	; 85
+     3f6:	84 e5       	ldi	r24, 0x54	; 84
      3f8:	91 e0       	ldi	r25, 0x01	; 1
      3fa:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      3fe:	81 11       	cpse	r24, r1
@@ -707,29 +707,29 @@ void clean_up_msg(uint8_t mailbox)
      406:	09 f5       	brne	.+66     	; 0x44a <clean_up_msg+0x114>
 	{
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     408:	10 92 60 01 	sts	0x0160, r1
+     408:	10 92 5f 01 	sts	0x015F, r1
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
      40c:	85 e0       	ldi	r24, 0x05	; 5
-     40e:	80 93 56 01 	sts	0x0156, r24
+     40e:	80 93 55 01 	sts	0x0155, r24
 		message.dlc = 8;			 // Max length of a CAN message.
      412:	88 e0       	ldi	r24, 0x08	; 8
-     414:	80 93 5b 01 	sts	0x015B, r24
+     414:	80 93 5a 01 	sts	0x015A, r24
 		mob_number = mailbox;
      418:	83 e0       	ldi	r24, 0x03	; 3
      41a:	80 93 50 02 	sts	0x0250, r24
 		message.pt_data = &data3[0];
-     41e:	8b e2       	ldi	r24, 0x2B	; 43
+     41e:	8a e2       	ldi	r24, 0x2A	; 42
      420:	92 e0       	ldi	r25, 0x02	; 2
-     422:	90 93 5d 01 	sts	0x015D, r25
-     426:	80 93 5c 01 	sts	0x015C, r24
+     422:	90 93 5c 01 	sts	0x015C, r25
+     426:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[3];
-     42a:	80 91 26 02 	lds	r24, 0x0226
+     42a:	80 91 25 02 	lds	r24, 0x0225
      42e:	90 e0       	ldi	r25, 0x00	; 0
-     430:	90 93 58 01 	sts	0x0158, r25
-     434:	80 93 57 01 	sts	0x0157, r24
+     430:	90 93 57 01 	sts	0x0157, r25
+     434:	80 93 56 01 	sts	0x0156, r24
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
      438:	60 91 50 02 	lds	r22, 0x0250
-     43c:	85 e5       	ldi	r24, 0x55	; 85
+     43c:	84 e5       	ldi	r24, 0x54	; 84
      43e:	91 e0       	ldi	r25, 0x01	; 1
      440:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      444:	81 11       	cpse	r24, r1
@@ -742,27 +742,27 @@ void clean_up_msg(uint8_t mailbox)
      44c:	f1 f4       	brne	.+60     	; 0x48a <clean_up_msg+0x154>
 	{
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     44e:	10 92 60 01 	sts	0x0160, r1
+     44e:	10 92 5f 01 	sts	0x015F, r1
 		message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
-     452:	80 93 56 01 	sts	0x0156, r24
+     452:	80 93 55 01 	sts	0x0155, r24
 		message.dlc = 8;			 // Max length of a CAN message.
      456:	98 e0       	ldi	r25, 0x08	; 8
-     458:	90 93 5b 01 	sts	0x015B, r25
+     458:	90 93 5a 01 	sts	0x015A, r25
 		mob_number = mailbox;
      45c:	80 93 50 02 	sts	0x0250, r24
 		message.pt_data = &data5[0];
      460:	84 e4       	ldi	r24, 0x44	; 68
      462:	92 e0       	ldi	r25, 0x02	; 2
-     464:	90 93 5d 01 	sts	0x015D, r25
-     468:	80 93 5c 01 	sts	0x015C, r24
+     464:	90 93 5c 01 	sts	0x015C, r25
+     468:	80 93 5b 01 	sts	0x015B, r24
 		message.id.std = id_array[5];
-     46c:	80 91 28 02 	lds	r24, 0x0228
+     46c:	80 91 27 02 	lds	r24, 0x0227
      470:	90 e0       	ldi	r25, 0x00	; 0
-     472:	90 93 58 01 	sts	0x0158, r25
-     476:	80 93 57 01 	sts	0x0157, r24
+     472:	90 93 57 01 	sts	0x0157, r25
+     476:	80 93 56 01 	sts	0x0156, r24
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
      47a:	60 91 50 02 	lds	r22, 0x0250
-     47e:	85 e5       	ldi	r24, 0x55	; 85
+     47e:	84 e5       	ldi	r24, 0x54	; 84
      480:	91 e0       	ldi	r25, 0x01	; 1
      482:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      486:	81 11       	cpse	r24, r1
@@ -787,25 +787,25 @@ void can_check_housekeep(void)
 		
 	if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a message to come in.
      496:	60 91 50 02 	lds	r22, 0x0250
-     49a:	85 e5       	ldi	r24, 0x55	; 85
+     49a:	84 e5       	ldi	r24, 0x54	; 84
      49c:	91 e0       	ldi	r25, 0x01	; 1
      49e:	0e 94 77 0a 	call	0x14ee	; 0x14ee <can_get_status>
      4a2:	81 30       	cpi	r24, 0x01	; 1
      4a4:	11 f1       	breq	.+68     	; 0x4ea <can_check_housekeep+0x5e>
 	{
 		if(message.status == MOB_RX_COMPLETED)
-     4a6:	80 91 5e 01 	lds	r24, 0x015E
+     4a6:	80 91 5d 01 	lds	r24, 0x015D
      4aa:	80 32       	cpi	r24, 0x20	; 32
      4ac:	d9 f4       	brne	.+54     	; 0x4e4 <can_check_housekeep+0x58>
-     4ae:	a0 91 5c 01 	lds	r26, 0x015C
-     4b2:	b0 91 5d 01 	lds	r27, 0x015D
-     4b6:	c3 e2       	ldi	r28, 0x23	; 35
+     4ae:	a0 91 5b 01 	lds	r26, 0x015B
+     4b2:	b0 91 5c 01 	lds	r27, 0x015C
+     4b6:	c2 e2       	ldi	r28, 0x22	; 34
      4b8:	d2 e0       	ldi	r29, 0x02	; 2
 		{
 			for (i = 0; i < 8; i ++)		// Transfer the message to the receive array.
 			{
 				receive_arr[i] = *(message.pt_data + i);
-     4ba:	eb e1       	ldi	r30, 0x1B	; 27
+     4ba:	ea e1       	ldi	r30, 0x1A	; 26
      4bc:	f2 e0       	ldi	r31, 0x02	; 2
      4be:	8d 91       	ld	r24, X+
      4c0:	81 93       	st	Z+, r24
@@ -823,13 +823,13 @@ void can_check_housekeep(void)
 			}
 				
 			switch(receive_arr[6]) // BIG TYPE
-     4c8:	80 91 21 02 	lds	r24, 0x0221
+     4c8:	80 91 20 02 	lds	r24, 0x0220
      4cc:	82 30       	cpi	r24, 0x02	; 2
      4ce:	21 f4       	brne	.+8      	; 0x4d8 <can_check_housekeep+0x4c>
 			{
 				case MT_COM :
 					decode_command(&receive_arr[0]); // SMALL TYPE
-     4d0:	8b e1       	ldi	r24, 0x1B	; 27
+     4d0:	8a e1       	ldi	r24, 0x1A	; 26
      4d2:	92 e0       	ldi	r25, 0x02	; 2
      4d4:	0e 94 b3 00 	call	0x166	; 0x166 <decode_command>
 	{
@@ -838,7 +838,7 @@ void can_check_housekeep(void)
 			for (i = 0; i < 8; i ++)		// Transfer the message to the receive array.
 			{
 				receive_arr[i] = *(message.pt_data + i);
-     4d8:	eb e1       	ldi	r30, 0x1B	; 27
+     4d8:	ea e1       	ldi	r30, 0x1A	; 26
      4da:	f2 e0       	ldi	r31, 0x02	; 2
 				default:
 				break;
@@ -900,22 +900,22 @@ void can_check_general(void)
 		if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a message to come in.
 		{
 			if(message.status == MOB_RX_COMPLETED)
-     508:	0e e5       	ldi	r16, 0x5E	; 94
+     508:	0d e5       	ldi	r16, 0x5D	; 93
      50a:	11 e0       	ldi	r17, 0x01	; 1
 			{
 				for (i = 0; i < 8; i ++)		// Transfer the message to the receive array.
 				{
 					receive_arr[i] = *(message.pt_data + i);
      50c:	0f 2e       	mov	r0, r31
-     50e:	fc e5       	ldi	r31, 0x5C	; 92
+     50e:	fb e5       	ldi	r31, 0x5B	; 91
      510:	af 2e       	mov	r10, r31
      512:	f1 e0       	ldi	r31, 0x01	; 1
      514:	bf 2e       	mov	r11, r31
      516:	f0 2d       	mov	r31, r0
-     518:	c3 e2       	ldi	r28, 0x23	; 35
+     518:	c2 e2       	ldi	r28, 0x22	; 34
      51a:	d2 e0       	ldi	r29, 0x02	; 2
      51c:	0f 2e       	mov	r0, r31
-     51e:	fb e1       	ldi	r31, 0x1B	; 27
+     51e:	fa e1       	ldi	r31, 0x1A	; 26
      520:	ef 2e       	mov	r14, r31
      522:	f2 e0       	ldi	r31, 0x02	; 2
      524:	ff 2e       	mov	r15, r31
@@ -924,7 +924,7 @@ void can_check_general(void)
 				
 					switch(receive_arr[6]) // BIG TYPE
      528:	0f 2e       	mov	r0, r31
-     52a:	f1 e2       	ldi	r31, 0x21	; 33
+     52a:	f0 e2       	ldi	r31, 0x20	; 32
      52c:	cf 2e       	mov	r12, r31
      52e:	f2 e0       	ldi	r31, 0x02	; 2
      530:	df 2e       	mov	r13, r31
@@ -940,7 +940,7 @@ void can_check_general(void)
 		
 		if(can_get_status(&message, mob_number) != CAN_STATUS_NOT_COMPLETED) // wait for a message to come in.
      53a:	60 91 50 02 	lds	r22, 0x0250
-     53e:	85 e5       	ldi	r24, 0x55	; 85
+     53e:	84 e5       	ldi	r24, 0x54	; 84
      540:	91 e0       	ldi	r25, 0x01	; 1
      542:	0e 94 77 0a 	call	0x14ee	; 0x14ee <can_get_status>
      546:	81 30       	cpi	r24, 0x01	; 1
@@ -1073,50 +1073,50 @@ void can_init_mobs(void)
 	{
 		id_array[0] = SUB1_ID0;
      5bc:	8a e1       	ldi	r24, 0x1A	; 26
-     5be:	80 93 23 02 	sts	0x0223, r24
+     5be:	80 93 22 02 	sts	0x0222, r24
 		id_array[1] = SUB1_ID1;
      5c2:	8b e1       	ldi	r24, 0x1B	; 27
-     5c4:	80 93 24 02 	sts	0x0224, r24
+     5c4:	80 93 23 02 	sts	0x0223, r24
 		id_array[2] = SUB1_ID2;
      5c8:	8c e1       	ldi	r24, 0x1C	; 28
-     5ca:	80 93 25 02 	sts	0x0225, r24
+     5ca:	80 93 24 02 	sts	0x0224, r24
 		id_array[3] = SUB1_ID3;
      5ce:	8d e1       	ldi	r24, 0x1D	; 29
-     5d0:	80 93 26 02 	sts	0x0226, r24
+     5d0:	80 93 25 02 	sts	0x0225, r24
 		id_array[4] = SUB1_ID4;
      5d4:	8e e1       	ldi	r24, 0x1E	; 30
-     5d6:	80 93 27 02 	sts	0x0227, r24
+     5d6:	80 93 26 02 	sts	0x0226, r24
 		id_array[5] = SUB1_ID5;
      5da:	8f e1       	ldi	r24, 0x1F	; 31
-     5dc:	80 93 28 02 	sts	0x0228, r24
+     5dc:	80 93 27 02 	sts	0x0227, r24
 		id_array[4] = SUB2_ID4;
 		id_array[5] = SUB2_ID5;
 	}
 	
 	/* INITIALIZE MOB0 */		 // Data reception mailbox.
 	message.pt_data = &data0[0]; // point message object to first element of data buffer
-     5e0:	8c e0       	ldi	r24, 0x0C	; 12
+     5e0:	8b e0       	ldi	r24, 0x0B	; 11
      5e2:	92 e0       	ldi	r25, 0x02	; 2
-     5e4:	90 93 5d 01 	sts	0x015D, r25
-     5e8:	80 93 5c 01 	sts	0x015C, r24
+     5e4:	90 93 5c 01 	sts	0x015C, r25
+     5e8:	80 93 5b 01 	sts	0x015B, r24
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
-     5ec:	10 92 60 01 	sts	0x0160, r1
+     5ec:	10 92 5f 01 	sts	0x015F, r1
 	message.id.std = id_array[0];  // populate ID field with ID Tag
      5f0:	8a e1       	ldi	r24, 0x1A	; 26
      5f2:	90 e0       	ldi	r25, 0x00	; 0
-     5f4:	90 93 58 01 	sts	0x0158, r25
-     5f8:	80 93 57 01 	sts	0x0157, r24
+     5f4:	90 93 57 01 	sts	0x0157, r25
+     5f8:	80 93 56 01 	sts	0x0156, r24
 	message.cmd = CMD_RX_DATA;   // assign this as a receiving message object.
      5fc:	85 e0       	ldi	r24, 0x05	; 5
-     5fe:	80 93 56 01 	sts	0x0156, r24
+     5fe:	80 93 55 01 	sts	0x0155, r24
 	message.dlc = 8;			 // Max length of a CAN message.
      602:	88 e0       	ldi	r24, 0x08	; 8
-     604:	80 93 5b 01 	sts	0x015B, r24
+     604:	80 93 5a 01 	sts	0x015A, r24
 	mob_number = 0;
      608:	10 92 50 02 	sts	0x0250, r1
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
      60c:	60 91 50 02 	lds	r22, 0x0250
-     610:	85 e5       	ldi	r24, 0x55	; 85
+     610:	84 e5       	ldi	r24, 0x54	; 84
      612:	91 e0       	ldi	r25, 0x01	; 1
      614:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      618:	81 11       	cpse	r24, r1
@@ -1126,27 +1126,27 @@ void can_init_mobs(void)
 	message.pt_data = &data1[0];
      61c:	84 e1       	ldi	r24, 0x14	; 20
      61e:	91 e0       	ldi	r25, 0x01	; 1
-     620:	90 93 5d 01 	sts	0x015D, r25
-     624:	80 93 5c 01 	sts	0x015C, r24
+     620:	90 93 5c 01 	sts	0x015C, r25
+     624:	80 93 5b 01 	sts	0x015B, r24
 	message.ctrl.ide = 0;
-     628:	10 92 60 01 	sts	0x0160, r1
+     628:	10 92 5f 01 	sts	0x015F, r1
 	message.id.std = id_array[1];
-     62c:	80 91 24 02 	lds	r24, 0x0224
+     62c:	80 91 23 02 	lds	r24, 0x0223
      630:	90 e0       	ldi	r25, 0x00	; 0
-     632:	90 93 58 01 	sts	0x0158, r25
-     636:	80 93 57 01 	sts	0x0157, r24
+     632:	90 93 57 01 	sts	0x0157, r25
+     636:	80 93 56 01 	sts	0x0156, r24
 	message.cmd = CMD_RX_DATA;
      63a:	85 e0       	ldi	r24, 0x05	; 5
-     63c:	80 93 56 01 	sts	0x0156, r24
+     63c:	80 93 55 01 	sts	0x0155, r24
 	message.dlc = 8;
      640:	88 e0       	ldi	r24, 0x08	; 8
-     642:	80 93 5b 01 	sts	0x015B, r24
+     642:	80 93 5a 01 	sts	0x015A, r24
 	mob_number = 1;
      646:	81 e0       	ldi	r24, 0x01	; 1
      648:	80 93 50 02 	sts	0x0250, r24
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
      64c:	60 91 50 02 	lds	r22, 0x0250
-     650:	85 e5       	ldi	r24, 0x55	; 85
+     650:	84 e5       	ldi	r24, 0x54	; 84
      652:	91 e0       	ldi	r25, 0x01	; 1
      654:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      658:	81 11       	cpse	r24, r1
@@ -1156,27 +1156,27 @@ void can_init_mobs(void)
 	message.pt_data = &data2[0];
      65c:	8c e1       	ldi	r24, 0x1C	; 28
      65e:	91 e0       	ldi	r25, 0x01	; 1
-     660:	90 93 5d 01 	sts	0x015D, r25
-     664:	80 93 5c 01 	sts	0x015C, r24
+     660:	90 93 5c 01 	sts	0x015C, r25
+     664:	80 93 5b 01 	sts	0x015B, r24
 	message.ctrl.ide = 0;
-     668:	10 92 60 01 	sts	0x0160, r1
+     668:	10 92 5f 01 	sts	0x015F, r1
 	message.id.std = id_array[2];
-     66c:	80 91 25 02 	lds	r24, 0x0225
+     66c:	80 91 24 02 	lds	r24, 0x0224
      670:	90 e0       	ldi	r25, 0x00	; 0
-     672:	90 93 58 01 	sts	0x0158, r25
-     676:	80 93 57 01 	sts	0x0157, r24
+     672:	90 93 57 01 	sts	0x0157, r25
+     676:	80 93 56 01 	sts	0x0156, r24
 	message.cmd = CMD_RX_DATA;
      67a:	85 e0       	ldi	r24, 0x05	; 5
-     67c:	80 93 56 01 	sts	0x0156, r24
+     67c:	80 93 55 01 	sts	0x0155, r24
 	message.dlc = 8;
      680:	88 e0       	ldi	r24, 0x08	; 8
-     682:	80 93 5b 01 	sts	0x015B, r24
+     682:	80 93 5a 01 	sts	0x015A, r24
 	mob_number = 2;
      686:	82 e0       	ldi	r24, 0x02	; 2
      688:	80 93 50 02 	sts	0x0250, r24
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
      68c:	60 91 50 02 	lds	r22, 0x0250
-     690:	85 e5       	ldi	r24, 0x55	; 85
+     690:	84 e5       	ldi	r24, 0x54	; 84
      692:	91 e0       	ldi	r25, 0x01	; 1
      694:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      698:	81 11       	cpse	r24, r1
@@ -1184,29 +1184,29 @@ void can_init_mobs(void)
 	
 	/* INITIALIZE MOB3 */		 // Time-check mailbox.
 	message.pt_data = &data3[0];
-     69c:	8b e2       	ldi	r24, 0x2B	; 43
+     69c:	8a e2       	ldi	r24, 0x2A	; 42
      69e:	92 e0       	ldi	r25, 0x02	; 2
-     6a0:	90 93 5d 01 	sts	0x015D, r25
-     6a4:	80 93 5c 01 	sts	0x015C, r24
+     6a0:	90 93 5c 01 	sts	0x015C, r25
+     6a4:	80 93 5b 01 	sts	0x015B, r24
 	message.ctrl.ide = 0;
-     6a8:	10 92 60 01 	sts	0x0160, r1
+     6a8:	10 92 5f 01 	sts	0x015F, r1
 	message.id.std = id_array[3];
-     6ac:	80 91 26 02 	lds	r24, 0x0226
+     6ac:	80 91 25 02 	lds	r24, 0x0225
      6b0:	90 e0       	ldi	r25, 0x00	; 0
-     6b2:	90 93 58 01 	sts	0x0158, r25
-     6b6:	80 93 57 01 	sts	0x0157, r24
+     6b2:	90 93 57 01 	sts	0x0157, r25
+     6b6:	80 93 56 01 	sts	0x0156, r24
 	message.cmd = CMD_RX_DATA;
      6ba:	85 e0       	ldi	r24, 0x05	; 5
-     6bc:	80 93 56 01 	sts	0x0156, r24
+     6bc:	80 93 55 01 	sts	0x0155, r24
 	message.dlc = 8;
      6c0:	88 e0       	ldi	r24, 0x08	; 8
-     6c2:	80 93 5b 01 	sts	0x015B, r24
+     6c2:	80 93 5a 01 	sts	0x015A, r24
 	mob_number = 3;
      6c6:	83 e0       	ldi	r24, 0x03	; 3
      6c8:	80 93 50 02 	sts	0x0250, r24
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
      6cc:	60 91 50 02 	lds	r22, 0x0250
-     6d0:	85 e5       	ldi	r24, 0x55	; 85
+     6d0:	84 e5       	ldi	r24, 0x54	; 84
      6d2:	91 e0       	ldi	r25, 0x01	; 1
      6d4:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      6d8:	81 11       	cpse	r24, r1
@@ -1217,39 +1217,39 @@ void can_init_mobs(void)
 	message.pt_data = &data5[0];	// point message object to first element of data buffer
      6dc:	84 e4       	ldi	r24, 0x44	; 68
      6de:	92 e0       	ldi	r25, 0x02	; 2
-     6e0:	90 93 5d 01 	sts	0x015D, r25
-     6e4:	80 93 5c 01 	sts	0x015C, r24
+     6e0:	90 93 5c 01 	sts	0x015C, r25
+     6e4:	80 93 5b 01 	sts	0x015B, r24
 	message.ctrl.ide = 0;			// standard CAN frame type (2.0A)
-     6e8:	10 92 60 01 	sts	0x0160, r1
+     6e8:	10 92 5f 01 	sts	0x015F, r1
 	message.id.std = id_array[5];		// populate ID field with ID Tag
-     6ec:	80 91 28 02 	lds	r24, 0x0228
+     6ec:	80 91 27 02 	lds	r24, 0x0227
      6f0:	90 e0       	ldi	r25, 0x00	; 0
-     6f2:	90 93 58 01 	sts	0x0158, r25
-     6f6:	80 93 57 01 	sts	0x0157, r24
+     6f2:	90 93 57 01 	sts	0x0157, r25
+     6f6:	80 93 56 01 	sts	0x0156, r24
 	message.cmd = CMD_RX_DATA;		// assign this as a producer message object (Housekeeping MOB).
      6fa:	85 e0       	ldi	r24, 0x05	; 5
-     6fc:	80 93 56 01 	sts	0x0156, r24
+     6fc:	80 93 55 01 	sts	0x0155, r24
 	message.dlc = 8;				// Max length of a CAN message.
      700:	98 e0       	ldi	r25, 0x08	; 8
-     702:	90 93 5b 01 	sts	0x015B, r25
+     702:	90 93 5a 01 	sts	0x015A, r25
 	mob_number = 5;
      706:	80 93 50 02 	sts	0x0250, r24
 	
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOB to configure
      70a:	60 91 50 02 	lds	r22, 0x0250
-     70e:	85 e5       	ldi	r24, 0x55	; 85
+     70e:	84 e5       	ldi	r24, 0x54	; 84
      710:	91 e0       	ldi	r25, 0x01	; 1
      712:	0e 94 4b 04 	call	0x896	; 0x896 <can_cmd>
      716:	81 11       	cpse	r24, r1
      718:	f8 cf       	rjmp	.-16     	; 0x70a <can_init_mobs+0x164>
      71a:	0f 2e       	mov	r0, r31
-     71c:	fb e1       	ldi	r31, 0x1B	; 27
+     71c:	fa e1       	ldi	r31, 0x1A	; 26
      71e:	cf 2e       	mov	r12, r31
      720:	f2 e0       	ldi	r31, 0x02	; 2
      722:	df 2e       	mov	r13, r31
      724:	f0 2d       	mov	r31, r0
      726:	0f 2e       	mov	r0, r31
-     728:	f6 e2       	ldi	r31, 0x26	; 38
+     728:	f5 e2       	ldi	r31, 0x25	; 37
      72a:	ef 2e       	mov	r14, r31
      72c:	f1 e0       	ldi	r31, 0x01	; 1
      72e:	ff 2e       	mov	r15, r31
@@ -1258,13 +1258,13 @@ void can_init_mobs(void)
      734:	12 e0       	ldi	r17, 0x02	; 2
      736:	61 e0       	ldi	r22, 0x01	; 1
      738:	71 e0       	ldi	r23, 0x01	; 1
-     73a:	41 e6       	ldi	r20, 0x61	; 97
+     73a:	40 e6       	ldi	r20, 0x60	; 96
      73c:	51 e0       	ldi	r21, 0x01	; 1
-     73e:	29 e4       	ldi	r18, 0x49	; 73
+     73e:	28 e4       	ldi	r18, 0x48	; 72
      740:	31 e0       	ldi	r19, 0x01	; 1
      742:	80 e6       	ldi	r24, 0x60	; 96
      744:	92 e0       	ldi	r25, 0x02	; 2
-     746:	cc e3       	ldi	r28, 0x3C	; 60
+     746:	cb e3       	ldi	r28, 0x3B	; 59
      748:	d1 e0       	ldi	r29, 0x01	; 1
      74a:	a8 e3       	ldi	r26, 0x38	; 56
      74c:	b2 e0       	ldi	r27, 0x02	; 2
@@ -1324,11 +1324,11 @@ void can_init_mobs(void)
 	
 	for (i = 0; i < 8; i ++)
      796:	21 f7       	brne	.-56     	; 0x760 <can_init_mobs+0x1ba>
-     798:	ed e7       	ldi	r30, 0x7D	; 125
+     798:	ec e7       	ldi	r30, 0x7C	; 124
      79a:	f1 e0       	ldi	r31, 0x01	; 1
      79c:	ab e6       	ldi	r26, 0x6B	; 107
      79e:	b2 e0       	ldi	r27, 0x02	; 2
-     7a0:	8c e0       	ldi	r24, 0x0C	; 12
+     7a0:	8b e0       	ldi	r24, 0x0B	; 11
      7a2:	92 e0       	ldi	r25, 0x02	; 2
 		new_tc_msg[i] = 0;
 	}
@@ -1354,29 +1354,29 @@ void can_init_mobs(void)
 	
 	/* Initialize Global Command Flags to zero */
 	send_now = 0;
-     7ae:	10 92 72 01 	sts	0x0172, r1
+     7ae:	10 92 71 01 	sts	0x0171, r1
 	send_hk = 0;
-     7b2:	10 92 14 02 	sts	0x0214, r1
+     7b2:	10 92 13 02 	sts	0x0213, r1
 	send_data = 0;
-     7b6:	10 92 36 02 	sts	0x0236, r1
+     7b6:	10 92 35 02 	sts	0x0235, r1
 	read_response = 0;
-     7ba:	10 92 7c 01 	sts	0x017C, r1
+     7ba:	10 92 7b 01 	sts	0x017B, r1
 	write_response = 0;
-     7be:	10 92 48 01 	sts	0x0148, r1
+     7be:	10 92 47 01 	sts	0x0147, r1
 	set_sens_h = 0;
-     7c2:	10 92 33 02 	sts	0x0233, r1
+     7c2:	10 92 32 02 	sts	0x0232, r1
 	set_sens_l = 0;
      7c6:	10 92 37 02 	sts	0x0237, r1
-	set_var = 0;
-     7ca:	10 92 24 01 	sts	0x0124, r1
+	set_varf = 0;
+     7ca:	10 92 36 02 	sts	0x0236, r1
 	new_tm_msgf = 0;
-     7ce:	10 92 73 01 	sts	0x0173, r1
+     7ce:	10 92 72 01 	sts	0x0172, r1
 	tm_sequence_count = 0;
      7d2:	10 92 00 01 	sts	0x0100, r1
 	current_tm_fullf = 0;
-     7d6:	10 92 35 02 	sts	0x0235, r1
+     7d6:	10 92 34 02 	sts	0x0234, r1
 	tc_packet_readyf = 0;
-     7da:	10 92 34 02 	sts	0x0234, r1
+     7da:	10 92 33 02 	sts	0x0233, r1
 	
 	return;
 }
@@ -1694,7 +1694,7 @@ uint8_t can_cmd(st_cmd_t* cmd, uint8_t mob_number)
      914:	e0 c5       	rjmp	.+3008   	; 0x14d6 <__stack+0xbd7>
      916:	e3 5b       	subi	r30, 0xB3	; 179
      918:	ff 4f       	sbci	r31, 0xFF	; 255
-     91a:	0c 94 d6 0f 	jmp	0x1fac	; 0x1fac <__tablejump2__>
+     91a:	0c 94 c1 0f 	jmp	0x1f82	; 0x1f82 <__tablejump2__>
           Can_set_idemsk();
           Can_config_rx();       
           break;
@@ -3763,27 +3763,27 @@ static void send_tm_transaction_response(uint8_t req_by, uint8_t code)
 {			
 	send_arr[7] = (SELF_ID << 4)|req_by;
     16ba:	80 61       	ori	r24, 0x10	; 16
-    16bc:	80 93 2d 01 	sts	0x012D, r24
+    16bc:	80 93 2c 01 	sts	0x012C, r24
 	send_arr[6] = MT_COM;
     16c0:	82 e0       	ldi	r24, 0x02	; 2
-    16c2:	80 93 2c 01 	sts	0x012C, r24
+    16c2:	80 93 2b 01 	sts	0x012B, r24
 	send_arr[5] = TM_TRANSACTION_RESP;
     16c6:	83 e1       	ldi	r24, 0x13	; 19
-    16c8:	80 93 2b 01 	sts	0x012B, r24
+    16c8:	80 93 2a 01 	sts	0x012A, r24
 	send_arr[4] = CURRENT_MINUTE;
-    16cc:	80 91 6f 01 	lds	r24, 0x016F
-    16d0:	80 93 2a 01 	sts	0x012A, r24
+    16cc:	80 91 6e 01 	lds	r24, 0x016E
+    16d0:	80 93 29 01 	sts	0x0129, r24
 	send_arr[3] = 0;
-    16d4:	10 92 29 01 	sts	0x0129, r1
+    16d4:	10 92 28 01 	sts	0x0128, r1
 	send_arr[2] = 0;
-    16d8:	10 92 28 01 	sts	0x0128, r1
+    16d8:	10 92 27 01 	sts	0x0127, r1
 	send_arr[1] = 0;
-    16dc:	10 92 27 01 	sts	0x0127, r1
+    16dc:	10 92 26 01 	sts	0x0126, r1
 	send_arr[0] = code;
-    16e0:	60 93 26 01 	sts	0x0126, r22
+    16e0:	60 93 25 01 	sts	0x0125, r22
 	can_send_message(&(send_arr[0]), CAN1_MB7);
     16e4:	61 e1       	ldi	r22, 0x11	; 17
-    16e6:	86 e2       	ldi	r24, 0x26	; 38
+    16e6:	85 e2       	ldi	r24, 0x25	; 37
     16e8:	91 e0       	ldi	r25, 0x01	; 1
     16ea:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
     16ee:	08 95       	ret
@@ -3796,24 +3796,24 @@ void send_response(void)
 {
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
     16f0:	83 e1       	ldi	r24, 0x13	; 19
-    16f2:	80 93 2d 01 	sts	0x012D, r24
+    16f2:	80 93 2c 01 	sts	0x012C, r24
 	send_arr[6] = MT_COM;
     16f6:	82 e0       	ldi	r24, 0x02	; 2
-    16f8:	80 93 2c 01 	sts	0x012C, r24
+    16f8:	80 93 2b 01 	sts	0x012B, r24
 	send_arr[5] = RESPONSE;
     16fc:	84 e0       	ldi	r24, 0x04	; 4
-    16fe:	80 93 2b 01 	sts	0x012B, r24
+    16fe:	80 93 2a 01 	sts	0x012A, r24
 	send_arr[4] = CURRENT_MINUTE;
-    1702:	80 91 6f 01 	lds	r24, 0x016F
-    1706:	80 93 2a 01 	sts	0x012A, r24
+    1702:	80 91 6e 01 	lds	r24, 0x016E
+    1706:	80 93 29 01 	sts	0x0129, r24
 
 	can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
     170a:	61 e1       	ldi	r22, 0x11	; 17
-    170c:	86 e2       	ldi	r24, 0x26	; 38
+    170c:	85 e2       	ldi	r24, 0x25	; 37
     170e:	91 e0       	ldi	r25, 0x01	; 1
     1710:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
 	send_now = 0;
-    1714:	10 92 72 01 	sts	0x0172, r1
+    1714:	10 92 71 01 	sts	0x0171, r1
     1718:	08 95       	ret
 
 0000171a <send_housekeeping>:
@@ -3824,21 +3824,21 @@ void send_housekeeping(void)
 {	
 	send_arr[7] = (SELF_ID << 4)|HK_TASK_ID;
     171a:	84 e1       	ldi	r24, 0x14	; 20
-    171c:	80 93 2d 01 	sts	0x012D, r24
+    171c:	80 93 2c 01 	sts	0x012C, r24
 	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
     1720:	81 e0       	ldi	r24, 0x01	; 1
-    1722:	80 93 2c 01 	sts	0x012C, r24
+    1722:	80 93 2b 01 	sts	0x012B, r24
 	send_arr[4] = CURRENT_MINUTE;
-    1726:	80 91 6f 01 	lds	r24, 0x016F
-    172a:	80 93 2a 01 	sts	0x012A, r24
+    1726:	80 91 6e 01 	lds	r24, 0x016E
+    172a:	80 93 29 01 	sts	0x0129, r24
 
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
     172e:	60 e1       	ldi	r22, 0x10	; 16
-    1730:	86 e2       	ldi	r24, 0x26	; 38
+    1730:	85 e2       	ldi	r24, 0x25	; 37
     1732:	91 e0       	ldi	r25, 0x01	; 1
     1734:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
 	send_hk = 0;
-    1738:	10 92 14 02 	sts	0x0214, r1
+    1738:	10 92 13 02 	sts	0x0213, r1
     173c:	08 95       	ret
 
 0000173e <send_sensor_data>:
@@ -3857,9 +3857,9 @@ void send_sensor_data(void)
     174a:	de b7       	in	r29, 0x3e	; 62
 	uint8_t high, low, sensor_name, req_by;			
 	sensor_name = data_req_arr[3];
-    174c:	10 91 64 01 	lds	r17, 0x0164
+    174c:	10 91 63 01 	lds	r17, 0x0163
 	req_by = data_req_arr[7] >> 4;
-    1750:	00 91 68 01 	lds	r16, 0x0168
+    1750:	00 91 67 01 	lds	r16, 0x0167
     1754:	02 95       	swap	r16
     1756:	0f 70       	andi	r16, 0x0F	; 15
 	
@@ -3873,13 +3873,13 @@ void send_sensor_data(void)
     1760:	7f 4f       	sbci	r23, 0xFF	; 255
     1762:	ce 01       	movw	r24, r28
     1764:	01 96       	adiw	r24, 0x01	; 1
-    1766:	0e 94 7a 0f 	call	0x1ef4	; 0x1ef4 <spi_retrieve_temp>
+    1766:	0e 94 65 0f 	call	0x1eca	; 0x1eca <spi_retrieve_temp>
 		send_arr[1] = high;			// SPI temperature sensor readings.
     176a:	89 81       	ldd	r24, Y+1	; 0x01
-    176c:	80 93 27 01 	sts	0x0127, r24
+    176c:	80 93 26 01 	sts	0x0126, r24
 		send_arr[0] = low;
     1770:	8a 81       	ldd	r24, Y+2	; 0x02
-    1772:	80 93 26 01 	sts	0x0126, r24
+    1772:	80 93 25 01 	sts	0x0125, r24
 	//}
 	//if(sensor_name == OBC_I)
 	//{
@@ -3887,22 +3887,22 @@ void send_sensor_data(void)
 
 	send_arr[7] = (SELF_ID << 4)|req_by;
     1776:	00 61       	ori	r16, 0x10	; 16
-    1778:	00 93 2d 01 	sts	0x012D, r16
+    1778:	00 93 2c 01 	sts	0x012C, r16
 	send_arr[6] = MT_DATA;
-    177c:	10 92 2c 01 	sts	0x012C, r1
+    177c:	10 92 2b 01 	sts	0x012B, r1
 	send_arr[5] = sensor_name;
-    1780:	10 93 2b 01 	sts	0x012B, r17
+    1780:	10 93 2a 01 	sts	0x012A, r17
 	send_arr[4] = CURRENT_MINUTE;			
-    1784:	80 91 6f 01 	lds	r24, 0x016F
-    1788:	80 93 2a 01 	sts	0x012A, r24
+    1784:	80 91 6e 01 	lds	r24, 0x016E
+    1788:	80 93 29 01 	sts	0x0129, r24
 			
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
     178c:	6a e0       	ldi	r22, 0x0A	; 10
-    178e:	86 e2       	ldi	r24, 0x26	; 38
+    178e:	85 e2       	ldi	r24, 0x25	; 37
     1790:	91 e0       	ldi	r25, 0x01	; 1
     1792:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
 	send_data = 0;
-    1796:	10 92 36 02 	sts	0x0236, r1
+    1796:	10 92 35 02 	sts	0x0235, r1
 	
 	return;
 }
@@ -3922,22 +3922,22 @@ void send_coms_packet(void)
 {			
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
     17a8:	83 e1       	ldi	r24, 0x13	; 19
-    17aa:	80 93 2d 01 	sts	0x012D, r24
+    17aa:	80 93 2c 01 	sts	0x012C, r24
 	send_arr[6] = MT_DATA;
-    17ae:	10 92 2c 01 	sts	0x012C, r1
+    17ae:	10 92 2b 01 	sts	0x012B, r1
 	send_arr[5] = COMS_PACKET;
     17b2:	82 e0       	ldi	r24, 0x02	; 2
-    17b4:	80 93 2b 01 	sts	0x012B, r24
+    17b4:	80 93 2a 01 	sts	0x012A, r24
 	send_arr[4] = CURRENT_MINUTE;
-    17b8:	80 91 6f 01 	lds	r24, 0x016F
-    17bc:	80 93 2a 01 	sts	0x012A, r24
+    17b8:	80 91 6e 01 	lds	r24, 0x016E
+    17bc:	80 93 29 01 	sts	0x0129, r24
 	send_arr[0] = trans_msg[0];	// ASCII character which was received.
-    17c0:	80 91 76 01 	lds	r24, 0x0176
-    17c4:	80 93 26 01 	sts	0x0126, r24
+    17c0:	80 91 75 01 	lds	r24, 0x0175
+    17c4:	80 93 25 01 	sts	0x0125, r24
 	
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
     17c8:	6a e0       	ldi	r22, 0x0A	; 10
-    17ca:	86 e2       	ldi	r24, 0x26	; 38
+    17ca:	85 e2       	ldi	r24, 0x25	; 37
     17cc:	91 e0       	ldi	r25, 0x01	; 1
     17ce:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
 	msg_received = 0;
@@ -3964,28 +3964,28 @@ void send_read_response(void)
 	send_arr[7] = (SELF_ID << 4)|req_by;
     17e4:	20 91 03 03 	lds	r18, 0x0303
     17e8:	20 61       	ori	r18, 0x10	; 16
-    17ea:	20 93 2d 01 	sts	0x012D, r18
+    17ea:	20 93 2c 01 	sts	0x012C, r18
 	send_arr[6] = MT_COM;
     17ee:	22 e0       	ldi	r18, 0x02	; 2
-    17f0:	20 93 2c 01 	sts	0x012C, r18
+    17f0:	20 93 2b 01 	sts	0x012B, r18
 	send_arr[5] = ACK_READ;
     17f4:	26 e0       	ldi	r18, 0x06	; 6
-    17f6:	20 93 2b 01 	sts	0x012B, r18
+    17f6:	20 93 2a 01 	sts	0x012A, r18
 	send_arr[4] = CURRENT_MINUTE;
-    17fa:	20 91 6f 01 	lds	r18, 0x016F
-    17fe:	20 93 2a 01 	sts	0x012A, r18
+    17fa:	20 91 6e 01 	lds	r18, 0x016E
+    17fe:	20 93 29 01 	sts	0x0129, r18
 	send_arr[3] = passkey;
-    1802:	90 93 29 01 	sts	0x0129, r25
+    1802:	90 93 28 01 	sts	0x0128, r25
 	send_arr[0] = read_val;
-    1806:	80 93 26 01 	sts	0x0126, r24
+    1806:	80 93 25 01 	sts	0x0125, r24
 	
 	can_send_message(&(send_arr[0]), CAN1_MB7);
     180a:	61 e1       	ldi	r22, 0x11	; 17
-    180c:	86 e2       	ldi	r24, 0x26	; 38
+    180c:	85 e2       	ldi	r24, 0x25	; 37
     180e:	91 e0       	ldi	r25, 0x01	; 1
     1810:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
 	read_response = 0;
-    1814:	10 92 7c 01 	sts	0x017C, r1
+    1814:	10 92 7b 01 	sts	0x017B, r1
     1818:	08 95       	ret
 
 0000181a <send_write_response>:
@@ -4022,48 +4022,48 @@ void send_write_response(void)
 	
 	send_arr[7] = (SELF_ID << 4)|req_by;
     182e:	90 61       	ori	r25, 0x10	; 16
-    1830:	90 93 2d 01 	sts	0x012D, r25
+    1830:	90 93 2c 01 	sts	0x012C, r25
 	send_arr[6] = MT_COM;
     1834:	92 e0       	ldi	r25, 0x02	; 2
-    1836:	90 93 2c 01 	sts	0x012C, r25
+    1836:	90 93 2b 01 	sts	0x012B, r25
 	send_arr[5] = ACK_WRITE;
     183a:	98 e0       	ldi	r25, 0x08	; 8
-    183c:	90 93 2b 01 	sts	0x012B, r25
+    183c:	90 93 2a 01 	sts	0x012A, r25
 	send_arr[4] = CURRENT_MINUTE;
-    1840:	90 91 6f 01 	lds	r25, 0x016F
-    1844:	90 93 2a 01 	sts	0x012A, r25
+    1840:	90 91 6e 01 	lds	r25, 0x016E
+    1844:	90 93 29 01 	sts	0x0129, r25
 	send_arr[3] = passkey;
-    1848:	80 93 29 01 	sts	0x0129, r24
+    1848:	80 93 28 01 	sts	0x0128, r24
 	send_arr[0] = ret_val;
     184c:	81 e0       	ldi	r24, 0x01	; 1
-    184e:	80 93 26 01 	sts	0x0126, r24
+    184e:	80 93 25 01 	sts	0x0125, r24
 	
 	can_send_message(&(send_arr[0]), CAN1_MB7);
     1852:	61 e1       	ldi	r22, 0x11	; 17
-    1854:	86 e2       	ldi	r24, 0x26	; 38
+    1854:	85 e2       	ldi	r24, 0x25	; 37
     1856:	91 e0       	ldi	r25, 0x01	; 1
     1858:	0e 94 82 00 	call	0x104	; 0x104 <can_send_message>
 	write_response = 0;
-    185c:	10 92 48 01 	sts	0x0148, r1
+    185c:	10 92 47 01 	sts	0x0147, r1
     1860:	08 95       	ret
 
-00001862 <set_sensor_highf>:
+00001862 <set_sensor_high>:
 
-void set_sensor_highf(void)
+void set_sensor_high(void)
 {
 	uint8_t sensor_name, req_by;
 	uint16_t high = 0;
 	sensor_name = sensh_arr[3];
-    1862:	20 91 4c 01 	lds	r18, 0x014C
+    1862:	20 91 4b 01 	lds	r18, 0x014B
 	req_by = sensh_arr[7] >> 4;
 	
 	if(sensor_name == EPS_TEMP)
     1866:	2a 30       	cpi	r18, 0x0A	; 10
-    1868:	69 f4       	brne	.+26     	; 0x1884 <set_sensor_highf+0x22>
+    1868:	69 f4       	brne	.+26     	; 0x1884 <set_sensor_high+0x22>
 	{
 		epstemp_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    186a:	80 91 4a 01 	lds	r24, 0x014A
+    186a:	80 91 49 01 	lds	r24, 0x0149
     186e:	90 e0       	ldi	r25, 0x00	; 0
 		epstemp_high |= (high << 8);
     1870:	98 2f       	mov	r25, r24
@@ -4074,22 +4074,22 @@ void set_sensor_highf(void)
 	if(sensor_name == EPS_TEMP)
 	{
 		epstemp_high = sensh_arr[0];
-    1874:	30 91 49 01 	lds	r19, 0x0149
+    1874:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		epstemp_high |= (high << 8);
     1878:	83 2b       	or	r24, r19
-    187a:	90 93 2f 01 	sts	0x012F, r25
-    187e:	80 93 2e 01 	sts	0x012E, r24
-    1882:	1e c0       	rjmp	.+60     	; 0x18c0 <set_sensor_highf+0x5e>
+    187a:	90 93 2e 01 	sts	0x012E, r25
+    187e:	80 93 2d 01 	sts	0x012D, r24
+    1882:	1e c0       	rjmp	.+60     	; 0x18c0 <set_sensor_high+0x5e>
 	}
 	
 	if(sensor_name == PANELX_V)
     1884:	21 30       	cpi	r18, 0x01	; 1
-    1886:	69 f4       	brne	.+26     	; 0x18a2 <set_sensor_highf+0x40>
+    1886:	69 f4       	brne	.+26     	; 0x18a2 <set_sensor_high+0x40>
 	{
 		pxv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    1888:	80 91 4a 01 	lds	r24, 0x014A
+    1888:	80 91 49 01 	lds	r24, 0x0149
     188c:	90 e0       	ldi	r25, 0x00	; 0
 		pxv_high |= (high << 8);		
     188e:	98 2f       	mov	r25, r24
@@ -4100,22 +4100,22 @@ void set_sensor_highf(void)
 	if(sensor_name == PANELX_V)
 	{
 		pxv_high = sensh_arr[0];
-    1892:	30 91 49 01 	lds	r19, 0x0149
+    1892:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		pxv_high |= (high << 8);		
     1896:	83 2b       	or	r24, r19
-    1898:	90 93 71 01 	sts	0x0171, r25
-    189c:	80 93 70 01 	sts	0x0170, r24
-    18a0:	1e c0       	rjmp	.+60     	; 0x18de <set_sensor_highf+0x7c>
+    1898:	90 93 70 01 	sts	0x0170, r25
+    189c:	80 93 6f 01 	sts	0x016F, r24
+    18a0:	1e c0       	rjmp	.+60     	; 0x18de <set_sensor_high+0x7c>
 	}
 	
 	if(sensor_name == PANELX_I)
     18a2:	22 30       	cpi	r18, 0x02	; 2
-    18a4:	69 f4       	brne	.+26     	; 0x18c0 <set_sensor_highf+0x5e>
+    18a4:	69 f4       	brne	.+26     	; 0x18c0 <set_sensor_high+0x5e>
 	{
 		pxi_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    18a6:	80 91 4a 01 	lds	r24, 0x014A
+    18a6:	80 91 49 01 	lds	r24, 0x0149
     18aa:	90 e0       	ldi	r25, 0x00	; 0
 		pxi_high |= (high << 8);
     18ac:	98 2f       	mov	r25, r24
@@ -4126,21 +4126,21 @@ void set_sensor_highf(void)
 	if(sensor_name == PANELX_I)
 	{
 		pxi_high = sensh_arr[0];
-    18b0:	30 91 49 01 	lds	r19, 0x0149
+    18b0:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		pxi_high |= (high << 8);
     18b4:	83 2b       	or	r24, r19
     18b6:	90 93 6a 02 	sts	0x026A, r25
     18ba:	80 93 69 02 	sts	0x0269, r24
-    18be:	1e c0       	rjmp	.+60     	; 0x18fc <set_sensor_highf+0x9a>
+    18be:	1e c0       	rjmp	.+60     	; 0x18fc <set_sensor_high+0x9a>
 	}
 	if(sensor_name == PANELY_V)
     18c0:	23 30       	cpi	r18, 0x03	; 3
-    18c2:	69 f4       	brne	.+26     	; 0x18de <set_sensor_highf+0x7c>
+    18c2:	69 f4       	brne	.+26     	; 0x18de <set_sensor_high+0x7c>
 	{
 		pyv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    18c4:	80 91 4a 01 	lds	r24, 0x014A
+    18c4:	80 91 49 01 	lds	r24, 0x0149
     18c8:	90 e0       	ldi	r25, 0x00	; 0
 		pyv_high |= (high << 8);
     18ca:	98 2f       	mov	r25, r24
@@ -4151,21 +4151,21 @@ void set_sensor_highf(void)
 	if(sensor_name == PANELY_V)
 	{
 		pyv_high = sensh_arr[0];
-    18ce:	30 91 49 01 	lds	r19, 0x0149
+    18ce:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		pyv_high |= (high << 8);
     18d2:	83 2b       	or	r24, r19
     18d4:	90 93 11 01 	sts	0x0111, r25
     18d8:	80 93 10 01 	sts	0x0110, r24
-    18dc:	1e c0       	rjmp	.+60     	; 0x191a <set_sensor_highf+0xb8>
+    18dc:	1e c0       	rjmp	.+60     	; 0x191a <set_sensor_high+0xb8>
 	}
 	if(sensor_name == PANELY_I)
     18de:	24 30       	cpi	r18, 0x04	; 4
-    18e0:	69 f4       	brne	.+26     	; 0x18fc <set_sensor_highf+0x9a>
+    18e0:	69 f4       	brne	.+26     	; 0x18fc <set_sensor_high+0x9a>
 	{
 		pyi_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    18e2:	80 91 4a 01 	lds	r24, 0x014A
+    18e2:	80 91 49 01 	lds	r24, 0x0149
     18e6:	90 e0       	ldi	r25, 0x00	; 0
 		pyi_high |= (high << 8);
     18e8:	98 2f       	mov	r25, r24
@@ -4176,21 +4176,21 @@ void set_sensor_highf(void)
 	if(sensor_name == PANELY_I)
 	{
 		pyi_high = sensh_arr[0];
-    18ec:	30 91 49 01 	lds	r19, 0x0149
+    18ec:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		pyi_high |= (high << 8);
     18f0:	83 2b       	or	r24, r19
     18f2:	90 93 fb 02 	sts	0x02FB, r25
     18f6:	80 93 fa 02 	sts	0x02FA, r24
-    18fa:	1e c0       	rjmp	.+60     	; 0x1938 <set_sensor_highf+0xd6>
+    18fa:	1e c0       	rjmp	.+60     	; 0x1938 <set_sensor_high+0xd6>
 	}
 	if(sensor_name == BATTM_V)
     18fc:	25 30       	cpi	r18, 0x05	; 5
-    18fe:	69 f4       	brne	.+26     	; 0x191a <set_sensor_highf+0xb8>
+    18fe:	69 f4       	brne	.+26     	; 0x191a <set_sensor_high+0xb8>
 	{
 		battmv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    1900:	80 91 4a 01 	lds	r24, 0x014A
+    1900:	80 91 49 01 	lds	r24, 0x0149
     1904:	90 e0       	ldi	r25, 0x00	; 0
 		battmv_high |= (high << 8);
     1906:	98 2f       	mov	r25, r24
@@ -4201,21 +4201,21 @@ void set_sensor_highf(void)
 	if(sensor_name == BATTM_V)
 	{
 		battmv_high = sensh_arr[0];
-    190a:	30 91 49 01 	lds	r19, 0x0149
+    190a:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		battmv_high |= (high << 8);
     190e:	83 2b       	or	r24, r19
-    1910:	90 93 6e 01 	sts	0x016E, r25
-    1914:	80 93 6d 01 	sts	0x016D, r24
-    1918:	1e c0       	rjmp	.+60     	; 0x1956 <set_sensor_highf+0xf4>
+    1910:	90 93 6d 01 	sts	0x016D, r25
+    1914:	80 93 6c 01 	sts	0x016C, r24
+    1918:	1e c0       	rjmp	.+60     	; 0x1956 <set_sensor_high+0xf4>
 	}
 	if(sensor_name == BATT_V)
     191a:	26 30       	cpi	r18, 0x06	; 6
-    191c:	69 f4       	brne	.+26     	; 0x1938 <set_sensor_highf+0xd6>
+    191c:	69 f4       	brne	.+26     	; 0x1938 <set_sensor_high+0xd6>
 	{
 		battv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    191e:	80 91 4a 01 	lds	r24, 0x014A
+    191e:	80 91 49 01 	lds	r24, 0x0149
     1922:	90 e0       	ldi	r25, 0x00	; 0
 		battv_high |= (high << 8);
     1924:	98 2f       	mov	r25, r24
@@ -4226,21 +4226,21 @@ void set_sensor_highf(void)
 	if(sensor_name == BATT_V)
 	{
 		battv_high = sensh_arr[0];
-    1928:	30 91 49 01 	lds	r19, 0x0149
+    1928:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		battv_high |= (high << 8);
     192c:	83 2b       	or	r24, r19
     192e:	90 93 41 02 	sts	0x0241, r25
     1932:	80 93 40 02 	sts	0x0240, r24
-    1936:	1e c0       	rjmp	.+60     	; 0x1974 <set_sensor_highf+0x112>
+    1936:	1e c0       	rjmp	.+60     	; 0x1974 <set_sensor_high+0x112>
 	}
 	if(sensor_name == BATT_I)
     1938:	21 31       	cpi	r18, 0x11	; 17
-    193a:	69 f4       	brne	.+26     	; 0x1956 <set_sensor_highf+0xf4>
+    193a:	69 f4       	brne	.+26     	; 0x1956 <set_sensor_high+0xf4>
 	{
 		pxv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    193c:	80 91 4a 01 	lds	r24, 0x014A
+    193c:	80 91 49 01 	lds	r24, 0x0149
     1940:	90 e0       	ldi	r25, 0x00	; 0
 		pxv_high |= (high << 8);
     1942:	98 2f       	mov	r25, r24
@@ -4251,21 +4251,21 @@ void set_sensor_highf(void)
 	if(sensor_name == BATT_I)
 	{
 		pxv_high = sensh_arr[0];
-    1946:	30 91 49 01 	lds	r19, 0x0149
+    1946:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		pxv_high |= (high << 8);
     194a:	83 2b       	or	r24, r19
-    194c:	90 93 71 01 	sts	0x0171, r25
-    1950:	80 93 70 01 	sts	0x0170, r24
-    1954:	1e c0       	rjmp	.+60     	; 0x1992 <set_sensor_highf+0x130>
+    194c:	90 93 70 01 	sts	0x0170, r25
+    1950:	80 93 6f 01 	sts	0x016F, r24
+    1954:	1e c0       	rjmp	.+60     	; 0x1992 <set_sensor_high+0x130>
 	}
 	if(sensor_name == BATT_TEMP)
     1956:	29 30       	cpi	r18, 0x09	; 9
-    1958:	69 f4       	brne	.+26     	; 0x1974 <set_sensor_highf+0x112>
+    1958:	69 f4       	brne	.+26     	; 0x1974 <set_sensor_high+0x112>
 	{
 		battemp_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    195a:	80 91 4a 01 	lds	r24, 0x014A
+    195a:	80 91 49 01 	lds	r24, 0x0149
     195e:	90 e0       	ldi	r25, 0x00	; 0
 		battemp_high |= (high << 8);
     1960:	98 2f       	mov	r25, r24
@@ -4276,21 +4276,21 @@ void set_sensor_highf(void)
 	if(sensor_name == BATT_TEMP)
 	{
 		battemp_high = sensh_arr[0];
-    1964:	30 91 49 01 	lds	r19, 0x0149
+    1964:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		battemp_high |= (high << 8);
     1968:	83 2b       	or	r24, r19
     196a:	90 93 13 01 	sts	0x0113, r25
     196e:	80 93 12 01 	sts	0x0112, r24
-    1972:	1e c0       	rjmp	.+60     	; 0x19b0 <set_sensor_highf+0x14e>
+    1972:	1e c0       	rjmp	.+60     	; 0x19b0 <set_sensor_high+0x14e>
 	}
 	if(sensor_name == COMS_V)
     1974:	2b 30       	cpi	r18, 0x0B	; 11
-    1976:	69 f4       	brne	.+26     	; 0x1992 <set_sensor_highf+0x130>
+    1976:	69 f4       	brne	.+26     	; 0x1992 <set_sensor_high+0x130>
 	{
 		comsv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    1978:	80 91 4a 01 	lds	r24, 0x014A
+    1978:	80 91 49 01 	lds	r24, 0x0149
     197c:	90 e0       	ldi	r25, 0x00	; 0
 		comsv_high |= (high << 8);
     197e:	98 2f       	mov	r25, r24
@@ -4301,21 +4301,21 @@ void set_sensor_highf(void)
 	if(sensor_name == COMS_V)
 	{
 		comsv_high = sensh_arr[0];
-    1982:	30 91 49 01 	lds	r19, 0x0149
+    1982:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		comsv_high |= (high << 8);
     1986:	83 2b       	or	r24, r19
-    1988:	90 93 54 01 	sts	0x0154, r25
-    198c:	80 93 53 01 	sts	0x0153, r24
-    1990:	1e c0       	rjmp	.+60     	; 0x19ce <set_sensor_highf+0x16c>
+    1988:	90 93 53 01 	sts	0x0153, r25
+    198c:	80 93 52 01 	sts	0x0152, r24
+    1990:	1e c0       	rjmp	.+60     	; 0x19ce <set_sensor_high+0x16c>
 	}
 	if(sensor_name == COMS_I)
     1992:	2c 30       	cpi	r18, 0x0C	; 12
-    1994:	69 f4       	brne	.+26     	; 0x19b0 <set_sensor_highf+0x14e>
+    1994:	69 f4       	brne	.+26     	; 0x19b0 <set_sensor_high+0x14e>
 	{
 		comsi_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    1996:	80 91 4a 01 	lds	r24, 0x014A
+    1996:	80 91 49 01 	lds	r24, 0x0149
     199a:	90 e0       	ldi	r25, 0x00	; 0
 		comsi_high |= (high << 8);
     199c:	98 2f       	mov	r25, r24
@@ -4326,21 +4326,21 @@ void set_sensor_highf(void)
 	if(sensor_name == COMS_I)
 	{
 		comsi_high = sensh_arr[0];
-    19a0:	30 91 49 01 	lds	r19, 0x0149
+    19a0:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		comsi_high |= (high << 8);
     19a4:	83 2b       	or	r24, r19
-    19a6:	90 93 3b 01 	sts	0x013B, r25
-    19aa:	80 93 3a 01 	sts	0x013A, r24
-    19ae:	1e c0       	rjmp	.+60     	; 0x19ec <set_sensor_highf+0x18a>
+    19a6:	90 93 3a 01 	sts	0x013A, r25
+    19aa:	80 93 39 01 	sts	0x0139, r24
+    19ae:	1e c0       	rjmp	.+60     	; 0x19ec <set_sensor_high+0x18a>
 	}
 	if(sensor_name == PAY_V)
     19b0:	2d 30       	cpi	r18, 0x0D	; 13
-    19b2:	69 f4       	brne	.+26     	; 0x19ce <set_sensor_highf+0x16c>
+    19b2:	69 f4       	brne	.+26     	; 0x19ce <set_sensor_high+0x16c>
 	{
 		payv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    19b4:	80 91 4a 01 	lds	r24, 0x014A
+    19b4:	80 91 49 01 	lds	r24, 0x0149
     19b8:	90 e0       	ldi	r25, 0x00	; 0
 		payv_high |= (high << 8);
     19ba:	98 2f       	mov	r25, r24
@@ -4351,21 +4351,21 @@ void set_sensor_highf(void)
 	if(sensor_name == PAY_V)
 	{
 		payv_high = sensh_arr[0];
-    19be:	30 91 49 01 	lds	r19, 0x0149
+    19be:	30 91 48 01 	lds	r19, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		payv_high |= (high << 8);
     19c2:	83 2b       	or	r24, r19
     19c4:	90 93 0f 01 	sts	0x010F, r25
     19c8:	80 93 0e 01 	sts	0x010E, r24
-    19cc:	1e c0       	rjmp	.+60     	; 0x1a0a <set_sensor_highf+0x1a8>
+    19cc:	1e c0       	rjmp	.+60     	; 0x1a0a <set_sensor_high+0x1a8>
 	}
 	if(sensor_name == PAY_I)
     19ce:	2e 30       	cpi	r18, 0x0E	; 14
-    19d0:	69 f4       	brne	.+26     	; 0x19ec <set_sensor_highf+0x18a>
+    19d0:	69 f4       	brne	.+26     	; 0x19ec <set_sensor_high+0x18a>
 	{
 		payi_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    19d2:	80 91 4a 01 	lds	r24, 0x014A
+    19d2:	80 91 49 01 	lds	r24, 0x0149
     19d6:	90 e0       	ldi	r25, 0x00	; 0
 		payi_high |= (high << 8);
     19d8:	98 2f       	mov	r25, r24
@@ -4376,21 +4376,21 @@ void set_sensor_highf(void)
 	if(sensor_name == PAY_I)
 	{
 		payi_high = sensh_arr[0];
-    19dc:	20 91 49 01 	lds	r18, 0x0149
+    19dc:	20 91 48 01 	lds	r18, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		payi_high |= (high << 8);
     19e0:	82 2b       	or	r24, r18
     19e2:	90 93 54 02 	sts	0x0254, r25
     19e6:	80 93 53 02 	sts	0x0253, r24
-    19ea:	1d c0       	rjmp	.+58     	; 0x1a26 <set_sensor_highf+0x1c4>
+    19ea:	1d c0       	rjmp	.+58     	; 0x1a26 <set_sensor_high+0x1c4>
 	}
 	if(sensor_name == OBC_V)
     19ec:	2f 30       	cpi	r18, 0x0F	; 15
-    19ee:	69 f4       	brne	.+26     	; 0x1a0a <set_sensor_highf+0x1a8>
+    19ee:	69 f4       	brne	.+26     	; 0x1a0a <set_sensor_high+0x1a8>
 	{
 		obcv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    19f0:	80 91 4a 01 	lds	r24, 0x014A
+    19f0:	80 91 49 01 	lds	r24, 0x0149
     19f4:	90 e0       	ldi	r25, 0x00	; 0
 		obcv_high |= (high << 8);
     19f6:	98 2f       	mov	r25, r24
@@ -4401,21 +4401,21 @@ void set_sensor_highf(void)
 	if(sensor_name == OBC_V)
 	{
 		obcv_high = sensh_arr[0];
-    19fa:	20 91 49 01 	lds	r18, 0x0149
+    19fa:	20 91 48 01 	lds	r18, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		obcv_high |= (high << 8);
     19fe:	82 2b       	or	r24, r18
-    1a00:	90 93 47 01 	sts	0x0147, r25
-    1a04:	80 93 46 01 	sts	0x0146, r24
-    1a08:	0e c0       	rjmp	.+28     	; 0x1a26 <set_sensor_highf+0x1c4>
+    1a00:	90 93 46 01 	sts	0x0146, r25
+    1a04:	80 93 45 01 	sts	0x0145, r24
+    1a08:	0e c0       	rjmp	.+28     	; 0x1a26 <set_sensor_high+0x1c4>
 	}
 	if(sensor_name == OBC_I)
     1a0a:	20 31       	cpi	r18, 0x10	; 16
-    1a0c:	61 f4       	brne	.+24     	; 0x1a26 <set_sensor_highf+0x1c4>
+    1a0c:	61 f4       	brne	.+24     	; 0x1a26 <set_sensor_high+0x1c4>
 	{
 		obci_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-    1a0e:	80 91 4a 01 	lds	r24, 0x014A
+    1a0e:	80 91 49 01 	lds	r24, 0x0149
     1a12:	90 e0       	ldi	r25, 0x00	; 0
 		obci_high |= (high << 8);
     1a14:	98 2f       	mov	r25, r24
@@ -4426,21 +4426,21 @@ void set_sensor_highf(void)
 	if(sensor_name == OBC_I)
 	{
 		obci_high = sensh_arr[0];
-    1a18:	20 91 49 01 	lds	r18, 0x0149
+    1a18:	20 91 48 01 	lds	r18, 0x0148
 		high = (uint16_t)sensh_arr[1];
 		obci_high |= (high << 8);
     1a1c:	82 2b       	or	r24, r18
-    1a1e:	90 93 16 02 	sts	0x0216, r25
-    1a22:	80 93 15 02 	sts	0x0215, r24
+    1a1e:	90 93 15 02 	sts	0x0215, r25
+    1a22:	80 93 14 02 	sts	0x0214, r24
 	}
 	
 	set_sens_h = 0;
-    1a26:	10 92 33 02 	sts	0x0233, r1
+    1a26:	10 92 32 02 	sts	0x0232, r1
     1a2a:	08 95       	ret
 
-00001a2c <set_sensor_lowf>:
+00001a2c <set_sensor_low>:
 
-void set_sensor_lowf(void)
+void set_sensor_low(void)
 {
 	uint8_t sensor_name, req_by;
 	uint16_t low = 0;
@@ -4450,7 +4450,7 @@ void set_sensor_lowf(void)
 	
 	if(sensor_name == EPS_TEMP)
     1a30:	2a 30       	cpi	r18, 0x0A	; 10
-    1a32:	69 f4       	brne	.+26     	; 0x1a4e <set_sensor_lowf+0x22>
+    1a32:	69 f4       	brne	.+26     	; 0x1a4e <set_sensor_low+0x22>
 	{
 		epstemp_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4469,14 +4469,14 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		epstemp_low |= (low << 8);
     1a42:	83 2b       	or	r24, r19
-    1a44:	90 93 31 01 	sts	0x0131, r25
-    1a48:	80 93 30 01 	sts	0x0130, r24
-    1a4c:	1e c0       	rjmp	.+60     	; 0x1a8a <set_sensor_lowf+0x5e>
+    1a44:	90 93 30 01 	sts	0x0130, r25
+    1a48:	80 93 2f 01 	sts	0x012F, r24
+    1a4c:	1e c0       	rjmp	.+60     	; 0x1a8a <set_sensor_low+0x5e>
 	}
 	
 	if(sensor_name == PANELX_V)
     1a4e:	21 30       	cpi	r18, 0x01	; 1
-    1a50:	69 f4       	brne	.+26     	; 0x1a6c <set_sensor_lowf+0x40>
+    1a50:	69 f4       	brne	.+26     	; 0x1a6c <set_sensor_low+0x40>
 	{
 		pxv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4495,14 +4495,14 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		pxv_low |= (low << 8);
     1a60:	83 2b       	or	r24, r19
-    1a62:	90 93 18 02 	sts	0x0218, r25
-    1a66:	80 93 17 02 	sts	0x0217, r24
-    1a6a:	1e c0       	rjmp	.+60     	; 0x1aa8 <set_sensor_lowf+0x7c>
+    1a62:	90 93 17 02 	sts	0x0217, r25
+    1a66:	80 93 16 02 	sts	0x0216, r24
+    1a6a:	1e c0       	rjmp	.+60     	; 0x1aa8 <set_sensor_low+0x7c>
 	}
 	
 	if(sensor_name == PANELX_I)
     1a6c:	22 30       	cpi	r18, 0x02	; 2
-    1a6e:	69 f4       	brne	.+26     	; 0x1a8a <set_sensor_lowf+0x5e>
+    1a6e:	69 f4       	brne	.+26     	; 0x1a8a <set_sensor_low+0x5e>
 	{
 		pxi_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4521,13 +4521,13 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		pxi_low |= (low << 8);
     1a7e:	83 2b       	or	r24, r19
-    1a80:	90 93 45 01 	sts	0x0145, r25
-    1a84:	80 93 44 01 	sts	0x0144, r24
-    1a88:	1e c0       	rjmp	.+60     	; 0x1ac6 <set_sensor_lowf+0x9a>
+    1a80:	90 93 44 01 	sts	0x0144, r25
+    1a84:	80 93 43 01 	sts	0x0143, r24
+    1a88:	1e c0       	rjmp	.+60     	; 0x1ac6 <set_sensor_low+0x9a>
 	}
 	if(sensor_name == PANELY_V)
     1a8a:	23 30       	cpi	r18, 0x03	; 3
-    1a8c:	69 f4       	brne	.+26     	; 0x1aa8 <set_sensor_lowf+0x7c>
+    1a8c:	69 f4       	brne	.+26     	; 0x1aa8 <set_sensor_low+0x7c>
 	{
 		pyv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4546,13 +4546,13 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		pyv_low |= (low << 8);
     1a9c:	83 2b       	or	r24, r19
-    1a9e:	90 93 1a 02 	sts	0x021A, r25
-    1aa2:	80 93 19 02 	sts	0x0219, r24
-    1aa6:	1e c0       	rjmp	.+60     	; 0x1ae4 <set_sensor_lowf+0xb8>
+    1a9e:	90 93 19 02 	sts	0x0219, r25
+    1aa2:	80 93 18 02 	sts	0x0218, r24
+    1aa6:	1e c0       	rjmp	.+60     	; 0x1ae4 <set_sensor_low+0xb8>
 	}
 	if(sensor_name == PANELY_I)
     1aa8:	24 30       	cpi	r18, 0x04	; 4
-    1aaa:	69 f4       	brne	.+26     	; 0x1ac6 <set_sensor_lowf+0x9a>
+    1aaa:	69 f4       	brne	.+26     	; 0x1ac6 <set_sensor_low+0x9a>
 	{
 		pyi_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4571,13 +4571,13 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		pyi_low |= (low << 8);
     1aba:	83 2b       	or	r24, r19
-    1abc:	90 93 2a 02 	sts	0x022A, r25
-    1ac0:	80 93 29 02 	sts	0x0229, r24
-    1ac4:	1e c0       	rjmp	.+60     	; 0x1b02 <set_sensor_lowf+0xd6>
+    1abc:	90 93 29 02 	sts	0x0229, r25
+    1ac0:	80 93 28 02 	sts	0x0228, r24
+    1ac4:	1e c0       	rjmp	.+60     	; 0x1b02 <set_sensor_low+0xd6>
 	}
 	if(sensor_name == BATTM_V)
     1ac6:	25 30       	cpi	r18, 0x05	; 5
-    1ac8:	69 f4       	brne	.+26     	; 0x1ae4 <set_sensor_lowf+0xb8>
+    1ac8:	69 f4       	brne	.+26     	; 0x1ae4 <set_sensor_low+0xb8>
 	{
 		battmv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4596,13 +4596,13 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		battmv_low |= (low << 8);
     1ad8:	83 2b       	or	r24, r19
-    1ada:	90 93 6c 01 	sts	0x016C, r25
-    1ade:	80 93 6b 01 	sts	0x016B, r24
-    1ae2:	1e c0       	rjmp	.+60     	; 0x1b20 <set_sensor_lowf+0xf4>
+    1ada:	90 93 6b 01 	sts	0x016B, r25
+    1ade:	80 93 6a 01 	sts	0x016A, r24
+    1ae2:	1e c0       	rjmp	.+60     	; 0x1b20 <set_sensor_low+0xf4>
 	}
 	if(sensor_name == BATT_V)
     1ae4:	26 30       	cpi	r18, 0x06	; 6
-    1ae6:	69 f4       	brne	.+26     	; 0x1b02 <set_sensor_lowf+0xd6>
+    1ae6:	69 f4       	brne	.+26     	; 0x1b02 <set_sensor_low+0xd6>
 	{
 		battv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4623,11 +4623,11 @@ void set_sensor_lowf(void)
     1af6:	83 2b       	or	r24, r19
     1af8:	90 93 0a 01 	sts	0x010A, r25
     1afc:	80 93 09 01 	sts	0x0109, r24
-    1b00:	1e c0       	rjmp	.+60     	; 0x1b3e <set_sensor_lowf+0x112>
+    1b00:	1e c0       	rjmp	.+60     	; 0x1b3e <set_sensor_low+0x112>
 	}
 	if(sensor_name == BATT_I)
     1b02:	21 31       	cpi	r18, 0x11	; 17
-    1b04:	69 f4       	brne	.+26     	; 0x1b20 <set_sensor_lowf+0xf4>
+    1b04:	69 f4       	brne	.+26     	; 0x1b20 <set_sensor_low+0xf4>
 	{
 		pxv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4646,13 +4646,13 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		pxv_low |= (low << 8);
     1b14:	83 2b       	or	r24, r19
-    1b16:	90 93 18 02 	sts	0x0218, r25
-    1b1a:	80 93 17 02 	sts	0x0217, r24
-    1b1e:	1e c0       	rjmp	.+60     	; 0x1b5c <set_sensor_lowf+0x130>
+    1b16:	90 93 17 02 	sts	0x0217, r25
+    1b1a:	80 93 16 02 	sts	0x0216, r24
+    1b1e:	1e c0       	rjmp	.+60     	; 0x1b5c <set_sensor_low+0x130>
 	}
 	if(sensor_name == BATT_TEMP)
     1b20:	29 30       	cpi	r18, 0x09	; 9
-    1b22:	69 f4       	brne	.+26     	; 0x1b3e <set_sensor_lowf+0x112>
+    1b22:	69 f4       	brne	.+26     	; 0x1b3e <set_sensor_low+0x112>
 	{
 		battemp_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4673,11 +4673,11 @@ void set_sensor_lowf(void)
     1b32:	83 2b       	or	r24, r19
     1b34:	90 93 43 02 	sts	0x0243, r25
     1b38:	80 93 42 02 	sts	0x0242, r24
-    1b3c:	1e c0       	rjmp	.+60     	; 0x1b7a <set_sensor_lowf+0x14e>
+    1b3c:	1e c0       	rjmp	.+60     	; 0x1b7a <set_sensor_low+0x14e>
 	}
 	if(sensor_name == COMS_V)
     1b3e:	2b 30       	cpi	r18, 0x0B	; 11
-    1b40:	69 f4       	brne	.+26     	; 0x1b5c <set_sensor_lowf+0x130>
+    1b40:	69 f4       	brne	.+26     	; 0x1b5c <set_sensor_low+0x130>
 	{
 		comsv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4696,13 +4696,13 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		comsv_low |= (low << 8);
     1b50:	83 2b       	or	r24, r19
-    1b52:	90 93 6a 01 	sts	0x016A, r25
-    1b56:	80 93 69 01 	sts	0x0169, r24
-    1b5a:	1e c0       	rjmp	.+60     	; 0x1b98 <set_sensor_lowf+0x16c>
+    1b52:	90 93 69 01 	sts	0x0169, r25
+    1b56:	80 93 68 01 	sts	0x0168, r24
+    1b5a:	1e c0       	rjmp	.+60     	; 0x1b98 <set_sensor_low+0x16c>
 	}
 	if(sensor_name == COMS_I)
     1b5c:	2c 30       	cpi	r18, 0x0C	; 12
-    1b5e:	69 f4       	brne	.+26     	; 0x1b7a <set_sensor_lowf+0x14e>
+    1b5e:	69 f4       	brne	.+26     	; 0x1b7a <set_sensor_low+0x14e>
 	{
 		comsi_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4723,11 +4723,11 @@ void set_sensor_lowf(void)
     1b6e:	83 2b       	or	r24, r19
     1b70:	90 93 52 02 	sts	0x0252, r25
     1b74:	80 93 51 02 	sts	0x0251, r24
-    1b78:	1e c0       	rjmp	.+60     	; 0x1bb6 <set_sensor_lowf+0x18a>
+    1b78:	1e c0       	rjmp	.+60     	; 0x1bb6 <set_sensor_low+0x18a>
 	}
 	if(sensor_name == PAY_V)
     1b7a:	2d 30       	cpi	r18, 0x0D	; 13
-    1b7c:	69 f4       	brne	.+26     	; 0x1b98 <set_sensor_lowf+0x16c>
+    1b7c:	69 f4       	brne	.+26     	; 0x1b98 <set_sensor_low+0x16c>
 	{
 		payv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4748,11 +4748,11 @@ void set_sensor_lowf(void)
     1b8c:	83 2b       	or	r24, r19
     1b8e:	90 93 0c 01 	sts	0x010C, r25
     1b92:	80 93 0b 01 	sts	0x010B, r24
-    1b96:	1e c0       	rjmp	.+60     	; 0x1bd4 <set_sensor_lowf+0x1a8>
+    1b96:	1e c0       	rjmp	.+60     	; 0x1bd4 <set_sensor_low+0x1a8>
 	}
 	if(sensor_name == PAY_I)
     1b98:	2e 30       	cpi	r18, 0x0E	; 14
-    1b9a:	69 f4       	brne	.+26     	; 0x1bb6 <set_sensor_lowf+0x18a>
+    1b9a:	69 f4       	brne	.+26     	; 0x1bb6 <set_sensor_low+0x18a>
 	{
 		payi_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4771,13 +4771,13 @@ void set_sensor_lowf(void)
 		low = (uint16_t)sensl_arr[1];
 		payi_low |= (low << 8);
     1baa:	82 2b       	or	r24, r18
-    1bac:	90 93 75 01 	sts	0x0175, r25
-    1bb0:	80 93 74 01 	sts	0x0174, r24
-    1bb4:	1d c0       	rjmp	.+58     	; 0x1bf0 <set_sensor_lowf+0x1c4>
+    1bac:	90 93 74 01 	sts	0x0174, r25
+    1bb0:	80 93 73 01 	sts	0x0173, r24
+    1bb4:	1d c0       	rjmp	.+58     	; 0x1bf0 <set_sensor_low+0x1c4>
 	}
 	if(sensor_name == OBC_V)
     1bb6:	2f 30       	cpi	r18, 0x0F	; 15
-    1bb8:	69 f4       	brne	.+26     	; 0x1bd4 <set_sensor_lowf+0x1a8>
+    1bb8:	69 f4       	brne	.+26     	; 0x1bd4 <set_sensor_low+0x1a8>
 	{
 		obcv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4798,11 +4798,11 @@ void set_sensor_lowf(void)
     1bc8:	82 2b       	or	r24, r18
     1bca:	90 93 5f 02 	sts	0x025F, r25
     1bce:	80 93 5e 02 	sts	0x025E, r24
-    1bd2:	0e c0       	rjmp	.+28     	; 0x1bf0 <set_sensor_lowf+0x1c4>
+    1bd2:	0e c0       	rjmp	.+28     	; 0x1bf0 <set_sensor_low+0x1c4>
 	}
 	if(sensor_name == OBC_I)
     1bd4:	20 31       	cpi	r18, 0x10	; 16
-    1bd6:	61 f4       	brne	.+24     	; 0x1bf0 <set_sensor_lowf+0x1c4>
+    1bd6:	61 f4       	brne	.+24     	; 0x1bf0 <set_sensor_low+0x1c4>
 	{
 		obci_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
@@ -4829,35 +4829,35 @@ void set_sensor_lowf(void)
     1bf0:	10 92 37 02 	sts	0x0237, r1
     1bf4:	08 95       	ret
 
-00001bf6 <set_varf>:
+00001bf6 <set_var>:
 }
 
-void set_varf(void)
+void set_var(void)
 {
 	uint8_t var_name;
 	var_name = setv_arr[3];
-    1bf6:	80 91 3f 01 	lds	r24, 0x013F
+    1bf6:	80 91 3e 01 	lds	r24, 0x013E
 	
 	if(var_name == MPPTA)
     1bfa:	81 30       	cpi	r24, 0x01	; 1
-    1bfc:	29 f4       	brne	.+10     	; 0x1c08 <set_varf+0x12>
+    1bfc:	29 f4       	brne	.+10     	; 0x1c08 <set_var+0x12>
 	{
 		mppta = setv_arr[0];
-    1bfe:	80 91 3c 01 	lds	r24, 0x013C
+    1bfe:	80 91 3b 01 	lds	r24, 0x013B
     1c02:	80 93 55 02 	sts	0x0255, r24
-    1c06:	06 c0       	rjmp	.+12     	; 0x1c14 <set_varf+0x1e>
+    1c06:	06 c0       	rjmp	.+12     	; 0x1c14 <set_var+0x1e>
 	}
 	if(var_name == MPPTB)
     1c08:	82 30       	cpi	r24, 0x02	; 2
-    1c0a:	21 f4       	brne	.+8      	; 0x1c14 <set_varf+0x1e>
+    1c0a:	21 f4       	brne	.+8      	; 0x1c14 <set_var+0x1e>
 	{
 		mpptb = setv_arr[0];
-    1c0c:	80 91 3c 01 	lds	r24, 0x013C
-    1c10:	80 93 25 01 	sts	0x0125, r24
+    1c0c:	80 91 3b 01 	lds	r24, 0x013B
+    1c10:	80 93 24 01 	sts	0x0124, r24
 	}
 	
-	set_var = 0;
-    1c14:	10 92 24 01 	sts	0x0124, r1
+	set_varf = 0;
+    1c14:	10 92 36 02 	sts	0x0236, r1
     1c18:	08 95       	ret
 
 00001c1a <receive_tm_msg>:
@@ -4891,10 +4891,10 @@ void receive_tm_msg(void)
 		tm_sequence_count = 0;
     1c42:	10 92 00 01 	sts	0x0100, r1
 		new_tm_msgf = 0;
-    1c46:	10 92 73 01 	sts	0x0173, r1
-    1c4a:	ed e7       	ldi	r30, 0x7D	; 125
+    1c46:	10 92 72 01 	sts	0x0172, r1
+    1c4a:	ec e7       	ldi	r30, 0x7C	; 124
     1c4c:	f1 e0       	ldi	r31, 0x01	; 1
-    1c4e:	8c e0       	ldi	r24, 0x0C	; 12
+    1c4e:	8b e0       	ldi	r24, 0x0B	; 11
     1c50:	92 e0       	ldi	r25, 0x02	; 2
 static void clear_current_tm(void)
 {
@@ -4919,7 +4919,7 @@ static void clear_current_tm(void)
 		return;
 	}
 	if(current_tm_fullf == 1)
-    1c5c:	70 91 35 02 	lds	r23, 0x0235
+    1c5c:	70 91 34 02 	lds	r23, 0x0234
     1c60:	71 30       	cpi	r23, 0x01	; 1
     1c62:	41 f4       	brne	.+16     	; 0x1c74 <receive_tm_msg+0x5a>
 	{
@@ -4929,7 +4929,7 @@ static void clear_current_tm(void)
 		tm_sequence_count = 0;
     1c6a:	10 92 00 01 	sts	0x0100, r1
 		new_tm_msgf = 0;
-    1c6e:	10 92 73 01 	sts	0x0173, r1
+    1c6e:	10 92 72 01 	sts	0x0172, r1
 		return;
     1c72:	08 95       	ret
 	}
@@ -4955,7 +4955,7 @@ static void clear_current_tm(void)
     1c8e:	ff 1f       	adc	r31, r31
     1c90:	ee 0f       	add	r30, r30
     1c92:	ff 1f       	adc	r31, r31
-    1c94:	e3 58       	subi	r30, 0x83	; 131
+    1c94:	e4 58       	subi	r30, 0x84	; 132
     1c96:	fe 4f       	sbci	r31, 0xFE	; 254
     1c98:	40 91 38 02 	lds	r20, 0x0238
     1c9c:	40 83       	st	Z, r20
@@ -4977,14 +4977,14 @@ static void clear_current_tm(void)
     1cb4:	10 92 00 01 	sts	0x0100, r1
 			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
     1cb8:	91 e0       	ldi	r25, 0x01	; 1
-    1cba:	90 93 35 02 	sts	0x0235, r25
+    1cba:	90 93 34 02 	sts	0x0234, r25
 			current_tm[(obc_seq_count * 4)]		= new_tm_msg[0];
     1cbe:	f9 01       	movw	r30, r18
     1cc0:	ee 0f       	add	r30, r30
     1cc2:	ff 1f       	adc	r31, r31
     1cc4:	ee 0f       	add	r30, r30
     1cc6:	ff 1f       	adc	r31, r31
-    1cc8:	e3 58       	subi	r30, 0x83	; 131
+    1cc8:	e4 58       	subi	r30, 0x84	; 132
     1cca:	fe 4f       	sbci	r31, 0xFE	; 254
     1ccc:	90 91 38 02 	lds	r25, 0x0238
     1cd0:	90 83       	st	Z, r25
@@ -4999,7 +4999,7 @@ static void clear_current_tm(void)
     1ce0:	0e 94 5d 0b 	call	0x16ba	; 0x16ba <send_tm_transaction_response>
 		}
 		new_tm_msgf = 0;
-    1ce4:	10 92 73 01 	sts	0x0173, r1
+    1ce4:	10 92 72 01 	sts	0x0172, r1
 		return;
     1ce8:	08 95       	ret
 	}
@@ -5011,10 +5011,10 @@ static void clear_current_tm(void)
 		tm_sequence_count = 0;
     1cf0:	10 92 00 01 	sts	0x0100, r1
 		new_tm_msgf = 0;
-    1cf4:	10 92 73 01 	sts	0x0173, r1
-    1cf8:	ed e7       	ldi	r30, 0x7D	; 125
+    1cf4:	10 92 72 01 	sts	0x0172, r1
+    1cf8:	ec e7       	ldi	r30, 0x7C	; 124
     1cfa:	f1 e0       	ldi	r31, 0x01	; 1
-    1cfc:	8c e0       	ldi	r24, 0x0C	; 12
+    1cfc:	8b e0       	ldi	r24, 0x0B	; 11
     1cfe:	92 e0       	ldi	r25, 0x02	; 2
 static void clear_current_tm(void)
 {
@@ -5041,19 +5041,19 @@ static void clear_current_tm(void)
 void run_commands(void)
 {
 	if (send_now == 1)
-    1d0a:	80 91 72 01 	lds	r24, 0x0172
+    1d0a:	80 91 71 01 	lds	r24, 0x0171
     1d0e:	81 30       	cpi	r24, 0x01	; 1
     1d10:	11 f4       	brne	.+4      	; 0x1d16 <run_commands+0xc>
 		send_response();
     1d12:	0e 94 78 0b 	call	0x16f0	; 0x16f0 <send_response>
 	if (send_hk == 1)
-    1d16:	80 91 14 02 	lds	r24, 0x0214
+    1d16:	80 91 13 02 	lds	r24, 0x0213
     1d1a:	81 30       	cpi	r24, 0x01	; 1
     1d1c:	11 f4       	brne	.+4      	; 0x1d22 <run_commands+0x18>
 		send_housekeeping();
     1d1e:	0e 94 8d 0b 	call	0x171a	; 0x171a <send_housekeeping>
 	if (send_data == 1)
-    1d22:	80 91 36 02 	lds	r24, 0x0236
+    1d22:	80 91 35 02 	lds	r24, 0x0235
     1d26:	81 30       	cpi	r24, 0x01	; 1
     1d28:	11 f4       	brne	.+4      	; 0x1d2e <run_commands+0x24>
 		send_sensor_data();
@@ -5065,37 +5065,37 @@ void run_commands(void)
 		send_coms_packet();
     1d36:	0e 94 d4 0b 	call	0x17a8	; 0x17a8 <send_coms_packet>
 	if (read_response == 1)
-    1d3a:	80 91 7c 01 	lds	r24, 0x017C
+    1d3a:	80 91 7b 01 	lds	r24, 0x017B
     1d3e:	81 30       	cpi	r24, 0x01	; 1
     1d40:	11 f4       	brne	.+4      	; 0x1d46 <run_commands+0x3c>
 		send_read_response();
     1d42:	0e 94 ec 0b 	call	0x17d8	; 0x17d8 <send_read_response>
 	if (write_response == 1)
-    1d46:	80 91 48 01 	lds	r24, 0x0148
+    1d46:	80 91 47 01 	lds	r24, 0x0147
     1d4a:	81 30       	cpi	r24, 0x01	; 1
     1d4c:	11 f4       	brne	.+4      	; 0x1d52 <run_commands+0x48>
 		send_write_response();
     1d4e:	0e 94 0d 0c 	call	0x181a	; 0x181a <send_write_response>
 	if (set_sens_h == 1)
-    1d52:	80 91 33 02 	lds	r24, 0x0233
+    1d52:	80 91 32 02 	lds	r24, 0x0232
     1d56:	81 30       	cpi	r24, 0x01	; 1
     1d58:	11 f4       	brne	.+4      	; 0x1d5e <run_commands+0x54>
-		set_sensor_highf();
-    1d5a:	0e 94 31 0c 	call	0x1862	; 0x1862 <set_sensor_highf>
+		set_sensor_high();
+    1d5a:	0e 94 31 0c 	call	0x1862	; 0x1862 <set_sensor_high>
 	if (set_sens_l == 1)
     1d5e:	80 91 37 02 	lds	r24, 0x0237
     1d62:	81 30       	cpi	r24, 0x01	; 1
     1d64:	11 f4       	brne	.+4      	; 0x1d6a <run_commands+0x60>
-		set_sensor_lowf();
-    1d66:	0e 94 16 0d 	call	0x1a2c	; 0x1a2c <set_sensor_lowf>
-	if (set_var == 1)
-    1d6a:	80 91 24 01 	lds	r24, 0x0124
+		set_sensor_low();
+    1d66:	0e 94 16 0d 	call	0x1a2c	; 0x1a2c <set_sensor_low>
+	if (set_varf == 1)
+    1d6a:	80 91 36 02 	lds	r24, 0x0236
     1d6e:	81 30       	cpi	r24, 0x01	; 1
     1d70:	11 f4       	brne	.+4      	; 0x1d76 <run_commands+0x6c>
-		set_varf();
-    1d72:	0e 94 fb 0d 	call	0x1bf6	; 0x1bf6 <set_varf>
+		set_var();
+    1d72:	0e 94 fb 0d 	call	0x1bf6	; 0x1bf6 <set_var>
 	if (new_tm_msgf == 1)
-    1d76:	80 91 73 01 	lds	r24, 0x0173
+    1d76:	80 91 72 01 	lds	r24, 0x0172
     1d7a:	81 30       	cpi	r24, 0x01	; 1
     1d7c:	11 f4       	brne	.+4      	; 0x1d82 <run_commands+0x78>
 		receive_tm_msg();
@@ -5162,480 +5162,445 @@ void LED_clr(uint8_t LED)
     1db0:	40 9a       	sbi	0x08, 0	; 8
     1db2:	08 95       	ret
 
-00001db4 <can_actions_eps>:
-	PORTE = 0x00;
-}
-
-void can_actions_eps(void)
-{
-	if (set_sens_h == 1)
-    1db4:	80 91 33 02 	lds	r24, 0x0233
-    1db8:	81 30       	cpi	r24, 0x01	; 1
-    1dba:	11 f4       	brne	.+4      	; 0x1dc0 <can_actions_eps+0xc>
-	{
-		set_sensor_highf();
-    1dbc:	0e 94 31 0c 	call	0x1862	; 0x1862 <set_sensor_highf>
-	}
-	
-	if (set_sens_l == 1)
-    1dc0:	80 91 37 02 	lds	r24, 0x0237
-    1dc4:	81 30       	cpi	r24, 0x01	; 1
-    1dc6:	11 f4       	brne	.+4      	; 0x1dcc <can_actions_eps+0x18>
-	{
-		set_sensor_lowf();
-    1dc8:	0e 94 16 0d 	call	0x1a2c	; 0x1a2c <set_sensor_lowf>
-	}
-	
-	if (set_var == 1)
-    1dcc:	80 91 24 01 	lds	r24, 0x0124
-    1dd0:	81 30       	cpi	r24, 0x01	; 1
-    1dd2:	11 f4       	brne	.+4      	; 0x1dd8 <can_actions_eps+0x24>
-	{
-		set_varf();
-    1dd4:	0e 94 fb 0d 	call	0x1bf6	; 0x1bf6 <set_varf>
-    1dd8:	08 95       	ret
-
-00001dda <main>:
+00001db4 <main>:
 }
 
 void sys_init(void) 
 {
 	// Make sure sys clock is at least 8MHz
 	CLKPR = 0x80;  
-    1dda:	e1 e6       	ldi	r30, 0x61	; 97
-    1ddc:	f0 e0       	ldi	r31, 0x00	; 0
-    1dde:	80 e8       	ldi	r24, 0x80	; 128
-    1de0:	80 83       	st	Z, r24
+    1db4:	e1 e6       	ldi	r30, 0x61	; 97
+    1db6:	f0 e0       	ldi	r31, 0x00	; 0
+    1db8:	80 e8       	ldi	r24, 0x80	; 128
+    1dba:	80 83       	st	Z, r24
 	CLKPR = 0x00;
-    1de2:	10 82       	st	Z, r1
+    1dbc:	10 82       	st	Z, r1
 }
 
 void io_init(void) 
 {	
 	// Init PORTB[7:0] // LED port
 	DDRB = 0xFE;
-    1de4:	8e ef       	ldi	r24, 0xFE	; 254
-    1de6:	84 b9       	out	0x04, r24	; 4
+    1dbe:	8e ef       	ldi	r24, 0xFE	; 254
+    1dc0:	84 b9       	out	0x04, r24	; 4
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
 	DDRC = 0x11;		// PC4 == SS1 for SPI_TEMP
-    1de8:	81 e1       	ldi	r24, 0x11	; 17
-    1dea:	87 b9       	out	0x07, r24	; 7
+    1dc2:	81 e1       	ldi	r24, 0x11	; 17
+    1dc4:	87 b9       	out	0x07, r24	; 7
 	PORTC = 0x00;
-    1dec:	18 b8       	out	0x08, r1	; 8
+    1dc6:	18 b8       	out	0x08, r1	; 8
 	
 	// Init PORTD[7:0]
 	DDRD = 0x09;		// PD3 is the SS for SPI communications.
-    1dee:	89 e0       	ldi	r24, 0x09	; 9
-    1df0:	8a b9       	out	0x0a, r24	; 10
+    1dc8:	89 e0       	ldi	r24, 0x09	; 9
+    1dca:	8a b9       	out	0x0a, r24	; 10
 	PORTD = 0x01;		// PD3 should only go low during an SPI message.
-    1df2:	81 e0       	ldi	r24, 0x01	; 1
-    1df4:	8b b9       	out	0x0b, r24	; 11
+    1dcc:	81 e0       	ldi	r24, 0x01	; 1
+    1dce:	8b b9       	out	0x0b, r24	; 11
 	
 	// Init PORTE[2:0]
 	DDRE = 0x00;
-    1df6:	1d b8       	out	0x0d, r1	; 13
+    1dd0:	1d b8       	out	0x0d, r1	; 13
 	PORTE = 0x00;
-    1df8:	1e b8       	out	0x0e, r1	; 14
+    1dd2:	1e b8       	out	0x0e, r1	; 14
 	// Make sure sys clock is at least 8MHz
 	CLKPR = 0x80;  
 	CLKPR = 0x00;
 	
 	io_init();	
 	timer_init();
-    1dfa:	0e 94 a6 0f 	call	0x1f4c	; 0x1f4c <timer_init>
+    1dd4:	0e 94 91 0f 	call	0x1f22	; 0x1f22 <timer_init>
 
 	adc_initialize();
-    1dfe:	0e 94 6c 00 	call	0xd8	; 0xd8 <adc_initialize>
+    1dd8:	0e 94 6c 00 	call	0xd8	; 0xd8 <adc_initialize>
 	can_init(0);
-    1e02:	80 e0       	ldi	r24, 0x00	; 0
-    1e04:	0e 94 3c 04 	call	0x878	; 0x878 <can_init>
+    1ddc:	80 e0       	ldi	r24, 0x00	; 0
+    1dde:	0e 94 3c 04 	call	0x878	; 0x878 <can_init>
 	can_init_mobs();
-    1e08:	0e 94 d3 02 	call	0x5a6	; 0x5a6 <can_init_mobs>
+    1de2:	0e 94 d3 02 	call	0x5a6	; 0x5a6 <can_init_mobs>
 	spi_initialize_master();
-    1e0c:	0e 94 70 0f 	call	0x1ee0	; 0x1ee0 <spi_initialize_master>
+    1de6:	0e 94 5b 0f 	call	0x1eb6	; 0x1eb6 <spi_initialize_master>
 
 	// Enable the timer for mppt
 	if(SELF_ID == 1)
 	{
 		LED_set(LED1);
-    1e10:	81 e0       	ldi	r24, 0x01	; 1
-    1e12:	0e 94 c2 0e 	call	0x1d84	; 0x1d84 <LED_set>
+    1dea:	81 e0       	ldi	r24, 0x01	; 1
+    1dec:	0e 94 c2 0e 	call	0x1d84	; 0x1d84 <LED_set>
 		mppt_timer_init();
-    1e16:	0e 94 60 0f 	call	0x1ec0	; 0x1ec0 <mppt_timer_init>
+    1df0:	0e 94 4b 0f 	call	0x1e96	; 0x1e96 <mppt_timer_init>
 	}
 	
 	// Enable global interrupts for Timer execution
 	sei();
-    1e1a:	78 94       	sei
+    1df4:	78 94       	sei
 	{
 		transceiver_initialize();
 		coms_timer_init();
 	}
 
 	SS1_set_high();		// SPI Temp Sensor.
-    1e1c:	0e 94 76 0f 	call	0x1eec	; 0x1eec <SS1_set_high>
+    1df6:	0e 94 61 0f 	call	0x1ec2	; 0x1ec2 <SS1_set_high>
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
     {		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();
-    1e20:	0e 94 78 02 	call	0x4f0	; 0x4f0 <can_check_general>
+    1dfa:	0e 94 78 02 	call	0x4f0	; 0x4f0 <can_check_general>
 			trans_check();		// Check for incoming packets.	
 		}
 
 		if(SELF_ID == 1)
 		{
 			can_check_general();
-    1e24:	0e 94 78 02 	call	0x4f0	; 0x4f0 <can_check_general>
-			can_actions_eps();
-    1e28:	0e 94 da 0e 	call	0x1db4	; 0x1db4 <can_actions_eps>
+    1dfe:	0e 94 78 02 	call	0x4f0	; 0x4f0 <can_check_general>
 			
 			LED_clr(LED1);
-    1e2c:	81 e0       	ldi	r24, 0x01	; 1
-    1e2e:	0e 94 ce 0e 	call	0x1d9c	; 0x1d9c <LED_clr>
+    1e02:	81 e0       	ldi	r24, 0x01	; 1
+    1e04:	0e 94 ce 0e 	call	0x1d9c	; 0x1d9c <LED_clr>
 			delay_ms(1000);
-    1e32:	88 ee       	ldi	r24, 0xE8	; 232
-    1e34:	93 e0       	ldi	r25, 0x03	; 3
-    1e36:	0e 94 c0 0f 	call	0x1f80	; 0x1f80 <delay_ms>
+    1e08:	88 ee       	ldi	r24, 0xE8	; 232
+    1e0a:	93 e0       	ldi	r25, 0x03	; 3
+    1e0c:	0e 94 ab 0f 	call	0x1f56	; 0x1f56 <delay_ms>
 			adc_set_pin(2);
-    1e3a:	82 e0       	ldi	r24, 0x02	; 2
-    1e3c:	0e 94 7f 00 	call	0xfe	; 0xfe <adc_set_pin>
+    1e10:	82 e0       	ldi	r24, 0x02	; 2
+    1e12:	0e 94 7f 00 	call	0xfe	; 0xfe <adc_set_pin>
 			adc_read(adc_result);
-    1e40:	c0 e0       	ldi	r28, 0x00	; 0
-    1e42:	d0 e0       	ldi	r29, 0x00	; 0
-    1e44:	ce 01       	movw	r24, r28
-    1e46:	0e 94 76 00 	call	0xec	; 0xec <adc_read>
+    1e16:	c0 e0       	ldi	r28, 0x00	; 0
+    1e18:	d0 e0       	ldi	r29, 0x00	; 0
+    1e1a:	ce 01       	movw	r24, r28
+    1e1c:	0e 94 76 00 	call	0xec	; 0xec <adc_read>
 			if(*adc_result > 0x10)
-    1e4a:	88 81       	ld	r24, Y
-    1e4c:	81 31       	cpi	r24, 0x11	; 17
-    1e4e:	c0 f0       	brcs	.+48     	; 0x1e80 <main+0xa6>
+    1e20:	88 81       	ld	r24, Y
+    1e22:	81 31       	cpi	r24, 0x11	; 17
+    1e24:	c0 f0       	brcs	.+48     	; 0x1e56 <main+0xa2>
 			{
 				LED_set(LED1);
-    1e50:	81 e0       	ldi	r24, 0x01	; 1
-    1e52:	0e 94 c2 0e 	call	0x1d84	; 0x1d84 <LED_set>
+    1e26:	81 e0       	ldi	r24, 0x01	; 1
+    1e28:	0e 94 c2 0e 	call	0x1d84	; 0x1d84 <LED_set>
 			}
 			else
 			{
 				LED_clr(LED1);
 			}
 			set_duty_cycleA(0xBF);
-    1e56:	8f eb       	ldi	r24, 0xBF	; 191
-    1e58:	0e 94 6c 0f 	call	0x1ed8	; 0x1ed8 <set_duty_cycleA>
+    1e2c:	8f eb       	ldi	r24, 0xBF	; 191
+    1e2e:	0e 94 57 0f 	call	0x1eae	; 0x1eae <set_duty_cycleA>
 			set_duty_cycleB(0x1F);
-    1e5c:	8f e1       	ldi	r24, 0x1F	; 31
-    1e5e:	0e 94 6e 0f 	call	0x1edc	; 0x1edc <set_duty_cycleB>
+    1e32:	8f e1       	ldi	r24, 0x1F	; 31
+    1e34:	0e 94 59 0f 	call	0x1eb2	; 0x1eb2 <set_duty_cycleB>
 			delay_ms(1000);
-    1e62:	88 ee       	ldi	r24, 0xE8	; 232
-    1e64:	93 e0       	ldi	r25, 0x03	; 3
-    1e66:	0e 94 c0 0f 	call	0x1f80	; 0x1f80 <delay_ms>
+    1e38:	88 ee       	ldi	r24, 0xE8	; 232
+    1e3a:	93 e0       	ldi	r25, 0x03	; 3
+    1e3c:	0e 94 ab 0f 	call	0x1f56	; 0x1f56 <delay_ms>
 			adc_set_pin(3);
-    1e6a:	83 e0       	ldi	r24, 0x03	; 3
-    1e6c:	0e 94 7f 00 	call	0xfe	; 0xfe <adc_set_pin>
+    1e40:	83 e0       	ldi	r24, 0x03	; 3
+    1e42:	0e 94 7f 00 	call	0xfe	; 0xfe <adc_set_pin>
 			adc_read(adc_result);
-    1e70:	80 e0       	ldi	r24, 0x00	; 0
-    1e72:	90 e0       	ldi	r25, 0x00	; 0
-    1e74:	0e 94 76 00 	call	0xec	; 0xec <adc_read>
+    1e46:	80 e0       	ldi	r24, 0x00	; 0
+    1e48:	90 e0       	ldi	r25, 0x00	; 0
+    1e4a:	0e 94 76 00 	call	0xec	; 0xec <adc_read>
 			if(*adc_result > 0x10)
 			{
 				LED_set(LED1);
-    1e78:	81 e0       	ldi	r24, 0x01	; 1
-    1e7a:	0e 94 c2 0e 	call	0x1d84	; 0x1d84 <LED_set>
-    1e7e:	17 c0       	rjmp	.+46     	; 0x1eae <main+0xd4>
+    1e4e:	81 e0       	ldi	r24, 0x01	; 1
+    1e50:	0e 94 c2 0e 	call	0x1d84	; 0x1d84 <LED_set>
+    1e54:	17 c0       	rjmp	.+46     	; 0x1e84 <main+0xd0>
 			{
 				LED_set(LED1);
 			}
 			else
 			{
 				LED_clr(LED1);
-    1e80:	81 e0       	ldi	r24, 0x01	; 1
-    1e82:	0e 94 ce 0e 	call	0x1d9c	; 0x1d9c <LED_clr>
+    1e56:	81 e0       	ldi	r24, 0x01	; 1
+    1e58:	0e 94 ce 0e 	call	0x1d9c	; 0x1d9c <LED_clr>
 			}
 			set_duty_cycleA(0xBF);
-    1e86:	8f eb       	ldi	r24, 0xBF	; 191
-    1e88:	0e 94 6c 0f 	call	0x1ed8	; 0x1ed8 <set_duty_cycleA>
+    1e5c:	8f eb       	ldi	r24, 0xBF	; 191
+    1e5e:	0e 94 57 0f 	call	0x1eae	; 0x1eae <set_duty_cycleA>
 			set_duty_cycleB(0x1F);
-    1e8c:	8f e1       	ldi	r24, 0x1F	; 31
-    1e8e:	0e 94 6e 0f 	call	0x1edc	; 0x1edc <set_duty_cycleB>
+    1e62:	8f e1       	ldi	r24, 0x1F	; 31
+    1e64:	0e 94 59 0f 	call	0x1eb2	; 0x1eb2 <set_duty_cycleB>
 			delay_ms(1000);
-    1e92:	88 ee       	ldi	r24, 0xE8	; 232
-    1e94:	93 e0       	ldi	r25, 0x03	; 3
-    1e96:	0e 94 c0 0f 	call	0x1f80	; 0x1f80 <delay_ms>
+    1e68:	88 ee       	ldi	r24, 0xE8	; 232
+    1e6a:	93 e0       	ldi	r25, 0x03	; 3
+    1e6c:	0e 94 ab 0f 	call	0x1f56	; 0x1f56 <delay_ms>
 			adc_set_pin(3);
-    1e9a:	83 e0       	ldi	r24, 0x03	; 3
-    1e9c:	0e 94 7f 00 	call	0xfe	; 0xfe <adc_set_pin>
+    1e70:	83 e0       	ldi	r24, 0x03	; 3
+    1e72:	0e 94 7f 00 	call	0xfe	; 0xfe <adc_set_pin>
 			adc_read(adc_result);
-    1ea0:	80 e0       	ldi	r24, 0x00	; 0
-    1ea2:	90 e0       	ldi	r25, 0x00	; 0
-    1ea4:	0e 94 76 00 	call	0xec	; 0xec <adc_read>
+    1e76:	80 e0       	ldi	r24, 0x00	; 0
+    1e78:	90 e0       	ldi	r25, 0x00	; 0
+    1e7a:	0e 94 76 00 	call	0xec	; 0xec <adc_read>
 			{
 				LED_set(LED1);
 			}
 			else
 			{
 				LED_clr(LED1);
-    1ea8:	81 e0       	ldi	r24, 0x01	; 1
-    1eaa:	0e 94 ce 0e 	call	0x1d9c	; 0x1d9c <LED_clr>
+    1e7e:	81 e0       	ldi	r24, 0x01	; 1
+    1e80:	0e 94 ce 0e 	call	0x1d9c	; 0x1d9c <LED_clr>
 			}
 			set_duty_cycleA(0x1F);
-    1eae:	8f e1       	ldi	r24, 0x1F	; 31
-    1eb0:	0e 94 6c 0f 	call	0x1ed8	; 0x1ed8 <set_duty_cycleA>
+    1e84:	8f e1       	ldi	r24, 0x1F	; 31
+    1e86:	0e 94 57 0f 	call	0x1eae	; 0x1eae <set_duty_cycleA>
 			set_duty_cycleB(0xBF);
-    1eb4:	8f eb       	ldi	r24, 0xBF	; 191
-    1eb6:	0e 94 6e 0f 	call	0x1edc	; 0x1edc <set_duty_cycleB>
+    1e8a:	8f eb       	ldi	r24, 0xBF	; 191
+    1e8c:	0e 94 59 0f 	call	0x1eb2	; 0x1eb2 <set_duty_cycleB>
 			
 		}
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
-    1eba:	0e 94 85 0e 	call	0x1d0a	; 0x1d0a <run_commands>
+    1e90:	0e 94 85 0e 	call	0x1d0a	; 0x1d0a <run_commands>
 	}
-    1ebe:	b0 cf       	rjmp	.-160    	; 0x1e20 <main+0x46>
+    1e94:	b2 cf       	rjmp	.-156    	; 0x1dfa <main+0x46>
 
-00001ec0 <mppt_timer_init>:
+00001e96 <mppt_timer_init>:
 #endif
 
 // This function initializes a 8-bit timer used for generating PWM for mppt.
 void mppt_timer_init(void) {
 	
 	TCNT0 = 0x0000; //Clear timer
-    1ec0:	16 bc       	out	0x26, r1	; 38
+    1e96:	16 bc       	out	0x26, r1	; 38
 	//For now, hard code in the values that the "duty cycle" registers will be set to. This will be updated later by the algorithm
 	OCR0A = 0x3F; // b00111111
-    1ec2:	8f e3       	ldi	r24, 0x3F	; 63
-    1ec4:	87 bd       	out	0x27, r24	; 39
+    1e98:	8f e3       	ldi	r24, 0x3F	; 63
+    1e9a:	87 bd       	out	0x27, r24	; 39
 	OCR0B = 0xBF; // b10111111
-    1ec6:	8f eb       	ldi	r24, 0xBF	; 191
-    1ec8:	88 bd       	out	0x28, r24	; 40
+    1e9c:	8f eb       	ldi	r24, 0xBF	; 191
+    1e9e:	88 bd       	out	0x28, r24	; 40
 	
 	TCCR0A = 0x00; // b00000000 Don't connect any pins, but set to normal mode as a test
-    1eca:	14 bc       	out	0x24, r1	; 36
+    1ea0:	14 bc       	out	0x24, r1	; 36
 	TCCR0B = 0x05; // b00000101 Set clock pre-scaling to 1024 for now, will be 1 later for "fast" output
-    1ecc:	85 e0       	ldi	r24, 0x05	; 5
-    1ece:	85 bd       	out	0x25, r24	; 37
+    1ea2:	85 e0       	ldi	r24, 0x05	; 5
+    1ea4:	85 bd       	out	0x25, r24	; 37
 	TIMSK0 = 0x07; // b00000111 Enable the A and B compare match interrupts. Also enable the timer overflow interrupt
-    1ed0:	87 e0       	ldi	r24, 0x07	; 7
-    1ed2:	80 93 6e 00 	sts	0x006E, r24
-    1ed6:	08 95       	ret
+    1ea6:	87 e0       	ldi	r24, 0x07	; 7
+    1ea8:	80 93 6e 00 	sts	0x006E, r24
+    1eac:	08 95       	ret
 
-00001ed8 <set_duty_cycleA>:
+00001eae <set_duty_cycleA>:
 }
 
 //This function will set the duty cycle of MPPTA
 //Duty is an 8 bit number, so 0x7F is a duty cycle of 0.5
 void set_duty_cycleA(uint8_t duty){
 	OCR0A = duty;	
-    1ed8:	87 bd       	out	0x27, r24	; 39
-    1eda:	08 95       	ret
+    1eae:	87 bd       	out	0x27, r24	; 39
+    1eb0:	08 95       	ret
 
-00001edc <set_duty_cycleB>:
+00001eb2 <set_duty_cycleB>:
 }
 
 //This function will set the duty cycle of MPPTB
 void set_duty_cycleB(uint8_t duty){
 	OCR0B = duty;
-    1edc:	88 bd       	out	0x28, r24	; 40
-    1ede:	08 95       	ret
+    1eb2:	88 bd       	out	0x28, r24	; 40
+    1eb4:	08 95       	ret
 
-00001ee0 <spi_initialize_master>:
+00001eb6 <spi_initialize_master>:
 	uint8_t* reg_ptr;
 	uint8_t temp = 0;
 	
 	reg_ptr = MCUCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr & (temp);	// We set SPIPS to 0 (select MISO, so NOT MISO_A)
-    1ee0:	85 b7       	in	r24, 0x35	; 53
-    1ee2:	8f 77       	andi	r24, 0x7F	; 127
-    1ee4:	85 bf       	out	0x35, r24	; 53
+    1eb6:	85 b7       	in	r24, 0x35	; 53
+    1eb8:	8f 77       	andi	r24, 0x7F	; 127
+    1eba:	85 bf       	out	0x35, r24	; 53
 	
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
 	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
-    1ee6:	83 e5       	ldi	r24, 0x53	; 83
-    1ee8:	8c bd       	out	0x2c, r24	; 44
-    1eea:	08 95       	ret
+    1ebc:	83 e5       	ldi	r24, 0x53	; 83
+    1ebe:	8c bd       	out	0x2c, r24	; 44
+    1ec0:	08 95       	ret
 
-00001eec <SS1_set_high>:
+00001ec2 <SS1_set_high>:
 	delay_us(1);
 }
 
 void SS1_set_high(void)
 {
 	PORTC |= (1 << 4);
-    1eec:	44 9a       	sbi	0x08, 4	; 8
-    1eee:	08 95       	ret
+    1ec2:	44 9a       	sbi	0x08, 4	; 8
+    1ec4:	08 95       	ret
 
-00001ef0 <SS1_set_low>:
+00001ec6 <SS1_set_low>:
 	delay_us(1);
 }
 
 void SS1_set_low(void)
 {
 	PORTC &= (0xEF);
-    1ef0:	44 98       	cbi	0x08, 4	; 8
-    1ef2:	08 95       	ret
+    1ec6:	44 98       	cbi	0x08, 4	; 8
+    1ec8:	08 95       	ret
 
-00001ef4 <spi_retrieve_temp>:
+00001eca <spi_retrieve_temp>:
 		
 	return receive_char;					// Transmission was successful, return the character that was received.
 }
 
 void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 {
-    1ef4:	0f 93       	push	r16
-    1ef6:	1f 93       	push	r17
-    1ef8:	cf 93       	push	r28
-    1efa:	df 93       	push	r29
-    1efc:	8c 01       	movw	r16, r24
-    1efe:	eb 01       	movw	r28, r22
+    1eca:	0f 93       	push	r16
+    1ecc:	1f 93       	push	r17
+    1ece:	cf 93       	push	r28
+    1ed0:	df 93       	push	r29
+    1ed2:	8c 01       	movw	r16, r24
+    1ed4:	eb 01       	movw	r28, r22
 	
 	reg_ptr = SPDR_BASE;
 	
 	// Commence the SPI message.
 
 	SS1_set_low();
-    1f00:	0e 94 78 0f 	call	0x1ef0	; 0x1ef0 <SS1_set_low>
+    1ed6:	0e 94 63 0f 	call	0x1ec6	; 0x1ec6 <SS1_set_low>
 	*reg_ptr = 0;	// We don't want to pass a message during the first SCK cycles.
-    1f04:	1e bc       	out	0x2e, r1	; 46
+    1eda:	1e bc       	out	0x2e, r1	; 46
 	delay_ms(128);
-    1f06:	80 e8       	ldi	r24, 0x80	; 128
-    1f08:	90 e0       	ldi	r25, 0x00	; 0
-    1f0a:	0e 94 c0 0f 	call	0x1f80	; 0x1f80 <delay_ms>
+    1edc:	80 e8       	ldi	r24, 0x80	; 128
+    1ede:	90 e0       	ldi	r25, 0x00	; 0
+    1ee0:	0e 94 ab 0f 	call	0x1f56	; 0x1f56 <delay_ms>
 	*high = *reg_ptr;
-    1f0e:	8e b5       	in	r24, 0x2e	; 46
-    1f10:	f8 01       	movw	r30, r16
-    1f12:	80 83       	st	Z, r24
+    1ee4:	8e b5       	in	r24, 0x2e	; 46
+    1ee6:	f8 01       	movw	r30, r16
+    1ee8:	80 83       	st	Z, r24
 	delay_ms(128);
-    1f14:	80 e8       	ldi	r24, 0x80	; 128
-    1f16:	90 e0       	ldi	r25, 0x00	; 0
-    1f18:	0e 94 c0 0f 	call	0x1f80	; 0x1f80 <delay_ms>
+    1eea:	80 e8       	ldi	r24, 0x80	; 128
+    1eec:	90 e0       	ldi	r25, 0x00	; 0
+    1eee:	0e 94 ab 0f 	call	0x1f56	; 0x1f56 <delay_ms>
 	*low = *reg_ptr;	
-    1f1c:	8e b5       	in	r24, 0x2e	; 46
-    1f1e:	88 83       	st	Y, r24
+    1ef2:	8e b5       	in	r24, 0x2e	; 46
+    1ef4:	88 83       	st	Y, r24
 	SS1_set_high();
-    1f20:	0e 94 76 0f 	call	0x1eec	; 0x1eec <SS1_set_high>
+    1ef6:	0e 94 61 0f 	call	0x1ec2	; 0x1ec2 <SS1_set_high>
 	
 	return;
 }
-    1f24:	df 91       	pop	r29
-    1f26:	cf 91       	pop	r28
-    1f28:	1f 91       	pop	r17
-    1f2a:	0f 91       	pop	r16
-    1f2c:	08 95       	ret
+    1efa:	df 91       	pop	r29
+    1efc:	cf 91       	pop	r28
+    1efe:	1f 91       	pop	r17
+    1f00:	0f 91       	pop	r16
+    1f02:	08 95       	ret
 
-00001f2e <__vector_12>:
+00001f04 <__vector_12>:
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "Timer.h"
 
 ISR(TIMER1_COMPA_vect) {
-    1f2e:	1f 92       	push	r1
-    1f30:	0f 92       	push	r0
-    1f32:	0f b6       	in	r0, 0x3f	; 63
-    1f34:	0f 92       	push	r0
-    1f36:	11 24       	eor	r1, r1
-    1f38:	8f 93       	push	r24
+    1f04:	1f 92       	push	r1
+    1f06:	0f 92       	push	r0
+    1f08:	0f b6       	in	r0, 0x3f	; 63
+    1f0a:	0f 92       	push	r0
+    1f0c:	11 24       	eor	r1, r1
+    1f0e:	8f 93       	push	r24
 	CTC_flag = 1;
-    1f3a:	81 e0       	ldi	r24, 0x01	; 1
-    1f3c:	80 93 04 03 	sts	0x0304, r24
+    1f10:	81 e0       	ldi	r24, 0x01	; 1
+    1f12:	80 93 04 03 	sts	0x0304, r24
 }
-    1f40:	8f 91       	pop	r24
-    1f42:	0f 90       	pop	r0
-    1f44:	0f be       	out	0x3f, r0	; 63
-    1f46:	0f 90       	pop	r0
-    1f48:	1f 90       	pop	r1
-    1f4a:	18 95       	reti
+    1f16:	8f 91       	pop	r24
+    1f18:	0f 90       	pop	r0
+    1f1a:	0f be       	out	0x3f, r0	; 63
+    1f1c:	0f 90       	pop	r0
+    1f1e:	1f 90       	pop	r1
+    1f20:	18 95       	reti
 
-00001f4c <timer_init>:
+00001f22 <timer_init>:
 
 // This function initializes a 16-bit timer used for delays.
 void timer_init(void) {
 	
 	TIMSK1 = 0x00; //Disable timer interrupts
-    1f4c:	10 92 6f 00 	sts	0x006F, r1
+    1f22:	10 92 6f 00 	sts	0x006F, r1
 	TCCR1A = 0x00; //Timer not connected to any pins
-    1f50:	10 92 80 00 	sts	0x0080, r1
+    1f26:	10 92 80 00 	sts	0x0080, r1
 	TCCR1B = 0x0A; //CTC mode; Timer_Rate = System_CLK/8 = 1MHz
-    1f54:	8a e0       	ldi	r24, 0x0A	; 10
-    1f56:	80 93 81 00 	sts	0x0081, r24
-    1f5a:	08 95       	ret
+    1f2a:	8a e0       	ldi	r24, 0x0A	; 10
+    1f2c:	80 93 81 00 	sts	0x0081, r24
+    1f30:	08 95       	ret
 
-00001f5c <delay_us>:
+00001f32 <delay_us>:
 // if timer rate is set to 1MHz frequency. For example, this 
 // project uses a system clock of 8MHz. Timer1 rate is set to
 // System Clock divided by 8 which is 1MHz (in timer_init). 
 // Therefore the "us" parameter truly is 1us.
 void delay_us(uint16_t us) {
 	CTC_flag = 0; //Clear CTC Interrupt flag
-    1f5c:	10 92 04 03 	sts	0x0304, r1
+    1f32:	10 92 04 03 	sts	0x0304, r1
 	TCNT1 = 0x0000; //Clear timer
-    1f60:	10 92 85 00 	sts	0x0085, r1
-    1f64:	10 92 84 00 	sts	0x0084, r1
+    1f36:	10 92 85 00 	sts	0x0085, r1
+    1f3a:	10 92 84 00 	sts	0x0084, r1
 	OCR1A = us; //Load compare value with desired delay in us
-    1f68:	90 93 89 00 	sts	0x0089, r25
-    1f6c:	80 93 88 00 	sts	0x0088, r24
+    1f3e:	90 93 89 00 	sts	0x0089, r25
+    1f42:	80 93 88 00 	sts	0x0088, r24
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
-    1f70:	82 e0       	ldi	r24, 0x02	; 2
-    1f72:	80 93 6f 00 	sts	0x006F, r24
+    1f46:	82 e0       	ldi	r24, 0x02	; 2
+    1f48:	80 93 6f 00 	sts	0x006F, r24
 	while(!CTC_flag); //wait for the designated number of us
-    1f76:	80 91 04 03 	lds	r24, 0x0304
-    1f7a:	88 23       	and	r24, r24
-    1f7c:	e1 f3       	breq	.-8      	; 0x1f76 <delay_us+0x1a>
+    1f4c:	80 91 04 03 	lds	r24, 0x0304
+    1f50:	88 23       	and	r24, r24
+    1f52:	e1 f3       	breq	.-8      	; 0x1f4c <delay_us+0x1a>
 }
-    1f7e:	08 95       	ret
+    1f54:	08 95       	ret
 
-00001f80 <delay_ms>:
+00001f56 <delay_ms>:
 
 void delay_ms(uint16_t ms) {
-    1f80:	0f 93       	push	r16
-    1f82:	1f 93       	push	r17
-    1f84:	cf 93       	push	r28
-    1f86:	df 93       	push	r29
-    1f88:	8c 01       	movw	r16, r24
+    1f56:	0f 93       	push	r16
+    1f58:	1f 93       	push	r17
+    1f5a:	cf 93       	push	r28
+    1f5c:	df 93       	push	r29
+    1f5e:	8c 01       	movw	r16, r24
 	for(uint16_t i=0; i<ms; i++) {
-    1f8a:	00 97       	sbiw	r24, 0x00	; 0
-    1f8c:	51 f0       	breq	.+20     	; 0x1fa2 <delay_ms+0x22>
-    1f8e:	c0 e0       	ldi	r28, 0x00	; 0
-    1f90:	d0 e0       	ldi	r29, 0x00	; 0
+    1f60:	00 97       	sbiw	r24, 0x00	; 0
+    1f62:	51 f0       	breq	.+20     	; 0x1f78 <delay_ms+0x22>
+    1f64:	c0 e0       	ldi	r28, 0x00	; 0
+    1f66:	d0 e0       	ldi	r29, 0x00	; 0
 		delay_us(1000);
-    1f92:	88 ee       	ldi	r24, 0xE8	; 232
-    1f94:	93 e0       	ldi	r25, 0x03	; 3
-    1f96:	0e 94 ae 0f 	call	0x1f5c	; 0x1f5c <delay_us>
+    1f68:	88 ee       	ldi	r24, 0xE8	; 232
+    1f6a:	93 e0       	ldi	r25, 0x03	; 3
+    1f6c:	0e 94 99 0f 	call	0x1f32	; 0x1f32 <delay_us>
 	TIMSK1 = 0x02; //Enable OCIE1A Interrupt
 	while(!CTC_flag); //wait for the designated number of us
 }
 
 void delay_ms(uint16_t ms) {
 	for(uint16_t i=0; i<ms; i++) {
-    1f9a:	21 96       	adiw	r28, 0x01	; 1
-    1f9c:	c0 17       	cp	r28, r16
-    1f9e:	d1 07       	cpc	r29, r17
-    1fa0:	c1 f7       	brne	.-16     	; 0x1f92 <delay_ms+0x12>
+    1f70:	21 96       	adiw	r28, 0x01	; 1
+    1f72:	c0 17       	cp	r28, r16
+    1f74:	d1 07       	cpc	r29, r17
+    1f76:	c1 f7       	brne	.-16     	; 0x1f68 <delay_ms+0x12>
 		delay_us(1000);
 	}
 }
-    1fa2:	df 91       	pop	r29
-    1fa4:	cf 91       	pop	r28
-    1fa6:	1f 91       	pop	r17
-    1fa8:	0f 91       	pop	r16
-    1faa:	08 95       	ret
+    1f78:	df 91       	pop	r29
+    1f7a:	cf 91       	pop	r28
+    1f7c:	1f 91       	pop	r17
+    1f7e:	0f 91       	pop	r16
+    1f80:	08 95       	ret
 
-00001fac <__tablejump2__>:
-    1fac:	ee 0f       	add	r30, r30
-    1fae:	ff 1f       	adc	r31, r31
+00001f82 <__tablejump2__>:
+    1f82:	ee 0f       	add	r30, r30
+    1f84:	ff 1f       	adc	r31, r31
 
-00001fb0 <__tablejump__>:
-    1fb0:	05 90       	lpm	r0, Z+
-    1fb2:	f4 91       	lpm	r31, Z
-    1fb4:	e0 2d       	mov	r30, r0
-    1fb6:	09 94       	ijmp
+00001f86 <__tablejump__>:
+    1f86:	05 90       	lpm	r0, Z+
+    1f88:	f4 91       	lpm	r31, Z
+    1f8a:	e0 2d       	mov	r30, r0
+    1f8c:	09 94       	ijmp
 
-00001fb8 <_exit>:
-    1fb8:	f8 94       	cli
+00001f8e <_exit>:
+    1f8e:	f8 94       	cli
 
-00001fba <__stop_program>:
-    1fba:	ff cf       	rjmp	.-2      	; 0x1fba <__stop_program>
+00001f90 <__stop_program>:
+    1f90:	ff cf       	rjmp	.-2      	; 0x1f90 <__stop_program>

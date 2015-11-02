@@ -246,7 +246,7 @@ void decode_command(uint8_t* command_array)
 				sensl_arr[i] = *(command_array + i);
 			}
 		case SET_VAR:
-			set_var = 1;
+			set_varf = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				setv_arr[i] = *(command_array + i);
@@ -260,11 +260,12 @@ void decode_command(uint8_t* command_array)
 				new_tm_msg[i] = *(command_array + i);
 			}
 		case TM_PACKET_READY:
-			send_arr[7] = (SELF_ID << 4)|req_by;			// Let the OBC know that you are ready to receive TM packet.
-			send_arr[6] = MT_COM;
-			send_arr[5] = OK_START_TM_PACKET;
-			send_arr[4] = CURRENT_MINUTE;
-			can_send_message(&(send_arr[0]), CAN1_MB7);
+			if((!current_tm_fullf) && (!receiving_tmf))
+				start_tm_packet();
+		case TC_TRANSACTION_RESP:
+			tc_transfer_completef = *command_array;
+		case OK_START_TC_PACKET:
+			start_tc_transferf = 1;
 		default:
 			return;
 	}
@@ -488,12 +489,27 @@ void can_init_mobs(void)
 	write_response = 0;
 	set_sens_h = 0;
 	set_sens_l = 0;
-	set_var = 0;
+	set_varf = 0;
 	new_tm_msgf = 0;
 	tm_sequence_count = 0;
 	current_tm_fullf = 0;
 	tc_packet_readyf = 0;
+	tc_transfer_completef = 0;
+	start_tc_transferf = 0;
+	receiving_tmf = 0;
 	
+	return;
+}
+
+// Let the OBC know that you are ready to receive TM packet.
+static void start_tm_packet(void)
+{
+	send_arr[7] = (SELF_ID << 4)|COMS_TASK_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = OK_START_TM_PACKET;
+	send_arr[4] = CURRENT_MINUTE;
+	receiving_tmf = 1;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;
 }
 

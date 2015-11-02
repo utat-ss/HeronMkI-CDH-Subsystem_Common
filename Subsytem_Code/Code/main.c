@@ -113,14 +113,15 @@ int main(void)
 		/*		TRANSCEIVER COMMUNICATION	*/
 		if(SELF_ID == 0)
 		{
-			trans_check();		// Check for incoming packets.	
+			// If you are COMS, please check that receiving_tmf == 0 before
+			// doing anything that is time-intensive (takes more than 10 ms).
+			if(!receiving_tmf)
+				trans_check();		// Check for incoming packets.	
 		}
 
 		if(SELF_ID == 1)
 		{
 			can_check_general();
-			can_actions_eps();
-			
 			LED_clr(LED1);
 			delay_ms(1000);
 			adc_set_pin(2);
@@ -211,22 +212,4 @@ void io_init(void)
 	// Init PORTE[2:0]
 	DDRE = 0x00;
 	PORTE = 0x00;
-}
-
-void can_actions_eps(void)
-{
-	if (set_sens_h == 1)
-	{
-		set_sensor_highf();
-	}
-	
-	if (set_sens_l == 1)
-	{
-		set_sensor_lowf();
-	}
-	
-	if (set_var == 1)
-	{
-		set_varf();
-	}
 }

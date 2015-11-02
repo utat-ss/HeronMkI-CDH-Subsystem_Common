@@ -62,15 +62,15 @@ void run_commands(void)
 	if (write_response == 1)
 		send_write_response();
 	if (set_sens_h == 1)
-		set_sensor_highf();
+		set_sensor_high();
 	if (set_sens_l == 1)
-		set_sensor_lowf();
-	if (set_var == 1)
-		set_varf();
+		set_sensor_low();
+	if (set_varf == 1)
+		set_var();
 	if (new_tm_msgf == 1)
 		receive_tm_msg();
-	//if (tc_packet_readyf == 1)
-	//	alert_obc_tcp_ready();
+	if (tc_packet_readyf == 1)
+		alert_obc_tcp_ready();
 
 	return;	
 }
@@ -281,7 +281,7 @@ void send_write_response(void)
 }
 
 
-void set_sensor_highf(void)
+void set_sensor_high(void)
 {
 	uint8_t sensor_name, req_by;
 	uint16_t high = 0;
@@ -385,7 +385,7 @@ void set_sensor_highf(void)
 	return;
 }
 
-void set_sensor_lowf(void)
+void set_sensor_low(void)
 {
 	uint8_t sensor_name, req_by;
 	uint16_t low = 0;
@@ -489,7 +489,7 @@ void set_sensor_lowf(void)
 	return;
 }
 
-void set_varf(void)
+void set_var(void)
 {
 	uint8_t var_name;
 	var_name = setv_arr[3];
@@ -503,7 +503,7 @@ void set_varf(void)
 		mpptb = setv_arr[0];
 	}
 	
-	set_var = 0;
+	set_varf = 0;
 	return;
 }
 
@@ -544,6 +544,7 @@ void receive_tm_msg(void)
 		send_tm_transaction_response(req_by, 0xFF);		// Let the OBC know that the transaction failed.
 		tm_sequence_count = 0;
 		new_tm_msgf = 0;
+		receiving_tmf = 0;
 		clear_current_tm();
 		return;
 	}
@@ -552,6 +553,7 @@ void receive_tm_msg(void)
 		send_tm_transaction_response(req_by, 0xFF);
 		tm_sequence_count = 0;
 		new_tm_msgf = 0;
+		receiving_tmf = 0
 		return;
 	}
 	
@@ -568,10 +570,12 @@ void receive_tm_msg(void)
 		if(obc_seq_count == 35)
 		{
 			tm_sequence_count = 0;									// Reset tm_sequence_count, transmission has completed.
+			receiving_tmf = 0;
 			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
 			current_tm[(obc_seq_count * 4)]		= new_tm_msg[0];
 			current_tm[(obc_seq_count * 4) + 1] = new_tm_msg[1];
 			current_tm[(obc_seq_count * 4) + 2] = new_tm_msg[2];
+			store_current_tm();										// Put current_tm[] into tm_to_downlink[]
 			send_tm_transaction_response(req_by, obc_seq_count);	// Let the OBC know that the transaction succeeded.
 		}
 		new_tm_msgf = 0;
@@ -581,10 +585,32 @@ void receive_tm_msg(void)
 	{
 		send_tm_transaction_response(req_by, 0xFF);
 		tm_sequence_count = 0;
+		receiving_tmf = 0;
 		new_tm_msgf = 0;
 		clear_current_tm();
 		return;
 	}
 }
 
-//void 	alert_obc_tcp_ready(void)
+
+// Lets the OBC know that we have a TC packet ready.
+void alert_obc_tcp_ready(void)
+{
+	send_arr[7] = (SELF_ID << 4)|COMS_TASK_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = TC_PACKET_READY;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+// This function is necessary so that we can simply trash current_tm if a new transaction fails.
+static void store_current_tm(void)
+{
+	uint8_t i;
+	for (i = 0; i < 143; i++)
+	{
+		tm_to_downlink[i] = current_tm[i];
+	}
+	return;
+}
