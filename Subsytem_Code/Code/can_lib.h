@@ -53,6 +53,8 @@
 /*				MY CAN DEFINES								*/
 #define SELF_ID					1 // Current SSM is EPS.
 
+#define PACKET_LENGTH			143	// Length of the PUS packet.
+
 #define COMMAND_OUT					0X01010101
 #define COMMAND_IN					0x11111111
 

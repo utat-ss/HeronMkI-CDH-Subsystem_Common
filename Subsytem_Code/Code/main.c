@@ -117,6 +117,7 @@ int main(void)
 			// doing anything that is time-intensive (takes more than 10 ms).
 			if(!receiving_tmf)
 				trans_check();		// Check for incoming packets.	
+			//check_obc_alive();
 		}
 
 		if(SELF_ID == 1)
@@ -154,6 +155,8 @@ int main(void)
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
+		
+
 	}
 }
 

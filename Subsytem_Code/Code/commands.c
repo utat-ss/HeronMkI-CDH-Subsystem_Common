@@ -36,6 +36,9 @@
 	*
 	*	08/09/2015		Functions send_read_response(), and send_write_response() have been added.
 	*
+	*					No longer making updates when new functions are added, updates shall be made
+	*					if the structure/purpose of this file changes.
+	*
 */
 
 #include "commands.h"
@@ -49,28 +52,28 @@
 
 void run_commands(void)
 {
-	if (send_now == 1)
+	if (send_now)
 		send_response();
-	if (send_hk == 1)
+	if (send_hk)
 		send_housekeeping();
-	if (send_data == 1)
+	if (send_data)
 		send_sensor_data();
-	if (msg_received == 1)
+	if (msg_received)
 		send_coms_packet();
-	if (read_response == 1)
+	if (read_response)
 		send_read_response();
-	if (write_response == 1)
+	if (write_response)
 		send_write_response();
-	if (set_sens_h == 1)
+	if (set_sens_h)
 		set_sensor_high();
-	if (set_sens_l == 1)
+	if (set_sens_l)
 		set_sensor_low();
-	if (set_varf == 1)
+	if (set_varf)
 		set_var();
-	if (new_tm_msgf == 1)
+	if (new_tm_msgf)
 		receive_tm_msg();
-	if (tc_packet_readyf == 1)
-		alert_obc_tcp_ready();
+	if (tc_packet_readyf)
+		send_pus_packet_tc();
 
 	return;	
 }
@@ -548,7 +551,7 @@ void receive_tm_msg(void)
 		clear_current_tm();
 		return;
 	}
-	if(current_tm_fullf == 1)
+	if(current_tm_fullf)
 	{
 		send_tm_transaction_response(req_by, 0xFF);
 		tm_sequence_count = 0;
@@ -557,24 +560,19 @@ void receive_tm_msg(void)
 		return;
 	}
 	
-	if(((obc_seq_count == 0) && (tm_sequence_count == 0)) || (obc_seq_count == (tm_sequence_count + 1)))
+	if((!obc_seq_count && !tm_sequence_count) || (obc_seq_count == (tm_sequence_count + 1)))
 	{
 		tm_sequence_count = obc_seq_count;
-		if(obc_seq_count < 35)
-		{
-			current_tm[(obc_seq_count * 4)]		= new_tm_msg[0];
-			current_tm[(obc_seq_count * 4) + 1] = new_tm_msg[1];
-			current_tm[(obc_seq_count * 4) + 2] = new_tm_msg[2];
-			current_tm[(obc_seq_count * 4) + 3] = new_tm_msg[3];
-		}
+		receiving_tmf = 1;
+		current_tm[(obc_seq_count * 4)]		= new_tm_msg[0];
+		current_tm[(obc_seq_count * 4) + 1] = new_tm_msg[1];
+		current_tm[(obc_seq_count * 4) + 2] = new_tm_msg[2];
+		current_tm[(obc_seq_count * 4) + 3] = new_tm_msg[3];
 		if(obc_seq_count == 35)
 		{
 			tm_sequence_count = 0;									// Reset tm_sequence_count, transmission has completed.
 			receiving_tmf = 0;
 			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
-			current_tm[(obc_seq_count * 4)]		= new_tm_msg[0];
-			current_tm[(obc_seq_count * 4) + 1] = new_tm_msg[1];
-			current_tm[(obc_seq_count * 4) + 2] = new_tm_msg[2];
 			store_current_tm();										// Put current_tm[] into tm_to_downlink[]
 			send_tm_transaction_response(req_by, obc_seq_count);	// Let the OBC know that the transaction succeeded.
 		}
@@ -596,7 +594,7 @@ void receive_tm_msg(void)
 // Lets the OBC know that we have a TC packet ready.
 void alert_obc_tcp_ready(void)
 {
-	send_arr[7] = (SELF_ID << 4)|COMS_TASK_ID;
+	send_arr[7] = (SELF_ID << 4)|OBC_PACKET_ROUTER_ID;
 	send_arr[6] = MT_COM;
 	send_arr[5] = TC_PACKET_READY;
 	send_arr[4] = CURRENT_MINUTE;
@@ -612,5 +610,69 @@ static void store_current_tm(void)
 	{
 		tm_to_downlink[i] = current_tm[i];
 	}
+	return;
+}
+
+void send_pus_packet_tc(void)
+{
+	uint8_t i, timeout = 250;
+	uint8_t num_transfers = PACKET_LENGTH / 4;
+	
+	tc_transfer_completef = 0;
+	start_tc_transferf = 0;
+	alert_obc_tcp_ready();
+	while(!start_tc_transferf)			// Wait a maximum of 2.5ms for the OBC to respond.
+	{
+		if(!timeout--)
+		{
+			return;
+		}
+		delay_us(10);
+	}				
+	start_tc_transferf = 0;
+	timeout = 100;
+	
+	for(i = 0; i < num_transfers; i++)
+	{
+		if(tc_transfer_completef == 0xFF)
+			return -1;
+		send_arr[0] = current_tc[(i * 4)];
+		send_arr[1] = current_tc[(i * 4) + 1];
+		send_arr[2] = current_tc[(i * 4) + 2];
+		send_arr[3] = current_tc[(i * 4) + 3];
+		send_tc_can_msg(i);							// Send a TC message to the OBC.
+		delay_ms(1);								// Give the OBC 1ms to process that CAN message.
+	}
+	
+	while(!tc_transfer_completef)					// Delay for ~10 ms for the OBC to send final transaction response.
+	{
+		if(!timeout--)
+		{
+			return;
+		}
+		delay_us(100);
+	}
+	
+	if(tc_transfer_completef != 35)
+	{
+		tc_transfer_completef = 0;
+		return;
+	}
+	else
+	{
+		tc_transfer_completef = 0;
+		tc_packet_readyf = 0;
+		return;
+	}
+}
+
+// It is assumed that send_arr[3-0] have already been filled before executing this function.
+static void send_tc_can_msg(uint8_t packet_count)
+{
+	send_arr[7] = (SELF_ID << 4)|OBC_PACKET_ROUTER_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = SEND_TC;
+	send_arr[4] = packet_count;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;
 }

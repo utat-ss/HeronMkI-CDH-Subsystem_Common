@@ -42,7 +42,7 @@ uint8_t id_array[6];	// Necessary due to the different mailbox IDs for COMS, EPS
 /* Global variables used for PUS packet communication */
 uint8_t new_tm_msg[8], new_tc_msg[8], tm_sequence_count, new_tm_msgf, current_tm_fullf, tc_packet_readyf;
 uint8_t tc_transfer_completef, start_tc_transferf, receiving_tmf;
-uint8_t current_tm[143], tm_to_downlink[143], current_tc[143];
+uint8_t current_tm[PACKET_LENGTH + 1], tm_to_downlink[PACKET_LENGTH + 1], current_tc[PACKET_LENGTH + 1];
 
 /* Global Variables for EPS		*/
 uint16_t pxv_high, pxv_low, pxi_high, pxi_low, pyv_high, pyv_low, pyi_high, pyi_low;
