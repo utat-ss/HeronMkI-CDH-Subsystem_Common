@@ -132,6 +132,7 @@
 #define EPS_TASK_ID				0x08
 #define PAY_TASK_ID				0x09
 #define OBC_PACKET_ROUTER_ID	0x0A
+#define SCHEDULING_TASK_ID		0x0B
 
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01
