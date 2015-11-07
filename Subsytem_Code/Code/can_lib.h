@@ -133,6 +133,10 @@
 #define PAY_TASK_ID				0x09
 #define OBC_PACKET_ROUTER_ID	0x0A
 #define SCHEDULING_TASK_ID		0x0B
+#define WD_RESET_TASK_ID		0x0D
+#define MEMORY_TASK_ID			0x0E
+#define TIME_TASK_ID			0x0F
+#define HK_GROUND_ID			0x10
 
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01
