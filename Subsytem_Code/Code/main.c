@@ -100,6 +100,7 @@ int main(void)
 	uint8_t msg = 0x66;
 	
 	uint8_t* adc_result;
+	*adc_result = 0;
 
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();

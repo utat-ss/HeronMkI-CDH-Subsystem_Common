@@ -43,6 +43,10 @@
 
 #include "commands.h"
 
+static void store_current_tm(void);
+static void send_tc_can_msg(uint8_t packet_count);
+
+
 /************************************************************************/
 /* RUN COMMANDS                                                         */
 /*																		*/
@@ -556,7 +560,7 @@ void receive_tm_msg(void)
 		send_tm_transaction_response(req_by, 0xFF);
 		tm_sequence_count = 0;
 		new_tm_msgf = 0;
-		receiving_tmf = 0
+		receiving_tmf = 0;
 		return;
 	}
 	
@@ -635,7 +639,7 @@ void send_pus_packet_tc(void)
 	for(i = 0; i < num_transfers; i++)
 	{
 		if(tc_transfer_completef == 0xFF)
-			return -1;
+			return;
 		send_arr[0] = current_tc[(i * 4)];
 		send_arr[1] = current_tc[(i * 4) + 1];
 		send_arr[2] = current_tc[(i * 4) + 2];

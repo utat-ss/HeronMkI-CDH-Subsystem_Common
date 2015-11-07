@@ -66,6 +66,8 @@
 
 #include "can_api.h"
 
+static void start_tm_packet(void);
+
 void can_check_general(void)
 {
 	uint8_t i = 0;
