@@ -8,7 +8,7 @@
 	*	This is the main program which shall be run on the ATMEGA32M1s to be used on subsystem
 	*	microcontrollers.
 	*
-	*	FILE REFERENCES:	io.h, interrupt, LED.h, Timer.h, can_lib.h, adc_lib.h, can_api.h,
+	*	FILE REFERENCES:	io.h, interrupt, port.h, Timer.h, can_lib.h, adc_lib.h, can_api.h,
 	*						spi_lib.h, trans_lib.h
 	*
 	*	EXTERNAL VARIABLES:	
@@ -71,7 +71,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "LED.h"
+#include "port.h"
 #include "Timer.h"
 #include "can_lib.h"
 #include "adc_lib.h"
@@ -124,17 +124,17 @@ int main(void)
 		if(SELF_ID == 1)
 		{
 			can_check_general();
-			LED_clr(LED1);
+			PIN_clr(LED1);
 			delay_ms(1000);
 			adc_set_pin(2);
 			adc_read(adc_result);
 			if(*adc_result > 0x10)
 			{
-				LED_set(LED1);
+				PIN_set(LED1);
 			}
 			else
 			{
-				LED_clr(LED1);
+				PIN_clr(LED1);
 			}
 			set_duty_cycleA(0xBF);
 			set_duty_cycleB(0x1F);
@@ -143,11 +143,11 @@ int main(void)
 			adc_read(adc_result);
 			if(*adc_result > 0x10)
 			{
-				LED_set(LED1);
+				PIN_set(LED1);
 			}
 			else
 			{
-				LED_clr(LED1);
+				PIN_clr(LED1);
 			}
 			set_duty_cycleA(0x1F);
 			set_duty_cycleB(0xBF);
@@ -178,7 +178,7 @@ void sys_init(void)
 	// Enable the timer for mppt
 	if(SELF_ID == 1)
 	{
-		LED_set(LED1);
+		PIN_set(LED1);
 		mppt_timer_init();
 	}
 	
@@ -195,7 +195,7 @@ void sys_init(void)
 	
 	if(SELF_ID != 1)
 	{
-		LED_toggle(LED1);
+		PIN_toggle(LED1);
 	}
 
 }

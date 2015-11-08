@@ -33,22 +33,18 @@
 #if (SELF_ID == 1)
 //When the A compare register is reached, turn on one of the LEDs
 ISR(TIMER0_COMPA_vect) {
-	//MPPTA_flag = 1;
-	LED_clr(LED2);
+	PIN_clr(LED2);
 }
 
 //When the B compare register is reached, turn on one of the LEDs
 ISR(TIMER0_COMPB_vect) {
-	//MPPTB_flag = 1;
-	LED_clr(LED3);
+	PIN_clr(LED3);
 }
 
 //When the timer overflows, turn off both LEDs
 ISR(TIMER0_OVF_vect) {
-	LED_set(LED2);
-	LED_set(LED3);
-	//MPPTA_flag = 0;
-	//MPPTB_flag = 0;
+	PIN_set(LED2);
+	PIN_set(LED3);
 }
 #endif
 

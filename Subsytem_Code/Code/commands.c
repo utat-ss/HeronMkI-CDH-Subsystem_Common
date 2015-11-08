@@ -501,15 +501,22 @@ void set_var(void)
 	uint8_t var_name;
 	var_name = setv_arr[3];
 	
-	if(var_name == MPPTA)
+	if(var_name == MPPTX)
 	{
-		mppta = setv_arr[0];
+		mpptx = setv_arr[0];
 	}
-	if(var_name == MPPTB)
+	if(var_name == MPPTY)
 	{
-		mpptb = setv_arr[0];
+		mppty = setv_arr[0];
 	}
-	
+	if(var_name == BALANCE_H)
+	{
+		balance_l = setv_arr[0];
+	}
+	if(var_name == BALANCE_L)
+	{
+		balance_h = setv_arr[0];
+	}
 	set_varf = 0;
 	return;
 }

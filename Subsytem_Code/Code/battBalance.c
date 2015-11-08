@@ -1,13 +1,12 @@
 /*
 	Author: Sam Murray
-	(Originally taken from Keenan's timer code)
 
 	***********************************************************************
-	*	FILE NAME:		mpptTimer.h
+	*	FILE NAME:		battBalance.c
 	*
-	*	PURPOSE:	This program contains the prototypes for mpptTimer.h
+	*	PURPOSE:	This program contains the basic API for activiating battery balancing.
 	*
-	*	FILE REFERENCES:	io.h, interrupt.h, port.h
+	*	FILE REFERENCES:	io.h, battBalance.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -23,17 +22,10 @@
 	*	None so far.
 	*
 	*	DEVELOPMENT HISTORY:
-	*	09/26/2015		Created.
-	*
+	*	2015/10/25		Created.
 	*
 */
-
 #include <avr/io.h>
-#include <avr/interrupt.h>
-#include "port.h"
+#include "battBalance.h"
 
-void mppt_timer_init(void);
-void mppt_timer(void);
-void set_duty_cycleA(uint8_t duty);
-void set_duty_cycleB(uint8_t duty);
 

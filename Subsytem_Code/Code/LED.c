@@ -38,7 +38,7 @@ void LED_Reg_Write(uint8_t val)
 	return;
 }
 
-void LED_set(uint8_t LED) 
+void PIN_set(uint8_t LED) 
 {
 	
 	if(LED == 1)
@@ -56,7 +56,7 @@ void LED_set(uint8_t LED)
 	return;
 }
 
-void LED_clr(uint8_t LED) 
+void PIN_clr(uint8_t LED) 
 {
 	
 	if(LED == 1)
@@ -74,7 +74,7 @@ void LED_clr(uint8_t LED)
 	return;
 }
 
-void LED_toggle(uint8_t LED) 
+void PIN_toggle(uint8_t LED) 
 {
 	if(LED == 1)
 	{
@@ -93,9 +93,9 @@ void LED_toggle(uint8_t LED)
 
 void LED_blink(uint8_t LED)
 {
-	LED_toggle(LED);
+	PIN_toggle(LED);
 	delay_ms(25);
-	LED_toggle(LED);
+	PIN_toggle(LED);
 	delay_ms(25);
 	return;
 }

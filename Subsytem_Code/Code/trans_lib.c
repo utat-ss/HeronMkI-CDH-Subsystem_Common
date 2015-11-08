@@ -520,7 +520,7 @@ void trans_check(void)
 
 		if(SELF_ID != 1)
 		{
-			LED_toggle(LED3);
+			PIN_toggle(LED3);
 		}
 		
 		// Here we would send our message to the OBC.

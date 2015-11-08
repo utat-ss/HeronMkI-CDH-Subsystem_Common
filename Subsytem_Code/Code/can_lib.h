@@ -208,8 +208,8 @@
 #define PAY_PRESS				0x1A
 
 /* VARIABLE NAMES		*/
-#define MPPTA					0xFF
-#define MPPTB					0xFE
+#define MPPTX					0xFF
+#define MPPTY					0xFE
 #define COMS_MODE				0xFD
 #define EPS_MODE				0xFC
 #define PAY_MODE				0xFB
@@ -222,6 +222,8 @@
 #define SPI_CHIP_1				0xF4
 #define SPI_CHIP_2				0xF3
 #define SPI_CHIP_3				0xF2
+#define BALANCE_L				0xF1
+#define BALANCE_H				0xF0
 
 /* CAN frame max data length */
 #define MAX_CAN_FRAME_DATA_LEN      8

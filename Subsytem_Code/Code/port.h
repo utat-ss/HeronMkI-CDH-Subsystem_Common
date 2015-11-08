@@ -1,11 +1,11 @@
 /*
-	Author: Keenan Burnett
+	Author: Keenan Burnett, Sam Murray
 	(Originally taken from Digi-Key Design Support)
 
 	***********************************************************************
-	*	FILE NAME:		LED.h
+	*	FILE NAME:		port.h
 	*
-	*	PURPOSE:	This file contains constant definitions and prototypes for LED.c
+	*	PURPOSE:	This file contains constant definitions and prototypes for port.c
 	*
 	*	FILE REFERENCES:	None.
 	*
@@ -27,25 +27,19 @@
 	*
 	*	02/06/2015		Edited the header.
 	*
+	*	11/08/2015		Merged LED with port files to add set/toggle/clear functionality for more pins 
 */
-#ifndef LED_H_
-#define LED_H_
+#ifndef PIN_H_
+#define PIN_H_
 
-#define LEDPORT PORTB
-#define LED0 0
-#define LED1 1
-#define LED2 2
-#define LED3 3
-#define LED4 4
-#define LED5 5
-#define LED6 6
-#define LED7 7
+#define LED1 29
+#define LED2 27
+#define LED3 30
 
 void LED_Reg_Write(uint8_t val);
-void PIN_set(uint8_t LED);
-void PIN_clr(uint8_t LED);
-void PIN_toggle(uint8_t LED);
-void LED_blink(uint8_t LED);
+void PIN_set(uint8_t PIN);
+void PIN_clr(uint8_t PIN);
+void PIN_toggle(uint8_t PIN);
 
-#endif /* LED_H_ */
+#endif /* PIN_H_ */
 
