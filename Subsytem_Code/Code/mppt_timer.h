@@ -7,7 +7,7 @@
 	*
 	*	PURPOSE:	This program contains the prototypes for mpptTimer.h
 	*
-	*	FILE REFERENCES:	io.h, interrupt.h, LED.h
+	*	FILE REFERENCES:	io.h, interrupt.h, port.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -30,7 +30,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "LED.h"
+#include "port.h"
 
 void mppt_timer_init(void);
 void mppt_timer(void);

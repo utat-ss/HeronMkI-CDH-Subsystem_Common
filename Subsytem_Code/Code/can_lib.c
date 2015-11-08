@@ -55,7 +55,7 @@
 #include "config.h"
 #include "can_lib.h"
 #include "can_drv.h"
-#include "LED.h"
+#include "port.h"
 
 //_____ D E F I N I T I O N S __________________________________________________
 

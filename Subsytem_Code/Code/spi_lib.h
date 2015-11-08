@@ -32,7 +32,7 @@
 
 //-----------FILE INCLUDES---------------
 #include "config.h"
-#include "LED.h"
+#include "port.h"
 #include "Timer.h"
 #include "can_lib.h"
 //---------------------------------------

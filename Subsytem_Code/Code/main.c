@@ -8,7 +8,7 @@
 	*	This is the main program which shall be run on the ATMEGA32M1s to be used on subsystem
 	*	microcontrollers.
 	*
-	*	FILE REFERENCES:	io.h, interrupt, LED.h, Timer.h, can_lib.h, adc_lib.h, can_api.h,
+	*	FILE REFERENCES:	io.h, interrupt, port.h, Timer.h, can_lib.h, adc_lib.h, can_api.h,
 	*						spi_lib.h, trans_lib.h
 	*
 	*	EXTERNAL VARIABLES:	
@@ -71,7 +71,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "LED.h"
+#include "port.h"
 #include "Timer.h"
 #include "can_lib.h"
 #include "adc_lib.h"

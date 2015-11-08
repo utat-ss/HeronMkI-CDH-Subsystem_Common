@@ -28,7 +28,7 @@
 */
 
 #include "spi_lib.h"
-#include "LED.h"
+#include "port.h"
 #include "Timer.h"
 
 /* Global variables to be used for CAN communication */

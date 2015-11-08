@@ -40,7 +40,6 @@ void LED_Reg_Write(uint8_t val);
 void PIN_set(uint8_t PIN);
 void PIN_clr(uint8_t PIN);
 void PIN_toggle(uint8_t PIN);
-void PIN_blink(uint8_t PIN);
 
 #endif /* PIN_H_ */
 

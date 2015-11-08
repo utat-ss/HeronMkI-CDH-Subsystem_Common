@@ -245,13 +245,3 @@ void PIN_clr(uint8_t PIN)
 	}
 	return;
 }
-
-void PIN_blink(uint8_t PIN)
-{
-	PIN_toggle(PIN);
-	delay_ms(25);
-	PIN_toggle(PIN);
-	delay_ms(25);
-	return;
-}
-
