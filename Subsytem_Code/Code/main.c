@@ -80,6 +80,7 @@
 #include "trans_lib.h"
 #include "commands.h"
 #include "mppt_timer.h"
+#include "comsTimer.h"
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
@@ -99,6 +100,7 @@ int main(void)
 	uint8_t msg = 0x66;
 	
 	uint8_t* adc_result;
+	*adc_result = 0;
 
 	// Initialize I/O, Timer, ADC, CAN, and SPI
 	sys_init();
@@ -112,14 +114,16 @@ int main(void)
 		/*		TRANSCEIVER COMMUNICATION	*/
 		if(SELF_ID == 0)
 		{
-			trans_check();		// Check for incoming packets.	
+			// If you are COMS, please check that receiving_tmf == 0 before
+			// doing anything that is time-intensive (takes more than 10 ms).
+			if(!receiving_tmf)
+				trans_check();		// Check for incoming packets.	
+			//check_obc_alive();
 		}
 
 		if(SELF_ID == 1)
 		{
 			can_check_general();
-			can_actions_eps();
-			
 			LED_clr(LED1);
 			delay_ms(1000);
 			adc_set_pin(2);
@@ -152,6 +156,8 @@ int main(void)
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
+		
+
 	}
 }
 
@@ -182,6 +188,7 @@ void sys_init(void)
 	if (SELF_ID == 0)
 	{
 		transceiver_initialize();
+		coms_timer_init();
 	}
 
 	SS1_set_high();		// SPI Temp Sensor.
@@ -209,22 +216,4 @@ void io_init(void)
 	// Init PORTE[2:0]
 	DDRE = 0x00;
 	PORTE = 0x00;
-}
-
-void can_actions_eps(void)
-{
-	if (set_sens_h == 1)
-	{
-		set_sensor_highf();
-	}
-	
-	if (set_sens_l == 1)
-	{
-		set_sensor_lowf();
-	}
-	
-	if (set_var == 1)
-	{
-		set_varf();
-	}
 }
