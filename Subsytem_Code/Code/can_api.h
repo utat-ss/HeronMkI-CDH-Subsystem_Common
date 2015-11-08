@@ -49,7 +49,7 @@ uint16_t pxv_high, pxv_low, pxi_high, pxi_low, pyv_high, pyv_low, pyi_high, pyi_
 uint16_t battmv_high, battmv_low, battv_high, battv_low, batti_high, batti_low, battemp_high;
 uint16_t battemp_low, epstemp_high, epstemp_low, comsv_high, comsv_low, comsi_high, comsi_low;
 uint16_t payv_high, payv_low, payi_high, payi_low, obcv_high, obcv_low, obci_high, obci_low;
-uint8_t mppta, mpptb;
+uint8_t mpptx, mppty, balance_h, balance_l;
 
 uint8_t CURRENT_MINUTE;
 

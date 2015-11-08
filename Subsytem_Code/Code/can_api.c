@@ -204,13 +204,13 @@ void decode_command(uint8_t* command_array)
 		case REQ_RESPONSE :
 			if(SELF_ID != 1)
 			{
-				LED_toggle(LED3);
+				PIN_toggle(LED3);
 			}
 			send_now = 1;
 		case REQ_DATA :
 			if(SELF_ID != 1)
 			{
-				LED_toggle(LED1);
+				PIN_toggle(LED1);
 			}
 			send_data = 1;
 			for (i = 0; i < 8; i ++)
@@ -220,7 +220,7 @@ void decode_command(uint8_t* command_array)
 		case REQ_HK :
 			if(SELF_ID != 1)
 			{
-				LED_toggle(LED2);
+				PIN_toggle(LED2);
 			}
 			send_hk = 1;
 		case REQ_READ:

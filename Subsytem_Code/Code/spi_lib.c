@@ -177,7 +177,7 @@ uint8_t spi_transfer(uint8_t message)
 			return 0x00;						// Something went wrong, so the function times out.
 			if(SELF_ID != 1)
 			{
-				LED_toggle(LED2);
+				PIN_toggle(LED2);
 			}
 		}
 	}	
