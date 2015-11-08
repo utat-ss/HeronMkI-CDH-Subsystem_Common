@@ -44,5 +44,11 @@ void send_sensor_data(void);
 void send_coms_packet(void);
 void send_read_response(void);
 void send_write_response(void);
+void set_sensor_high(void);
+void set_sensor_low(void);
+void set_var(void);
+void receive_tm_msg(void);
+void alert_obc_tcp_ready(void);
+
 /*****************************************************/
 #endif
