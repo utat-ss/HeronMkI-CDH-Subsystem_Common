@@ -5,9 +5,9 @@
 	***********************************************************************
 	*	FILE NAME:		battBalance.h
 	*
-	*	PURPOSE:	This file contains constant definitions and prototypes for LED.c
+	*	PURPOSE:	This file contains constant definitions and prototypes for battBalance.c
 	*
-	*	FILE REFERENCES:	None.
+	*	FILE REFERENCES:	io.h, interrupt.h, port.h, can_api.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -25,12 +25,12 @@
 	*	DEVELOPMENT HISTORY:
 	*	2015/10/25		Created.
 	*
+	*	2015/11/08		Updated to be ready for physical testing
 */
-#define LEDPORT PORTB
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include "port.h"
+#include "can_api.h"
 
-void PIN_Reg_Write(uint8_t val);
-void PIN_set(uint8_t LED);
-void PIN_clr(uint8_t LED);
-void PIN_toggle(uint8_t LED);
-void PIN_blink(uint8_t LED);
+void run_battBalance(void);
 

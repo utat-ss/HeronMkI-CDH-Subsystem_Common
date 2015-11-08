@@ -7,7 +7,7 @@
 	*
 	*	PURPOSE:	This program contains the prototypes for mpptTimer.h
 	*
-	*	FILE REFERENCES:	io.h, interrupt.h, port.h
+	*	FILE REFERENCES:	io.h, interrupt.h, port.h, can_api.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -25,15 +25,16 @@
 	*	DEVELOPMENT HISTORY:
 	*	09/26/2015		Created.
 	*
-	*
+	*	2015/11/08		Updated function names
 */
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "port.h"
+#include "can_api.h"
 
 void mppt_timer_init(void);
-void mppt_timer(void);
-void set_duty_cycleA(uint8_t duty);
-void set_duty_cycleB(uint8_t duty);
+void run_mppt(void);
+void set_duty_cycleX(uint8_t duty);
+void set_duty_cycleY(uint8_t duty);
 

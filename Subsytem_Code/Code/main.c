@@ -80,6 +80,7 @@
 #include "trans_lib.h"
 #include "commands.h"
 #include "mppt_timer.h"
+#include "battBalance.h"
 #include "comsTimer.h"
 
 /* Function Prototypes for functions in this file */
@@ -124,34 +125,8 @@ int main(void)
 		if(SELF_ID == 1)
 		{
 			can_check_general();
-			PIN_clr(LED1);
-			delay_ms(1000);
-			adc_set_pin(2);
-			adc_read(adc_result);
-			if(*adc_result > 0x10)
-			{
-				PIN_set(LED1);
-			}
-			else
-			{
-				PIN_clr(LED1);
-			}
-			set_duty_cycleA(0xBF);
-			set_duty_cycleB(0x1F);
-			delay_ms(1000);
-			adc_set_pin(3);
-			adc_read(adc_result);
-			if(*adc_result > 0x10)
-			{
-				PIN_set(LED1);
-			}
-			else
-			{
-				PIN_clr(LED1);
-			}
-			set_duty_cycleA(0x1F);
-			set_duty_cycleB(0xBF);
-			
+			run_mppt();
+			run_battBalance();
 		}
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
