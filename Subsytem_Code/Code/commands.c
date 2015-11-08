@@ -46,6 +46,9 @@
 static void store_current_tm(void);
 static void send_tc_can_msg(uint8_t packet_count);
 
+// Temporary Global Variables for testing
+uint8_t pxv, pxi, pyv, pyi;
+
 
 /************************************************************************/
 /* RUN COMMANDS                                                         */
@@ -133,6 +136,10 @@ void send_sensor_data(void)
 	uint8_t high, low, sensor_name, req_by;			
 	sensor_name = data_req_arr[3];
 	req_by = data_req_arr[7] >> 4;
+	send_arr[3] = 0;
+	send_arr[2] = 0;
+	send_arr[1] = 0;
+	send_arr[0] = 0;
 	
 	if(sensor_name == EPS_TEMP)
 	{
@@ -141,18 +148,22 @@ void send_sensor_data(void)
 		send_arr[0] = low;
 	}
 	
-	//if(sensor_name == PANELX_V)
-	//{
-	//}
-	//if(sensor_name == PANELX_I)
-	//{
-	//}
-	//if(sensor_name == PANELY_V)
-	//{
-	//}
-	//if(sensor_name == PANELY_I)
-	//{
-	//}
+	if(sensor_name == PANELX_V)
+	{
+		send_arr[0] = pxv;
+	}
+	if(sensor_name == PANELX_I)
+	{
+		send_arr[0] = pxi;
+	}
+	if(sensor_name == PANELY_V)
+	{
+		send_arr[0] = pyv;
+	}
+	if(sensor_name == PANELY_I)
+	{
+		send_arr[0] = pyi;
+	}
 	//if(sensor_name == BATTM_V)
 	//{
 	//}

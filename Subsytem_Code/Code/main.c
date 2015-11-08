@@ -124,9 +124,8 @@ int main(void)
 
 		if(SELF_ID == 1)
 		{
-			can_check_general();
-			run_mppt();
-			run_battBalance();
+			//run_mppt();
+			//run_battBalance();
 		}
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
@@ -155,6 +154,14 @@ void sys_init(void)
 	{
 		PIN_set(LED1);
 		mppt_timer_init();
+		mpptx = 0x3F;
+		mppty = 0x1F;
+		balance_l = 1;
+		balance_h = 1;
+		pxv = 0xBF;
+		pxi	= 0x0F;
+		pyv = 0x5F;
+		pyi = 0x2F;
 	}
 	
 	// Enable global interrupts for Timer execution

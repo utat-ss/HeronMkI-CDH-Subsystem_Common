@@ -4,6 +4,8 @@
 
 adc_lib.c
 
+battBalance.c
+
 can_api.c
 
 can_drv.c
@@ -12,11 +14,13 @@ can_lib.c
 
 commands.c
 
-LED.c
+comsTimer.c
 
 main.c
 
 mppt_timer.c
+
+port.c
 
 spi_lib.c
 

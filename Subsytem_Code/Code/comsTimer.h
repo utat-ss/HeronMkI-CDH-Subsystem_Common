@@ -29,6 +29,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "can_lib.h"
 
 void coms_timer_init(void);
 

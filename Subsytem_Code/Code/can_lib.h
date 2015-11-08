@@ -135,10 +135,9 @@
 #define SCHEDULING_TASK_ID		0x0B
 #define WD_RESET_TASK_ID		0x0D
 #define MEMORY_TASK_ID			0x0E
-#define TIME_TASK_ID			0x0F
-#define HK_GROUND_ID			0x10
-#define TIME_GROUND_ID			0x11
-#define MEM_GROUND_ID			0x12
+#define HK_GROUND_ID			0x0F
+#define TIME_GROUND_ID			0x10
+#define MEM_GROUND_ID			0x11
 
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01

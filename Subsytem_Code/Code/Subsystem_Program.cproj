@@ -143,6 +143,12 @@
     <Compile Include="adc_lib.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="battBalance.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="battBalance.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="can_api.c">
       <SubType>compile</SubType>
     </Compile>
@@ -167,13 +173,13 @@
     <Compile Include="commands.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="comsTimer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="comsTimer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="config.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="LED.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="LED.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
@@ -183,6 +189,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="mppt_timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="port.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="port.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="spi_lib.c">
