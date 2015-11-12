@@ -385,37 +385,6 @@ void clean_up_msg(uint8_t mailbox)
 
 void can_init_mobs(void)
 {
-	uint8_t i;
-	if (SELF_ID == 0)
-	{
-		id_array[0] = SUB0_ID0;
-		id_array[1] = SUB0_ID1;
-		id_array[2] = SUB0_ID2;
-		id_array[3] = SUB0_ID3;
-		id_array[4] = SUB0_ID4;
-		id_array[5] = SUB0_ID5;
-	}
-	
-	if(SELF_ID == 1)
-	{
-		id_array[0] = SUB1_ID0;
-		id_array[1] = SUB1_ID1;
-		id_array[2] = SUB1_ID2;
-		id_array[3] = SUB1_ID3;
-		id_array[4] = SUB1_ID4;
-		id_array[5] = SUB1_ID5;
-	}
-	
-	if(SELF_ID == 2)
-	{
-		id_array[0] = SUB2_ID0;
-		id_array[1] = SUB2_ID1;
-		id_array[2] = SUB2_ID2;
-		id_array[3] = SUB2_ID3;
-		id_array[4] = SUB2_ID4;
-		id_array[5] = SUB2_ID5;
-	}
-	
 	/* INITIALIZE MOB0 */		 // Data reception mailbox.
 	message.pt_data = &data0[0]; // point message object to first element of data buffer
 	message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
@@ -453,52 +422,13 @@ void can_init_mobs(void)
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb to configure
 	
 	/* INITIALIZE MOB5 */
-	
 	message.pt_data = &data5[0];	// point message object to first element of data buffer
 	message.ctrl.ide = 0;			// standard CAN frame type (2.0A)
 	message.id.std = id_array[5];		// populate ID field with ID Tag
 	message.cmd = CMD_RX_DATA;		// assign this as a producer message object (Housekeeping MOB).
 	message.dlc = 8;				// Max length of a CAN message.
 	mob_number = 5;
-	
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOB to configure
-	
-	for (i = 0; i < 8; i ++)
-	{
-		receive_arr[i] = 0;			// Reset the message array to zero after each message.
-		send_arr[i] = 0;
-		read_arr[i] = 0;
-		write_arr[i] = 0;
-		data_req_arr[i] = 0;
-		sensh_arr[i] = 0;
-		sensl_arr[i] = 0;
-		setv_arr[i] = 0;
-		new_tm_msg[i] = 0;
-		new_tc_msg[i] = 0;
-	}
-	
-	for (i = 0; i < 143; i++)		// Initialize the TM/TC Packet arrays.
-	{
-		current_tm[i] = 0;
-		current_tc[i] = 0;
-	}
-	
-	/* Initialize Global Command Flags to zero */
-	send_now = 0;
-	send_hk = 0;
-	send_data = 0;
-	read_response = 0;
-	write_response = 0;
-	set_sens_h = 0;
-	set_sens_l = 0;
-	set_varf = 0;
-	new_tm_msgf = 0;
-	tm_sequence_count = 0;
-	current_tm_fullf = 0;
-	tc_packet_readyf = 0;
-	tc_transfer_completef = 0;
-	start_tc_transferf = 0;
-	receiving_tmf = 0;
 	
 	return;
 }

@@ -31,7 +31,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "port.h"
-#include "can_api.h"
+#include "global_var.h"
 
 void mppt_timer_init(void);
 void run_mppt(void);
