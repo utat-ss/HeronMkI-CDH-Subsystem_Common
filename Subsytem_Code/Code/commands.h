@@ -33,6 +33,7 @@
 
 #include "can_api.h"
 #include "can_lib.h"
+#include "global_var.h"
 #include "trans_lib.h"
 #include <stdint.h>
 
@@ -49,6 +50,8 @@ void set_sensor_low(void);
 void set_var(void);
 void receive_tm_msg(void);
 void alert_obc_tcp_ready(void);
+void send_pus_packet_tc(void)
+void send_event(void);
 
 /*****************************************************/
 #endif

@@ -34,7 +34,7 @@
 #include "config.h"
 #include "port.h"
 #include "Timer.h"
-#include "can_lib.h"
+#include "global_var.h"
 //---------------------------------------
 
 //-----------CONSTANT DEFINES------------

@@ -9,7 +9,8 @@
 	*	microcontrollers.
 	*
 	*	FILE REFERENCES:	io.h, interrupt, port.h, Timer.h, can_lib.h, adc_lib.h, can_api.h,
-	*						spi_lib.h, trans_lib.h
+	*						spi_lib.h, trans_lib.h, commands.h, mppt_timer.h, battBalance.h,
+	*						comsTimer.h, globa_var.h
 	*
 	*	EXTERNAL VARIABLES:	
 	*
@@ -67,6 +68,11 @@
 	*					the only difference being that SELF_ID is defined to different values. Hence if your
 	*					SSM requires functionality specific only to it, you must use an if statement including SELF_ID.
 	*
+	*	11/12/2015		It seemed to make sense to lump all of my global variables and definitions in a place that
+	*					was obvious to new people being introduced to the code. Hence we now have a global_var.h
+	*					header for this. In addition, I created an initialization function init_global_vars()
+	*					and put it in sys_init().
+	*
 */
 
 #include <avr/io.h>
@@ -82,10 +88,12 @@
 #include "mppt_timer.h"
 #include "battBalance.h"
 #include "comsTimer.h"
+#include "global_var.h"
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
 static void sys_init(void);
+static void init_global_vars(void);
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
@@ -121,7 +129,6 @@ int main(void)
 				trans_check();		// Check for incoming packets.	
 			//check_obc_alive();
 		}
-
 		if(SELF_ID == 1)
 		{
 			run_mppt();
@@ -133,21 +140,21 @@ int main(void)
 	}
 }
 
-void sys_init(void) 
+static void sys_init(void) 
 {
 	// Make sure sys clock is at least 8MHz
 	CLKPR = 0x80;  
 	CLKPR = 0x00;
 	
+	init_global_vars();
 	io_init();	
 	timer_init();
-
 	adc_initialize();
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
 
-	// Enable the timer for mppt
+	/* Enable the timer for MMPT */
 	if(SELF_ID == 1)
 	{
 		PIN_set(LED1);
@@ -180,7 +187,7 @@ void sys_init(void)
 
 }
 
-void io_init(void) 
+static void io_init(void) 
 {	
 	// Init PORTB[7:0] // LED port
 	DDRB = 0xFE;
@@ -196,4 +203,75 @@ void io_init(void)
 	// Init PORTE[2:0]
 	DDRE = 0x00;
 	PORTE = 0x00;
+}
+
+static void init_global_vars(void)
+{	
+	uint8_t i;
+	if (SELF_ID == 0)
+	{
+		id_array[0] = SUB0_ID0;
+		id_array[1] = SUB0_ID1;
+		id_array[2] = SUB0_ID2;
+		id_array[3] = SUB0_ID3;
+		id_array[4] = SUB0_ID4;
+		id_array[5] = SUB0_ID5;
+	}
+	if(SELF_ID == 1)
+	{
+		id_array[0] = SUB1_ID0;
+		id_array[1] = SUB1_ID1;
+		id_array[2] = SUB1_ID2;
+		id_array[3] = SUB1_ID3;
+		id_array[4] = SUB1_ID4;
+		id_array[5] = SUB1_ID5;
+	}
+	if(SELF_ID == 2)
+	{
+		id_array[0] = SUB2_ID0;
+		id_array[1] = SUB2_ID1;
+		id_array[2] = SUB2_ID2;
+		id_array[3] = SUB2_ID3;
+		id_array[4] = SUB2_ID4;
+		id_array[5] = SUB2_ID5;
+	}
+	for (i = 0; i < 8; i ++)
+	{
+		receive_arr[i] = 0;			// Reset the message array to zero after each message.
+		send_arr[i] = 0;
+		read_arr[i] = 0;
+		write_arr[i] = 0;
+		data_req_arr[i] = 0;
+		sensh_arr[i] = 0;
+		sensl_arr[i] = 0;
+		setv_arr[i] = 0;
+		new_tm_msg[i] = 0;
+		new_tc_msg[i] = 0;
+		event_arr[i] = 0;
+	}
+	for (i = 0; i < 152; i++)		// Initialize the TM/TC Packet arrays.
+	{
+		current_tm[i] = 0;
+		current_tc[i] = 0;
+		tm_to_downlink[i] = 0;
+	}
+	/* Initialize Global Command Flags to zero */
+	send_now = 0;
+	send_hk = 0;
+	send_data = 0;
+	read_response = 0;
+	write_response = 0;
+	set_sens_h = 0;
+	set_sens_l = 0;
+	set_varf = 0;
+	new_tm_msgf = 0;
+	tm_sequence_count = 0;
+	current_tm_fullf = 0;
+	tc_packet_readyf = 0;
+	tc_transfer_completef = 0;
+	start_tc_transferf = 0;
+	receiving_tmf = 0;
+	event_readyf = 0;
+	
+	return;
 }

@@ -81,6 +81,8 @@ void run_commands(void)
 		receive_tm_msg();
 	if (tc_packet_readyf)
 		send_pus_packet_tc();
+	if (event_readyf)
+		send_event();
 
 	return;	
 }
@@ -695,6 +697,21 @@ static void send_tc_can_msg(uint8_t packet_count)
 	send_arr[6] = MT_COM;
 	send_arr[5] = SEND_TC;
 	send_arr[4] = packet_count;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+// event_readyf should be set when an event to report on has been placed in event_arr[]
+void send_event(void)
+{
+	send_arr[7] = (SELF_ID << 4)|OBC_PACKET_ROUTER_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = SEND_EVENT;
+	send_arr[4] = CURRENT_MINUTE;
+	send_arr[3] = event_arr[3];		// 1=Normal, 2=low-sev error, 3=med-sev, 4=high-sev
+	send_arr[2] = event_arr[2];		// ReportID
+	send_arr[1] = event_arr[1];
+	send_arr[0] = event_arr[0];
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;
 }

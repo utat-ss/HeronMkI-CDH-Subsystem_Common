@@ -30,7 +30,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "port.h"
-#include "can_api.h"
+#include "global_var.h"
 
 void run_battBalance(void);
 
