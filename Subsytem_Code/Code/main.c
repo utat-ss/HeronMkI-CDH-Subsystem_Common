@@ -124,14 +124,12 @@ int main(void)
 
 		if(SELF_ID == 1)
 		{
-			//run_mppt();
-			//run_battBalance();
+			run_mppt();
+			run_battBalance();
 		}
 		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
-		
-
 	}
 }
 

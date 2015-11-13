@@ -134,7 +134,7 @@ void send_housekeeping(void)
 void send_sensor_data(void)
 {
 	uint8_t high, low, sensor_name, req_by;			
-	sensor_name = data_req_arr[3];
+	sensor_name = data_req_arr[4];
 	req_by = data_req_arr[7] >> 4;
 	send_arr[3] = 0;
 	send_arr[2] = 0;

@@ -51,9 +51,9 @@
 //_____ D E F I N I T I O N S __________________________________________________
 
 /*				MY CAN DEFINES								*/
-#define SELF_ID					1 // Current SSM is EPS.
+#define SELF_ID						1 // Current SSM is EPS.
 
-#define PACKET_LENGTH			143	// Length of the PUS packet.
+#define PACKET_LENGTH				152	// Length of the PUS packet.
 
 #define COMMAND_OUT					0X01010101
 #define COMMAND_IN					0x11111111
@@ -167,10 +167,8 @@
 #define SMALLTYPE_DEFAULT		0x00
 
 /* DATA SMALL-TYPE	   */
-#define SPI_TEMP1				0x01
-#define COMS_PACKET				0x02
-#define BATT_TOP				0x03
-#define BATT_BOTTOM				0x04
+#define SPI_TEMP1				0xFF
+#define COMS_PACKET				0xFE
 
 /* MESSAGE PRIORITIES	*/
 #define COMMAND_PRIO			25
