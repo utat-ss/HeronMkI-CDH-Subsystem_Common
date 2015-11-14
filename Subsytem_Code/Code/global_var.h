@@ -60,12 +60,12 @@
 #define CAN0_MB7				8
 
 #define CAN1_MB0				10
-#define CAN1_MB1				11
-#define CAN1_MB2				12
-#define CAN1_MB3				13
+#define CAN1_MB1				10
+#define CAN1_MB2				10
+#define CAN1_MB3				10
 #define CAN1_MB4				14
-#define CAN1_MB5				15
-#define CAN1_MB6				16
+#define CAN1_MB5				14
+#define CAN1_MB6				14
 #define CAN1_MB7				17
 
 /* IDs for COMS/SUB0 mailboxes */

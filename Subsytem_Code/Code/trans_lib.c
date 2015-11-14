@@ -451,9 +451,9 @@ void dir_FIFO_write(uint8_t addr, uint8_t data)
 void set_CSn(uint8_t state)
 {
 	if(state)
-	SS_set_high();
+		SS_set_high();
 	else
-	SS_set_low();
+		SS_set_low();
 }
 
 /************************************************************************/
