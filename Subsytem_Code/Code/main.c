@@ -77,6 +77,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 #include "port.h"
 #include "Timer.h"
 #include "can_lib.h"
@@ -111,12 +112,15 @@ int main(void)
 	uint8_t* adc_result;
 	*adc_result = 0;
 
-	// Initialize I/O, Timer, ADC, CAN, and SPI
+	// Initialize I/O, Timer, ADC, CAN, WDT, and SPI
 	sys_init();
 	
 	/*		Begin Main Program Loop					*/	
     while(1)
-    {		
+    {	
+		/* Reset the WDT */
+		wdt_reset()
+		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();
 		
@@ -153,6 +157,10 @@ static void sys_init(void)
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
+	
+	//enable watchdog timer - 2 second reset time approximate
+	//WDTON Fuse has to be 1 for system reset mode - how do you do that?
+	wdt_enable(WDTO_2S);
 
 	/* Enable the timer for MMPT */
 	if(SELF_ID == 1)
