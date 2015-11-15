@@ -11,7 +11,7 @@ spi_lib.d spi_lib.o: .././spi_lib.c .././spi_lib.h .././config.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\lock.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
- .././port.h .././Timer.h .././can_lib.h .././can_drv.h
+ .././port.h .././Timer.h .././global_var.h
 
 .././spi_lib.h:
 
@@ -45,6 +45,4 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-g
 
 .././Timer.h:
 
-.././can_lib.h:
-
-.././can_drv.h:
+.././global_var.h:

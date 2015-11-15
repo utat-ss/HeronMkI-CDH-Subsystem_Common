@@ -11,8 +11,8 @@ can_api.d can_api.o: .././can_api.c .././can_api.h .././config.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\lock.h \
  c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
- .././can_lib.h .././can_drv.h .././commands.h .././port.h \
- .././trans_lib.h .././spi_lib.h .././Timer.h
+ .././can_lib.h .././can_drv.h .././global_var.h .././commands.h \
+ .././port.h .././trans_lib.h .././spi_lib.h .././Timer.h
 
 .././can_api.h:
 
@@ -45,6 +45,8 @@ c:\program\ files\ (x86)\atmel\atmel\ toolchain\avr8\ gcc\native\3.4.1061\avr8-g
 .././can_lib.h:
 
 .././can_drv.h:
+
+.././global_var.h:
 
 .././commands.h:
 

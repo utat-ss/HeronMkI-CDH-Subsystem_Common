@@ -119,7 +119,7 @@ int main(void)
     while(1)
     {	
 		/* Reset the WDT */
-		wdt_reset()
+		wdt_reset();
 		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();

@@ -11,13 +11,15 @@ Allocating common symbols
 Common symbol       size              file
 
 tm_sequence_count   0x1               battBalance.o
+event_readyf        0x1               battBalance.o
 write_arr           0x8               battBalance.o
 pyi                 0x1               battBalance.o
 battv_low           0x2               battBalance.o
 payv_low            0x2               battBalance.o
-msg_received        0x1               battBalance.o
-tm_to_downlink      0x99              battBalance.o
+msg_received        0x1               can_api.o
+tm_to_downlink      0x98              battBalance.o
 payv_high           0x2               battBalance.o
+event_arr           0x8               battBalance.o
 pyv_high            0x2               battBalance.o
 battemp_high        0x2               battBalance.o
 data1               0x8               battBalance.o
@@ -39,7 +41,7 @@ start_tc_transferf  0x1               battBalance.o
 tc_transfer_completef
                     0x1               battBalance.o
 comsv_high          0x2               battBalance.o
-message             0xc               battBalance.o
+message             0xc               can_api.o
 data_req_arr        0x8               battBalance.o
 comsv_low           0x2               battBalance.o
 battmv_low          0x2               battBalance.o
@@ -52,9 +54,9 @@ send_now            0x1               battBalance.o
 mpptx               0x1               battBalance.o
 new_tm_msgf         0x1               battBalance.o
 payi_low            0x2               battBalance.o
-trans_msg           0x6               battBalance.o
+trans_msg           0x6               can_api.o
 read_response       0x1               battBalance.o
-current_tm          0x99              battBalance.o
+current_tm          0x98              battBalance.o
 data0               0x8               battBalance.o
 send_hk             0x1               battBalance.o
 obci_high           0x2               battBalance.o
@@ -88,7 +90,7 @@ obcv_low            0x2               battBalance.o
 sensl_arr           0x8               battBalance.o
 status              0x1               battBalance.o
 pxi_high            0x2               battBalance.o
-current_tc          0x99              battBalance.o
+current_tc          0x98              battBalance.o
 pyi_high            0x2               battBalance.o
 read_arr            0x8               battBalance.o
 
@@ -127,13 +129,13 @@ Discarded input sections
  .bss           0x00000000        0x0 comsTimer.o
  .text.coms_timer_init
                 0x00000000       0x10 comsTimer.o
- .debug_info    0x00000000      0x223 comsTimer.o
- .debug_abbrev  0x00000000       0xe5 comsTimer.o
+ .debug_info    0x00000000      0x641 comsTimer.o
+ .debug_abbrev  0x00000000       0x85 comsTimer.o
  .debug_aranges
                 0x00000000       0x20 comsTimer.o
  .debug_ranges  0x00000000       0x10 comsTimer.o
- .debug_line    0x00000000       0xcb comsTimer.o
- .debug_str     0x00000000      0x284 comsTimer.o
+ .debug_line    0x00000000       0xc2 comsTimer.o
+ .debug_str     0x00000000      0x493 comsTimer.o
  .comment       0x00000000       0x31 comsTimer.o
  .debug_frame   0x00000000       0x24 comsTimer.o
  .text          0x00000000        0x0 main.o
@@ -196,14 +198,14 @@ Discarded input sections
                 0x00000000      0x17a trans_lib.o
  .text.trans_check
                 0x00000000       0x84 trans_lib.o
- .debug_info    0x00000000      0xffd trans_lib.o
- .debug_abbrev  0x00000000      0x293 trans_lib.o
+ .debug_info    0x00000000     0x1411 trans_lib.o
+ .debug_abbrev  0x00000000      0x22b trans_lib.o
  .debug_loc     0x00000000      0x769 trans_lib.o
  .debug_aranges
                 0x00000000       0x80 trans_lib.o
  .debug_ranges  0x00000000       0x70 trans_lib.o
- .debug_line    0x00000000      0x248 trans_lib.o
- .debug_str     0x00000000      0x3a9 trans_lib.o
+ .debug_line    0x00000000      0x23f trans_lib.o
+ .debug_str     0x00000000      0x5b8 trans_lib.o
  .comment       0x00000000       0x31 trans_lib.o
  .debug_frame   0x00000000      0x164 trans_lib.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
@@ -382,7 +384,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x236c
+.text           0x00000000     0x23e8
  *(.vectors)
  .vectors       0x00000000       0x7c c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm32m1.o
                 0x00000000                __vector_default
@@ -495,121 +497,124 @@ END GROUP
                 0x00000532       0xb6 can_api.o
                 0x00000532                can_check_general
  .text.can_init_mobs
-                0x000005e8      0x25c can_api.o
+                0x000005e8      0x13e can_api.o
                 0x000005e8                can_init_mobs
  .text.can_clear_all_mob
-                0x00000844       0x26 can_drv.o
-                0x00000844                can_clear_all_mob
+                0x00000726       0x26 can_drv.o
+                0x00000726                can_clear_all_mob
  .text.can_get_mob_status
-                0x0000086a       0x2c can_drv.o
-                0x0000086a                can_get_mob_status
+                0x0000074c       0x2c can_drv.o
+                0x0000074c                can_get_mob_status
  .text.can_get_data
-                0x00000896       0x14 can_drv.o
-                0x00000896                can_get_data
+                0x00000778       0x14 can_drv.o
+                0x00000778                can_get_data
  .text.can_fixed_baudrate
-                0x000008aa       0x1c can_drv.o
-                0x000008aa                can_fixed_baudrate
+                0x0000078c       0x1c can_drv.o
+                0x0000078c                can_fixed_baudrate
  .text.can_init
-                0x000008c6       0x1e can_lib.o
-                0x000008c6                can_init
- .text.can_cmd  0x000008e4      0xc58 can_lib.o
-                0x000008e4                can_cmd
+                0x000007a8       0x1e can_lib.o
+                0x000007a8                can_init
+ .text.can_cmd  0x000007c6      0xc58 can_lib.o
+                0x000007c6                can_cmd
  .text.can_get_status
-                0x0000153c      0x1cc can_lib.o
-                0x0000153c                can_get_status
+                0x0000141e      0x1cc can_lib.o
+                0x0000141e                can_get_status
  .text.send_tm_transaction_response
-                0x00001708       0x36 commands.o
+                0x000015ea       0x36 commands.o
  .text.send_response
-                0x0000173e       0x2a commands.o
-                0x0000173e                send_response
+                0x00001620       0x2a commands.o
+                0x00001620                send_response
  .text.send_housekeeping
-                0x00001768       0x24 commands.o
-                0x00001768                send_housekeeping
+                0x0000164a       0x24 commands.o
+                0x0000164a                send_housekeeping
  .text.send_sensor_data
-                0x0000178c       0xb2 commands.o
-                0x0000178c                send_sensor_data
+                0x0000166e       0xb2 commands.o
+                0x0000166e                send_sensor_data
  .text.send_coms_packet
-                0x0000183e       0x30 commands.o
-                0x0000183e                send_coms_packet
+                0x00001720       0x30 commands.o
+                0x00001720                send_coms_packet
  .text.send_read_response
-                0x0000186e       0x42 commands.o
-                0x0000186e                send_read_response
+                0x00001750       0x42 commands.o
+                0x00001750                send_read_response
  .text.send_write_response
-                0x000018b0       0x48 commands.o
-                0x000018b0                send_write_response
+                0x00001792       0x48 commands.o
+                0x00001792                send_write_response
  .text.set_sensor_high
-                0x000018f8      0x1ca commands.o
-                0x000018f8                set_sensor_high
+                0x000017da      0x1ca commands.o
+                0x000017da                set_sensor_high
  .text.set_sensor_low
-                0x00001ac2      0x1ca commands.o
-                0x00001ac2                set_sensor_low
- .text.set_var  0x00001c8c       0x40 commands.o
-                0x00001c8c                set_var
+                0x000019a4      0x1ca commands.o
+                0x000019a4                set_sensor_low
+ .text.set_var  0x00001b6e       0x40 commands.o
+                0x00001b6e                set_var
  .text.receive_tm_msg
-                0x00001ccc      0x128 commands.o
-                0x00001ccc                receive_tm_msg
+                0x00001bae      0x128 commands.o
+                0x00001bae                receive_tm_msg
  .text.alert_obc_tcp_ready
-                0x00001df4       0x26 commands.o
-                0x00001df4                alert_obc_tcp_ready
+                0x00001cd6       0x26 commands.o
+                0x00001cd6                alert_obc_tcp_ready
  .text.send_pus_packet_tc
-                0x00001e1a      0x174 commands.o
-                0x00001e1a                send_pus_packet_tc
+                0x00001cfc      0x174 commands.o
+                0x00001cfc                send_pus_packet_tc
+ .text.send_event
+                0x00001e70       0x46 commands.o
+                0x00001e70                send_event
  .text.run_commands
-                0x00001f8e       0x70 commands.o
-                0x00001f8e                run_commands
- .text.main     0x00001ffe       0x88 main.o
-                0x00001ffe                main
+                0x00001eb6       0x7a commands.o
+                0x00001eb6                run_commands
+ .text.main     0x00001f30      0x1d2 main.o
+                0x00001f30                main
  .text.__vector_15
-                0x00002086       0x4a mppt_timer.o
-                0x00002086                __vector_15
+                0x00002102       0x4a mppt_timer.o
+                0x00002102                __vector_15
  .text.__vector_16
-                0x000020d0       0x4a mppt_timer.o
-                0x000020d0                __vector_16
+                0x0000214c       0x4a mppt_timer.o
+                0x0000214c                __vector_16
  .text.__vector_17
-                0x0000211a       0x50 mppt_timer.o
-                0x0000211a                __vector_17
+                0x00002196       0x50 mppt_timer.o
+                0x00002196                __vector_17
  .text.mppt_timer_init
-                0x0000216a       0x18 mppt_timer.o
-                0x0000216a                mppt_timer_init
+                0x000021e6       0x18 mppt_timer.o
+                0x000021e6                mppt_timer_init
  .text.run_mppt
-                0x00002182        0xe mppt_timer.o
-                0x00002182                run_mppt
- .text.PIN_set  0x00002190       0x80 port.o
-                0x00002190                PIN_set
- .text.PIN_clr  0x00002210       0x80 port.o
-                0x00002210                PIN_clr
+                0x000021fe        0xe mppt_timer.o
+                0x000021fe                run_mppt
+ .text.PIN_set  0x0000220c       0x80 port.o
+                0x0000220c                PIN_set
+ .text.PIN_clr  0x0000228c       0x80 port.o
+                0x0000228c                PIN_clr
  .text.spi_initialize_master
-                0x00002290        0xc spi_lib.o
-                0x00002290                spi_initialize_master
+                0x0000230c        0xc spi_lib.o
+                0x0000230c                spi_initialize_master
  .text.SS1_set_high
-                0x0000229c        0x4 spi_lib.o
-                0x0000229c                SS1_set_high
+                0x00002318        0x4 spi_lib.o
+                0x00002318                SS1_set_high
  .text.SS1_set_low
-                0x000022a0        0x4 spi_lib.o
-                0x000022a0                SS1_set_low
+                0x0000231c        0x4 spi_lib.o
+                0x0000231c                SS1_set_low
  .text.spi_retrieve_temp
-                0x000022a4       0x3a spi_lib.o
-                0x000022a4                spi_retrieve_temp
+                0x00002320       0x3a spi_lib.o
+                0x00002320                spi_retrieve_temp
  .text.__vector_12
-                0x000022de       0x1e Timer.o
-                0x000022de                __vector_12
+                0x0000235a       0x1e Timer.o
+                0x0000235a                __vector_12
  .text.timer_init
-                0x000022fc       0x10 Timer.o
-                0x000022fc                timer_init
+                0x00002378       0x10 Timer.o
+                0x00002378                timer_init
  .text.delay_us
-                0x0000230c       0x24 Timer.o
-                0x0000230c                delay_us
+                0x00002388       0x24 Timer.o
+                0x00002388                delay_us
  .text.delay_ms
-                0x00002330       0x2c Timer.o
-                0x00002330                delay_ms
- .text.libgcc   0x0000235c        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
-                0x0000235c                __tablejump2__
-                0x00002360                __tablejump__
-                0x00002368                . = ALIGN (0x2)
+                0x000023ac       0x2c Timer.o
+                0x000023ac                delay_ms
+ .text.libgcc   0x000023d8        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
+                0x000023d8                __tablejump2__
+                0x000023dc                __tablejump__
+                0x000023e4                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00002368        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
-                0x00002368                _exit
-                0x00002368                exit
+ .fini9         0x000023e4        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+                0x000023e4                _exit
+                0x000023e4                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -628,11 +633,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00002368        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+ .fini0         0x000023e4        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x0000236c                _etext = .
+                0x000023e8                _etext = .
 
-.data           0x00800100        0x0 load address 0x0000236c
+.data           0x00800100        0x0 load address 0x000023e8
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -643,103 +648,106 @@ END GROUP
                 0x00800100                _edata = .
                 0x00800100                PROVIDE (__data_end, .)
 
-.bss            0x00800100      0x2bb
+.bss            0x00800100      0x2c1
                 0x00800100                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800100      0x2ba battBalance.o
+ COMMON         0x00800100      0x2ad battBalance.o
                 0x00800100                tm_sequence_count
-                0x00800101                write_arr
-                0x00800109                pyi
-                0x0080010a                battv_low
-                0x0080010c                payv_low
-                0x0080010e                msg_received
+                0x00800101                event_readyf
+                0x00800102                write_arr
+                0x0080010a                pyi
+                0x0080010b                battv_low
+                0x0080010d                payv_low
                 0x0080010f                tm_to_downlink
-                0x008001a8                payv_high
-                0x008001aa                pyv_high
-                0x008001ac                battemp_high
-                0x008001ae                data1
-                0x008001b6                data2
-                0x008001be                send_arr
-                0x008001c6                epstemp_high
-                0x008001c8                epstemp_low
-                0x008001ca                data4
-                0x008001d2                comsi_high
-                0x008001d4                balance_h
-                0x008001d5                setv_arr
-                0x008001dd                pxi_low
-                0x008001df                obcv_high
-                0x008001e1                write_response
-                0x008001e2                sensh_arr
-                0x008001ea                batti_high
-                0x008001ec                balance_l
-                0x008001ed                start_tc_transferf
-                0x008001ee                tc_transfer_completef
-                0x008001ef                comsv_high
-                0x008001f1                message
-                0x008001fd                data_req_arr
-                0x00800205                comsv_low
-                0x00800207                battmv_low
-                0x00800209                mppty
-                0x0080020a                battmv_high
-                0x0080020c                CURRENT_MINUTE
-                0x0080020d                pxv_high
-                0x0080020f                pyv
-                0x00800210                send_now
-                0x00800211                mpptx
-                0x00800212                new_tm_msgf
-                0x00800213                payi_low
-                0x00800215                trans_msg
-                0x0080021b                read_response
-                0x0080021c                current_tm
-                0x008002b5                data0
-                0x008002bd                send_hk
-                0x008002be                obci_high
-                0x008002c0                pxv_low
-                0x008002c2                pyv_low
-                0x008002c4                receive_arr
-                0x008002cc                id_array
-                0x008002d2                pyi_low
-                0x008002d4                data3
-                0x008002dc                set_sens_h
-                0x008002dd                tc_packet_readyf
-                0x008002de                current_tm_fullf
-                0x008002df                send_data
-                0x008002e0                set_varf
-                0x008002e1                set_sens_l
-                0x008002e2                new_tm_msg
-                0x008002ea                pxv
-                0x008002eb                pxi
-                0x008002ec                battv_high
-                0x008002ee                battemp_low
-                0x008002f0                data5
-                0x008002f8                obci_low
-                0x008002fa                batti_low
-                0x008002fc                mob_number
-                0x008002fd                comsi_low
-                0x008002ff                payi_high
-                0x00800301                receiving_tmf
-                0x00800302                new_tc_msg
-                0x0080030a                obcv_low
-                0x0080030c                sensl_arr
-                0x00800314                status
-                0x00800315                pxi_high
-                0x00800317                current_tc
-                0x008003b0                pyi_high
-                0x008003b2                read_arr
- COMMON         0x008003ba        0x1 main.o
-                0x008003ba                CTC_flag
-                0x008003bb                PROVIDE (__bss_end, .)
-                0x0000236c                __data_load_start = LOADADDR (.data)
-                0x0000236c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x008001a7                payv_high
+                0x008001a9                event_arr
+                0x008001b1                pyv_high
+                0x008001b3                battemp_high
+                0x008001b5                data1
+                0x008001bd                data2
+                0x008001c5                send_arr
+                0x008001cd                epstemp_high
+                0x008001cf                epstemp_low
+                0x008001d1                data4
+                0x008001d9                comsi_high
+                0x008001db                balance_h
+                0x008001dc                setv_arr
+                0x008001e4                pxi_low
+                0x008001e6                obcv_high
+                0x008001e8                write_response
+                0x008001e9                sensh_arr
+                0x008001f1                batti_high
+                0x008001f3                balance_l
+                0x008001f4                start_tc_transferf
+                0x008001f5                tc_transfer_completef
+                0x008001f6                comsv_high
+                0x008001f8                data_req_arr
+                0x00800200                comsv_low
+                0x00800202                battmv_low
+                0x00800204                mppty
+                0x00800205                battmv_high
+                0x00800207                CURRENT_MINUTE
+                0x00800208                pxv_high
+                0x0080020a                pyv
+                0x0080020b                send_now
+                0x0080020c                mpptx
+                0x0080020d                new_tm_msgf
+                0x0080020e                payi_low
+                0x00800210                read_response
+                0x00800211                current_tm
+                0x008002a9                data0
+                0x008002b1                send_hk
+                0x008002b2                obci_high
+                0x008002b4                pxv_low
+                0x008002b6                pyv_low
+                0x008002b8                receive_arr
+                0x008002c0                id_array
+                0x008002c6                pyi_low
+                0x008002c8                data3
+                0x008002d0                set_sens_h
+                0x008002d1                tc_packet_readyf
+                0x008002d2                current_tm_fullf
+                0x008002d3                send_data
+                0x008002d4                set_varf
+                0x008002d5                set_sens_l
+                0x008002d6                new_tm_msg
+                0x008002de                pxv
+                0x008002df                pxi
+                0x008002e0                battv_high
+                0x008002e2                battemp_low
+                0x008002e4                data5
+                0x008002ec                obci_low
+                0x008002ee                batti_low
+                0x008002f0                mob_number
+                0x008002f1                comsi_low
+                0x008002f3                payi_high
+                0x008002f5                receiving_tmf
+                0x008002f6                new_tc_msg
+                0x008002fe                obcv_low
+                0x00800300                sensl_arr
+                0x00800308                status
+                0x00800309                pxi_high
+                0x0080030b                current_tc
+                0x008003a3                pyi_high
+                0x008003a5                read_arr
+ COMMON         0x008003ad       0x13 can_api.o
+                0x008003ad                msg_received
+                0x008003ae                message
+                0x008003ba                trans_msg
+ COMMON         0x008003c0        0x1 main.o
+                0x008003c0                CTC_flag
+                0x008003c1                PROVIDE (__bss_end, .)
+                0x000023e8                __data_load_start = LOADADDR (.data)
+                0x000023e8                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008003bb        0x0
-                0x008003bb                PROVIDE (__noinit_start, .)
+.noinit         0x008003c1        0x0
+                0x008003c1                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x008003bb                PROVIDE (__noinit_end, .)
-                0x008003bb                _end = .
-                0x008003bb                PROVIDE (__heap_start, .)
+                0x008003c1                PROVIDE (__noinit_end, .)
+                0x008003c1                _end = .
+                0x008003c1                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -808,7 +816,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x2e0
+.debug_aranges  0x00000000      0x2e8
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x30 adc_lib.o
@@ -821,113 +829,114 @@ END GROUP
  .debug_aranges
                 0x000000e8       0x30 can_lib.o
  .debug_aranges
-                0x00000118       0x88 commands.o
+                0x00000118       0x90 commands.o
  .debug_aranges
-                0x000001a0       0x20 main.o
+                0x000001a8       0x20 main.o
  .debug_aranges
-                0x000001c0       0x50 mppt_timer.o
+                0x000001c8       0x50 mppt_timer.o
  .debug_aranges
-                0x00000210       0x38 port.o
+                0x00000218       0x38 port.o
  .debug_aranges
-                0x00000248       0x58 spi_lib.o
+                0x00000250       0x58 spi_lib.o
  .debug_aranges
-                0x000002a0       0x40 Timer.o
+                0x000002a8       0x40 Timer.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x445e
+.debug_info     0x00000000     0x4b7c
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x11e adc_lib.o
- .debug_info    0x0000011e      0x840 battBalance.o
- .debug_info    0x0000095e      0xbb8 can_api.o
- .debug_info    0x00001516      0x2e8 can_drv.o
- .debug_info    0x000017fe      0x3b3 can_lib.o
- .debug_info    0x00001bb1      0xe73 commands.o
- .debug_info    0x00002a24      0x986 main.o
- .debug_info    0x000033aa      0x943 mppt_timer.o
- .debug_info    0x00003ced      0x10d port.o
- .debug_info    0x00003dfa      0x4fa spi_lib.o
- .debug_info    0x000042f4      0x16a Timer.o
+ .debug_info    0x0000011e      0x6b2 battBalance.o
+ .debug_info    0x000007d0      0xbb8 can_api.o
+ .debug_info    0x00001388      0x2e8 can_drv.o
+ .debug_info    0x00001670      0x94b can_lib.o
+ .debug_info    0x00001fbb      0xea4 commands.o
+ .debug_info    0x00002e5f      0x9d3 main.o
+ .debug_info    0x00003832      0x7b5 mppt_timer.o
+ .debug_info    0x00003fe7      0x10d port.o
+ .debug_info    0x000040f4      0x91e spi_lib.o
+ .debug_info    0x00004a12      0x16a Timer.o
 
-.debug_abbrev   0x00000000     0x11f6
+.debug_abbrev   0x00000000     0x1029
  *(.debug_abbrev)
  .debug_abbrev  0x00000000       0xbf adc_lib.o
- .debug_abbrev  0x000000bf      0x158 battBalance.o
- .debug_abbrev  0x00000217      0x23c can_api.o
- .debug_abbrev  0x00000453      0x12c can_drv.o
- .debug_abbrev  0x0000057f      0x238 can_lib.o
- .debug_abbrev  0x000007b7      0x2cc commands.o
- .debug_abbrev  0x00000a83      0x1d0 main.o
- .debug_abbrev  0x00000c53      0x1ee mppt_timer.o
- .debug_abbrev  0x00000e41       0x89 port.o
- .debug_abbrev  0x00000eca      0x22a spi_lib.o
- .debug_abbrev  0x000010f4      0x102 Timer.o
+ .debug_abbrev  0x000000bf       0xd6 battBalance.o
+ .debug_abbrev  0x00000195      0x1f5 can_api.o
+ .debug_abbrev  0x0000038a      0x12c can_drv.o
+ .debug_abbrev  0x000004b6      0x23c can_lib.o
+ .debug_abbrev  0x000006f2      0x28b commands.o
+ .debug_abbrev  0x0000097d      0x1e2 main.o
+ .debug_abbrev  0x00000b5f      0x16c mppt_timer.o
+ .debug_abbrev  0x00000ccb       0x89 port.o
+ .debug_abbrev  0x00000d54      0x1d3 spi_lib.o
+ .debug_abbrev  0x00000f27      0x102 Timer.o
 
-.debug_line     0x00000000     0x13f0
+.debug_line     0x00000000     0x13b8
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0xd2 adc_lib.o
- .debug_line    0x000000d2       0xf7 battBalance.o
- .debug_line    0x000001c9      0x314 can_api.o
- .debug_line    0x000004dd      0x2a2 can_drv.o
- .debug_line    0x0000077f      0x296 can_lib.o
- .debug_line    0x00000a15      0x35c commands.o
- .debug_line    0x00000d71      0x168 main.o
- .debug_line    0x00000ed9      0x15f mppt_timer.o
- .debug_line    0x00001038      0x139 port.o
- .debug_line    0x00001171      0x16a spi_lib.o
- .debug_line    0x000012db      0x115 Timer.o
+ .debug_line    0x000000d2       0xd2 battBalance.o
+ .debug_line    0x000001a4      0x2af can_api.o
+ .debug_line    0x00000453      0x2a2 can_drv.o
+ .debug_line    0x000006f5      0x2a6 can_lib.o
+ .debug_line    0x0000099b      0x387 commands.o
+ .debug_line    0x00000d22      0x1ad main.o
+ .debug_line    0x00000ecf      0x13a mppt_timer.o
+ .debug_line    0x00001009      0x139 port.o
+ .debug_line    0x00001142      0x161 spi_lib.o
+ .debug_line    0x000012a3      0x115 Timer.o
 
-.debug_frame    0x00000000      0x720
+.debug_frame    0x00000000      0x708
  *(.debug_frame)
  .debug_frame   0x00000000       0x44 adc_lib.o
  .debug_frame   0x00000044       0x24 battBalance.o
- .debug_frame   0x00000068      0x10c can_api.o
- .debug_frame   0x00000174       0xd4 can_drv.o
- .debug_frame   0x00000248       0x60 can_lib.o
- .debug_frame   0x000002a8      0x16c commands.o
- .debug_frame   0x00000414       0x24 main.o
- .debug_frame   0x00000438      0x15c mppt_timer.o
- .debug_frame   0x00000594       0x54 port.o
- .debug_frame   0x000005e8       0xb0 spi_lib.o
- .debug_frame   0x00000698       0x88 Timer.o
+ .debug_frame   0x00000068       0xd4 can_api.o
+ .debug_frame   0x0000013c       0xd4 can_drv.o
+ .debug_frame   0x00000210       0x60 can_lib.o
+ .debug_frame   0x00000270      0x17c commands.o
+ .debug_frame   0x000003ec       0x34 main.o
+ .debug_frame   0x00000420      0x15c mppt_timer.o
+ .debug_frame   0x0000057c       0x54 port.o
+ .debug_frame   0x000005d0       0xb0 spi_lib.o
+ .debug_frame   0x00000680       0x88 Timer.o
 
-.debug_str      0x00000000      0xb40
+.debug_str      0x00000000      0xb73
  *(.debug_str)
  .debug_str     0x00000000      0x16c adc_lib.o
                                 0x1a0 (size before relaxing)
- .debug_str     0x0000016c      0x40b battBalance.o
-                                0x59c (size before relaxing)
- .debug_str     0x00000577       0xca can_api.o
-                                0x63b (size before relaxing)
- .debug_str     0x00000641      0x147 can_drv.o
+ .debug_str     0x0000016c      0x323 battBalance.o
+                                0x4a5 (size before relaxing)
+ .debug_str     0x0000048f      0x1c9 can_api.o
+                                0x652 (size before relaxing)
+ .debug_str     0x00000658      0x147 can_drv.o
                                 0x2b9 (size before relaxing)
- .debug_str     0x00000788       0x48 can_lib.o
-                                0x31c (size before relaxing)
- .debug_str     0x000007d0      0x1df commands.o
-                                0x765 (size before relaxing)
- .debug_str     0x000009af       0x83 main.o
-                                0x659 (size before relaxing)
- .debug_str     0x00000a32       0x5b mppt_timer.o
-                                0x5ed (size before relaxing)
- .debug_str     0x00000a8d       0x25 port.o
+ .debug_str     0x0000079f       0x48 can_lib.o
+                                0x617 (size before relaxing)
+ .debug_str     0x000007e7      0x1ea commands.o
+                                0x787 (size before relaxing)
+ .debug_str     0x000009d1       0x94 main.o
+                                0x681 (size before relaxing)
+ .debug_str     0x00000a65       0x5b mppt_timer.o
+                                0x4f6 (size before relaxing)
+ .debug_str     0x00000ac0       0x25 port.o
                                 0x188 (size before relaxing)
- .debug_str     0x00000ab2       0x75 spi_lib.o
-                                0x331 (size before relaxing)
- .debug_str     0x00000b27       0x19 Timer.o
+ .debug_str     0x00000ae5       0x75 spi_lib.o
+                                0x548 (size before relaxing)
+ .debug_str     0x00000b5a       0x19 Timer.o
                                 0x1af (size before relaxing)
 
-.debug_loc      0x00000000     0x23c4
+.debug_loc      0x00000000     0x2374
  *(.debug_loc)
  .debug_loc     0x00000000       0x5d adc_lib.o
- .debug_loc     0x0000005d      0x6e5 can_api.o
- .debug_loc     0x00000742      0x962 can_drv.o
- .debug_loc     0x000010a4      0x3ec can_lib.o
- .debug_loc     0x00001490      0x895 commands.o
- .debug_loc     0x00001d25      0x280 mppt_timer.o
- .debug_loc     0x00001fa5       0x74 port.o
- .debug_loc     0x00002019      0x27b spi_lib.o
- .debug_loc     0x00002294      0x130 Timer.o
+ .debug_loc     0x0000005d      0x5c5 can_api.o
+ .debug_loc     0x00000622      0x962 can_drv.o
+ .debug_loc     0x00000f84      0x3ec can_lib.o
+ .debug_loc     0x00001370      0x895 commands.o
+ .debug_loc     0x00001c05       0xd0 main.o
+ .debug_loc     0x00001cd5      0x280 mppt_timer.o
+ .debug_loc     0x00001f55       0x74 port.o
+ .debug_loc     0x00001fc9      0x27b spi_lib.o
+ .debug_loc     0x00002244      0x130 Timer.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -947,19 +956,19 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x278
+.debug_ranges   0x00000000      0x280
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x20 adc_lib.o
  .debug_ranges  0x00000020       0x10 battBalance.o
  .debug_ranges  0x00000030       0x40 can_api.o
  .debug_ranges  0x00000070       0x68 can_drv.o
  .debug_ranges  0x000000d8       0x20 can_lib.o
- .debug_ranges  0x000000f8       0x90 commands.o
- .debug_ranges  0x00000188       0x10 main.o
- .debug_ranges  0x00000198       0x40 mppt_timer.o
- .debug_ranges  0x000001d8       0x28 port.o
- .debug_ranges  0x00000200       0x48 spi_lib.o
- .debug_ranges  0x00000248       0x30 Timer.o
+ .debug_ranges  0x000000f8       0x98 commands.o
+ .debug_ranges  0x00000190       0x10 main.o
+ .debug_ranges  0x000001a0       0x40 mppt_timer.o
+ .debug_ranges  0x000001e0       0x28 port.o
+ .debug_ranges  0x00000208       0x48 spi_lib.o
+ .debug_ranges  0x00000250       0x30 Timer.o
 
 .debug_macro
  *(.debug_macro)
