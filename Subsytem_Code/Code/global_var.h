@@ -140,6 +140,9 @@
 #define TC_TRANSACTION_RESP		0x14
 #define SAFE_MODE_TYPE			0x15
 #define SEND_EVENT				0x16
+#define ASK_OBC_ALIVE			0x17
+#define OBC_IS_ALIVE			0x18
+
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -205,7 +208,7 @@
 #define BALANCE_H				0xF0
 
 /* Global variables to be used for CAN communication */
-uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf;
+uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;
 uint8_t read_response, write_response;
 uint8_t receive_arr[8], send_arr[8], read_arr[8], write_arr[8], data_req_arr[8];
 uint8_t sensh_arr[8], sensl_arr[8], setv_arr[8];
@@ -237,5 +240,13 @@ uint8_t data2[DATA_BUFFER_SIZE];	// Data Buffer for MOb2
 uint8_t data3[DATA_BUFFER_SIZE];	// Data Buffer for MOb3
 uint8_t data4[DATA_BUFFER_SIZE];	// Data Buffer for MOb4
 uint8_t data5[DATA_BUFFER_SIZE];	// Data Buffer for MOb5
+
+// Global Flags and Constants for Coms TakeOver
+uint8_t TAKEOVER;					// Coms is taking over for OBC
+uint8_t REQUEST_TAKEOVER;			// Coms requests permission to takeover
+uint8_t REQUEST_ALIVE_IN_PROG;		// A "are you alive?" message has been sent to OBC
+uint8_t FAILED_COUNT;				// Consecutive times Coms has not received alive confirmation
+uint32_t ISALIVE_COUNTER;			// Counts time since "are you alive?" sent and confirmation received
+uint32_t MAX_WAIT_TIME;				//Max time Coms will wait for OBC response
 /*****************************************************/
 #endif

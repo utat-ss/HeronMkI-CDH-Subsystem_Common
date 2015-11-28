@@ -83,6 +83,8 @@ void run_commands(void)
 		send_pus_packet_tc();
 	if (event_readyf)
 		send_event();
+	if (ask_alive)
+		send_ask_alive();
 
 	return;	
 }
@@ -714,4 +716,15 @@ void send_event(void)
 	send_arr[0] = event_arr[0];
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;
+}
+
+void send_ask_alive(void)
+{
+	send_arr[7] = (SELF_ID << 4)|COMS_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = ASK_OBC_ALIVE;
+	send_arr[4] = CURRENT_MINUTE;
+
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	ask_alive = 0;
 }
