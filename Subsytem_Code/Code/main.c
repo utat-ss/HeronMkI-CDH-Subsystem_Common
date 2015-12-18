@@ -281,5 +281,11 @@ static void init_global_vars(void)
 	receiving_tmf = 0;
 	event_readyf = 0;
 	
+	/* Initialize Operational Timeouts */
+	ssm_ok_go_timeout = 250;				// ~2.5 ms
+	ssm_consec_trans_timeout = 100;			// ~10 ms
+	
+	ssm_fdir_signal = 0;
+	
 	return;
 }

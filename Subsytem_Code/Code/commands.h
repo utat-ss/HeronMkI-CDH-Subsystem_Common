@@ -35,6 +35,7 @@
 #include "can_lib.h"
 #include "global_var.h"
 #include "trans_lib.h"
+#include "error_handling.h"
 #include <stdint.h>
 
 /* Function Prototypes								 */	

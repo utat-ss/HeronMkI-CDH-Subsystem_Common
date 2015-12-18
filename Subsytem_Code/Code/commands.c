@@ -511,24 +511,36 @@ void set_sensor_low(void)
 
 void set_var(void)
 {
-	uint8_t var_name;
+	uint8_t var_name, incom_val;
 	var_name = setv_arr[3];
+	incom_val  =setv_arr[0];
 	
-	if(var_name == MPPTX)
+	switch(var_name)
 	{
-		mpptx = setv_arr[0];
-	}
-	if(var_name == MPPTY)
-	{
-		mppty = setv_arr[0];
-	}
-	if(var_name == BALANCE_H)
-	{
-		balance_l = setv_arr[0];
-	}
-	if(var_name == BALANCE_L)
-	{
-		balance_h = setv_arr[0];
+		case MPPTX:
+			mpptx = incom_val;
+		case MPPTY:
+			mppty = incom_val;
+		case BALANCE_H:
+			balance_h = incom_val;
+		case BALANCE_L:
+			balance_l = incom_val;
+		case SSM_CTT:
+			ssm_consec_trans_timeout = incom_val;
+		case SSM_OGT:
+			ssm_ok_go_timeout = incom_val;
+		case COMS_FDIR_SIGNAL:
+			if(SELF_ID == 0)
+				ssm_fdir_signal = incom_val;
+		case EPS_FDIR_SIGNAL:
+			if(SELF_ID == 1)
+				ssm_fdir_signal = incom_val;		
+		case PAY_FDIR_SIGNAL:
+			if(SELF_ID == 2)
+				ssm_fdir_signal = incom_val;
+		default:
+			set_varf = 0;
+			break;
 	}
 	set_varf = 0;
 	return;
@@ -639,22 +651,24 @@ static void store_current_tm(void)
 
 void send_pus_packet_tc(void)
 {
-	uint8_t i, timeout = 250;
+	uint8_t i, timeout;
 	uint8_t num_transfers = PACKET_LENGTH / 4;
-	
 	tc_transfer_completef = 0;
 	start_tc_transferf = 0;
+	uint8_t data[4];
 	alert_obc_tcp_ready();
+	timeout = ssm_ok_go_timeout;
 	while(!start_tc_transferf)			// Wait a maximum of 2.5ms for the OBC to respond.
 	{
 		if(!timeout--)
 		{
+			data[0] = ssm_ok_go_timeout;
+			errorREPORT(TC_OK_GO_TIMED_OUT, data);	// Let the OBC know that OK-GO timed out.
 			return;
 		}
 		delay_us(10);
 	}				
 	start_tc_transferf = 0;
-	timeout = 100;
 	
 	for(i = 0; i < num_transfers; i++)
 	{
@@ -668,10 +682,13 @@ void send_pus_packet_tc(void)
 		delay_ms(1);								// Give the OBC 1ms to process that CAN message.
 	}
 	
+	timeout = ssm_consec_trans_timeout;
 	while(!tc_transfer_completef)					// Delay for ~10 ms for the OBC to send final transaction response.
 	{
 		if(!timeout--)
 		{
+			data[0] = ssm_consec_trans_timeout;
+			errorASSERT(TC_CONSEC_TIMED_OUT, data);	// Let the OBC know that a consecutive transfer timed out.
 			return;
 		}
 		delay_us(100);

@@ -111,11 +111,15 @@
 #define PAY_TASK_ID				0x09
 #define OBC_PACKET_ROUTER_ID	0x0A
 #define SCHEDULING_TASK_ID		0x0B
+#define FDIR_TASK_ID			0x0C
 #define WD_RESET_TASK_ID		0x0D
 #define MEMORY_TASK_ID			0x0E
 #define HK_GROUND_ID			0x0F
 #define TIME_GROUND_ID			0x10
 #define MEM_GROUND_ID			0x11
+#define GROUND_PACKET_ROUTER_ID 0x13
+#define FDIR_GROUND_ID			0x14
+#define SCHED_GROUND_ID			0x15
 
 /* COMMAND SMALL-TYPE: */
 #define REQ_RESPONSE			0x01
@@ -140,6 +144,10 @@
 #define TC_TRANSACTION_RESP		0x14
 #define SAFE_MODE_TYPE			0x15
 #define SEND_EVENT				0x16
+#define ASK_OBC_ALIVE			0x17
+#define OBC_IS_ALIVE			0x18
+#define SSM_ERROR_ASSERT		0x19
+#define SSM_ERROR_REPORT		0x1A
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -185,6 +193,7 @@
 #define PAY_TEMP4				0x18
 #define PAY_HUM					0x19
 #define PAY_PRESS				0x1A
+#define PAY_ACCEL				0x1B
 
 /* VARIABLE NAMES		*/
 #define MPPTX					0xFF
@@ -203,6 +212,13 @@
 #define SPI_CHIP_3				0xF2
 #define BALANCE_L				0xF1
 #define BALANCE_H				0xF0
+#define SSM_CTT					0xEF
+#define SSM_OGT					0xEE
+#define OBC_CTT					0xED
+#define OBC_OGT					0xEC
+#define COMS_FDIR_SIGNAL		0xEB
+#define EPS_FDIR_SIGNAL			0xEA
+#define PAY_FDIR_SIGNAL			0xE9
 
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf;
@@ -230,6 +246,13 @@ uint8_t pxv, pxi, pyv, pyi;
 
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
 uint8_t CURRENT_MINUTE;
+
+/* Global variables used for operational timeouts */
+uint8_t ssm_ok_go_timeout;
+uint8_t ssm_consec_trans_timeout;
+
+/* Signal for FDIR Error Handling (SSM Loops on this) */
+uint8_t ssm_fdir_signal;
 
 uint8_t data0[DATA_BUFFER_SIZE];	// Data Buffer for MOb0
 uint8_t data1[DATA_BUFFER_SIZE];	// Data Buffer for MOb1
