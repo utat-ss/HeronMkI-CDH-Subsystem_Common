@@ -32,7 +32,15 @@
 //When the timer overflows, increment the time-count variables.
 ISR(TIMER0_OVF_vect)
 {
-	// Increment variables here to keep track of time.
+	// Increment variables here to keep track of time when an
+	// "are you alive?" message is in progress
+	if (REQUEST_ALIVE_IN_PROG)
+	{
+		ISALIVE_COUNTER++;
+	}
+	else {
+		ISALIVE_COUNTER = 0;
+	}
 }
 #endif
 

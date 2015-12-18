@@ -268,6 +268,12 @@ void decode_command(uint8_t* command_array)
 			tc_transfer_completef = *command_array;
 		case OK_START_TC_PACKET:
 			start_tc_transferf = 1;
+		case OBC_IS_ALIVE:
+			TAKEOVER = 0;
+			REQUEST_ALIVE_IN_PROG = 0;
+			REQUEST_TAKEOVER = 0;
+			ISALIVE_COUNTER = 0;
+			FAILED_COUNT = 0;
 		default:
 			return;
 	}

@@ -69,7 +69,8 @@
 	*					the OBC. The current one is to be used for communication with the CC1120. In the future, these
 	*					will be two different initialization functions and I will label them.
 	*
-	*		
+	*	12/05/2015		Made some changes to SS_set_low, SS_set_high and spi_transfer.
+	*
 	*
 */
 
@@ -164,7 +165,7 @@ uint8_t spi_transfer(uint8_t message)
 	reg_ptr = SPDR_BASE;
 	
 	// Commence the SPI message.
-	//SS_set_low();
+	SS_set_low();
 	*reg_ptr = message;
 		
 	reg_ptr = SPSR_BASE;
@@ -181,13 +182,14 @@ uint8_t spi_transfer(uint8_t message)
 			}
 		}
 	}	
-	//SS_set_high();
-	
-	delay_cycles(10);
+
 	
 	reg_ptr = SPDR_BASE;
 	receive_char = *reg_ptr;
 	
+		//SS_set_high();
+		
+		delay_cycles(10);
 	// I was assuming that SPI messages would be received MSB first.
 	// Comment out the following if that is not the case.
 	
@@ -273,7 +275,7 @@ void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 
 void SS_set_high(void) 
 {
-	//PORTD |= (1 << 3);
+	PORTD |= (1 << 3);
 	delay_us(1);
 }
 
@@ -294,7 +296,7 @@ void SS1_set_high(void)
 
 void SS_set_low(void)
 {
-	//PORTD &= (0xF7);
+	PORTD &= (0xF7);
 	delay_us(1);
 }
 

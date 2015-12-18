@@ -130,8 +130,9 @@ int main(void)
 			// If you are COMS, please check that receiving_tmf == 0 before
 			// doing anything that is time-intensive (takes more than 10 ms).
 			if(!receiving_tmf)
-				trans_check();		// Check for incoming packets.	
-			//check_obc_alive();
+				trans_check();		// Check for incoming packets.
+			// Continually check if coms needs to takeover for OBC	
+			check_obc_alive();
 		}
 		if(SELF_ID == 1)
 		{
@@ -280,6 +281,15 @@ static void init_global_vars(void)
 	start_tc_transferf = 0;
 	receiving_tmf = 0;
 	event_readyf = 0;
+	ask_alive = 0;
+	
+	/* Initialize Global coms takeover flags to zero */
+	TAKEOVER = 0;
+	REQUEST_TAKEOVER = 0;
+	REQUEST_ALIVE_IN_PROG = 0;
+	FAILED_COUNT = 0;
+	ISALIVE_COUNTER = 0;
+	MAX_WAIT_TIME = 18400;
 	
 	/* Initialize Operational Timeouts */
 	ssm_ok_go_timeout = 250;				// ~2.5 ms
@@ -288,4 +298,32 @@ static void init_global_vars(void)
 	ssm_fdir_signal = 0;
 	
 	return;
+}
+
+void check_obc_alive(void) {
+	if (!REQUEST_ALIVE_IN_PROG)
+	{
+		if (FAILED_COUNT <= 1)
+		{
+			// Send an "are you alive?" message to OBC through CAN
+			ask_alive = 1;
+			REQUEST_ALIVE_IN_PROG = 1;
+		}
+		// The OBC has failed to confirm it is alive twice consecutively.
+		// Request permission to takeover from ground station.
+		else {
+			REQUEST_TAKEOVER = 1;
+		}
+	}
+	
+	else if (ISALIVE_COUNTER > MAX_WAIT_TIME)
+	{
+		// Has not received confirmation in the maximum allowed time.
+		// Increment the failed counter and consider the current
+		// "are you alive?" request finished.
+		FAILED_COUNT++;
+		REQUEST_ALIVE_IN_PROG = 0;
+	}
+	
+	//else, wait while the ISALIVE_COUNTER increments.
 }

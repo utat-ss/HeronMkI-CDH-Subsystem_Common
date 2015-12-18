@@ -141,7 +141,10 @@
 	*
 	*					With a bit of tinkering with delays, everything works now.
 	*
-	*	05/21/2015		Adding comments to this code, deleting scaffolding, unnecessary code and test code.	
+	*	05/21/2015		Adding comments to this code, deleting scaffolding, unnecessary code and test code.
+	*
+	*	12/05/2015		Added transceiver_send(). This function is able to transmit messages from SSM and I managed to
+	*					receive it on SmartRF (after changing PKT_CFG0 to 0x00). But there are CRC errors.
 	*		
 */
 
@@ -190,7 +193,7 @@ void transceiver_initialize(void)
 	reg_write(0x08, 0x0B);            //*Changed on line 152
 	reg_write(0x13, 0x0D);            //
 	reg_write(0x26, 0x04);            //*Changed on line 144
-  
+
 	//High performance RX
 	reg_write(0x08, 0x0B);            //
 	reg_write(0x0C, 0x1C);            //
@@ -208,7 +211,7 @@ void transceiver_initialize(void)
 	reg_write(0x0A, 0b01001000);       //DEVIATION_M: 0x48      set DEV_M to 72 which sets freq deviation to 20.019531kHz (with DEV_M=5)
 	reg_write(0x0B, 0b00000101);       //MODCFG_DEV_E: 0x05     set up modulation mode and DEV_E to 5 (see DEV_M register)
 	reg_write(0x21, 0b00000100);       //FS_CFG: 0x14           set up LO divider to 8 (410.0 - 480.0 MHz band), out of lock detector enabled
-  
+			  
 	//set preamble
 	reg_write(0x0D, 0x00);            //PREAMBLE_CFG1: 0x00    No preamble
 	reg_write_bit(0x0E, 5, 0);        //PQT_EN: 0x00           Preamble detection disabled
@@ -220,10 +223,13 @@ void transceiver_initialize(void)
 	//set SYNC word
 	reg_write_bit(0x08, 6, 0);        //PQT_GATING_EN: 0       PQT gating disabled (preamble not required)
 	reg_write(0x09, 0x17);            //SYNC_CFG0: 0x17        32 bit SYNC word. Bit error qualifier disabled. No check on bit errors
-  
+  	
+	//set to fixed packet length
+  	reg_write(0x28, 0b00000000);		//PKT_CFG0: 0
+	
 	//set packets
 	reg_write(0x26, 0x00);            //PKT_CFG2: 0x00         set FIFO mode
-	reg_write(0x2E, 0xFF);            //PKT_LEN: 0xFF          set packet length to 0xFF (max)  
+	reg_write(0x2E, 0x7E);            //PKT_LEN: 0xFF          set packet length to 0xFF (max)  
     
 	//Frequency setting
 	cmd_str(SNOP);
@@ -238,7 +244,7 @@ void transceiver_initialize(void)
 	//strobe commands to start RX
 	cmd_str(SCAL);                   // Calibrate frequency synthesizer
 	delay_ms(250);
-
+	
 	cmd_str(SAFC);					 // Automatic frequency control
 	delay_ms(250);
 	
@@ -382,10 +388,11 @@ void get_status(uint8_t *CHIP_RDYn, uint8_t *state)
 uint8_t cmd_str(uint8_t addr)
 {
 	uint8_t msg;
-	
-	msg = spi_transfer2(addr);
+	SS_set_low();
+	msg = spi_transfer(addr);
 	
 	delay_us(1);
+	SS_set_high();
 	return msg;
 }
 
@@ -552,4 +559,26 @@ void trans_check(void)
 		cmd_str(SRX);
 	}
 	return;
+}
+uint8_t flag=0;
+
+void transceiver_send(){
+	// Set it to IDLE and flush the TX buffer before continuing to send data
+	cmd_str(SIDLE);
+	cmd_str(SFTX);
+	uint8_t message[10]={0x32,0x56,0x68,0x06,0x09,0x05,0x04,0x22,0x03,0x66};
+	// The first byte is the length of the packet (message + 1 for the address)
+	//dir_FIFO_write(0,12);
+	// The second byte is the address
+	//dir_FIFO_write(1,0x00);
+	// The rest is the actual data
+	for(int i=0; i<10; i++)
+		dir_FIFO_write(i, message[i]);
+	//set up TX FIFO pointers
+	reg_write2F(TXFIRST, 0x00);            //set TX FIRST to 0
+	reg_write2F(TXLAST, 0x7E); //set TX LAST (maximum OF 0X7F)
+	reg_write2F(RXFIRST, 0x00);              //set TX FIRST to 0
+	reg_write2F(RXLAST, 0x00); //set TX LAST (maximum OF 0X7F)
+	//strobe commands to start TX
+	cmd_str(STX);
 }
