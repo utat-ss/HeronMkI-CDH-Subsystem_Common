@@ -124,22 +124,25 @@ int main(void)
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();
 		
-		/*		TRANSCEIVER COMMUNICATION	*/
-		if(SELF_ID == 0)
+		if(!PAUSE)
 		{
-			// If you are COMS, please check that receiving_tmf == 0 before
-			// doing anything that is time-intensive (takes more than 10 ms).
-			if(!receiving_tmf)
+			/*		TRANSCEIVER COMMUNICATION	*/
+			if(SELF_ID == 0)
+			{
+				// If you are COMS, please check that receiving_tmf == 0 before
+				// doing anything that is time-intensive (takes more than 10 ms).
+				if(!receiving_tmf)
 				trans_check();		// Check for incoming packets.
-			// Continually check if coms needs to takeover for OBC	
-			check_obc_alive();
+				// Continually check if coms needs to takeover for OBC
+				check_obc_alive();
+			}
+			if(SELF_ID == 1)
+			{
+				run_mppt();
+				run_battBalance();
+			}			
 		}
-		if(SELF_ID == 1)
-		{
-			run_mppt();
-			run_battBalance();
-		}
-		
+				
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
 	}
@@ -257,6 +260,8 @@ static void init_global_vars(void)
 		new_tm_msg[i] = 0;
 		new_tc_msg[i] = 0;
 		event_arr[i] = 0;
+		pause_msg[i] = 0;
+		resume_msg[i] = 0;
 	}
 	for (i = 0; i < 152; i++)		// Initialize the TM/TC Packet arrays.
 	{
@@ -282,6 +287,16 @@ static void init_global_vars(void)
 	receiving_tmf = 0;
 	event_readyf = 0;
 	ask_alive = 0;
+	enter_low_powerf = 0;
+	exit_low_powerf = 0;
+	enter_take_overf = 0;
+	exit_take_overf = 0;
+	pause_operationsf = 0;
+	resume_operationsf = 0;
+	
+	/* Initialize Global Mode variables to zero */
+	LOW_POWER_MODE = 0;
+	PAUSE = 0;
 	
 	/* Initialize Global coms takeover flags to zero */
 	TAKEOVER = 0;
@@ -313,6 +328,7 @@ void check_obc_alive(void) {
 		// Request permission to takeover from ground station.
 		else {
 			REQUEST_TAKEOVER = 1;
+			TAKEOVER = 1;
 		}
 	}
 	

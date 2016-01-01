@@ -274,6 +274,30 @@ void decode_command(uint8_t* command_array)
 			REQUEST_TAKEOVER = 0;
 			ISALIVE_COUNTER = 0;
 			FAILED_COUNT = 0;
+		case ENTER_LOW_POWER_COM:
+			if((SELF_ID == 1) && !LOW_POWER_MODE)
+				enter_low_powerf = 1;
+		case EXIT_LOW_POWER_COM:
+			if((SELF_ID == 1) && LOW_POWER_MODE)
+				exit_low_powerf = 1;
+		case ENTER_COMS_TAKEOVER_COM:
+			if(!SELF_ID && !TAKEOVER)
+				enter_take_overf = 1;
+		case EXIT_COMS_TAKEOVER_COM:
+			if(!SELF_ID && TAKEOVER)
+				exit_take_overf = 1;
+		case PAUSE_OPERATIONS:
+			pause_operationsf = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				pause_msg[i] = *(command_array + i);
+			}
+		case RESUME_OPERATIONS:
+			resume_operationsf = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				resume_msg[i] = *(command_array + i);
+			}				
 		default:
 			return;
 	}

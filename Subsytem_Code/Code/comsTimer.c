@@ -38,7 +38,8 @@ ISR(TIMER0_OVF_vect)
 	{
 		ISALIVE_COUNTER++;
 	}
-	else {
+	else 
+	{
 		ISALIVE_COUNTER = 0;
 	}
 }

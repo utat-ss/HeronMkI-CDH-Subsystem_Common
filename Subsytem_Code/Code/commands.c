@@ -85,6 +85,18 @@ void run_commands(void)
 		send_event();
 	if (ask_alive)
 		send_ask_alive();
+	if (enter_low_powerf)
+		enter_low_power();
+	if (exit_low_powerf)
+		exit_low_power();
+	if (enter_take_overf)
+		enter_take_over();
+	if (exit_take_overf)
+		exit_take_over();
+	if (pause_operationsf)
+		pause_operations();
+	if (resume_operationsf)
+		resume_operations();
 
 	return;	
 }
@@ -737,11 +749,85 @@ void send_event(void)
 
 void send_ask_alive(void)
 {
-	send_arr[7] = (SELF_ID << 4)|COMS_ID;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
 	send_arr[6] = MT_COM;
 	send_arr[5] = ASK_OBC_ALIVE;
 	send_arr[4] = CURRENT_MINUTE;
-
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	ask_alive = 0;
+	return;
+}
+
+void enter_low_power(void)
+{
+	// Sam: Fill this in with what needs to be done for low power mode.
+	enter_low_powerf = 0;
+	LOW_POWER_MODE = 1;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = LOW_POWER_MODE_ENTERED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+void exit_low_power(void)
+{	
+	// Sam: Fill this in with what needs to be done to exit low power mode.
+	LOW_POWER_MODE = 0;
+	exit_low_powerf = 0;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = LOW_POWER_MODE_EXITED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;	
+}
+
+void enter_take_over(void)
+{
+	TAKEOVER = 1;
+	enter_take_overf = 0;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = COMS_TAKEOVER_ENTERED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+void exit_take_over(void)
+{
+	TAKEOVER = 0;
+	exit_take_overf = 0;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = COMS_TAKEOVER_EXITED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+void pause_operations(void)
+{
+	PAUSE = 1;
+	pause_operationsf = 0;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = OPERATIONS_PAUSED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;	
+}
+
+void resume_operations(void)
+{
+	PAUSE = 0;
+	resume_operationsf = 0;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = OPERATIONS_RESUMED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;	
 }

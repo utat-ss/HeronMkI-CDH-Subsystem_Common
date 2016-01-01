@@ -148,7 +148,18 @@
 #define OBC_IS_ALIVE			0x18
 #define SSM_ERROR_ASSERT		0x19
 #define SSM_ERROR_REPORT		0x1A
-
+#define ENTER_LOW_POWER_COM		0x1B
+#define EXIT_LOW_POWER_COM		0x1C
+#define ENTER_COMS_TAKEOVER_COM	0x1D
+#define EXIT_COMS_TAKEOVER_COM	0x1E
+#define PAUSE_OPERATIONS		0x1F
+#define RESUME_OPERATIONS		0x20
+#define LOW_POWER_MODE_ENTERED	0x21
+#define LOW_POWER_MODE_EXITED	0x22
+#define COMS_TAKEOVER_ENTERED	0x23
+#define COMS_TAKEOVER_EXITED	0x24
+#define OPERATIONS_PAUSED		0x25
+#define OPERATIONS_RESUMED		0x26
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -223,9 +234,10 @@
 
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;
+uint8_t enter_low_powerf, exit_low_powerf, enter_take_overf, exit_take_overf, pause_operationsf, resume_operationsf;
 uint8_t read_response, write_response;
 uint8_t receive_arr[8], send_arr[8], read_arr[8], write_arr[8], data_req_arr[8];
-uint8_t sensh_arr[8], sensl_arr[8], setv_arr[8];
+uint8_t sensh_arr[8], sensl_arr[8], setv_arr[8], pause_msg[8], resume_msg[8];
 uint8_t id_array[6];	// Necessary due to the different mailbox IDs for COMS, EPS, PAYL.
 
 /* Global variables used for PUS packet communication */
@@ -247,6 +259,10 @@ uint8_t pxv, pxi, pyv, pyi;
 
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
 uint8_t CURRENT_MINUTE;
+
+// Global variables for the different modes that the SSM can be in.
+uint8_t LOW_POWER_MODE;
+uint8_t PAUSE;
 
 /* Global variables used for operational timeouts */
 uint8_t ssm_ok_go_timeout;

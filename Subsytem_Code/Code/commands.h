@@ -53,6 +53,11 @@ void receive_tm_msg(void);
 void alert_obc_tcp_ready(void);
 void send_pus_packet_tc(void);
 void send_event(void);
+void send_ask_alive(void);
+void enter_low_power(void);
+void exit_low_power(void);
+void enter_take_over(void);
+void exit_take_over(void);
 
 /*****************************************************/
 #endif
