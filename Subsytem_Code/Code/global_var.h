@@ -26,6 +26,8 @@
 #ifndef GLOBAL_VAR_H
 #define GLOBAL_VAR_H
 
+#include <stdint.h>
+
 #define DATA_BUFFER_SIZE 8 // 8 bytes max
 
 /*				MY CAN DEFINES								*/
