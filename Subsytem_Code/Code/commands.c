@@ -42,12 +42,10 @@
 */
 
 #include "commands.h"
+#include "global_var.h"
 
 static void store_current_tm(void);
 static void send_tc_can_msg(uint8_t packet_count);
-
-// Temporary Global Variables for testing
-uint8_t pxv, pxi, pyv, pyi;
 
 
 /************************************************************************/
@@ -366,17 +364,17 @@ void set_sensor_high(void)
 		high = (uint16_t)sensh_arr[1];
 		battv_high |= (high << 8);
 	}
-	if(sensor_name == BATT_I)
+	if(sensor_name == BATTIN_I)
 	{
 		pxv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
 		pxv_high |= (high << 8);
 	}
-	if(sensor_name == BATT_TEMP)
+	if(sensor_name == BATTOUT_I)
 	{
-		battemp_high = sensh_arr[0];
+		pxv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
-		battemp_high |= (high << 8);
+		pxv_high |= (high << 8);
 	}
 	if(sensor_name == COMS_V)
 	{
@@ -470,17 +468,17 @@ void set_sensor_low(void)
 		low = (uint16_t)sensl_arr[1];
 		battv_low |= (low << 8);
 	}
-	if(sensor_name == BATT_I)
+	if(sensor_name == BATTIN_I)
 	{
-		pxv_low = sensl_arr[0];
+		battin_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
-		pxv_low |= (low << 8);
+		battin_low |= (low << 8);
 	}
-	if(sensor_name == BATT_TEMP)
+	if(sensor_name == BATTOUT_I)
 	{
-		battemp_low = sensl_arr[0];
+		battout_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
-		battemp_low |= (low << 8);
+		battout_low |= (low << 8);
 	}
 	if(sensor_name == COMS_V)
 	{
