@@ -56,9 +56,9 @@ Author: Keenan Burnett
 #define OBC_COMS_TC_TM_ERROR			0x19
 #define OBC_TC_PACKET_ERROR				0x1A
 #define OBC_FIFO_RW_ERROR				0x1B
-#define TC_OK_GO_TIMED_OUT				0x1C
+#define TC_OK_GO_TIMED_OUT				0x1C		// REPORT ONLY
 #define TC_CONSEC_TIMED_OUT				0x1D
-#define TM_OK_GO_TIMED_OUT				0x1E
+#define TM_OK_GO_TIMED_OUT				0x1E		// REPORT ONLY
 #define TM_CONSEC_TIMED_OUT				0x1F
 
 uint8_t errorASSERT(uint8_t error, uint8_t* data);

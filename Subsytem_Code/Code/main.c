@@ -82,6 +82,7 @@
 #include "Timer.h"
 #include "can_lib.h"
 #include "adc_lib.h"
+#include "dac_lib.h"
 #include "can_api.h"
 #include "spi_lib.h"
 #include "trans_lib.h"
@@ -161,6 +162,8 @@ static void sys_init(void)
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
+	if(SELF_ID == 2)
+		dac_initialize();
 	
 	//enable watchdog timer - 2 second reset time approximate
 	//WDTON Fuse has to be 1 for system reset mode - how do you do that?

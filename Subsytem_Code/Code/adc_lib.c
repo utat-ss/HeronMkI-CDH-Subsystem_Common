@@ -46,19 +46,12 @@
 void adc_initialize(void)
 {
 	uint8_t* ptr;
-	uint8_t x;
-	
 	ptr = ADMUX_BASE;		// Initialize ADMUX_BASE
-	x = 0b00000010;			// Choose ADC2
-	*ptr = x;
-	
+	*ptr = 0b00000010;			// Choose ADC2
 	ptr = ADCSRA_BASE;		// Initialize ADCSRA
-	x = 0b11100010;
-	*ptr = x;
-		
+	*ptr = 0b11100010;	
 	ptr = ADCSRB_BASE;		// Initialize ADCSRB
-	x = 0b10100000;
-	*ptr = x;
+	*ptr = 0b10100000;
 	
 	return;
 }
