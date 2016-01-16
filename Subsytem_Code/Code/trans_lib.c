@@ -562,7 +562,7 @@ void trans_check(void)
 }
 uint8_t flag=0;
 
-void transceiver_send(){
+void transceiver_send(void){
 	// Set it to IDLE and flush the TX buffer before continuing to send data
 	cmd_str(SIDLE);
 	cmd_str(SFTX);
@@ -582,7 +582,7 @@ void transceiver_send(){
 	//strobe commands to start TX
 	cmd_str(STX);
 }
-void transceiver_receive(){
+void transceiver_receive(void){
 	cmd_str(SIDLE);
 	cmd_str(SRX);
 	//uint8_t rx_length;

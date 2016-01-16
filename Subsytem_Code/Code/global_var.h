@@ -31,7 +31,7 @@
 #define DATA_BUFFER_SIZE 8 // 8 bytes max
 
 /*				MY CAN DEFINES								*/
-#define SELF_ID					1 // Current SSM is EPS.
+#define SELF_ID					0 // Current SSM is EPS.
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
 

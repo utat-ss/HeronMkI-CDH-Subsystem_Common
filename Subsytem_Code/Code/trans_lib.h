@@ -103,4 +103,6 @@ void dir_FIFO_write(uint8_t addr, uint8_t data);
 void set_CSn(uint8_t state);
 void reg_write_bit(uint8_t reg, uint8_t n, uint8_t data);
 void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data);
+void transceiver_send(void);
+void transceiver_receive(void);
 
