@@ -675,7 +675,7 @@ void send_pus_packet_tc(void)
 		if(!timeout--)
 		{
 			data[0] = ssm_ok_go_timeout;
-			errorREPORT(TC_OK_GO_TIMED_OUT, data);	// Let the OBC know that OK-GO timed out.
+			//errorREPORT(TC_OK_GO_TIMED_OUT, data);	// Let the OBC know that OK-GO timed out.
 			return;
 		}
 		delay_us(10);
@@ -700,7 +700,7 @@ void send_pus_packet_tc(void)
 		if(!timeout--)
 		{
 			data[0] = ssm_consec_trans_timeout;
-			errorASSERT(TC_CONSEC_TIMED_OUT, data);	// Let the OBC know that a consecutive transfer timed out.
+			//errorASSERT(TC_CONSEC_TIMED_OUT, data);	// Let the OBC know that a consecutive transfer timed out.
 			return;
 		}
 		delay_us(100);
