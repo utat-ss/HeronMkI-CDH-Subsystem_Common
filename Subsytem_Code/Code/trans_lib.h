@@ -30,7 +30,7 @@
 #include "spi_lib.h"
 #include "port.h"
 #include "Timer.h"
-
+#include <stdbool.h>
 /* Global variables to be used for CAN communication */
 uint8_t msg_received; 
 uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a fixed size.
@@ -81,12 +81,13 @@ uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a
 #define MDMCFG1       0x0012
 #define MDMCFG0       0x0013
 
-// Define RX/TX FIFO pointers 
+
+
 #define RXFIRST           0xD2
 #define TXFIRST           0xD3
 #define RXLAST            0xD4
 #define TXLAST            0xD5
-
+#define DEBUG_MODE     0
 /******************************************/
 
 /****** FUNCTION PROTOTYPES ***************/
