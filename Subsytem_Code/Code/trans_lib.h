@@ -43,6 +43,8 @@ uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a
 // We have LED3, LED6, and LED7.
 // We'll make those LEDs correspond to GREEN, RED, YELLOW.
 
+#define STDFIFO	0x3F
+
 // Define Command Strobes
 #define SRES 0x30
 #define SFSTXON 0x31
