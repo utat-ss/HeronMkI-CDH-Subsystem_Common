@@ -566,17 +566,19 @@ void transceiver_send(){
 	// Set it to IDLE and flush the TX buffer before continuing to send data
 	cmd_str(SIDLE);
 	cmd_str(SFTX);
-	uint8_t message[10]={0x32,0x56,0x68,0x06,0x09,0x05,0x04,0x22,0x03,0x66};
+	uint8_t message[128];
+	for(int i=0;i<128;i++)
+		message[i]=i;
 	// The first byte is the length of the packet (message + 1 for the address)
 	//dir_FIFO_write(0,12);
 	// The second byte is the address
 	//dir_FIFO_write(1,0x00);
 	// The rest is the actual data
-	for(int i=0; i<10; i++)
+	for(int i=0; i<128; i++)
 		dir_FIFO_write(i, message[i]);
 	//set up TX FIFO pointers
 	reg_write2F(TXFIRST, 0x00);            //set TX FIRST to 0
-	reg_write2F(TXLAST, 0x7E); //set TX LAST (maximum OF 0X7F)
+	reg_write2F(TXLAST, 0x7F); //set TX LAST (maximum OF 0X7F)
 	reg_write2F(RXFIRST, 0x00);              //set TX FIRST to 0
 	reg_write2F(RXLAST, 0x00); //set TX LAST (maximum OF 0X7F)
 	//strobe commands to start TX
