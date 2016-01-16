@@ -147,7 +147,7 @@
 
 #include "trans_lib.h"
 #define STDFIFO       0x003F
-
+uint8_t fifo[128] = {0};
 void transceiver_initialize(void)
 {
 	uint8_t msg, CHIP_RDY, state;
@@ -735,10 +735,10 @@ void transceiver_send(){
 	cmd_str(SIDLE);
 	cmd_str(SFTX);
 	
-	dir_FIFO_write(0, 0x82);
+	dir_FIFO_write(0, 0xFF);
 	for(i=1; i<128; i++)
 	{
-		dir_FIFO_write(i, i);
+		dir_FIFO_write(i, 0xFF);
 	}
 
 	
@@ -750,28 +750,48 @@ void transceiver_send(){
 	//strobe commands to start TX
 	cmd_str(STX);
 }
-/*
+
 void transceiver_receive(){
 	cmd_str(SIDLE);
 	cmd_str(SRX);
-	//uint8_t rx_length;
+	uint8_t rx_length;
+	
 	uint8_t rxFirst = reg_read2F(RXFIRST);
 	uint8_t rxLast = reg_read2F(RXLAST);
-	if(rxFirst<rxLast){
-            uint8_t fifo[128] = {0};
-            uint8_t j =0;
-            
-            for(uint8_t i = rxFirst; i< rxLast; i++){
-	            fifo[j++] = dir_FIFO_read(0x80+i);
-            }
-	}
-	if (rxFirst == rxLast){
-		cmd_str(SIDLE);
-		reg_write2F(RXFIRST);
-		reg_write2F(RXLAST);
-		cmd_str(SFRX);
-		cmd_str(SRX);
-	}
+	
+        if (rxFirst < rxLast){
+	        // The first byte that comes when the RX buffer was empty can only be
+	        // accessed with standard FIFO access. In our case this will be the length
+	        //if (rx_length == 0){
+		        rx_length = reg_read(STDFIFO);
+		        //reg_write2F(RXFIRST,rxFirst);
+	        //}
+	        //Get the rest of the data
+	       
+	        //uint8_t j = 0;
+	        for (uint8_t i = rxFirst; i < rxLast; i++){
+		        fifo[i-rxFirst] = dir_FIFO_read(0x80+i);
+	        }
+	        // We have a packet
+	        if (rx_length <= (rxLast - rxFirst)){
+		        //for (j = 1; j < rx_length - rxFirst; j++){
+			        //Serial.print((char) fifo[j]);
+		        //}
+		        //Serial.print("\"\n");
+		        reg_write2F(RXFIRST, rx_length);
+		        rxFirst += rx_length;
+		        rx_length = 0;
+	        }
+	        //else if (rx_length >= (rxLast - rxFirst - 1)){
+	        //}
+        }
+        if (rxFirst == rxLast && rxFirst && rx_length == 0){
+	        cmd_str(SIDLE);
+	        reg_write2F(RXFIRST, 0x00);
+	        reg_write2F(RXLAST, 0x00);
+	        cmd_str(SFRX);
+	        cmd_str(SRX);
+	        rx_length = 0;
+        }
 	reg_write2F(TXFIRST, 0); // So we can send another ACK
 }
-}*/
