@@ -149,7 +149,7 @@
 */
 
 #include "trans_lib.h"
-
+uint8_t fifo[128] = {0};
 void transceiver_initialize(void)
 {
 	uint8_t msg, CHIP_RDY, state;
@@ -581,4 +581,33 @@ void transceiver_send(){
 	reg_write2F(RXLAST, 0x00); //set TX LAST (maximum OF 0X7F)
 	//strobe commands to start TX
 	cmd_str(STX);
+}
+void transceiver_receive(){
+	cmd_str(SIDLE);
+	cmd_str(SRX);
+	//uint8_t rx_length;
+	uint8_t rxFirst = reg_read2F(RXFIRST);
+	uint8_t rxLast = reg_read2F(RXLAST);
+	if(rxFirst<rxLast){
+		uint8_t j =0;
+		for(uint8_t i = rxFirst; i< rxLast; i++){
+			fifo[j++] = dir_FIFO_read(0x80+i);
+		}
+	}
+	if (rxFirst == rxLast){
+		cmd_str(SIDLE);
+		reg_write2F(RXFIRST,0x80);
+		reg_write2F(RXLAST,0x80);
+		cmd_str(SFRX);
+		cmd_str(SRX);
+	}
+	if(rxFirst>rxLast){
+		//Error!Should retransmit the message
+		cmd_str(SIDLE);
+		
+		reg_write2F(RXFIRST,0x80);
+		reg_write2F(RXLAST,0x80);
+		cmd_str(SFRX);
+		cmd_str(SRX);
+	}
 }
