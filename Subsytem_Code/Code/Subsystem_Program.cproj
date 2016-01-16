@@ -182,6 +182,18 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="dac_lib.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="dac_lib.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="error_handling.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="error_handling.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="global_var.h">
       <SubType>compile</SubType>
     </Compile>
@@ -194,10 +206,22 @@
     <Compile Include="mppt_timer.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="multiplexer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="multiplexer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="port.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="port.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sensors.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sensors.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="spi_lib.c">

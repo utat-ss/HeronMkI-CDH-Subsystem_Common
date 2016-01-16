@@ -44,9 +44,13 @@ C_SRCS +=  \
 ../can_lib.c \
 ../commands.c \
 ../comsTimer.c \
+../dac_lib.c \
+../error_handling.c \
 ../main.c \
 ../mppt_timer.c \
+../multiplexer.c \
 ../port.c \
+../sensors.c \
 ../spi_lib.c \
 ../Timer.c \
 ../trans_lib.c
@@ -66,9 +70,13 @@ can_drv.o \
 can_lib.o \
 commands.o \
 comsTimer.o \
+dac_lib.o \
+error_handling.o \
 main.o \
 mppt_timer.o \
+multiplexer.o \
 port.o \
+sensors.o \
 spi_lib.o \
 Timer.o \
 trans_lib.o
@@ -81,9 +89,13 @@ can_drv.o \
 can_lib.o \
 commands.o \
 comsTimer.o \
+dac_lib.o \
+error_handling.o \
 main.o \
 mppt_timer.o \
+multiplexer.o \
 port.o \
+sensors.o \
 spi_lib.o \
 Timer.o \
 trans_lib.o
@@ -96,9 +108,13 @@ can_drv.d \
 can_lib.d \
 commands.d \
 comsTimer.d \
+dac_lib.d \
+error_handling.d \
 main.d \
 mppt_timer.d \
+multiplexer.d \
 port.d \
+sensors.d \
 spi_lib.d \
 Timer.d \
 trans_lib.d
@@ -111,9 +127,13 @@ can_drv.d \
 can_lib.d \
 commands.d \
 comsTimer.d \
+dac_lib.d \
+error_handling.d \
 main.d \
 mppt_timer.d \
+multiplexer.d \
 port.d \
+sensors.d \
 spi_lib.d \
 Timer.d \
 trans_lib.d
@@ -132,6 +152,14 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
+
+
+
+
 
 
 

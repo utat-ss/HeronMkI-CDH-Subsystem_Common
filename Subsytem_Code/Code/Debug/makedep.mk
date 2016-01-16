@@ -16,11 +16,19 @@ commands.c
 
 comsTimer.c
 
+dac_lib.c
+
+error_handling.c
+
 main.c
 
 mppt_timer.c
 
+multiplexer.c
+
 port.c
+
+sensors.c
 
 spi_lib.c
 
