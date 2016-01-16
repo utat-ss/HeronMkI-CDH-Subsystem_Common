@@ -582,3 +582,26 @@ void transceiver_send(){
 	//strobe commands to start TX
 	cmd_str(STX);
 }
+void transceiver_receive(){
+	cmd_str(SIDLE);
+	cmd_str(SRX);
+	//uint8_t rx_length;
+	uint8_t rxFirst = reg_read2F(RXFIRST);
+	uint8_t rxLast = reg_read2F(RXLAST);
+	if(rxFirst<rxLast){
+		uint8_t fifo[128] = {0};
+		uint8_t j =0;
+		
+		for(uint8_t i = rxFirst; i< rxLast; i++){
+			fifo[j++] = dir_FIFO_read(0x80+i);
+		}
+	}
+	if (rxFirst == rxLast){
+		cmd_str(SIDLE);
+		reg_write2F(RXFIRST,0x80);
+		reg_write2F(RXLAST,0x80);
+		cmd_str(SFRX);
+		cmd_str(SRX);
+	}
+	reg_write2F(TXFIRST, 0); // So we can send another ACK
+}
