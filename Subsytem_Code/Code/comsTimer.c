@@ -32,6 +32,8 @@
 //When the timer overflows, increment the time-count variables.
 ISR(TIMER0_OVF_vect)
 {
+	// Counter being used for transceiver communications.
+	count32ms++;
 	// Increment variables here to keep track of time when an
 	// "are you alive?" message is in progress
 	if (REQUEST_ALIVE_IN_PROG)

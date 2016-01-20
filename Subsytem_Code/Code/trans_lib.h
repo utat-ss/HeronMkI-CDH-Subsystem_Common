@@ -25,17 +25,24 @@
 	*	DEVELOPMENT HISTORY:
 	*	5/05/2015		Created.
 	*
+	*	1/19/2015		Added definitions for each of the register names in the CC1120.
+	*
+	*					I also added a macro which obtains the current count of milliseconds
+	*					which have gone by.
+	*
 */
 
 #include "spi_lib.h"
 #include "port.h"
 #include "Timer.h"
-
-/* Global variables to be used for CAN communication */
-uint8_t msg_received; 
-uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a fixed size.
+#include "global_var.h"
 
 /*********** DEFINITIONS ******************/
+
+#define STATUS_INTERVAL 1000
+#define ACK_TIMEOUT 2000
+#define TRANSCEIVER_CYCLE 250
+#define DEVICE_ADDRESS 0xA5
 
 //define crystal oscillator frequency to 32MHz
 #define f_xosc 32000000;							// What is this used for?
@@ -60,6 +67,13 @@ uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a
 #define SFTX 0x3B
 #define SWORRST 0x3C
 #define SNOP 0x3D
+
+// The following are the states
+#define STATEIDLE   0b000
+#define STATERX     0b001
+#define STATETX     0b010
+#define STATERXERR  0b110
+#define STATETXERR  0b111
 
 /*	Regular Register Space	*/
 #define IOCFG3			0x00
@@ -242,7 +256,8 @@ uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a
 #define RXLAST            0xD4
 #define TXLAST            0xD5
 
-/******************************************/
+/* Macro Definitions			*/
+#define millis() (count32ms<<5)
 
 /****** FUNCTION PROTOTYPES ***************/
 
@@ -258,7 +273,11 @@ void dir_FIFO_write(uint8_t addr, uint8_t data);
 void set_CSn(uint8_t state);
 void reg_write_bit(uint8_t reg, uint8_t n, uint8_t data);
 void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data);
-void transceiver_send(void);
+void transceiver_send(uint8_t* message, uint8_t address, uint8_t length);
 void transceiver_receive(void);
 void trans_check(void);
+void reg_settings(void);
+void prepareAck(void);
+void transceiver_run(void);
+void clear_new_packet(void);
 

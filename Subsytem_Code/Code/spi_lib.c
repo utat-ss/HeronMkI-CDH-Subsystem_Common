@@ -189,7 +189,7 @@ uint8_t spi_transfer(uint8_t message)
 	
 		//SS_set_high();
 		
-		delay_cycles(10);
+		delay_cycles(30);
 	// I was assuming that SPI messages would be received MSB first.
 	// Comment out the following if that is not the case.
 	

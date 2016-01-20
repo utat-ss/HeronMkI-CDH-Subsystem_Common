@@ -285,5 +285,23 @@ uint8_t REQUEST_ALIVE_IN_PROG;		// A "are you alive?" message has been sent to O
 uint8_t FAILED_COUNT;				// Consecutive times Coms has not received alive confirmation
 uint32_t ISALIVE_COUNTER;			// Counts time since "are you alive?" sent and confirmation received
 uint32_t MAX_WAIT_TIME;				//Max time Coms will wait for OBC response
+
+/********** Global Variables for Transceiver Operations***************/
+unsigned long previousTime;
+unsigned long currentTime;
+long int lastTransmit;
+long int lastCycle;
+long int lastToggle;
+uint8_t tx_mode;
+uint8_t rx_mode;
+uint8_t rx_length;
+int  count32ms;
+uint8_t new_packet[128];
+uint8_t packet_receivedf;
+
+/* Global variables to be used for CAN communication */
+uint8_t msg_received;
+uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a fixed size.
+
 /*****************************************************/
 #endif

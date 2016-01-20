@@ -109,14 +109,21 @@ int main(void)
 	uint8_t high = 0, low = 0;
 	
 	uint8_t msg = 0x66;
+	uint8_t t_message[128];
 	
 	uint8_t* adc_result;
 	*adc_result = 0;
+	uint16_t count = 0;;
 
 	// Initialize I/O, Timer, ADC, CAN, WDT, and SPI
 	sys_init();
 	
-	/*		Begin Main Program Loop					*/	
+	/*		Begin Main Program Loop					*/
+	for(i = 0; i < 64; i ++)
+	{
+		t_message[i] = i;
+	}
+	transceiver_send(&t_message[0], 0x00, 64);
     while(1)
     {	
 		/* Reset the WDT */
@@ -124,17 +131,25 @@ int main(void)
 		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();
-		
+
 		if(!PAUSE)
 		{
+
 			/*		TRANSCEIVER COMMUNICATION	*/
 			if(SELF_ID == 0)
 			{
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
-					transceiver_send();		// Check for incoming packets.
-				delay_ms(500);
+					transceiver_run();		// Check for incoming packets.
+				//if(count == 200)
+				//{
+					//transceiver_send(&t_message[0], 0x00, 64);
+					//count = 0;				
+				//}
+				//delay_us(1);
+				//count++;
+				
 				// Continually check if coms needs to takeover for OBC
 				//check_obc_alive();
 			}
@@ -153,8 +168,8 @@ int main(void)
 static void sys_init(void) 
 {
 	// Make sure sys clock is at least 8MHz
-	CLKPR = 0x80;  
-	CLKPR = 0x00;
+	CLKPR |= 1<<CLKPCE; // Enable clock pre-scaler change
+	CLKPR  = 0;         // Set clock pre-scaler to 1 (fast as possible)
 	
 	init_global_vars();
 	io_init();	
@@ -315,6 +330,23 @@ static void init_global_vars(void)
 	ssm_consec_trans_timeout = 100;			// ~10 ms
 	
 	ssm_fdir_signal = 0;
+	
+	/* Transceiver Variables */
+	previousTime = 0;
+	currentTime = 0;
+	lastTransmit = 0;
+	lastCycle = 0;
+	lastToggle = 0;
+	tx_mode = 0;
+	rx_mode = 1;
+	rx_length = 0;
+	count32ms = 0;
+	packet_receivedf = 0;
+	
+	for(i = 0; i < 128; i++)
+	{
+		new_packet[i] = 0;
+	}
 	
 	return;
 }
