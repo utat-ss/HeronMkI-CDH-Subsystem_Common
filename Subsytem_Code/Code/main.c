@@ -133,8 +133,8 @@ int main(void)
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
-					transceiver_receive();		// Check for incoming packets.
-				//delay_ms(500);
+					transceiver_send();		// Check for incoming packets.
+				delay_ms(500);
 				// Continually check if coms needs to takeover for OBC
 				//check_obc_alive();
 			}
