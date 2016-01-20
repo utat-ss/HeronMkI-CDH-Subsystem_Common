@@ -1,5 +1,5 @@
 /*
-	Authors: Keenan Burnett, Louis Pahlavi
+	Authors: Keenan Burnett, Louis Pahlavi, Chris Zhang
 
 	***********************************************************************
 	*	FILE NAME:		trans_lib.c
@@ -17,6 +17,8 @@
 	*	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
 	*
 	*	NOTES:
+	*					If you're going to mess around with this library, please read the CC1120 User Guide in 
+	*					full before you begin.
 	*
 	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
 	*	None so far.
@@ -34,7 +36,7 @@
 	*	5/11/2015		Today Louis hooked up our SPI lines to our oscilloscope so that we could see the
 	*					bits being transmitted and what the timing looked like.
 	*
-	*					What seems to be happenning is that the first byte is being sent but the second is not.
+	*					What seems to be happening is that the first byte is being sent but the second is not.
 	*
 	*					We're sending 2 subsequent SPI message and the SS (CSn in the CC1120 documentation) is being
 	*					set high and then low.
@@ -146,8 +148,10 @@
 	*	12/05/2015		C:Added transceiver_send(). This function is able to transmit messages from SSM and I managed to
 	*					receive it on SmartRF (after changing PKT_CFG0 to 0x00). But there are CRC errors.
 	*
-	*	01/19/2015		K: I'm revamping all the code here, which includes the initialization function, transceive_send(),
-	*					and I'm adding functions for acknowledgements and regular operation of the transceiver.
+	*	01/19/2015		I'm revamping all the code here, which includes the initialization function, transceive_send(),
+	*					and I'm adding functions for acknowledgments and regular operation of the transceiver.
+	*
+	*	01/20/2015		Getting rid of functions that we don't really need anymore.
 */
 
 #include "trans_lib.h"
@@ -155,7 +159,7 @@
 void transceiver_initialize(void)
 {	
 	/* SPI is already in MSB first, which is correct for the CC1120. */
-	set_CSn(0);
+	SS_set_low();
     cmd_str(SRES);		//SRES			reset chip
 	delay_ms(100);
     cmd_str(SFRX);		//SFRX          flush RX FIFO
@@ -182,7 +186,7 @@ void transceiver_run(void)
 	uint8_t state, CHIP_RDYn, rxFirst, rxLast, i, j, txFirst, txLast;
 	get_status(&CHIP_RDYn, &state);
 
-	if (millis() - lastCycle < TRANSCEIVER_CYCLE)
+	if (millis() - lastCycle < TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
 	{
 		return;
 	}
@@ -211,7 +215,7 @@ void transceiver_run(void)
 		/* Got some data, so there must be a packet waiting for us. */
 		else if (rxLast)
 		{
-			PIN_toggle(LED1);
+			PIN_toggle(LED2);
 			uint8_t fifo[128] = {0};
 			j = 0;
 			rx_length = reg_read(STDFIFO);
@@ -325,16 +329,16 @@ void reg_settings(void)
     /************************************/
     //For test purposes only, (2nd block, deleted first one) use values from SmartRF for some bits
     //High performance RX
-    reg_write(0x08, 0x0B);            //
-    reg_write(0x0C, 0x1C);            //
-    reg_write(0x10, 0x00);            //
-    reg_write(0x11, 0x04);            //
-    reg_write(0x13, 0x05);            //
-    reg_write(0x1C, 0xA9);            //
-    reg_write(0x1D, 0xCF);            //
-    reg_write(0x1E, 0x00);            //
-    reg_write(0x20, 0x03);            //
-    reg_write2F(0x00, 0x00);          //
+    reg_write(SYNC_CFG1, 0x0B);				//
+    reg_write(DCFILT_CFG, 0x1C);            //
+    reg_write(IQIC, 0x00);					//
+    reg_write(CHAN_BW, 0x04);				//
+    reg_write(MDMCFG0, 0x05);				//
+    reg_write(AGC_CFG1, 0xA9);				//
+    reg_write(AGC_CFG0, 0xCF);				//
+    reg_write(FIFO_CFG, 0x00);				//
+    reg_write(SETTLING_CFG, 0x03);          //
+    reg_write2F(IF_MIX_CFG, 0x00);          //
     /**************************************/
 	
 	//modulation and freq deviation settings
@@ -367,7 +371,7 @@ void reg_settings(void)
 	reg_write(PKT_CFG0, 0b00100000);		//PKT_CFG0: 0x30         set variable packet length
 	reg_write(PKT_LEN, 0x7F);				//PKT_LEN: 0xFF          set packet max packet length to 0x7F
 	reg_write(DEV_ADDR, DEVICE_ADDRESS);	//DEV_ADDR register is set to DEVICE_ADDRESS
-	reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet
+	reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet, RX timeout disabled.
 	//reg_write(0x29, 0b00111110);			//RFEND_CFG1: 0x3E       go to RX after a good packet
 	reg_write(RFEND_CFG0, 0b00110000);      //RFEND_CFG0: 0x30       go to RX after transmitting a packet
 	//reg_write(0x2A, 0b00100000);			//RFEND_CFG0: 0x20       go to TX after transmitting a packet
@@ -531,20 +535,6 @@ void dir_FIFO_write(uint8_t addr, uint8_t data)
 }
 
 /************************************************************************/
-/*		set_CSn                                                         */
-/*																		*/
-/*		This function sets the chip select pin (SS) to either LOW or	*/
-/*		HIGH depending on param: state.									*/
-/************************************************************************/
-void set_CSn(uint8_t state)
-{
-	if(state)
-		SS_set_high();
-	else
-		SS_set_low();
-}
-
-/************************************************************************/
 /*		REG_WRITE_BIT                                                   */
 /*																		*/
 /*		This function is used to write a single bit of data to an		*/
@@ -633,8 +623,9 @@ void trans_check(void)
 	}
 	return;
 }
-uint8_t flag=0;
 
+// Here, address should correspond to the DEVICE_ADDRESS of the transceiver 
+// that you want to communicate with.
 void transceiver_send(uint8_t* message, uint8_t address, uint8_t length)
 {
 	uint8_t i;
@@ -659,62 +650,6 @@ void transceiver_send(uint8_t* message, uint8_t address, uint8_t length)
 	tx_mode = 1;
 	rx_mode = 0;
 	lastTransmit = millis();
-}
-
-void transceiver_receive(void)
-{
-	//cmd_str(SIDLE);
-//
-	//uint8_t rx_length = 0;
-//
-	//uint8_t rxFirst = reg_read2F(RXFIRST);
-	//uint8_t rxLast = reg_read2F(RXLAST);
-	//
-	//if(rxFirst || rxLast )
-		//PIN_toggle(LED1);
-//
-	//if (rxFirst < rxLast)
-	//{
-		////PIN_toggle(LED1);
-		//// The first byte that comes when the RX buffer was empty can only be
-		//// accessed with standard FIFO access. In our case this will be the length
-		////if (rx_length == 0){
-		//rx_length = reg_read(STDFIFO);
-		////reg_write2F(RXFIRST,rxFirst);
-		////}
-		////Get the rest of the data
-//
-		////uint8_t j = 0;
-		//for (uint8_t i = rxFirst; i < rxLast; i++)
-		//{
-			//fifo[i-rxFirst] = dir_FIFO_read(0x80+i);
-		//}
-	//}
-	//// We have a packet
-	//if (rx_length <= (rxLast - rxFirst))
-	//{
-		////for (j = 1; j < rx_length - rxFirst; j++){
-		////Serial.print((char) fifo[j]);
-		////}
-		////Serial.print("\"\n");
-		//reg_write2F(RXFIRST, rx_length);
-		//rxFirst += rx_length;
-		//rx_length = 0;
-	//}
-	////else if (rx_length >= (rxLast - rxFirst - 1)){
-	////}
-	////}
-	//if (rxFirst == rxLast && rxFirst && rx_length == 0)
-	//{
-		//cmd_str(SIDLE);
-		//reg_write2F(RXFIRST, 0x00);
-		//reg_write2F(RXLAST, 0x00);
-		//cmd_str(SFRX);
-		//cmd_str(SRX);
-		//rx_length = 0;
-	//}
-	//reg_write2F(TXFIRST, 0); // So we can send another ACK
-	//cmd_str(SRX);
 }
 
 void prepareAck(void)

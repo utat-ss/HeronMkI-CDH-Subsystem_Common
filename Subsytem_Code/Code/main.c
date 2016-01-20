@@ -142,13 +142,13 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
 					transceiver_run();		// Check for incoming packets.
-				//if(count == 200)
-				//{
-					//transceiver_send(&t_message[0], 0x00, 64);
-					//count = 0;				
-				//}
-				//delay_us(1);
-				//count++;
+				if(count == 2000)
+				{
+					transceiver_send(&t_message[0], DEVICE_ADDRESS, 64);	// Periodically transmit a packet.
+					count = 0;
+				}
+				delay_us(1);
+				count++;
 				
 				// Continually check if coms needs to takeover for OBC
 				//check_obc_alive();
