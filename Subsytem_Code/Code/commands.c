@@ -77,8 +77,11 @@ void run_commands(void)
 		set_var();
 	if (new_tm_msgf)
 		receive_tm_msg();
-	if (tc_packet_readyf)
+	if (packet_count)
+	{
+		load_packet_to_current_tc();
 		send_pus_packet_tc();
+	}
 	if (event_readyf)
 		send_event();
 	if (ask_alive)
@@ -577,7 +580,7 @@ static void send_tm_transaction_response(uint8_t req_by, uint8_t code)
 static void clear_current_tm(void)
 {
 	uint8_t i;
-	for(i = 0; i < 143; i++)
+	for(i = 0; i < PACKET_LENGTH; i++)
 	{
 		current_tm[i] = 0;
 	}

@@ -39,6 +39,11 @@
 
 /*********** DEFINITIONS ******************/
 
+/* Packet Structure so that we can have a linked list */
+typedef struct{
+	uint8_t data[152];
+} packet;
+
 #define STATUS_INTERVAL 1000
 #define ACK_TIMEOUT 2000
 #define TRANSCEIVER_CYCLE 250
@@ -278,4 +283,6 @@ void reg_settings(void);
 void prepareAck(void);
 void transceiver_run(void);
 void clear_new_packet(void);
-
+void store_new_packet(void);
+void load_packet_to_current_tc(void);
+static void clear_current_tc(void);
