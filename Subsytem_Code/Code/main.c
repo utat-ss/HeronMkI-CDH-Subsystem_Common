@@ -274,7 +274,7 @@ static void io_init(void)
 
 static void init_global_vars(void)
 {	
-	uint8_t i;
+	uint8_t i, j;
 	if (SELF_ID == 0)
 	{
 		id_array[0] = SUB0_ID0;
@@ -379,10 +379,20 @@ static void init_global_vars(void)
 	count32ms = 0;
 	packet_receivedf = 0;
 	
-	for(i = 0; i < 128; i++)
+	for(i = 0; i < 152; i++)
 	{
 		new_packet[i] = 0;
 	}
+	
+	/* PUS Packet Variables */
+	for(j = 0; j < 5; j++)
+	{
+		for(i = 0; i < 152; i++)
+		{
+			packet_list[j].data[i] = 0;
+		}
+	}
+	packet_count = 0;
 	
 	return;
 }

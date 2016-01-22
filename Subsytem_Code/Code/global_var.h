@@ -296,12 +296,16 @@ uint8_t tx_mode;
 uint8_t rx_mode;
 uint8_t rx_length;
 int  count32ms;
-uint8_t new_packet[128];
+uint8_t new_packet[152];
 uint8_t packet_receivedf;
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;
 uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a fixed size.
+
+/* Pointers to the packet list (for buffering) */
+packet packet_list[5];
+uint8_t packet_count;
 
 /*****************************************************/
 #endif

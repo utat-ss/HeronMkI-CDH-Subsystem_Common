@@ -282,7 +282,7 @@ void transceiver_run(void)
 				{
 					new_packet[j - 1] = fifo[j + 1];
 				}
-				packet_receivedf = 1;
+				store_new_packet();
 				reg_write2F(RXFIRST, rx_length);
 				rxFirst += rx_length;
 				rx_length = 0;
@@ -680,4 +680,51 @@ void clear_new_packet(void)
 	for(uint8_t i = 0; i < 128; i ++){
 		new_packet[i] = 0;
 	}
+}
+
+uint8_t store_new_packet(void)
+{
+	uint8_t i;
+	if(packet_count == 5)		// Packet_list is currently full, cannot accept new packets.
+		return 0xFF;
+	/* There is room in the packet list */
+	for (i = 0; i < 152; i++)
+	{
+		packet_list[packet_count].data[i] = new_packet[i];
+	}
+	packet_count++;
+	return 0x00;
+}
+
+void load_packet_to_current_tc(void)
+{
+	uint8_t i, j;
+	if(!packet_count)
+	{
+		clear_current_tc();
+		return;
+	}
+	for(i = 0; i < PACKET_LENGTH; i++)
+	{
+		current_tc[i] = packet_list[0].data[i];
+	}
+	for(j = 0; j < (packet_count - 1); j++)
+	{
+		for(i = 0; i < PACKET_LENGTH; i++)
+		{
+			packet_list[j].data[i] = packet_list[j + 1].data[i];
+		}
+	}
+	packet_count--;
+	return;
+}
+
+static void clear_current_tc(void)
+{
+	uint8_t i;
+	for(i = 0; i < PACKET_LENGTH; i++)
+	{
+		current_tc[i] = 0;
+	}
+	return;
 }
