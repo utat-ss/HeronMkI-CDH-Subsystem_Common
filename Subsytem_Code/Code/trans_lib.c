@@ -369,7 +369,7 @@ void reg_settings(void)
 	reg_write(PKT_CFG2, 0b00000000);		//PKT_CFG2: 0x00         set FIFO mode
 	reg_write(PKT_CFG1, 0b00110000);		//PKT_CFG1: 0x30         set address check and 0xFF broadcast
 	reg_write(PKT_CFG0, 0b00100000);		//PKT_CFG0: 0x30         set variable packet length
-	reg_write(PKT_LEN, 0x7F);				//PKT_LEN: 0xFF          set packet max packet length to 0x7F
+	reg_write(PKT_LEN, 0x40);				//PKT_LEN: 0xFF          set packet max packet length to 0x7F
 	reg_write(DEV_ADDR, DEVICE_ADDRESS);	//DEV_ADDR register is set to DEVICE_ADDRESS
 	reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet, RX timeout disabled.
 	//reg_write(0x29, 0b00111110);			//RFEND_CFG1: 0x3E       go to RX after a good packet
@@ -400,7 +400,7 @@ uint8_t reg_read(uint8_t addr)
 	//delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(1);
 	
 	return msg;
 }
@@ -414,7 +414,7 @@ void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(1);
 
 	return;
 }
@@ -426,12 +426,12 @@ uint8_t reg_read2F(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(1);
 	return msg;
 }
 
@@ -449,12 +449,12 @@ void reg_write2F(uint8_t addr, uint8_t data)		// Doesn't need to return anything
 	
 	SS_set_low();
 	spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(3);
 
 	return;
 }
@@ -487,7 +487,7 @@ uint8_t cmd_str(uint8_t addr)
 	SS_set_low();
 	msg = spi_transfer(addr);
 	
-	//delay_us(1);
+	delay_us(1);
 	SS_set_high();
 	return msg;
 }
@@ -507,12 +507,12 @@ uint8_t dir_FIFO_read(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(1);
 	return msg;
 }
 
@@ -524,12 +524,12 @@ void dir_FIFO_write(uint8_t addr, uint8_t data)
 	
 	SS_set_low();
 	spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(3);
+	delay_ms(3);
 	
 	return;
 }

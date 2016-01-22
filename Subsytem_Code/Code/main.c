@@ -123,14 +123,15 @@ int main(void)
 	{
 		t_message[i] = i;
 	}
-	transceiver_send(&t_message[0], 0x00, 64);
+	uint8_t *CHIP_RDYn, *state;
+	//transceiver_send(&t_message[0], 0x00, 64);
     while(1)
     {	
 		/* Reset the WDT */
 		wdt_reset();
 		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		can_check_general();
+		//can_check_general();
 
 		if(!PAUSE)
 		{
@@ -142,13 +143,48 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
 					transceiver_run();		// Check for incoming packets.
-				if(count == 2000)
+				//cmd_str(SIDLE);
+				//cmd_str(SFRX);
+				//if(rx_mode)
+					//cmd_str(SRX);
+				//delay_ms(100);
+				//get_status(CHIP_RDYn, state);
+				//if(*state == 0b110)
+				//{
+					//cmd_str(SIDLE);
+					//cmd_str(SFRX);
+					//cmd_str(SRX);
+					//tx_mode = 0;
+					//rx_mode = 1;
+				//}
+				//if(tx_mode)
+				//{
+					//tx_mode = 0;
+					//rx_mode = 1;
+					//cmd_str(SRX);
+				//}
+				if(count == 1000)
 				{
 					transceiver_send(&t_message[0], DEVICE_ADDRESS, 64);	// Periodically transmit a packet.
 					count = 0;
 				}
-				delay_us(1);
+				delay_ms(1);
 				count++;
+				//cmd_str(SRX);
+				//get_status(CHIP_RDYn, state);
+				//if(*state == 0b001)
+				//{
+					//PIN_toggle(LED2);
+					//delay_ms(100);
+				//}
+				//cmd_str(SIDLE);
+				//msg = reg_read(DCFILT_CFG);
+				//if(msg == 0x1C)
+				//{
+					//PIN_toggle(LED1);
+					//delay_ms(100);
+				//}
+				//cmd_str(SRX);
 				
 				// Continually check if coms needs to takeover for OBC
 				//check_obc_alive();
@@ -161,7 +197,7 @@ int main(void)
 		}
 				
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		run_commands();
+		//run_commands();
 	}
 }
 

@@ -184,12 +184,14 @@ uint8_t spi_transfer(uint8_t message)
 	}	
 
 	
-	reg_ptr = SPDR_BASE;
-	receive_char = *reg_ptr;
+
 	
 		//SS_set_high();
 		
-		delay_cycles(30);
+		delay_cycles(11);
+
+	reg_ptr = SPDR_BASE;
+	receive_char = *reg_ptr;
 	// I was assuming that SPI messages would be received MSB first.
 	// Comment out the following if that is not the case.
 	
