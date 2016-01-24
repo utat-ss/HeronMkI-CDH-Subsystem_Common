@@ -145,31 +145,42 @@ int main(void)
 					transceiver_run();		// Check for incoming packets.
 				//cmd_str(SIDLE);
 				//cmd_str(SFRX);
-				//if(rx_mode)
-					//cmd_str(SRX);
+				if(rx_mode)
+					cmd_str(SRX);
+				if(tx_mode)
+				{
+					tx_mode = 0;
+					rx_mode = 1;
+					cmd_str(SRX);
+				}
 				//delay_ms(100);
-				//get_status(CHIP_RDYn, state);
-				//if(*state == 0b110)
-				//{
-					//cmd_str(SIDLE);
-					//cmd_str(SFRX);
-					//cmd_str(SRX);
-					//tx_mode = 0;
-					//rx_mode = 1;
-				//}
+				get_status(CHIP_RDYn, state);
+				if(*state == 0b110)
+				{
+					cmd_str(SIDLE);
+					msg = reg_read2F(MODEM_STATUS1);
+					msg &= 0x20;
+					if(msg)
+					PIN_toggle(LED2);
+					cmd_str(SFRX);
+					cmd_str(SRX);
+					tx_mode = 0;
+					rx_mode = 1;
+				}
+
 				//if(tx_mode)
 				//{
 					//tx_mode = 0;
 					//rx_mode = 1;
 					//cmd_str(SRX);
 				//}
-				if(count == 1000)
-				{
-					transceiver_send(&t_message[0], DEVICE_ADDRESS, 64);	// Periodically transmit a packet.
-					count = 0;
-				}
-				delay_ms(1);
-				count++;
+				//if(count == 1000)
+				//{
+					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 64);	// Periodically transmit a packet.
+					//count = 0;
+				//}
+				//delay_ms(1);
+				//count++;
 				//cmd_str(SRX);
 				//get_status(CHIP_RDYn, state);
 				//if(*state == 0b001)

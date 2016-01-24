@@ -28,6 +28,11 @@
 
 #include <stdint.h>
 
+typedef struct{
+	uint8_t data[152];
+} packet;
+
+
 #define DATA_BUFFER_SIZE 8 // 8 bytes max
 
 /*				MY CAN DEFINES								*/

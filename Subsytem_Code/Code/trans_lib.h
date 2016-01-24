@@ -40,13 +40,10 @@
 /*********** DEFINITIONS ******************/
 
 /* Packet Structure so that we can have a linked list */
-typedef struct{
-	uint8_t data[152];
-} packet;
 
 #define STATUS_INTERVAL 1000
 #define ACK_TIMEOUT 2000
-#define TRANSCEIVER_CYCLE 250
+#define TRANSCEIVER_CYCLE 350
 #define DEVICE_ADDRESS 0xA5
 
 //define crystal oscillator frequency to 32MHz
@@ -283,6 +280,6 @@ void reg_settings(void);
 void prepareAck(void);
 void transceiver_run(void);
 void clear_new_packet(void);
-void store_new_packet(void);
+uint8_t store_new_packet(void);
 void load_packet_to_current_tc(void);
 static void clear_current_tc(void);
