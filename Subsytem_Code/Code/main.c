@@ -204,6 +204,7 @@ int main(void)
 			{
 				run_mppt();
 				run_battBalance();
+				run_batt_heater();
 			}			
 		}
 				
@@ -241,10 +242,12 @@ static void sys_init(void)
 		mppty = 0x1F;
 		balance_l = 1;
 		balance_h = 1;
+		batt_heater_control = 0;
 		pxv = 0xBF;
 		pxi	= 0x0F;
 		pyv = 0x5F;
 		pyi = 0x2F;
+		spi_send_shunt_dpot_value(0x55);
 	}
 	
 	// Enable global interrupts for Timer execution

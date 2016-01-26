@@ -245,6 +245,41 @@ uint8_t spi_transfer2(uint8_t message)
 	return receive_char;					// Transmission was successful, return the character that was received.
 }
 
+
+uint8_t spi_transfer3(uint8_t message)
+{
+	uint8_t* reg_ptr;
+	uint8_t timeout = SPI_TIMEOUT;
+	reg_ptr = SPDR_BASE;
+	// Commence the SPI message.
+	*reg_ptr = message;
+	// Delay needed? - Check datasheet.
+	reg_ptr = SPSR_BASE;
+	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
+	{
+		if(!timeout--)
+			return 0x00;						// Something went wrong, so the function times out.
+	}
+	return *reg_ptr;
+}
+
+
+void spi_send_shunt_dpot_value(uint8_t message)
+{
+	// Set the NV register
+	PIN_clr(32);
+	spi_transfer3(0x10);
+	spi_transfer3(message);
+	PIN_set(32);
+	
+	// Set the wiper
+	PIN_clr(32);
+	spi_transfer3(0x00);
+	spi_transfer3(message);
+	PIN_set(32);
+	return;
+}
+
 void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 {
 	uint8_t* reg_ptr;
