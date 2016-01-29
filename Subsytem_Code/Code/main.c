@@ -259,7 +259,7 @@ static void sys_init(void)
 		coms_timer_init();
 	}
 
-	SS1_set_high();		// SPI Temp Sensor.
+	SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
 	
 	if(SELF_ID != 1)
 	{

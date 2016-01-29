@@ -122,7 +122,7 @@ void spi_initialize_master(void)
 	
 	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
-									// CPOL = CPHA = 0! 
+									// CPOL = CPHA = 0!
 	return;
 }
 
@@ -304,50 +304,85 @@ void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 	return;
 }
 
+/*******************************IN PROGRESS*************************************/
 
-//Pressure = D1*SENS - OFF; OFF = C2 + C4*dT; SENS = C1 + C3*dT
-//dT = D2 - C5
-//what are these?!
+//Just a tentative outline for a function we could implement once all other work
+void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size){
+	uint8_t *reg_ptr = SPDR_BASE;
+	*reg_ptr = 0;
+	int i = 0;
+	SS1_set_low(sensor_name);
+	delay_us(128);
+	for (i=0;i<out_size;i++){
+		out_array[i] = *reg_ptr;
+		delay_us(128);
+	}
+}
 
-void pressure_sensor_init(){
+
+
+//Humidity: HIH7000 Series
+
+void spi_retrieve_humidity(uint8_t *high, uint8_t *low){
 	
-	uint16_t C1, C2, C3, C4, C5, C6;
+	uint8_t *reg_ptr = SPDR_BASE;
+	*reg_ptr = 0;
+	uint8_t hi, lo;
 	
-	//first, reset the sensor
+	//SS1_set_low(PAY_HUM);
+	SS_set_low();
+	
+	delay_us(128);
+	high = *reg_ptr;
+	delay_us(128);
+	lo = *reg_ptr;
+	
+	SS_set_high();
+	
+}
+/**********************Pressure Sensor Driver*****************/
+
+//pressure sensor has 6 x 16-bit calibration values used to calculate
+//temperature compensated pressure
+void pressure_sensor_init(uint8_t *pressure_calibration){
+	//pressure_calibration[0]-[11] used for these values
+	//6x16-bit calibration values
 	uint8_t* reg_ptr;
 	reg_ptr = SPDR_BASE;
 	//SS1_set_low(PAY_PRESS); //use this
 	SS_set_low(); //use for testing
-	*reg_ptr = 0x1E //reset command for sensor
+	*reg_ptr = 0x1E; //reset command for sensor
 	delay_us(128); //us or ms??
+	int i = 0;
+	for (i=0;i<12;i++){
+		pressure_calibration[i] = *reg_ptr;
+		delay_us(128);}
 	SS_set_high();
-	
-	//get calibration data for conversion
-	*reg_ptr = 0xA0 //check datasheet: 0xA0 - 0xAE same?
-	uint8_t temp1, temp2;
-	SS_set_high();
-	delay_us(128);
-	temp1 = *reg_ptr
-	delay_us(128);
-	temp2 = *reg_ptr;
-	C1 = 
-	
-	
 	}
+//Pressure sensor returns two 24-bit values for temp and pressure
+//These are stored in array arr in this function. 
+//Still need to test the order of the variables etc.
 
-void spi_retrieve_pressure(uint8_t* high, uint8_t* low){
+void spi_retrieve_pressure(uint8_t* arr){
 	uint8_t* reg_ptr;
 	reg_ptr = SPDR_BASE;
-	//SS1_set_low(PAY_PRESS); //use this
+	int i = 0;
+	
+	//SS1_set_low(PAY_HUM); //use this
 	SS_set_low(); //use for testing
 	*reg_ptr = 0;
 	delay_us(128); //us or ms??
-	*high = *reg_ptr;
-	//THIS IS A 24 BIT MESSAGE - DEAL WITH IT
 	
 	
 	
+	for (i=0; i<6; i++){
+		arr[i] = *reg_ptr;
+		delay_us(128);
+	}
+	SS_set_high();	
 	};
+/************************************************************************/
+
 
 /************************************************************************/
 /*		SS_set_high                                                     */
@@ -391,7 +426,7 @@ void SS1_set_low(uint32_t sensor_id){
 			PORTC &= (0xEF);
 	
 }
-
+}
 
 void SS_set_low(void)
 {
