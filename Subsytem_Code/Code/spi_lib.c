@@ -118,9 +118,11 @@ void spi_initialize_master(void)
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
+									
+	
 	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
-	
+									// CPOL = CPHA = 0! 
 	return;
 }
 
@@ -256,16 +258,62 @@ void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 	
 	// Commence the SPI message.
 
-	SS1_set_low();
+	SS1_set_low(EPS_TEMP);
 	*reg_ptr = 0;	// We don't want to pass a message during the first SCK cycles.
 	delay_ms(128);
 	*high = *reg_ptr;
 	delay_ms(128);
 	*low = *reg_ptr;	
-	SS1_set_high();
+	SS1_set_high(EPS_TEMP);
 	
 	return;
 }
+
+
+//Pressure = D1*SENS - OFF; OFF = C2 + C4*dT; SENS = C1 + C3*dT
+//dT = D2 - C5
+//what are these?!
+
+void pressure_sensor_init(){
+	
+	uint16_t C1, C2, C3, C4, C5, C6;
+	
+	//first, reset the sensor
+	uint8_t* reg_ptr;
+	reg_ptr = SPDR_BASE;
+	//SS1_set_low(PAY_PRESS); //use this
+	SS_set_low(); //use for testing
+	*reg_ptr = 0x1E //reset command for sensor
+	delay_us(128); //us or ms??
+	SS_set_high();
+	
+	//get calibration data for conversion
+	*reg_ptr = 0xA0 //check datasheet: 0xA0 - 0xAE same?
+	uint8_t temp1, temp2;
+	SS_set_high();
+	delay_us(128);
+	temp1 = *reg_ptr
+	delay_us(128);
+	temp2 = *reg_ptr;
+	C1 = 
+	
+	
+	}
+
+void spi_retrieve_pressure(uint8_t* high, uint8_t* low){
+	uint8_t* reg_ptr;
+	reg_ptr = SPDR_BASE;
+	//SS1_set_low(PAY_PRESS); //use this
+	SS_set_low(); //use for testing
+	*reg_ptr = 0;
+	delay_us(128); //us or ms??
+	*high = *reg_ptr;
+	//THIS IS A 24 BIT MESSAGE - DEAL WITH IT
+	
+	
+	
+	};
+
 /************************************************************************/
 /*		SS_set_high                                                     */
 /*																		*/
@@ -281,10 +329,14 @@ void SS_set_high(void)
 	delay_us(1);
 }
 
-void SS1_set_high(void)
+
+
+void SS1_set_high(uint32_t sensor_id)
 {
-	PORTC |= (1 << 4);
-	//delay_us(1);
+	switch(sensor_id){
+		case EPS_TEMP:
+			PORTC |= (1 << 4);
+	}
 }
 
 /************************************************************************/
@@ -296,15 +348,27 @@ void SS1_set_high(void)
 /*																		*/
 /************************************************************************/
 
+void SS1_set_low(uint32_t sensor_id){
+	
+	switch(sensor_id){
+		
+		case EPS_TEMP:
+			PORTC &= (0xEF);
+	
+}
+
+
 void SS_set_low(void)
 {
 	PORTD &= (0xF7);
 	delay_us(1);
 }
-
+/*
 void SS1_set_low(void)
 {
 	PORTC &= (0xEF);
 	//delay_us(1);
 }
+*/
+
 

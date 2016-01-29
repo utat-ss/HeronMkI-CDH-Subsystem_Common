@@ -272,6 +272,7 @@ static void io_init(void)
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
 	DDRC = 0x11;		// PC4 == SS1 for SPI_TEMP
+						//Arbitrary: PC5 for SPI_PRESSURE
 	PORTC = 0x00;
 	
 	// Init PORTD[7:0]
