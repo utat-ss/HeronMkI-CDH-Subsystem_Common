@@ -238,6 +238,7 @@ typedef struct{
 #define COMS_FDIR_SIGNAL		0xEB
 #define EPS_FDIR_SIGNAL			0xEA
 #define PAY_FDIR_SIGNAL			0xE9
+#define BATT_HEAT				0xE8
 
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;
@@ -260,7 +261,7 @@ uint16_t pxv_high, pxv_low, pxi_high, pxi_low, pyv_high, pyv_low, pyi_high, pyi_
 uint16_t battmv_high, battmv_low, battv_high, battv_low, battin_high, battin_low;
 uint16_t battout_high, battout_low, epstemp_high, epstemp_low, comsv_high, comsv_low, comsi_high, comsi_low;
 uint16_t payv_high, payv_low, payi_high, payi_low, obcv_high, obcv_low, obci_high, obci_low;
-uint8_t mpptx, mppty, balance_h, balance_l;
+uint8_t mpptx, mppty, balance_h, balance_l, batt_heater_control;
 
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
 uint8_t CURRENT_MINUTE;
