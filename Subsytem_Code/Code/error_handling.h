@@ -60,6 +60,8 @@ Author: Keenan Burnett
 #define TC_CONSEC_TIMED_OUT				0x1D
 #define TM_OK_GO_TIMED_OUT				0x1E		// REPORT ONLY
 #define TM_CONSEC_TIMED_OUT				0x1F
+#define ADC_INVALID_PIN_ERROR           0x20
+#define ADC_CONVERSION_ERROR            0x21
 
 uint8_t errorASSERT(uint8_t error, uint8_t* data);
 uint8_t errorREPORT(uint8_t error, uint8_t* data);
