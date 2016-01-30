@@ -156,6 +156,8 @@
 
 #include "trans_lib.h"
 
+static void send_can_value(uint8_t* data);
+
 void transceiver_initialize(void)
 {	
 	/* SPI is already in MSB first, which is correct for the CC1120. */
@@ -184,13 +186,17 @@ void transceiver_initialize(void)
 void transceiver_run(void)
 {
 	uint8_t state, CHIP_RDYn, rxFirst, rxLast, i, j, txFirst, txLast;
+	uint8_t test_reg[4] = {0};
 	get_status(&CHIP_RDYn, &state);
 
+/* TX */
 	//if (millis() - lastCycle < TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
 	//{
 		//return;
 	//}
-	delay_ms(25);
+/***********/
+// RX
+	delay_ms(250);
     // We will be in this state if we are waiting for an ACK or we are currently receiving an ACK
 	if (tx_mode && (state == STATERX))
 	{
@@ -216,7 +222,7 @@ void transceiver_run(void)
 		/* Got some data, so there must be a packet waiting for us. */
 		else if (rxLast)
 		{
-			PIN_toggle(LED2);
+			//PIN_toggle(LED2);
 			uint8_t fifo[128] = {0};
 			j = 0;
 			rx_length = reg_read(STDFIFO);
@@ -261,7 +267,7 @@ void transceiver_run(void)
 		/* Got some data */
 		if (rxFirst <= rxLast && rxLast)
 		{
-			PIN_toggle(LED1);
+			//PIN_toggle(LED1);
 			//cmd_str(SIDLE);
 			//cmd_str(SFRX);
 			//cmd_str(SRX);
@@ -270,8 +276,16 @@ void transceiver_run(void)
             // accessed with standard FIFO access. In our case this will be the length
             if (rx_length == 0){
 	            rx_length = reg_read(STDFIFO);
-	            reg_write2F(RXFIRST, rxFirst);
+				test_reg[0] = rx_length;
+				test_reg[1] = reg_read(STDFIFO);
+				test_reg[2] = reg_read(STDFIFO);
+				test_reg[3] = reg_read(STDFIFO);
+				send_can_value(test_reg);
+				rx_length = 0;
+	            //reg_write2F(RXFIRST, rxFirst);
             }
+			//send_can_value(rx_length);
+			
 			uint8_t fifo[128] = {0};
 			j = 0;
 			for (i = rxFirst; i < rxLast; i++)
@@ -281,6 +295,7 @@ void transceiver_run(void)
 			/* We have a packet */
 			if(fifo[0] <= (rxLast - rxFirst - 1))
 			{
+				PIN_toggle(LED1);
 				clear_new_packet();
 				for(j = 1; j < fifo[0]; j++)
 				{
@@ -312,6 +327,20 @@ void transceiver_run(void)
 	return;
 }
 
+static void send_can_value(uint8_t* data)
+{
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = 0x00;
+	send_arr[4] = 0x00;
+	send_arr[3] = *(data + 3);
+	send_arr[2] = *(data + 2);
+	send_arr[1] = *(data + 1);
+	send_arr[0] = *data;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
 void reg_settings(void)
 {
 	//high performance settings
@@ -340,7 +369,7 @@ void reg_settings(void)
     reg_write(MDMCFG0, 0x05);				//
     reg_write(AGC_CFG1, 0xA9);				//
     reg_write(AGC_CFG0, 0xCF);				//
-    reg_write(FIFO_CFG, 0x00);				//
+    reg_write(FIFO_CFG, 0x7F);				//
     reg_write(SETTLING_CFG, 0x03);          //
     reg_write2F(IF_MIX_CFG, 0x00);          //
     /**************************************/

@@ -103,7 +103,7 @@
 //}
 
 
-// SPI Initialize (with tranceiver)
+// SPI Initialize (with transceiver)
 
 /************************************************************************/
 void spi_initialize_master(void)
@@ -118,8 +118,8 @@ void spi_initialize_master(void)
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
-	temp = 0b01010011;
-	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
+	temp = 0b01010000;
+	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/4
 	
 	return;
 }
@@ -258,9 +258,9 @@ void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 
 	SS1_set_low();
 	*reg_ptr = 0;	// We don't want to pass a message during the first SCK cycles.
-	delay_ms(128);
+	delay_us(128);
 	*high = *reg_ptr;
-	delay_ms(128);
+	delay_us(128);
 	*low = *reg_ptr;	
 	SS1_set_high();
 	
