@@ -231,6 +231,7 @@ int main(void)
 			{
 				run_mppt();
 				run_battBalance();
+				run_batt_heater();
 			}			
 		}
 				
@@ -282,10 +283,12 @@ static void sys_init(void)
 		mppty = 0x1F;
 		balance_l = 1;
 		balance_h = 1;
+		batt_heater_control = 0;
 		pxv = 0xBF;
 		pxi	= 0x0F;
 		pyv = 0x5F;
 		pyi = 0x2F;
+		spi_send_shunt_dpot_value(0x55);
 	}
 	
 	// Enable global interrupts for Timer execution
@@ -297,7 +300,7 @@ static void sys_init(void)
 		coms_timer_init();
 	}
 
-	SS1_set_high();		// SPI Temp Sensor.
+	SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
 	
 	if(SELF_ID != 1)
 	{
@@ -313,6 +316,7 @@ static void io_init(void)
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
 	DDRC = 0x11;		// PC4 == SS1 for SPI_TEMP
+						//Arbitrary: PC5 for SPI_PRESSURE
 	PORTC = 0x00;
 	
 	// Init PORTD[7:0]

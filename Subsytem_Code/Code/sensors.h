@@ -27,27 +27,24 @@
 */
 #include "global_var.h"
 
-/* Currently for reference
-SENSOR NAMES
-#define PANELX_V				0x01
-#define PANELX_I				0x02
-#define PANELY_V				0x03
-#define PANELY_I				0x04
-#define BATTM_V					0x05
-#define BATT_V					0x06
-#define BATTIN_I				0x07
-#define BATTOUT_I				0x08
-#define BATT_TEMP				0x09
-#define EPS_TEMP				0x0A
-#define COMS_V					0x0B
-#define COMS_I					0x0C
-#define PAY_V					0x0D
-#define PAY_I					0x0E
-#define OBC_V					0x0F
-#define OBC_I					0x10
-#define BATT_I					0x11
-#define COMS_TEMP				0x12
+/* Correspond to pin connections to ADG1606 (pinNumber - 1) */
+#define PANELX_I 0
+#define PANELX_V 1
+#define PANELY_I 2
+#define PANELY_V 3
+#define DPOT_SAMPLE_V 4
+#define COMS_V 5
+#define COMS_I 6
+#define BATTIN_I 8
+#define BATTOUT_I 9
+#define PAY_I 10
+#define PAY_V 11
+#define OBC_V 12
+#define OBC_I 13
+#define BATT_V 14
+#define BATTM_V 15
 
+/* Currently for reference
 VARIABLE NAMES
 #define MPPTX					0xFF
 #define MPPTY					0xFE

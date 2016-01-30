@@ -23,10 +23,12 @@
 	*
 	*	DEVELOPMENT HISTORY:
 	*	2/28/2015		Created.
+	*   1/30/2016       adc_read returns status code.
 	*
 */
 
 #include "config.h"
+#include "error_handling.h"
 
 /* ADC Multiplexer Register */
 #define ADMUX_BASE			0x7C
@@ -60,6 +62,6 @@
 #define	ADCL_BASE			0x78
 
 void adc_initialize(void);
-void adc_read(uint8_t* array_ptr);
+int  adc_read(uint8_t* array_ptr);
 void adc_set_pin(uint8_t ADC_num);
 

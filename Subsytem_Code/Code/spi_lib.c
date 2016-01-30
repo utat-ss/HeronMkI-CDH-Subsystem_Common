@@ -118,9 +118,17 @@ void spi_initialize_master(void)
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
+<<<<<<< HEAD
 	temp = 0b01010000;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/4
 	
+=======
+									
+	
+	temp = 0b01010011;
+	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
+									// CPOL = CPHA = 0!
+>>>>>>> 35623818943282015d8b2c9c1ede6ff042cdef79
 	return;
 }
 
@@ -245,6 +253,41 @@ uint8_t spi_transfer2(uint8_t message)
 	return receive_char;					// Transmission was successful, return the character that was received.
 }
 
+
+uint8_t spi_transfer3(uint8_t message)
+{
+	uint8_t* reg_ptr;
+	uint8_t timeout = SPI_TIMEOUT;
+	reg_ptr = SPDR_BASE;
+	// Commence the SPI message.
+	*reg_ptr = message;
+	// Delay needed? - Check datasheet.
+	reg_ptr = SPSR_BASE;
+	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
+	{
+		if(!timeout--)
+			return 0x00;						// Something went wrong, so the function times out.
+	}
+	return *reg_ptr;
+}
+
+
+void spi_send_shunt_dpot_value(uint8_t message)
+{
+	// Set the NV register
+	PIN_clr(32);
+	spi_transfer3(0x10);
+	spi_transfer3(message);
+	PIN_set(32);
+	
+	// Set the wiper
+	PIN_clr(32);
+	spi_transfer3(0x00);
+	spi_transfer3(message);
+	PIN_set(32);
+	return;
+}
+
 void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 {
 	uint8_t* reg_ptr;
@@ -256,16 +299,97 @@ void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 	
 	// Commence the SPI message.
 
-	SS1_set_low();
+	SS1_set_low(EPS_TEMP);
 	*reg_ptr = 0;	// We don't want to pass a message during the first SCK cycles.
 	delay_us(128);
 	*high = *reg_ptr;
 	delay_us(128);
 	*low = *reg_ptr;	
-	SS1_set_high();
+	SS1_set_high(EPS_TEMP);
 	
 	return;
 }
+
+/*******************************IN PROGRESS*************************************/
+
+//Just a tentative outline for a function we could implement once all other work
+void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size){
+	uint8_t *reg_ptr = SPDR_BASE;
+	*reg_ptr = 0;
+	int i = 0;
+	SS1_set_low(sensor_name);
+	delay_us(128);
+	for (i=0;i<out_size;i++){
+		out_array[i] = *reg_ptr;
+		delay_us(128);
+	}
+}
+
+
+
+//Humidity: HIH7000 Series
+
+void spi_retrieve_humidity(uint8_t *high, uint8_t *low){
+	
+	uint8_t *reg_ptr = SPDR_BASE;
+	*reg_ptr = 0;
+	uint8_t hi, lo;
+	
+	//SS1_set_low(PAY_HUM);
+	SS_set_low();
+	
+	delay_us(128);
+	high = *reg_ptr;
+	delay_us(128);
+	lo = *reg_ptr;
+	
+	SS_set_high();
+	
+}
+/**********************Pressure Sensor Driver*****************/
+
+//pressure sensor has 6 x 16-bit calibration values used to calculate
+//temperature compensated pressure
+void pressure_sensor_init(uint8_t *pressure_calibration){
+	//pressure_calibration[0]-[11] used for these values
+	//6x16-bit calibration values
+	uint8_t* reg_ptr;
+	reg_ptr = SPDR_BASE;
+	//SS1_set_low(PAY_PRESS); //use this
+	SS_set_low(); //use for testing
+	*reg_ptr = 0x1E; //reset command for sensor
+	delay_us(128); //us or ms??
+	int i = 0;
+	for (i=0;i<12;i++){
+		pressure_calibration[i] = *reg_ptr;
+		delay_us(128);}
+	SS_set_high();
+	}
+//Pressure sensor returns two 24-bit values for temp and pressure
+//These are stored in array arr in this function. 
+//Still need to test the order of the variables etc.
+
+void spi_retrieve_pressure(uint8_t* arr){
+	uint8_t* reg_ptr;
+	reg_ptr = SPDR_BASE;
+	int i = 0;
+	
+	//SS1_set_low(PAY_HUM); //use this
+	SS_set_low(); //use for testing
+	*reg_ptr = 0;
+	delay_us(128); //us or ms??
+	
+	
+	
+	for (i=0; i<6; i++){
+		arr[i] = *reg_ptr;
+		delay_us(128);
+	}
+	SS_set_high();	
+	};
+/************************************************************************/
+
+
 /************************************************************************/
 /*		SS_set_high                                                     */
 /*																		*/
@@ -281,10 +405,14 @@ void SS_set_high(void)
 	delay_us(1);
 }
 
-void SS1_set_high(void)
+
+
+void SS1_set_high(uint32_t sensor_id)
 {
-	PORTC |= (1 << 4);
-	//delay_us(1);
+	switch(sensor_id){
+		case EPS_TEMP:
+			PORTC |= (1 << 4);
+	}
 }
 
 /************************************************************************/
@@ -296,15 +424,27 @@ void SS1_set_high(void)
 /*																		*/
 /************************************************************************/
 
+void SS1_set_low(uint32_t sensor_id){
+	
+	switch(sensor_id){
+		
+		case EPS_TEMP:
+			PORTC &= (0xEF);
+	
+}
+}
+
 void SS_set_low(void)
 {
 	PORTD &= (0xF7);
 	delay_us(1);
 }
-
+/*
 void SS1_set_low(void)
 {
 	PORTC &= (0xEF);
 	//delay_us(1);
 }
+*/
+
 

@@ -553,6 +553,8 @@ void set_var(void)
 		case PAY_FDIR_SIGNAL:
 			if(SELF_ID == 2)
 				ssm_fdir_signal = incom_val;
+		case BATT_HEAT:
+				batt_heater_control = incom_val;
 		default:
 			set_varf = 0;
 			break;
