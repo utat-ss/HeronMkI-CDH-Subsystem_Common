@@ -277,10 +277,10 @@ void transceiver_run(void)
             if (rx_length == 0){
 	            rx_length = reg_read(STDFIFO);
 				test_reg[0] = rx_length;
-				test_reg[1] = reg_read(STDFIFO);
-				test_reg[2] = reg_read(STDFIFO);
-				test_reg[3] = reg_read(STDFIFO);
-				send_can_value(test_reg);
+				//test_reg[1] = reg_read(STDFIFO);
+				//test_reg[2] = reg_read(STDFIFO);
+				//test_reg[3] = reg_read(STDFIFO);
+				//send_can_value(test_reg);
 				rx_length = 0;
 	            //reg_write2F(RXFIRST, rxFirst);
             }

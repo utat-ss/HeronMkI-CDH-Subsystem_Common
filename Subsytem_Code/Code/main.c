@@ -167,16 +167,16 @@ int main(void)
 				if(*state == 0b110)
 				{
 					cmd_str(SIDLE);
-					//msg = reg_read2F(RXLAST);
+					msg = reg_read2F(RXLAST);
 					//send_can_value(msg);
 					//msg = reg_read(STDFIFO);
 					//msg = reg_read(STDFIFO);
 					//msg = reg_read(STDFIFO);
 					//send_can_value(msg);
-					msg = reg_read2F(MODEM_STATUS1);
+					//msg = reg_read2F(MODEM_STATUS1);
 					//send_can_value(msg);
 					//msg = reg_read2F(FIFO_NUM_RXBYTES);
-					//send_can_value(msg);				
+					send_can_value(msg);				
 					//msg &= 0x20;
 					//if(msg)
 						PIN_toggle(LED2);

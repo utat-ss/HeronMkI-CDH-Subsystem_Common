@@ -185,7 +185,7 @@ uint8_t spi_transfer(uint8_t message)
 	
 
 	
-		//SS_set_high();
+		SS_set_high();
 		
 		delay_cycles(11);
 
