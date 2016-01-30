@@ -118,17 +118,8 @@ void spi_initialize_master(void)
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
-<<<<<<< HEAD
 	temp = 0b01010000;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/4
-	
-=======
-									
-	
-	temp = 0b01010011;
-	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first.
-									// CPOL = CPHA = 0!
->>>>>>> 35623818943282015d8b2c9c1ede6ff042cdef79
 	return;
 }
 
