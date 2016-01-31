@@ -433,6 +433,8 @@ void SS_set_low(void)
 	PORTD &= (0xF7);
 	delay_us(1);
 }
+
+
 /*
 void SS1_set_low(void)
 {
