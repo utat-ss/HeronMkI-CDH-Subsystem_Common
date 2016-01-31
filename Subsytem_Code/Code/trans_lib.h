@@ -43,7 +43,7 @@
 
 #define STATUS_INTERVAL 1000
 #define ACK_TIMEOUT 2000
-#define TRANSCEIVER_CYCLE 350
+#define TRANSCEIVER_CYCLE 250
 #define DEVICE_ADDRESS 0xA5
 
 //define crystal oscillator frequency to 32MHz

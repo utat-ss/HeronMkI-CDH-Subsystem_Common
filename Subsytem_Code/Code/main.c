@@ -96,6 +96,7 @@
 static void io_init(void);
 static void sys_init(void);
 static void init_global_vars(void);
+static void send_can_value(uint8_t data);
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
@@ -141,39 +142,64 @@ int main(void)
 			{
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
+				
+/********************** RX  */
 				if(!receiving_tmf)
 					transceiver_run();		// Check for incoming packets.
-				//cmd_str(SIDLE);
-				//cmd_str(SFRX);
 				if(rx_mode)
 					cmd_str(SRX);
+				//delay_ms(250);
 				if(tx_mode)
 				{
 					tx_mode = 0;
 					rx_mode = 1;
 					cmd_str(SRX);
 				}
-				//delay_ms(100);
+				//delay_ms(1);
+				//cmd_str(SIDLE);
+				//delay_us(1);
+				//msg = reg_read2F(FIFO_NUM_RXBYTES);
+				//if(msg > 0)
+					//send_can_value(msg);
+				//cmd_str(SRX);
+				
 				get_status(CHIP_RDYn, state);
 				if(*state == 0b110)
 				{
 					cmd_str(SIDLE);
-					msg = reg_read2F(MODEM_STATUS1);
-					msg &= 0x20;
-					if(msg)
-					PIN_toggle(LED2);
+					msg = reg_read2F(RXLAST);
+					//send_can_value(msg);
+					//msg = reg_read(STDFIFO);
+					//msg = reg_read(STDFIFO);
+					//msg = reg_read(STDFIFO);
+					//send_can_value(msg);
+					//msg = reg_read2F(MODEM_STATUS1);
+					//send_can_value(msg);
+					//msg = reg_read2F(FIFO_NUM_RXBYTES);
+					send_can_value(msg);				
+					//msg &= 0x20;
+					//if(msg)
+						PIN_toggle(LED2);
 					cmd_str(SFRX);
+					//delay_ms(10);
 					cmd_str(SRX);
 					tx_mode = 0;
 					rx_mode = 1;
 				}
-
-				//if(tx_mode)
-				//{
-					//tx_mode = 0;
-					//rx_mode = 1;
+/************************  TX */
+				//if(!receiving_tmf)
+					//transceiver_run();		// Check for incoming packets.
+				//if(rx_mode)
 					//cmd_str(SRX);
-				//}
+				//if(tx_mode)
+					//cmd_str(STX);
+//
+				////if(tx_mode)
+				////{
+					////tx_mode = 0;
+					////rx_mode = 1;
+					////cmd_str(SRX);
+				////}
 				//if(count == 1000)
 				//{
 					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 64);	// Periodically transmit a packet.
@@ -181,6 +207,7 @@ int main(void)
 				//}
 				//delay_ms(1);
 				//count++;
+/*****************************************/
 				//cmd_str(SRX);
 				//get_status(CHIP_RDYn, state);
 				//if(*state == 0b001)
@@ -211,6 +238,20 @@ int main(void)
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		//run_commands();
 	}
+}
+
+static void send_can_value(uint8_t data)
+{
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = 0x00;
+	send_arr[4] = 0x00;
+	send_arr[3] = 0x00;
+	send_arr[2] = 0x00;
+	send_arr[1] = 0x00;
+	send_arr[0] = data;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
 }
 
 static void sys_init(void) 
