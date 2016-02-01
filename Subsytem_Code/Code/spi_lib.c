@@ -118,7 +118,7 @@ void spi_initialize_master(void)
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
-	temp = 0b01010000;
+	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/4
 	return;
 }
@@ -164,7 +164,7 @@ uint8_t spi_transfer(uint8_t message)
 	reg_ptr = SPDR_BASE;
 	
 	// Commence the SPI message.
-	SS_set_low();
+	//SS_set_low();
 	*reg_ptr = message;
 		
 	reg_ptr = SPSR_BASE;
@@ -185,9 +185,9 @@ uint8_t spi_transfer(uint8_t message)
 	
 
 	
-		SS_set_high();
+	//SS_set_high();
 		
-		delay_cycles(11);
+	delay_cycles(11);
 
 	reg_ptr = SPDR_BASE;
 	receive_char = *reg_ptr;
@@ -392,7 +392,7 @@ void spi_retrieve_pressure(uint8_t* arr){
 
 void SS_set_high(void) 
 {
-	PORTD |= (1 << 3);
+	//PORTD |= (1 << 3);
 	delay_us(1);
 }
 
@@ -427,7 +427,7 @@ void SS1_set_low(uint32_t sensor_id){
 
 void SS_set_low(void)
 {
-	PORTD &= (0xF7);
+	//PORTD &= (0xF7);
 	delay_us(1);
 }
 /*

@@ -177,7 +177,7 @@ void transceiver_initialize(void)
 	rx_mode = 1;
 	tx_mode = 0;
 	rx_length = 0;
-	prepareAck();
+	//prepareAck();
 	/* Put In RX Mode */
 	cmd_str(SRX);
 	return;	
@@ -362,6 +362,7 @@ void reg_settings(void)
     /************************************/
     //For test purposes only, (2nd block, deleted first one) use values from SmartRF for some bits
     //High performance RX
+	cmd_str(SNOP);
     reg_write(SYNC_CFG1, 0x0B);				//
     reg_write(DCFILT_CFG, 0x1C);            //
     reg_write(IQIC, 0x00);					//
@@ -369,7 +370,7 @@ void reg_settings(void)
     reg_write(MDMCFG0, 0x05);				//
     reg_write(AGC_CFG1, 0xA9);				//
     reg_write(AGC_CFG0, 0xCF);				//
-    reg_write(FIFO_CFG, 0x7F);				//
+    reg_write(FIFO_CFG, 0x00);				//
     reg_write(SETTLING_CFG, 0x03);          //
     reg_write2F(IF_MIX_CFG, 0x00);          //
     /**************************************/
@@ -380,8 +381,10 @@ void reg_settings(void)
 	reg_write(FS_CFG, 0b00000100);			//FS_CFG: B00010100      set up LO divider to 8 (410.0 - 480.0 MHz band), out of lock detector disabled
 	
 	//set preamble
-	reg_write(PREAMBLE_CFG1, 0b00001101);         //PREAMBLE_CFG1: 0x00    No preamble
-	reg_write_bit(PREAMBLE_CFG0, 5, 1);     //PQT_EN: 0x00           Preamble detection disabled
+	//reg_write(PREAMBLE_CFG1, 0b00001101);         //PREAMBLE_CFG1: 0x00    No preamble
+	//reg_write_bit(PREAMBLE_CFG0, 5, 1);     //PQT_EN: 0x00           Preamble detection disabled
+	reg_write(PREAMBLE_CFG1, 0x00);
+	reg_write_bit(PREAMBLE_CFG0, 5, 0);
 	
 	//TOC_LIMIT
 	reg_write_bit2F(TOC_CFG, 7, 0);			//TOC_LIMIT: 0x00      Using the low tolerance setting (TOC_LIMIT = 0) greatly reduces system settling times and system power consumption as no preamble bits are needed for bit synchronization or frequency offset compensation (4 bits preamble needed for AGC settling).
@@ -400,9 +403,9 @@ void reg_settings(void)
 	reg_write_bit(MDMCFG1, 6, 1);			//FIFO_EN: 0             FIFO enable set to true
 	reg_write_bit(MDMCFG0, 6, 0);			//TRANSPARENT_MODE_EN: 0 Disable transparent mode
 	reg_write(PKT_CFG2, 0b00000000);		//PKT_CFG2: 0x00         set FIFO mode
-	reg_write(PKT_CFG1, 0b00110000);		//PKT_CFG1: 0x30         set address check and 0xFF broadcast
+	reg_write(PKT_CFG1, 0b00000000);		//PKT_CFG1: 0x30         set address check and 0xFF broadcast
 	reg_write(PKT_CFG0, 0b00100000);		//PKT_CFG0: 0x30         set variable packet length
-	reg_write(PKT_LEN, 0x7F);				//PKT_LEN: 0xFF          set packet max packet length to 0x7F
+	reg_write(PKT_LEN, 0xFF);				//PKT_LEN: 0xFF          set packet max packet length to 0x7F
 	reg_write(DEV_ADDR, DEVICE_ADDRESS);	//DEV_ADDR register is set to DEVICE_ADDRESS
 	reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet, RX timeout disabled.
 	//reg_write(0x29, 0b00111110);			//RFEND_CFG1: 0x3E       go to RX after a good packet
@@ -430,7 +433,7 @@ uint8_t reg_read(uint8_t addr)
 
 	SS_set_low();
 	msg = spi_transfer(addr_new);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
 	//delay_ms(1);
@@ -444,10 +447,10 @@ void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 	
 	SS_set_low();
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(1);
 
 	return;
 }
@@ -459,12 +462,12 @@ uint8_t reg_read2F(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(1);
 	return msg;
 }
 
@@ -482,12 +485,12 @@ void reg_write2F(uint8_t addr, uint8_t data)		// Doesn't need to return anything
 	
 	SS_set_low();
 	spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(3);
+	delay_ms(1);
 
 	return;
 }
@@ -517,11 +520,11 @@ void get_status(uint8_t *CHIP_RDYn, uint8_t *state)
 uint8_t cmd_str(uint8_t addr)
 {
 	uint8_t msg;
-	SS_set_low();
+	//SS_set_low();
 	msg = spi_transfer(addr);
 	
-	//delay_us(1);
-	SS_set_high();
+	delay_us(1);
+	//SS_set_high();
 	return msg;
 }
 
@@ -540,12 +543,12 @@ uint8_t dir_FIFO_read(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
+	delay_ms(1);
 	return msg;
 }
 
@@ -557,12 +560,12 @@ void dir_FIFO_write(uint8_t addr, uint8_t data)
 	
 	SS_set_low();
 	spi_transfer(msg);
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
+	delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(3);
+	delay_ms(1);
 	
 	return;
 }
@@ -630,11 +633,6 @@ void trans_check(void)
 		
 		cmd_str(SNOP);
 		trans_msg[0] = dir_FIFO_read(0x80);
-		trans_msg[1] = dir_FIFO_read(0x81);
-		trans_msg[2] = dir_FIFO_read(0x82);
-		trans_msg[3] = dir_FIFO_read(0x83);
-		trans_msg[4] = dir_FIFO_read(0x84);
-		trans_msg[5] = dir_FIFO_read(0x85);
 		
 		//if(msg == 0x0A)
 		//{
