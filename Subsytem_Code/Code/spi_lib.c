@@ -185,7 +185,7 @@ uint8_t spi_transfer(uint8_t message)
 	
 
 	
-		//SS_set_high();
+		SS_set_high();
 		
 		delay_cycles(11);
 
@@ -430,6 +430,8 @@ void SS_set_low(void)
 	PORTD &= (0xF7);
 	delay_us(1);
 }
+
+
 /*
 void SS1_set_low(void)
 {
