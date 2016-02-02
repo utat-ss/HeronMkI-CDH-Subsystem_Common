@@ -304,6 +304,7 @@ void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 /*******************************IN PROGRESS*************************************/
 
 //Just a tentative outline for a function we could implement once all other work
+//This doesn't work for acceleration
 void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size){
 	uint8_t *reg_ptr = SPDR_BASE;
 	*reg_ptr = 0;
@@ -316,7 +317,29 @@ void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size)
 	}
 }
 
-
+//Acceleration: ADXL362 
+//axis: 1=x; 2=y; 3=z
+spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis){
+	
+	uint8_t *reg_ptr = SPDR_BASE;
+	
+	uint8_t acc_reg_H, acc_reg_L;
+	if (axis == 1){acc_reg_H = 0x0F; acc_reg_L = 0x0E;}
+	if (axis == 2){acc_reg_H = 0x11; acc_reg_L = 0x10;}
+	if (axis == 1){acc_reg_H = 0x13; acc_reg_L = 0x12;}
+	*reg_ptr = 0x0B;
+	SS_set_low();
+	delay_us(128);
+	*reg_ptr = acc_reg_H;
+	delay_us(128);
+	*high = *reg_ptr;
+	*reg_ptr = acc_reg_L;
+	delay_us(128);
+	*low = *reg_ptr;
+	//check datasheet: is this how burst read works?
+	
+	SS_set_high();
+}
 
 //Humidity: HIH7000 Series
 
