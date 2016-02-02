@@ -148,7 +148,7 @@ int main(void)
 				//	transceiver_run();		// Check for incoming packets.
 				if(rx_mode)
 					cmd_str(SRX);
-				//delay_ms(250);
+				delay_ms(250);
 				if(tx_mode)
 				{
 					tx_mode = 0;
@@ -161,8 +161,18 @@ int main(void)
 				msg = reg_read2F(NUM_RXBYTES);
 				if(msg > 0)
 				{
-					send_can_value(msg);
+					//send_can_value(msg);
 					PIN_toggle(LED1);
+					delay_ms(100);
+					PIN_toggle(LED1);
+					delay_ms(100);
+					cmd_str(SIDLE);
+					cmd_str(SFRX);
+					delay_ms(10);
+					cmd_str(SRX);
+					//msg = reg_read(STDFIFO);
+					//msg = dir_FIFO_read(0x85);
+					send_can_value(msg);
 				}
 				//cmd_str(SRX);
 				
@@ -172,19 +182,18 @@ int main(void)
 					cmd_str(SIDLE);
 					//msg = reg_read2F(RXLAST);
 					//send_can_value(msg);
-					//msg = reg_read(STDFIFO);
+
 					//msg = reg_read(STDFIFO);
 					//msg = reg_read(STDFIFO);
 					//send_can_value(msg);
 					//msg = reg_read2F(MODEM_STATUS1);
 					//send_can_value(msg);
-					//msg = reg_read2F(FIFO_NUM_RXBYTES);
-					//send_can_value(msg);				
+					//msg = reg_read2F(FIFO_NUM_RXBYTES);			
 					//msg &= 0x20;
 					//if(msg)
-						PIN_toggle(LED2);
+					PIN_toggle(LED2);
 					cmd_str(SFRX);
-					//delay_ms(10);
+					//delay_ms(1);
 					cmd_str(SRX);
 					tx_mode = 0;
 					rx_mode = 1;

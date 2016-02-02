@@ -370,7 +370,7 @@ void reg_settings(void)
     reg_write(MDMCFG0, 0x05);				//
     reg_write(AGC_CFG1, 0xA9);				//
     reg_write(AGC_CFG0, 0xCF);				//
-    reg_write(FIFO_CFG, 0x00);				//
+    reg_write(FIFO_CFG, 0xFF);				//
     reg_write(SETTLING_CFG, 0x03);          //
     reg_write2F(IF_MIX_CFG, 0x00);          //
     /**************************************/
@@ -433,7 +433,7 @@ uint8_t reg_read(uint8_t addr)
 
 	SS_set_low();
 	msg = spi_transfer(addr_new);		// Send the desired address
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
 	//delay_ms(1);
@@ -447,10 +447,10 @@ void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 	
 	SS_set_low();
 	msg = spi_transfer(addr);		// Send the desired address
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	delay_ms(1);
+	//delay_ms(1);
 
 	return;
 }
@@ -462,12 +462,12 @@ uint8_t reg_read2F(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	delay_ms(1);
+	//delay_ms(1);
 	return msg;
 }
 
@@ -485,12 +485,12 @@ void reg_write2F(uint8_t addr, uint8_t data)		// Doesn't need to return anything
 	
 	SS_set_low();
 	spi_transfer(msg);
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	delay_ms(1);
+	//delay_ms(1);
 
 	return;
 }
@@ -543,12 +543,12 @@ uint8_t dir_FIFO_read(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	delay_ms(1);
+	//delay_ms(1);
 	return msg;
 }
 
@@ -560,12 +560,12 @@ void dir_FIFO_write(uint8_t addr, uint8_t data)
 	
 	SS_set_low();
 	spi_transfer(msg);
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	delay_us(1);
+	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	delay_ms(1);
+	//delay_ms(1);
 	
 	return;
 }
