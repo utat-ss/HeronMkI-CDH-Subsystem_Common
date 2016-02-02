@@ -57,4 +57,4 @@ void clr_gpiob_pin(uint8_t id);
 
 uint8_t read_gpioa_pin(uint8_t id);
 
-void read_gpiob_pin(uint8_t id, uint8_t* data);
+uint8_t read_gpiob_pin(uint8_t id, uint8_t* data);
