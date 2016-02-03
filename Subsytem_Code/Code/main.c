@@ -427,6 +427,8 @@ static void init_global_vars(void)
 	exit_take_overf = 0;
 	pause_operationsf = 0;
 	resume_operationsf = 0;
+	open_valvesf = 0; 
+	collect_pdf = 0;
 	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;
