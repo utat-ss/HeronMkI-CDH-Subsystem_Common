@@ -206,6 +206,12 @@
     <Compile Include="port.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="port_expander.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="port_expander.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="spi_lib.c">
       <SubType>compile</SubType>
     </Compile>
