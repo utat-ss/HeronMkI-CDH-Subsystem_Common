@@ -378,20 +378,23 @@ void reg_settings(void)
 	//modulation and freq deviation settings
 	reg_write(DEVIATION_M, 0b01001000);     //DEVIATION_M: 0x48      set DEV_M to 72 which sets freq deviation to 20.019531kHz (with DEV_M=5)
 	reg_write(MODCFG_DEV_E, 0b00000101);    //MODCFG_DEV_E: 0x05     set up modulation mode and DEV_E to 5 (see DEV_M register)
-	reg_write(FS_CFG, 0b00000100);			//FS_CFG: B00010100      set up LO divider to 8 (410.0 - 480.0 MHz band), out of lock detector disabled
+	reg_write(FS_CFG, 0b00010100);			//FS_CFG: B00010100      set up LO divider to 8 (410.0 - 480.0 MHz band), out of lock detector disabled
 	
 	//set preamble
 	//reg_write(PREAMBLE_CFG1, 0b00001101);         //PREAMBLE_CFG1: 0x00    No preamble
 	//reg_write_bit(PREAMBLE_CFG0, 5, 1);     //PQT_EN: 0x00           Preamble detection disabled
-	reg_write(PREAMBLE_CFG1, 0x00);
-	reg_write_bit(PREAMBLE_CFG0, 5, 0);
+	reg_write(PREAMBLE_CFG1, 0x14);
+	reg_write(PREAMBLE_CFG0, 0x2A);
+	reg_write(SYMBOL_RATE2, 0x73);
+	//reg_write(SYMBOL_RATE1, 0x05);
+	//reg_write(SYMBOL_RATE0, 0xBC);
 	
 	//TOC_LIMIT
 	reg_write_bit2F(TOC_CFG, 7, 0);			//TOC_LIMIT: 0x00      Using the low tolerance setting (TOC_LIMIT = 0) greatly reduces system settling times and system power consumption as no preamble bits are needed for bit synchronization or frequency offset compensation (4 bits preamble needed for AGC settling).
 	reg_write_bit2F(TOC_CFG, 6, 0);			//TOC_LIMIT: 0x00      Using the low tolerance setting (TOC_LIMIT = 0) greatly reduces system settling times and system power consumption as no preamble bits are needed for bit synchronization or frequency offset compensation (4 bits preamble needed for AGC settling).
 	
 	//set SYNC word
-	reg_write_bit(SYNC_CFG1, 6, 0);			//PQT_GATING_EN: 0       PQT gating disabled (preamble not required)
+	reg_write_bit(SYNC_CFG1, 6, 1);			//PQT_GATING_EN: 0       PQT gating disabled (preamble not required)
 	reg_write(SYNC_CFG0, 0x17);				//SYNC_CFG0: B00010111   32 bit SYNC word. Bit error qualifier disabled. No check on bit errors
 	reg_write(SYNC3, 0x93);					//SYNC3: 0x93            Set SYNC word bits 31:24
 	reg_write(SYNC2, 0x0B);					//SYNC2: 0x0B            Set SYNC word bits 23:16
@@ -403,11 +406,11 @@ void reg_settings(void)
 	reg_write_bit(MDMCFG1, 6, 1);			//FIFO_EN: 0             FIFO enable set to true
 	reg_write_bit(MDMCFG0, 6, 0);			//TRANSPARENT_MODE_EN: 0 Disable transparent mode
 	reg_write(PKT_CFG2, 0b00000000);		//PKT_CFG2: 0x00         set FIFO mode
-	reg_write(PKT_CFG1, 0b00000000);		//PKT_CFG1: 0x30         set address check and 0xFF broadcast
+	reg_write(PKT_CFG1, 0b00110000);		//PKT_CFG1: 0x30         set address check and 0xFF broadcast
 	reg_write(PKT_CFG0, 0b00100000);		//PKT_CFG0: 0x30         set variable packet length
 	reg_write(PKT_LEN, 0xFF);				//PKT_LEN: 0xFF          set packet max packet length to 0x7F
 	reg_write(DEV_ADDR, DEVICE_ADDRESS);	//DEV_ADDR register is set to DEVICE_ADDRESS
-	reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet, RX timeout disabled.
+	//reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet, RX timeout disabled.
 	//reg_write(0x29, 0b00111110);			//RFEND_CFG1: 0x3E       go to RX after a good packet
 	reg_write(RFEND_CFG0, 0b00110000);      //RFEND_CFG0: 0x30       go to RX after transmitting a packet
 	//reg_write(0x2A, 0b00100000);			//RFEND_CFG0: 0x20       go to TX after transmitting a packet

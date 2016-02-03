@@ -167,18 +167,19 @@ int main(void)
 					delay_ms(100);
 					PIN_toggle(LED1);
 					delay_ms(100);
-					if(msg > 4)
+					if(msg > 64)
 					{
-						test_reg[0] = dir_FIFO_read(0x81);
-						test_reg[1] = dir_FIFO_read(0x82);
-						test_reg[2] = dir_FIFO_read(0x83);
-						test_reg[3] = dir_FIFO_read(0x84);
-						test_reg[4] = dir_FIFO_read(0x85);
+						test_reg[0] = reg_read(STDFIFO);
+						test_reg[1] = dir_FIFO_read(0x81);
+						test_reg[2] = dir_FIFO_read(0x82);
+						test_reg[3] = dir_FIFO_read(0x83);
+						test_reg[4] = dir_FIFO_read(0xBE);
+						test_reg[5] = dir_FIFO_read(0xBF);
 						send_can_value(test_reg);					
 					}
 					cmd_str(SIDLE);
 					cmd_str(SFRX);
-					delay_ms(10);
+					//delay_ms(10);
 					cmd_str(SRX);
 					//msg = reg_read(STDFIFO);
 					//msg = dir_FIFO_read(0x85);
