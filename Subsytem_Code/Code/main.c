@@ -96,7 +96,7 @@
 static void io_init(void);
 static void sys_init(void);
 static void init_global_vars(void);
-static void send_can_value(uint8_t data);
+static void send_can_value(uint8_t* data);
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
@@ -125,6 +125,7 @@ int main(void)
 		t_message[i] = i;
 	}
 	uint8_t *CHIP_RDYn, *state;
+	uint8_t test_reg[6] = {0};
 	//transceiver_send(&t_message[0], 0x00, 64);
     while(1)
     {	
@@ -166,13 +167,22 @@ int main(void)
 					delay_ms(100);
 					PIN_toggle(LED1);
 					delay_ms(100);
+					if(msg > 4)
+					{
+						test_reg[0] = dir_FIFO_read(0x81);
+						test_reg[1] = dir_FIFO_read(0x82);
+						test_reg[2] = dir_FIFO_read(0x83);
+						test_reg[3] = dir_FIFO_read(0x84);
+						test_reg[4] = dir_FIFO_read(0x85);
+						send_can_value(test_reg);					
+					}
 					cmd_str(SIDLE);
 					cmd_str(SFRX);
 					delay_ms(10);
 					cmd_str(SRX);
 					//msg = reg_read(STDFIFO);
 					//msg = dir_FIFO_read(0x85);
-					send_can_value(msg);
+					//send_can_value(&msg);
 				}
 				//cmd_str(SRX);
 				
@@ -252,16 +262,16 @@ int main(void)
 	}
 }
 
-static void send_can_value(uint8_t data)
+static void send_can_value(uint8_t* data)
 {
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
 	send_arr[6] = MT_COM;
-	send_arr[5] = 0x00;
-	send_arr[4] = 0x00;
-	send_arr[3] = 0x00;
-	send_arr[2] = 0x00;
-	send_arr[1] = 0x00;
-	send_arr[0] = data;
+	send_arr[5] = *(data + 5);
+	send_arr[4] = *(data + 4);
+	send_arr[3] = *(data + 3);
+	send_arr[2] = *(data + 2);
+	send_arr[1] = *(data + 1);
+	send_arr[0] = *data;
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;
 }
