@@ -120,7 +120,7 @@ int main(void)
 	sys_init();
 	
 	/*		Begin Main Program Loop					*/
-	for(i = 0; i < 64; i ++)
+	for(i = 0; i < 76; i ++)
 	{
 		t_message[i] = i;
 	}
@@ -161,14 +161,14 @@ int main(void)
 					delay_ms(100);
 					PIN_toggle(LED1);
 					delay_ms(100);
-					if(msg > 64)
+					if(msg > 76)
 					{
 						test_reg[0] = reg_read(STDFIFO);
 						test_reg[1] = dir_FIFO_read(0x81);
 						test_reg[2] = dir_FIFO_read(0x82);
 						test_reg[3] = dir_FIFO_read(0x83);
-						test_reg[4] = dir_FIFO_read(0xBE);
-						test_reg[5] = dir_FIFO_read(0xBF);
+						test_reg[4] = dir_FIFO_read(0x80 + 0x4B);
+						test_reg[5] = dir_FIFO_read(0x80 + 0x4C);
 						send_can_value(test_reg);					
 					}
 					cmd_str(SIDLE);
@@ -204,7 +204,7 @@ int main(void)
 				////}
 				//if(count == 1000)
 				//{
-					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 64);	// Periodically transmit a packet.
+					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);	// Periodically transmit a packet.
 					//count = 0;
 				//}
 				//delay_ms(1);
