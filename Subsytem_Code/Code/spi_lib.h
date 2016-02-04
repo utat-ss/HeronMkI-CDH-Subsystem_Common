@@ -50,6 +50,7 @@ void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);
 uint8_t spi_transfer2(uint8_t message);
 uint8_t spi_transfer3(uint8_t message);
+uint8_t spi_transfer4(uint8_t message);
 void spi_send_shunt_dpot_value(uint8_t message);
 void spi_retrieve_temp(uint8_t* high, uint8_t* low);
 void SS_set_high(void);

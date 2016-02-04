@@ -167,6 +167,9 @@ typedef struct{
 #define COMS_TAKEOVER_EXITED	0x24
 #define OPERATIONS_PAUSED		0x25
 #define OPERATIONS_RESUMED		0x26
+#define OPEN_VALVES				0x27
+#define COLLECT_PD				0x28
+#define PD_COLLECTED			0x29
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -243,7 +246,7 @@ typedef struct{
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;
 uint8_t enter_low_powerf, exit_low_powerf, enter_take_overf, exit_take_overf, pause_operationsf, resume_operationsf;
-uint8_t read_response, write_response;
+uint8_t read_response, write_response, open_valvesf, collect_pdf;
 uint8_t receive_arr[8], send_arr[8], read_arr[8], write_arr[8], data_req_arr[8];
 uint8_t sensh_arr[8], sensl_arr[8], setv_arr[8], pause_msg[8], resume_msg[8];
 uint8_t id_array[6];	// Necessary due to the different mailbox IDs for COMS, EPS, PAYL.
@@ -304,6 +307,7 @@ uint8_t rx_length;
 int  count32ms;
 uint8_t new_packet[152];
 uint8_t packet_receivedf;
+uint8_t current_transceiver;
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;

@@ -98,6 +98,10 @@ void run_commands(void)
 		pause_operations();
 	if (resume_operationsf)
 		resume_operations();
+	if (open_valvesf)
+		open_valves();
+	if (collect_pdf)
+		collect_pd();
 
 	return;	
 }
@@ -833,4 +837,25 @@ void resume_operations(void)
 	send_arr[4] = CURRENT_MINUTE;
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;	
+}
+
+void open_valves(void)
+{
+	open_valvesf = 0;
+	// Open valves here.
+	return;
+}
+
+void collect_pd(void)
+{
+	collect_pdf = 0;
+	
+	// Implement the collection of photodiode data here.
+	
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = PD_COLLECTED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
 }

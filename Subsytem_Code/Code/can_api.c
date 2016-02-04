@@ -297,7 +297,11 @@ void decode_command(uint8_t* command_array)
 			for (i = 0; i < 8; i ++)
 			{
 				resume_msg[i] = *(command_array + i);
-			}				
+			}
+		case OPEN_VALVES:
+			open_valvesf = 1;
+		case COLLECT_PD:
+			collect_pdf = 1;
 		default:
 			return;
 	}

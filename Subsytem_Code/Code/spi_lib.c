@@ -262,6 +262,22 @@ uint8_t spi_transfer3(uint8_t message)
 	return *reg_ptr;
 }
 
+uint8_t spi_transfer4(uint8_t message)
+{
+	uint8_t* reg_ptr;
+	uint8_t timeout = SPI_TIMEOUT;
+	reg_ptr = SPDR_BASE;
+	// Commence the SPI message.
+	*reg_ptr = message;
+	reg_ptr = SPSR_BASE;
+	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
+	{
+		if(!timeout--)
+		return 0x00;						// Something went wrong, so the function times out.
+	}
+	return *reg_ptr;
+}
+
 
 void spi_send_shunt_dpot_value(uint8_t message)
 {
@@ -305,13 +321,15 @@ void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 
 //Just a tentative outline for a function we could implement once all other work
 //This doesn't work for acceleration
-void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size){
+void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size)
+{
 	uint8_t *reg_ptr = SPDR_BASE;
 	*reg_ptr = 0;
 	int i = 0;
 	SS1_set_low(sensor_name);
 	delay_us(128);
-	for (i=0;i<out_size;i++){
+	for (i = 0; i < out_size; i++)
+	{
 		out_array[i] = *reg_ptr;
 		delay_us(128);
 	}
@@ -319,14 +337,25 @@ void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size)
 
 //Acceleration: ADXL362 
 //axis: 1=x; 2=y; 3=z
-spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis){
-	
-	uint8_t *reg_ptr = SPDR_BASE;
-	
+spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
+{	
+	uint8_t *reg_ptr = SPDR_BASE;	
 	uint8_t acc_reg_H, acc_reg_L;
-	if (axis == 1){acc_reg_H = 0x0F; acc_reg_L = 0x0E;}
-	if (axis == 2){acc_reg_H = 0x11; acc_reg_L = 0x10;}
-	if (axis == 1){acc_reg_H = 0x13; acc_reg_L = 0x12;}
+	if (axis == 1)
+	{
+		acc_reg_H = 0x0F;
+		acc_reg_L = 0x0E;
+	}
+	if (axis == 2)
+	{
+		acc_reg_H = 0x11; 
+		acc_reg_L = 0x10;
+	}
+	if (axis == 1)
+	{
+		acc_reg_H = 0x13; 
+		acc_reg_L = 0x12;
+	}
 	*reg_ptr = 0x0B;
 	SS_set_low();
 	delay_us(128);
@@ -364,7 +393,8 @@ void spi_retrieve_humidity(uint8_t *high, uint8_t *low){
 
 //pressure sensor has 6 x 16-bit calibration values used to calculate
 //temperature compensated pressure
-void pressure_sensor_init(uint8_t *pressure_calibration){
+void pressure_sensor_init(uint8_t *pressure_calibration)
+{
 	//pressure_calibration[0]-[11] used for these values
 	//6x16-bit calibration values
 	uint8_t* reg_ptr;
@@ -374,11 +404,13 @@ void pressure_sensor_init(uint8_t *pressure_calibration){
 	*reg_ptr = 0x1E; //reset command for sensor
 	delay_us(128); //us or ms??
 	int i = 0;
-	for (i=0;i<12;i++){
+	for (i = 0; i < 12; i++)
+	{
 		pressure_calibration[i] = *reg_ptr;
-		delay_us(128);}
-	SS_set_high();
+		delay_us(128);
 	}
+	SS_set_high();
+}
 //Pressure sensor returns two 24-bit values for temp and pressure
 //These are stored in array arr in this function. 
 //Still need to test the order of the variables etc.
@@ -393,14 +425,13 @@ void spi_retrieve_pressure(uint8_t* arr){
 	*reg_ptr = 0;
 	delay_us(128); //us or ms??
 	
-	
-	
-	for (i=0; i<6; i++){
+	for (i = 0; i < 6; i++)
+	{
 		arr[i] = *reg_ptr;
 		delay_us(128);
 	}
 	SS_set_high();	
-	};
+}
 /************************************************************************/
 
 
@@ -462,5 +493,19 @@ void SS1_set_low(void)
 	//delay_us(1);
 }
 */
+
+//set certain ss pin to low
+void set_coms_SS_low(uint8_t PIN)
+{
+	PIN_clr(PIN);
+	delay_us(1);
+}
+
+//set certain ss pin to high
+void set_coms_SS_high(uint8_t PIN)
+{
+	PIN_set(PIN);
+	delay_us(1);
+}
 
 
