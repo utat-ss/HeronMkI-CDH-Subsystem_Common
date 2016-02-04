@@ -145,8 +145,6 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				
 /********************** RX  */
-				//if(!receiving_tmf)
-				//	transceiver_run();		// Check for incoming packets.
 				if(rx_mode)
 					cmd_str(SRX);
 				delay_ms(250);
@@ -156,13 +154,9 @@ int main(void)
 					rx_mode = 1;
 					cmd_str(SRX);
 				}
-				//delay_ms(1);
-				//cmd_str(SIDLE);
-				//delay_us(1);
 				msg = reg_read2F(NUM_RXBYTES);
 				if(msg > 0)
 				{
-					//send_can_value(msg);
 					PIN_toggle(LED1);
 					delay_ms(100);
 					PIN_toggle(LED1);
@@ -181,27 +175,12 @@ int main(void)
 					cmd_str(SFRX);
 					//delay_ms(10);
 					cmd_str(SRX);
-					//msg = reg_read(STDFIFO);
-					//msg = dir_FIFO_read(0x85);
-					//send_can_value(&msg);
 				}
-				//cmd_str(SRX);
 				
 				get_status(CHIP_RDYn, state);
 				if(*state == 0b110)
 				{
 					cmd_str(SIDLE);
-					//msg = reg_read2F(RXLAST);
-					//send_can_value(msg);
-
-					//msg = reg_read(STDFIFO);
-					//msg = reg_read(STDFIFO);
-					//send_can_value(msg);
-					//msg = reg_read2F(MODEM_STATUS1);
-					//send_can_value(msg);
-					//msg = reg_read2F(FIFO_NUM_RXBYTES);			
-					//msg &= 0x20;
-					//if(msg)
 					PIN_toggle(LED2);
 					cmd_str(SFRX);
 					//delay_ms(1);
