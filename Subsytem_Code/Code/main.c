@@ -429,6 +429,7 @@ static void init_global_vars(void)
 	resume_operationsf = 0;
 	open_valvesf = 0; 
 	collect_pdf = 0;
+	current_transceiver = 0;
 	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;

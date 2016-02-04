@@ -307,6 +307,7 @@ uint8_t rx_length;
 int  count32ms;
 uint8_t new_packet[152];
 uint8_t packet_receivedf;
+uint8_t current_transceiver;
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;

@@ -494,4 +494,18 @@ void SS1_set_low(void)
 }
 */
 
+//set certain ss pin to low
+void set_coms_SS_low(uint8_t PIN)
+{
+	PIN_clr(PIN);
+	delay_us(1);
+}
+
+//set certain ss pin to high
+void set_coms_SS_high(uint8_t PIN)
+{
+	PIN_set(PIN);
+	delay_us(1);
+}
+
 
