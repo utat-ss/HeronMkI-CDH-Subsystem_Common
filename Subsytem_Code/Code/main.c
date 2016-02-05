@@ -147,7 +147,10 @@ int main(void)
 /********************** RX  */
 				if(rx_mode)
 					cmd_str(SRX);
-				delay_ms(250);
+				//delay_ms(250);
+				send_can_value(millis());
+	if (millis() - lastCycle > TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
+	{
 				if(tx_mode)
 				{
 					tx_mode = 0;
@@ -163,13 +166,14 @@ int main(void)
 					delay_ms(100);
 					if(msg > 76)
 					{
-						test_reg[0] = reg_read(STDFIFO);
-						test_reg[1] = dir_FIFO_read(0x81);
-						test_reg[2] = dir_FIFO_read(0x82);
-						test_reg[3] = dir_FIFO_read(0x83);
-						test_reg[4] = dir_FIFO_read(0x80 + 0x4B);
-						test_reg[5] = dir_FIFO_read(0x80 + 0x4C);
-						send_can_value(test_reg);					
+						load_packet();
+						test_reg[0] = new_packet[0];
+						test_reg[1] = new_packet[1];
+						test_reg[2] = new_packet[3];
+						test_reg[3] = new_packet[4];
+						test_reg[4] = new_packet[76];
+						test_reg[5] = new_packet[77];
+						send_can_value(test_reg);
 					}
 					cmd_str(SIDLE);
 					cmd_str(SFRX);
@@ -188,6 +192,9 @@ int main(void)
 					tx_mode = 0;
 					rx_mode = 1;
 				}
+				count32ms = 0;
+	}
+
 /************************  TX */
 				//if(!receiving_tmf)
 					//transceiver_run();		// Check for incoming packets.
@@ -292,17 +299,17 @@ static void sys_init(void)
 		pyi = 0x2F;
 		spi_send_shunt_dpot_value(0x55);
 	}
-	
+
+	coms_timer_init();
 	// Enable global interrupts for Timer execution
 	sei();
+	
+	SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
 	
 	if (SELF_ID == 0)
 	{
 		transceiver_initialize();
-		coms_timer_init();
 	}
-
-	SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
 	
 	if(SELF_ID != 1)
 	{
@@ -453,6 +460,11 @@ static void init_global_vars(void)
 			packet_list[j].data[i] = 0;
 		}
 	}
+	
+	for(i = 0; i < 77; i ++)
+	{
+		new_packet[i] = i;
+	}	
 	packet_count = 0;
 	
 	return;

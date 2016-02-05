@@ -304,10 +304,11 @@ long int lastToggle;
 uint8_t tx_mode;
 uint8_t rx_mode;
 uint8_t rx_length;
-int  count32ms;
+volatile uint32_t count32ms;
 uint8_t new_packet[152];
 uint8_t packet_receivedf;
 uint8_t current_transceiver;
+uint32_t countcycles;
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;

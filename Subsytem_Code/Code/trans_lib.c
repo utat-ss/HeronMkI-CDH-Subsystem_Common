@@ -762,3 +762,14 @@ static void clear_current_tc(void)
 	}
 	return;
 }
+
+// There is a packet in the RX buffer (NUM_RXBYTES > 76)
+void load_packet(void)
+{
+	uint8_t i;
+	for(i = 0; i < 78; i++)
+	{
+		new_packet[i] = reg_read(STDFIFO);
+	}
+	return;
+}

@@ -32,6 +32,7 @@
 //When the timer overflows, increment the time-count variables.
 ISR(TIMER0_OVF_vect)
 {
+	PIN_toggle(LED2);
 	// Counter being used for transceiver communications.
 	count32ms++;
 	// Increment variables here to keep track of time when an

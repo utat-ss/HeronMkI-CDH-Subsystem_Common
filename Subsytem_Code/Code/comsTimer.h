@@ -29,6 +29,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "port.h"
 #include "global_var.h"
 
 void coms_timer_init(void);

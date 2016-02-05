@@ -259,7 +259,9 @@
 #define TXLAST            0xD5
 
 /* Macro Definitions			*/
-#define millis() (count32ms<<5)
+#define millis() (countcycles>>13)
+
+//uint8_t new_packet[77];		// 76B data + 1B length
 
 /****** FUNCTION PROTOTYPES ***************/
 
