@@ -439,6 +439,9 @@ static void init_global_vars(void)
 	rx_length = 0;
 	count32ms = 0;
 	packet_receivedf = 0;
+	current_transceiver = 0;
+	last_packet_height = 0;
+	radio_sequence_control = 0;
 	
 	for(i = 0; i < 152; i++)
 	{

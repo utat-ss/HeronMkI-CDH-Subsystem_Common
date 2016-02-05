@@ -45,6 +45,7 @@
 #define ACK_TIMEOUT 2000
 #define TRANSCEIVER_CYCLE 250
 #define DEVICE_ADDRESS 0xA5
+#define REAL_PACKET_LENGTH 80
 
 //define crystal oscillator frequency to 32MHz
 #define f_xosc 32000000;							// What is this used for?
@@ -283,3 +284,4 @@ void clear_new_packet(void);
 uint8_t store_new_packet(void);
 void load_packet_to_current_tc(void);
 static void clear_current_tc(void);
+void load_packet(void);

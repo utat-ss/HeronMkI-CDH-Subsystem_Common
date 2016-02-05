@@ -152,6 +152,8 @@
 	*					and I'm adding functions for acknowledgments and regular operation of the transceiver.
 	*
 	*	01/20/2015		Getting rid of functions that we don't really need anymore.
+	*
+	*	02/04/2016		I was able to send a 76B packet from one SSM to another using the CC1120 tranceivers.
 */
 
 #include "trans_lib.h"
@@ -188,27 +190,24 @@ void transceiver_run(void)
 	uint8_t state, CHIP_RDYn, rxFirst, rxLast, i, j, txFirst, txLast;
 	uint8_t test_reg[4] = {0};
 	get_status(&CHIP_RDYn, &state);
-
-/* TX */
-	//if (millis() - lastCycle < TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
-	//{
-		//return;
-	//}
-/***********/
-// RX
-	delay_ms(250);
+	if (millis() - lastCycle < TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
+		return;
+	if(tx_mode)
+		cmd_str(STX);
+	if(rx_mode)
+		cmd_str(SRX);
     // We will be in this state if we are waiting for an ACK or we are currently receiving an ACK
-	if (tx_mode && (state == STATERX))
+	if(tx_mode && (state == STATERX))
 	{
 		// Waited too long, resend.
-		if(millis()-lastTransmit >= ACK_TIMEOUT)
+		if(millis() - lastTransmit >= ACK_TIMEOUT)
 		{
 			reg_write2F(TXFIRST, 0x00);
 			cmd_str(STX);
 			lastTransmit = millis();
 		}
 	}
-// Still sending the data that we have or finished and already received a packet
+	// Still sending the data that we have or finished and already received a packet
 	else if(tx_mode && (state == STATETX))
 	{
 		rxFirst = reg_read2F(RXFIRST);
@@ -222,9 +221,7 @@ void transceiver_run(void)
 		/* Got some data, so there must be a packet waiting for us. */
 		else if (rxLast)
 		{
-			//PIN_toggle(LED2);
-			uint8_t fifo[128] = {0};
-			j = 0;
+			PIN_toggle(LED2);
 			rx_length = reg_read(STDFIFO);
             for (uint8_t i = rxFirst; i < rxLast; i++){
 	            fifo[j++] = dir_FIFO_read(0x80+i);
@@ -242,7 +239,7 @@ void transceiver_run(void)
 			tx_mode = 0;
 			rx_mode = 1;
 			rx_length = 0;
-			cmd_str(SRX);				
+			cmd_str(SRX);		
 		}
 		if(rxFirst)
 		{
@@ -250,12 +247,6 @@ void transceiver_run(void)
 			reg_write2F(RXLAST, 0);
 			lastTransmit = millis();
 		}
-		//if((millis() - lastTransmit) >= ACK_TIMEOUT)	// Waited too long, resend.
-		//{
-			//reg_write2F(TXFIRST, 0x00);		// Set TXFIRST to 0
-			//cmd_str(STX);					// Put in TX mode.
-			//lastTransmit = millis();
-		//}
 	}
 
 	/* Waiting for some data to come */
@@ -264,47 +255,22 @@ void transceiver_run(void)
 		/* Get the data from the FIFO */
 		rxFirst = reg_read2F(RXFIRST);
 		rxLast = reg_read2F(RXLAST);
+		rx_length = reg_read2F(NUM_RXBYTES);
 		/* Got some data */
-		if (rxFirst <= rxLast && rxLast)
+		if (rx_length)
 		{
-			//PIN_toggle(LED1);
-			//cmd_str(SIDLE);
-			//cmd_str(SFRX);
-			//cmd_str(SRX);
-			//return;
-            // The first byte that comes when the RX buffer was empty can only be
-            // accessed with standard FIFO access. In our case this will be the length
-            if (rx_length == 0){
-	            rx_length = reg_read(STDFIFO);
-				test_reg[0] = rx_length;
-				//test_reg[1] = reg_read(STDFIFO);
-				//test_reg[2] = reg_read(STDFIFO);
-				//test_reg[3] = reg_read(STDFIFO);
-				//send_can_value(test_reg);
-				rx_length = 0;
-	            //reg_write2F(RXFIRST, rxFirst);
-            }
-			//send_can_value(rx_length);
-			
-			uint8_t fifo[128] = {0};
-			j = 0;
-			for (i = rxFirst; i < rxLast; i++)
-			{
-				fifo[j++] = dir_FIFO_read(0x80+i);
-			}
+			if(rx_length > REAL_PACKET_LENGTH)
+				load_packet();						// Packet is loaded into new_packet[] for processing.
+
 			/* We have a packet */
-			if(fifo[0] <= (rxLast - rxFirst - 1))
+			if(new_packet[0] <= (rxLast - rxFirst - 2))		// Length = data + address byte + length byte
 			{
 				PIN_toggle(LED1);
-				clear_new_packet();
-				for(j = 1; j < fifo[0]; j++)
-				{
-					new_packet[j - 1] = fifo[j + 1];
-				}
 				store_new_packet();
-				reg_write2F(RXFIRST, rx_length);
-				rxFirst += rx_length;
 				rx_length = 0;
+				cmd_str(SIDLE);						// ** May not be necessary.
+				cmd_str(SFRX);
+				cmd_str(SRX);
 			}
 			/* The packet doesn't seem to be done */
 			else if (fifo[0] >= (rxLast - rxFirst - 1)){ }
@@ -312,12 +278,10 @@ void transceiver_run(void)
         // clear RX FIFO if we aren't currently waiting for anything
 		if (rxFirst == rxLast && rxFirst && rx_length == 0)
 		{
+			rx_length = 0;	
 			cmd_str(SIDLE);
-			reg_write2F(RXFIRST, 0x00);
-			reg_write2F(RXLAST, 0x00);
 			cmd_str(SFRX);
 			cmd_str(SRX);
-			rx_length = 0;		
 		}
 		reg_write2F(TXFIRST, 0);	// So we can send another ACK.
 	}
@@ -689,7 +653,7 @@ void transceiver_send(uint8_t* message, uint8_t address, uint8_t length)
 void prepareAck(void)
 {
 	char* ackMessage = "ACK";
-	uint8_t ackAddress = 0xFF, i;
+	uint8_t ackAddress = 0xA5, i;
 	cmd_str(SIDLE);
 	cmd_str(SFTX);
 	
@@ -718,15 +682,51 @@ void clear_new_packet(void)
 
 uint8_t store_new_packet(void)
 {
-	uint8_t i;
-	if(packet_count == 5)		// Packet_list is currently full, cannot accept new packets.
-		return 0xFF;
-	/* There is room in the packet list */
-	for (i = 0; i < 152; i++)
+	uint8_t i, packet_height;
+	uint32_t rsc;
+	if(packet_count == 5)		
 	{
-		packet_list[packet_count].data[i] = new_packet[i];
+		last_packet_height = 0;
+		radio_sequence_control = 0;
+		return 0xFF;		// Packet_list is currently full, cannot accept new packets.
 	}
-	packet_count++;
+	/* There is room in the packet list */
+	packet_height = new_packet[79];
+	rsc =  ((uint32_t)new_packet[78]) << 16;
+	rsc += ((uint32_t)new_packet[77]) << 8;
+	rsc += (uint32_t)new_packet[76];
+	
+	if(last_packet_height && packet_height)
+	{
+		last_packet_height = 0;
+		radio_sequence_control = 0;		
+		return 0xFF;		// H/L received out of order.
+	}
+	if(!radio_sequence_control)
+		radio_sequence_control = rsc;
+	else if(radio_sequence_control != rsc - 1)
+	{
+		last_packet_height = 0;
+		radio_sequence_control = 0;
+		return 0xFF;		// Packet received out of order.
+	}
+	if(!packet_height)
+	{
+		for (i = 0; i < 76; i++)
+		{
+			packet_list[packet_count].data[i] = new_packet[i];
+		}	
+	}
+	if(packet_height)
+	{
+		for (i = 0; i < 76; i++)
+		{
+			packet_list[packet_count].data[i + 76] = new_packet[i];
+		}
+		packet_count++;
+	}
+	last_packet_height = packet_height;
+	radio_sequence_control = rsc;
 	return 0x00;
 }
 
@@ -759,6 +759,16 @@ static void clear_current_tc(void)
 	for(i = 0; i < PACKET_LENGTH; i++)
 	{
 		current_tc[i] = 0;
+	}
+	return;
+}
+
+void load_packet(void)
+{
+	uint8_t i;
+	for(i = 0; i < (REAL_PACKET_LENGTH + 2); i++)
+	{
+		new_packet[i] = reg_read(STDFIFO);
 	}
 	return;
 }
