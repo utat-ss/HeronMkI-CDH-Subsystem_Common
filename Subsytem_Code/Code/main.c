@@ -126,7 +126,9 @@ int main(void)
 	}
 	uint8_t *CHIP_RDYn, *state;
 	uint8_t test_reg[6] = {0};
-	//transceiver_send(&t_message[0], 0x00, 64);
+	transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+	delay_ms(10);
+	cmd_str(SRX);
     while(1)
     {	
 		/* Reset the WDT */
@@ -144,8 +146,8 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				
 /********************** RX  */
-				delay_ms(1);
-				transceiver_run();
+				delay_ms(250);
+				//transceiver_run();
 				//send_can_value(millis());
 				//if (millis() - lastCycle > TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
 				//{
@@ -157,41 +159,53 @@ int main(void)
 						//rx_mode = 1;
 						//cmd_str(SRX);
 					//}
-					//msg = reg_read2F(NUM_RXBYTES);
-					//if(msg > 0)
-					//{
-						//PIN_toggle(LED1);
-						//delay_ms(100);
-						//PIN_toggle(LED1);
-						//delay_ms(100);
-						//if(msg > 76)
-						//{
-							//load_packet();
-							//test_reg[0] = new_packet[0];
-							//test_reg[1] = new_packet[1];
-							//test_reg[2] = new_packet[3];
-							//test_reg[3] = new_packet[4];
-							//test_reg[4] = new_packet[76];
-							//test_reg[5] = new_packet[77];
-							//send_can_value(test_reg);
-						//}
-						//cmd_str(SIDLE);
-						//cmd_str(SFRX);
-						////delay_ms(10);
-						//cmd_str(SRX);
-					//}
-				//
-					get_status(CHIP_RDYn, state);
-					if(*state == 0b110)
+				if (millis() - lastTransmit > 250)
+				{
+					cmd_str(SRX);
+					msg = reg_read2F(NUM_RXBYTES);
+					if(msg > 0)
 					{
+						if(msg > 3)
+						{
+							load_packet();
+							test_reg[0] = new_packet[0];
+							test_reg[1] = new_packet[1];
+							test_reg[2] = new_packet[2];
+							test_reg[3] = new_packet[3];
+							test_reg[4] = new_packet[4];
+							test_reg[5] = new_packet[5];
+							send_can_value(test_reg);
+							if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
+							{
+								PIN_toggle(LED2);
+								cmd_str(SIDLE);
+								cmd_str(SFRX);
+								cmd_str(SFTX);
+								delay_ms(5);
+								transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+								delay_ms(10);
+								lastTransmit = millis();
+							}
+						}
 						cmd_str(SIDLE);
-						PIN_toggle(LED2);
 						cmd_str(SFRX);
-						//delay_ms(1);
+						//delay_ms(10);
 						cmd_str(SRX);
-						tx_mode = 0;
-						rx_mode = 1;
-					}
+					}					
+				}
+				if(millis() - lastTransmit > 300)
+				{
+					PIN_toggle(LED1);
+					cmd_str(SIDLE);
+					cmd_str(SFRX);
+					cmd_str(SFTX);
+					delay_ms(5);
+					transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+					lastTransmit = millis();				
+				}
+
+				//
+
 					//lastCycle = millis();
 				//}
 
@@ -207,7 +221,7 @@ int main(void)
 				////{
 					////tx_mode = 0;
 					////rx_mode = 1;
-					////cmd_str(SRX);
+
 				////}
 				//if(count == 1000)
 				//{
@@ -240,7 +254,7 @@ int main(void)
 			{
 				run_mppt();
 				run_battBalance();
-				run_batt_heater();
+				//run_batt_heater();
 			}			
 		}
 				

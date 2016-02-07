@@ -179,7 +179,7 @@ void transceiver_initialize(void)
 	rx_mode = 1;
 	tx_mode = 0;
 	rx_length = 0;
-	//prepareAck();
+	prepareAck();
 	/* Put In RX Mode */
 	cmd_str(SRX);
 	return;	
@@ -189,64 +189,19 @@ void transceiver_run(void)
 {
 	uint8_t state, CHIP_RDYn, rxFirst, rxLast, i, j, txFirst, txLast;
 	uint8_t test_reg[4] = {0};
-	get_status(&CHIP_RDYn, &state);
+	uint8_t t_message[128];		
+
 	if (millis() - lastCycle < TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
 		return;
-	if(tx_mode)
-		cmd_str(STX);
+
+	for(i = 0; i < 76; i ++)
+	{
+		t_message[i] = i;
+	}
+	//if(tx_mode)
+		//cmd_str(STX);
 	if(rx_mode)
 		cmd_str(SRX);
-	PIN_toggle(LED1);
-    // We will be in this state if we are waiting for an ACK or we are currently receiving an ACK
-	//if(tx_mode && (state == STATERX))
-	//{
-		//// Waited too long, resend.
-		//if(millis() - lastTransmit >= ACK_TIMEOUT)
-		//{
-			//reg_write2F(TXFIRST, 0x00);
-			//cmd_str(STX);
-			//lastTransmit = millis();
-		//}
-	//}
-	//// Still sending the data that we have or finished and already received a packet
-	//else if(tx_mode && (state == STATETX))
-	//{
-		//rxFirst = reg_read2F(RXFIRST);
-		//rxLast = reg_read2F(RXLAST);
-		//txFirst = reg_read2F(TXFIRST);
-		//txLast = reg_read2F(TXLAST);
-        //// Still sending data out, just wait for it
-        //if (txFirst < txLast){
-	        //lastTransmit = millis();
-        //}
-		///* Got some data, so there must be a packet waiting for us. */
-		//else if (rxLast)
-		//{
-			//PIN_toggle(LED2);
-			//rx_length = reg_read(STDFIFO);
-			//j = 0;
-			//clear_new_packet();
-			///* Received a packet in TX Mode */
-            //for (uint8_t i = rxFirst; i < rxLast; i++)
-			//{
-	            //new_packet[j++] = dir_FIFO_read(0x80+i);
-            //}
-			//cmd_str(SIDLE);
-			//cmd_str(SFTX);
-			//cmd_str(SFRX);
-			//prepareAck();
-			//tx_mode = 0;
-			//rx_mode = 1;
-			//rx_length = 0;
-			//cmd_str(SRX);		
-		//}
-		//if(rxFirst)
-		//{
-			//reg_write2F(RXFIRST, 0);
-			//reg_write2F(RXLAST, 0);
-			//lastTransmit = millis();
-		//}
-	//}
 
 	/* Waiting for some data to come */
 	if (rx_mode)
@@ -254,38 +209,121 @@ void transceiver_run(void)
 		/* Get the data from the FIFO */
 		rx_length = reg_read2F(NUM_RXBYTES);
 		rxFirst = reg_read2F(RXFIRST);
-		rxLast = reg_read2F(RXLAST);		
+		rxLast = reg_read2F(RXLAST);
 		/* Got some data */
 		if (rx_length)
 		{
-
-			if(rx_length > REAL_PACKET_LENGTH)
-				load_packet();						// Packet is loaded into new_packet[] for processing.
-
+			if(rx_length >= REAL_PACKET_LENGTH + 2)
+				load_packet();								// Packet is loaded into new_packet[] for processing.
 			/* We have a packet */
-			if(new_packet[0] <= (rxLast - rxFirst - 2))		// Length = data + address byte + length byte
+			if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
 			{
+				PIN_toggle(LED1);
+				test_reg[0] = rxFirst;
+				test_reg[1] = rxLast;
+				test_reg[2] = rx_length;
+				test_reg[3] = state;
+				send_can_value(test_reg);
 				store_new_packet();
 				rx_length = 0;
-				cmd_str(SIDLE);						// ** May not be necessary.
-				cmd_str(SFRX);
-				cmd_str(SRX);
+				prepareAck();
+				cmd_str(STX);
+				delay_ms(10);
+
 			}
-			/* The packet doesn't seem to be done */
-			else if (new_packet[0] >= (rxLast - rxFirst - 1)){ }
-		}
-        // clear RX FIFO if we aren't currently waiting for anything
-		if (rxFirst == rxLast && rxFirst && rx_length == 0)
-		{
-			rx_length = 0;	
-			cmd_str(SIDLE);
+			cmd_str(SIDLE);						// ** May not be necessary.
 			cmd_str(SFRX);
 			cmd_str(SRX);
+			//reg_write2F(TXFIRST, 0);	// So we can send another ACK.
+			/* The packet doesn't seem to be done */
+			//else if (new_packet[0] >= (rxLast - rxFirst + 1)){ }
 		}
-		reg_write2F(TXFIRST, 0);	// So we can send another ACK.
+		// clear RX FIFO if we aren't currently waiting for anything
+		//if (rxFirst == rxLast && rxFirst && rx_length == 0)
+		//{
+		//rx_length = 0;
+		//cmd_str(SIDLE);
+		//cmd_str(SFRX);
+		//cmd_str(SRX);
+		//}
+
 	}
-	else{ }	// Something went wrong.
-	
+	get_status(&CHIP_RDYn, &state);
+    //We will be in this state if we are waiting for an ACK or we are currently receiving an ACK
+	if(tx_mode && (state == STATERX))
+	{
+		// Waited too long, resend.
+		if(millis() - lastTransmit >= ACK_TIMEOUT)
+		{
+			transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+			//reg_write2F(TXFIRST, 0x00);
+			cmd_str(STX);
+			lastTransmit = millis();
+		}
+	}
+	// Still sending the data that we have or finished and already received a packet
+	else if(tx_mode && (state == STATETX))
+	{
+		//PIN_toggle(LED2);
+		rxFirst = reg_read2F(RXFIRST);
+		rxLast = reg_read2F(RXLAST);
+		txFirst = reg_read2F(TXFIRST);
+		txLast = reg_read2F(TXLAST);
+		test_reg[0] = rxFirst;
+		test_reg[1] = rxLast;
+		test_reg[2] = txFirst;
+		test_reg[3] = txLast;
+		send_can_value(test_reg);
+        // Still sending data out, just wait for it
+        if (txFirst < txLast){
+	        lastTransmit = millis();
+        }
+		/* Got some data, so there must be a packet waiting for us. */
+		else if (rxLast)
+		{
+			PIN_toggle(LED2);
+			rx_length = reg_read2F(NUM_RXBYTES);
+			j = 0;
+			clear_new_packet();
+			/* Received a packet in TX Mode */
+            load_packet();
+			cmd_str(SIDLE);
+			cmd_str(SFTX);
+			cmd_str(SFRX);
+			prepareAck();
+			cmd_str(STX);
+			delay_ms(1);
+			tx_mode = 0;
+			rx_mode = 1;
+			rx_length = 0;
+			cmd_str(SRX);
+		}
+		if(rxFirst)
+		{
+			reg_write2F(RXFIRST, 0);
+			reg_write2F(RXLAST, 0);
+			lastTransmit = millis();
+		}
+		if(txLast < txFirst)		// Random error that I've been getting.
+		{
+			reg_write2F(TXLAST, 0);
+			reg_write2F(TXFIRST, 0);
+			tx_mode = 1;
+			rx_mode = 0;
+			cmd_str(STX);
+		}
+	}
+	//get_status(&CHIP_RDYn, &state);
+	if(state == 0b110)
+	{
+		PIN_toggle(LED3);
+		cmd_str(SIDLE);
+		cmd_str(SFRX);
+		//delay_ms(1);
+		cmd_str(SRX);
+		tx_mode = 0;
+		rx_mode = 1;
+	}
 	lastCycle = millis();
 	return;
 }
@@ -373,7 +411,7 @@ void reg_settings(void)
 	reg_write(PKT_CFG0, 0b00100000);		//PKT_CFG0: 0x30         set variable packet length
 	reg_write(PKT_LEN, 0xFF);				//PKT_LEN: 0xFF          set packet max packet length to 0x7F
 	reg_write(DEV_ADDR, DEVICE_ADDRESS);	//DEV_ADDR register is set to DEVICE_ADDRESS
-	//reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet, RX timeout disabled.
+	reg_write(RFEND_CFG1, 0b00101110);      //RFEND_CFG1: 0x2E       go to TX after a good packet, RX timeout disabled.
 	//reg_write(0x29, 0b00111110);			//RFEND_CFG1: 0x3E       go to RX after a good packet
 	reg_write(RFEND_CFG0, 0b00110000);      //RFEND_CFG0: 0x30       go to RX after transmitting a packet
 	//reg_write(0x2A, 0b00100000);			//RFEND_CFG0: 0x20       go to TX after transmitting a packet
@@ -659,14 +697,14 @@ void prepareAck(void)
 	// Reset FIFO registers
 	reg_write2F(TXFIRST, 0x00);
 	// Put the ACK Packet in the FIFO
-	dir_FIFO_write(0, (uint8_t)3 + 2);
+	dir_FIFO_write(0, (3 + 2));
 	dir_FIFO_write(1, ackAddress);
 	
 	for(i = 0; i < 3; i++)
 		dir_FIFO_write(i+2, ackMessage[i]);
 	
-	reg_write(TXFIRST, 0);
-	reg_write2F(TXLAST, (uint8_t) 3 + 3);
+	reg_write2F(TXFIRST, 0);
+	reg_write2F(TXLAST, (3 + 3));
 	reg_write2F(RXFIRST, 0x00);
 	reg_write2F(RXLAST, 0x00);
 	return;
