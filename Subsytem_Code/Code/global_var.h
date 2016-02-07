@@ -320,5 +320,7 @@ uint8_t trans_msg [6];	// ** Use this to store the incoming message, just pick a
 packet packet_list[5];
 uint8_t packet_count;
 
+uint8_t check;
+
 /*****************************************************/
 #endif

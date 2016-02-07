@@ -45,7 +45,7 @@
 #define ACK_TIMEOUT 2000
 #define TRANSCEIVER_CYCLE 250
 #define DEVICE_ADDRESS 0xA5
-#define REAL_PACKET_LENGTH 80
+#define REAL_PACKET_LENGTH 76
 
 //define crystal oscillator frequency to 32MHz
 #define f_xosc 32000000;							// What is this used for?
@@ -260,7 +260,7 @@
 #define TXLAST            0xD5
 
 /* Macro Definitions			*/
-#define millis() (countcycles>>13)
+#define millis() (count32ms << 5)
 
 //uint8_t new_packet[77];		// 76B data + 1B length
 

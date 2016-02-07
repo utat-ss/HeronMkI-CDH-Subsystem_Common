@@ -131,7 +131,6 @@ int main(void)
     {	
 		/* Reset the WDT */
 		wdt_reset();
-		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		//can_check_general();
 
@@ -145,55 +144,56 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				
 /********************** RX  */
-				if(rx_mode)
-					cmd_str(SRX);
-				//delay_ms(250);
-				send_can_value(millis());
-	if (millis() - lastCycle > TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
-	{
-				if(tx_mode)
-				{
-					tx_mode = 0;
-					rx_mode = 1;
-					cmd_str(SRX);
-				}
-				msg = reg_read2F(NUM_RXBYTES);
-				if(msg > 0)
-				{
-					PIN_toggle(LED1);
-					delay_ms(100);
-					PIN_toggle(LED1);
-					delay_ms(100);
-					if(msg > 76)
+				delay_ms(1);
+				transceiver_run();
+				//send_can_value(millis());
+				//if (millis() - lastCycle > TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
+				//{
+					//if(rx_mode)
+						//cmd_str(SRX);
+					//if(tx_mode)
+					//{
+						//tx_mode = 0;
+						//rx_mode = 1;
+						//cmd_str(SRX);
+					//}
+					//msg = reg_read2F(NUM_RXBYTES);
+					//if(msg > 0)
+					//{
+						//PIN_toggle(LED1);
+						//delay_ms(100);
+						//PIN_toggle(LED1);
+						//delay_ms(100);
+						//if(msg > 76)
+						//{
+							//load_packet();
+							//test_reg[0] = new_packet[0];
+							//test_reg[1] = new_packet[1];
+							//test_reg[2] = new_packet[3];
+							//test_reg[3] = new_packet[4];
+							//test_reg[4] = new_packet[76];
+							//test_reg[5] = new_packet[77];
+							//send_can_value(test_reg);
+						//}
+						//cmd_str(SIDLE);
+						//cmd_str(SFRX);
+						////delay_ms(10);
+						//cmd_str(SRX);
+					//}
+				//
+					get_status(CHIP_RDYn, state);
+					if(*state == 0b110)
 					{
-						load_packet();
-						test_reg[0] = new_packet[0];
-						test_reg[1] = new_packet[1];
-						test_reg[2] = new_packet[3];
-						test_reg[3] = new_packet[4];
-						test_reg[4] = new_packet[76];
-						test_reg[5] = new_packet[77];
-						send_can_value(test_reg);
+						cmd_str(SIDLE);
+						PIN_toggle(LED2);
+						cmd_str(SFRX);
+						//delay_ms(1);
+						cmd_str(SRX);
+						tx_mode = 0;
+						rx_mode = 1;
 					}
-					cmd_str(SIDLE);
-					cmd_str(SFRX);
-					//delay_ms(10);
-					cmd_str(SRX);
-				}
-				
-				get_status(CHIP_RDYn, state);
-				if(*state == 0b110)
-				{
-					cmd_str(SIDLE);
-					PIN_toggle(LED2);
-					cmd_str(SFRX);
-					//delay_ms(1);
-					cmd_str(SRX);
-					tx_mode = 0;
-					rx_mode = 1;
-				}
-				count32ms = 0;
-	}
+					//lastCycle = millis();
+				//}
 
 /************************  TX */
 				//if(!receiving_tmf)
@@ -280,7 +280,6 @@ static void sys_init(void)
 		dac_initialize();
 	
 	//enable watchdog timer - 2 second reset time approximate
-	//WDTON Fuse has to be 1 for system reset mode - how do you do that?
 	wdt_enable(WDTO_2S);
 
 	/* Enable the timer for MMPT */
