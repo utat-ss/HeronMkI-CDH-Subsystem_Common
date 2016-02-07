@@ -17,8 +17,21 @@
 *	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
 *
 *	NOTES:		Testing needs to be done.
+*				2016/02/07 Found some errors in the stack. Found that the SPI transmission is out of order 
+*							SS is pin 16 which is confirmed to work as an output
+*							From Main we had 
+*							port_expander_init();							(scope: 02 50 10)
+*							port_expander_write(IODIR_BASE, 0b00000000);	(scope: 02 00 00)
+*							port_expander_write(GPIO_BASE, 0b11111111);		(scope: 02 48 FF)
+*							Current behaviour has the right numbers on scope but in the wrong order. 
+*							We tried this same transmission on arduino with success **CONFIG REG needed to be set which was issue before**
+*							MISO, SCK
+*							X|X|0
+*							0|X|0		
+*							  ^	
+*							  MOSI				
 *
-*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
+*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:	
 *
 *	DEVELOPMENT HISTORY:
 *	02/06/2016			Created
@@ -32,26 +45,26 @@
 */
 
 #include "port_expander.h"
-
-uint8_t _write_control_byte;
-uint8_t _read_control_byte;
+#include "global_var.h"
 
 void port_expander_init()
 {
-	port_epander_write(IOCON, 0b00001000); // Set configuration register with hardware addressing enabled
 	_write_control_byte = 0b01000000;
-	if (A2 == 1) _write_control_byte = write_control_byte | (0b00001000);
-	if (A1 == 1) _write_control_byte = write_control_byte | (0b00000100);
-	if (A0 == 1) _write_control_byte = write_control_byte | (0b00000010);
+	//if (A2 == 1) _write_control_byte = _write_control_byte | (0b00001000);
+	//if (A1 == 1) _write_control_byte = _write_control_byte | (0b00000100);
+	//if (A0 == 1) _write_control_byte = _write_control_byte | (0b00000010);
 	_read_control_byte = _write_control_byte | (0b00000001);
+	port_expander_write(IOCON, 0b00001000); // Set configuration register with hardware addressing enabled
 }
 
 void port_expander_write(uint8_t register_address, uint8_t data)
 {
 	PIN_clr(SS_PIN);
-	spi_transfer4(write_control_byte);
-	spi_transfer4(register_address);
-	spi_transfer4(data);
+	spi_transfer(_write_control_byte);
+	delay_us(20);
+	spi_transfer(register_address);
+	delay_us(20);
+	spi_transfer(data);
 	PIN_set(SS_PIN);
 	return;
 }

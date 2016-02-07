@@ -1,6 +1,6 @@
 #include "port.h"
 
-#define SS_PIN 0 /* Slave select pin */
+#define SS_PIN 16 /* Slave select pin */
 #define A2 0 /* Logic state of the address pins on the port expander */
 #define A1 0
 #define A0 0
@@ -14,7 +14,7 @@
 /************************************************************************/
 /* Initializes the port expander. Must be called before use.            */
 /************************************************************************/
-void port_expander_init()
+void port_expander_init();
 
 /************************************************************************/
 /* Writes data to the device register with address register_address     */
