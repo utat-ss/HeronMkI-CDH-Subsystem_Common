@@ -1,13 +1,13 @@
 #include "port.h"
 
-#define SS_PIN 0
-#define A2 0
+#define SS_PIN 0 /* Slave select pin */
+#define A2 0 /* Logic state of the address pins on the port expander */
 #define A1 0
 #define A0 0
-#define INPUT 1
+#define INPUT 1 /* Enumerations for setting pin mode */
 #define OUTPUT 0
 
-#define IODIR_BASE 0x00
+#define IODIR_BASE 0x00 /* Base addresses of useful registers */
 #define GPIO_BASE 0x12
 
 
@@ -55,6 +55,12 @@ void set_gpiob_pin(uint8_t id);
 /************************************************************************/
 void clr_gpiob_pin(uint8_t id);
 
+/************************************************************************/
+/* Reads state of gpio A pin specified by id (0 or 1)                   */
+/************************************************************************/
 uint8_t read_gpioa_pin(uint8_t id);
 
-uint8_t read_gpiob_pin(uint8_t id, uint8_t* data);
+/************************************************************************/
+/* Reads state of gpio B pin specified by id (0 or 1)                   */
+/************************************************************************/
+uint8_t read_gpiob_pin(uint8_t id);
