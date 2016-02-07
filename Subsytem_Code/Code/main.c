@@ -124,7 +124,7 @@ int main(void)
 	{
 		t_message[i] = i;
 	}
-	uint8_t *CHIP_RDYn, *state;
+	uint8_t *CHIP_RDYn, *state, rxFirst, rxLast;
 	uint8_t test_reg[6] = {0};
 	transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
 	delay_ms(10);
@@ -162,19 +162,35 @@ int main(void)
 				if (millis() - lastTransmit > 250)
 				{
 					cmd_str(SRX);
-					msg = reg_read2F(NUM_RXBYTES);
-					if(msg > 0)
+					rx_length = reg_read2F(NUM_RXBYTES);
+					rxFirst = reg_read2F(RXFIRST);
+					rxLast = reg_read2F(RXLAST);
+					/* Got some data */
+					if(rx_length)
 					{
-						if(msg > 3)
+						if(rx_length >= REAL_PACKET_LENGTH + 2)
 						{
 							load_packet();
-							test_reg[0] = new_packet[0];
-							test_reg[1] = new_packet[1];
-							test_reg[2] = new_packet[2];
-							test_reg[3] = new_packet[3];
-							test_reg[4] = new_packet[4];
-							test_reg[5] = new_packet[5];
-							send_can_value(test_reg);
+							/* We have a packet */
+							if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
+							{
+								PIN_toggle(LED1);
+								test_reg[0] = rxFirst;
+								test_reg[1] = rxLast;
+								test_reg[2] = rx_length;
+								test_reg[3] = state;
+								send_can_value(test_reg);
+								store_new_packet();
+								rx_length = 0;
+								prepareAck();
+								cmd_str(STX);
+								delay_ms(10);
+							}						
+						}	
+						else if(rx_length >= ACK_LENGTH + 2)
+						{
+							load_ack();
+							/* We have an acknowledgment */
 							if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
 							{
 								PIN_toggle(LED2);
@@ -189,13 +205,12 @@ int main(void)
 						}
 						cmd_str(SIDLE);
 						cmd_str(SFRX);
-						//delay_ms(10);
 						cmd_str(SRX);
 					}					
 				}
-				if(millis() - lastTransmit > 300)
+				if(millis() - lastTransmit > 300)	// Didn't get an ACK, resend packet.	
 				{
-					PIN_toggle(LED1);
+					PIN_toggle(LED3);
 					cmd_str(SIDLE);
 					cmd_str(SFRX);
 					cmd_str(SFTX);

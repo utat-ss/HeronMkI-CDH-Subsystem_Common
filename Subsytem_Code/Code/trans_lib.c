@@ -229,7 +229,6 @@ void transceiver_run(void)
 				prepareAck();
 				cmd_str(STX);
 				delay_ms(10);
-
 			}
 			cmd_str(SIDLE);						// ** May not be necessary.
 			cmd_str(SFRX);
@@ -804,6 +803,16 @@ void load_packet(void)
 {
 	uint8_t i;
 	for(i = 0; i < (REAL_PACKET_LENGTH + 2); i++)
+	{
+		new_packet[i] = reg_read(STDFIFO);
+	}
+	return;
+}
+
+void load_ack(void)
+{
+	uint8_t i;
+	for(i = 0; i < (ACK_LENGTH + 2); i++)
 	{
 		new_packet[i] = reg_read(STDFIFO);
 	}
