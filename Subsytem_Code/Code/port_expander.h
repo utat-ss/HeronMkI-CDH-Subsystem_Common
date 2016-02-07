@@ -8,8 +8,13 @@
 #define OUTPUT 0
 
 #define IODIR_BASE 0x00 /* Base addresses of useful registers */
-#define GPIO_BASE 0x12
+#define GPIO_BASE  0x12
+#define IOCON      0x0A // MCP23x17 Configuration Register
 
+/************************************************************************/
+/* Initializes the port expander. Must be called before use.            */
+/************************************************************************/
+void port_expander_init()
 
 /************************************************************************/
 /* Writes data to the device register with address register_address     */

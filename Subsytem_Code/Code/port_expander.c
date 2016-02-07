@@ -5,7 +5,8 @@
 *
 *	PURPOSE:		API for using the MCP23S17 port expander.
 *
-*	FILE REFERENCES:		port_expander.h, http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
+*	REFERENCES:		port_expander.h, http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf
+*				    https://github.com/n0mjs710
 *
 *	EXTERNAL VARIABLES:
 *
@@ -32,13 +33,22 @@
 
 #include "port_expander.h"
 
+uint8_t _write_control_byte;
+uint8_t _read_control_byte;
+
+void port_expander_init()
+{
+	port_epander_write(IOCON, 0b00001000); // Set configuration register with hardware addressing enabled
+	_write_control_byte = 0b01000000;
+	if (A2 == 1) _write_control_byte = write_control_byte | (0b00001000);
+	if (A1 == 1) _write_control_byte = write_control_byte | (0b00000100);
+	if (A0 == 1) _write_control_byte = write_control_byte | (0b00000010);
+	_read_control_byte = _write_control_byte | (0b00000001);
+}
+
 void port_expander_write(uint8_t register_address, uint8_t data)
 {
 	PIN_clr(SS_PIN);
-	uint8_t write_control_byte = 0b01000000;
-	if (A2 == 1) write_control_byte = write_control_byte | (0b00001000); 
-	if (A1 == 1) write_control_byte = write_control_byte | (0b00000100); 
-	if (A0 == 1) write_control_byte = write_control_byte | (0b00000010);
 	spi_transfer4(write_control_byte);
 	spi_transfer4(register_address);
 	spi_transfer4(data);
@@ -49,12 +59,9 @@ void port_expander_write(uint8_t register_address, uint8_t data)
 void port_expander_read(uint8_t register_address, uint8_t* data)
 {
 	PIN_clr(SS_PIN);
-	uint8_t write_control_byte = 0b01000001;
-	if (A2 == 1) write_control_byte = write_control_byte | (0b00001000);
-	if (A1 == 1) write_control_byte = write_control_byte | (0b00000100);
-	if (A0 == 1) write_control_byte = write_control_byte | (0b00000010);
-	spi_transfer4(write_control_byte);
-	*data = spi_transfer4(register_address);
+	spi_transfer4(_read_control_byte);
+	spi_transfer4(register_address);
+	*data = spi_transfer4(0x00); // receive data
 	PIN_set(SS_PIN);
 	return;
 }
