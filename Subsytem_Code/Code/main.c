@@ -112,9 +112,18 @@ int main(void)
 	uint8_t msg = 0x66;
 	uint8_t t_message[128];
 	
+	uint8_t stream_finished = 0;
+	uint8_t num_packs_array[2];
+	num_packs_array[0] = 1;
+	num_packs_array[1] = 10;
+	uint8_t packets_so_far = 0;
+	uint8_t num_expected = 10;
+	uint8_t receiving_stream = 0;
+	uint8_t streaming = 1;
+	
 	uint8_t* adc_result;
 	*adc_result = 0;
-	uint16_t count = 0;;
+	uint16_t count = 0;
 
 	// Initialize I/O, Timer, ADC, CAN, WDT, and SPI
 	sys_init();
@@ -126,8 +135,8 @@ int main(void)
 	}
 	uint8_t *CHIP_RDYn, *state, rxFirst, rxLast;
 	uint8_t test_reg[6] = {0};
-	transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
-	delay_ms(10);
+	transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);
+	delay_ms(25);
 	cmd_str(SRX);
     while(1)
     {	
@@ -146,7 +155,7 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				
 /********************** RX  */
-				delay_ms(250);
+				delay_ms(1);
 				//transceiver_run();
 				//send_can_value(millis());
 				//if (millis() - lastCycle > TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
@@ -159,6 +168,61 @@ int main(void)
 						//rx_mode = 1;
 						//cmd_str(SRX);
 					//}
+					
+				while(streaming)
+				{
+					delay_ms(1);
+					if (millis() - lastTransmit > 250)
+					{
+						cmd_str(SRX);
+						rx_length = reg_read2F(NUM_RXBYTES);
+						rxFirst = reg_read2F(RXFIRST);
+						rxLast = reg_read2F(RXLAST);
+						/* Got some data */
+						if(rx_length)
+						{	
+							if(rx_length >= 1 + 2)
+							{
+								load_ack();
+								if(new_packet[2] == 2)
+								{
+									for(i = 0; i < num_packs_array[1]; i++)
+									{
+										transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+										delay_ms(25);
+									}
+									lastTransmit = millis();
+									stream_finished = 1;
+								}
+								if(new_packet[2] == 3 && stream_finished && new_packet[3] == num_expected)
+								{
+									PIN_toggle(LED2);
+									streaming = 0;
+									lastTransmit = millis();
+								}
+							}
+							cmd_str(SIDLE);
+							cmd_str(SFRX);
+							cmd_str(SRX);
+						}
+					}
+					if(millis() - lastTransmit > 300)	// Didn't get an ACK, resend packet.
+					{
+						PIN_toggle(LED3);
+						cmd_str(SIDLE);
+						cmd_str(SFRX);
+						cmd_str(SFTX);
+						delay_ms(1);
+						num_packs_array[0] = 1;
+						num_packs_array[1] = 10;
+						num_expected = 10;
+						transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);	// initiate the stream again.
+						delay_ms(25);
+						lastTransmit = millis();
+						stream_finished = 0;							
+					}			
+				}
+					
 				if (millis() - lastTransmit > 250)
 				{
 					cmd_str(SRX);
@@ -182,9 +246,21 @@ int main(void)
 								send_can_value(test_reg);
 								store_new_packet();
 								rx_length = 0;
-								prepareAck();
+								if(receiving_stream)
+								{
+									packets_so_far++;
+									if(packets_so_far == num_expected)
+									{
+										num_packs_array[0] = 3;
+										num_packs_array[1] = packets_so_far;
+										transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);
+										receiving_stream = 0;
+									}
+								}
+								else
+									prepareAck();
 								cmd_str(STX);
-								delay_ms(10);
+								delay_ms(1);
 							}						
 						}	
 						else if(rx_length >= ACK_LENGTH + 2)
@@ -197,11 +273,25 @@ int main(void)
 								cmd_str(SIDLE);
 								cmd_str(SFRX);
 								cmd_str(SFTX);
-								delay_ms(5);
+								delay_ms(1);
 								transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
-								delay_ms(10);
+								delay_ms(1);
 								lastTransmit = millis();
 							}
+						}
+						else if(rx_length >= 1 + 2)
+						{
+							load_ack();
+							/* Someone is trying to stream to us */
+							if(!streaming && new_packet[2] == 1)
+							{
+								receiving_stream = 1;
+								num_expected = new_packet[3];
+								num_packs_array[0] = 2;
+								num_packs_array[1] = 10;
+								transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);						
+							}
+							lastTransmit = millis();
 						}
 						cmd_str(SIDLE);
 						cmd_str(SFRX);
@@ -214,8 +304,9 @@ int main(void)
 					cmd_str(SIDLE);
 					cmd_str(SFRX);
 					cmd_str(SFTX);
-					delay_ms(5);
+					delay_ms(1);
 					transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+					delay_ms(1);
 					lastTransmit = millis();				
 				}
 
