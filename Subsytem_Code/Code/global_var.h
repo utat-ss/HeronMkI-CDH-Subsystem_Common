@@ -311,6 +311,8 @@ uint8_t current_transceiver;
 uint32_t countcycles;
 uint8_t last_packet_height;
 uint32_t radio_sequence_control;
+uint8_t test_reg[6] = {0};
+uint8_t t_message[128];
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;

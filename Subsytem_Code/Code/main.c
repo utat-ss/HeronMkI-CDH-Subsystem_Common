@@ -1,6 +1,5 @@
 /*
     Author: Keenan Burnett
-
 	***********************************************************************
 	*	FILE NAME:		main.c
 	*
@@ -103,257 +102,31 @@ volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
-	uint8_t	i = 0;
-	
-	uint8_t msg_low = 0, msg_high = 0;
-	
-	uint8_t high = 0, low = 0;
-	
-	uint8_t msg = 0x66;
-	uint8_t t_message[128];
-	
-	uint8_t stream_finished = 0;
-	uint8_t num_packs_array[2];
-	num_packs_array[0] = 1;
-	num_packs_array[1] = 10;
-	uint8_t packets_so_far = 0;
-	uint8_t num_expected = 10;
-	uint8_t receiving_stream = 0;
-	uint8_t streaming = 1;
-	
-	uint8_t* adc_result;
-	*adc_result = 0;
-	uint16_t count = 0;
-
-	// Initialize I/O, Timer, ADC, CAN, WDT, and SPI
+	/* Initialize All Hardware and Interrupts */
 	sys_init();
-	
 	/*		Begin Main Program Loop					*/
-	for(i = 0; i < 76; i ++)
+	if(SELF_ID == 0)
 	{
-		t_message[i] = i;
+		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+		delay_ms(10);
+		cmd_str(SRX);		
 	}
-	uint8_t *CHIP_RDYn, *state, rxFirst, rxLast;
-	uint8_t test_reg[6] = {0};
-	transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);
-	delay_ms(25);
-	cmd_str(SRX);
     while(1)
     {	
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		//can_check_general();
-
+		can_check_general();
 		if(!PAUSE)
 		{
-
 			/*		TRANSCEIVER COMMUNICATION	*/
 			if(SELF_ID == 0)
 			{
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
-				
-/********************** RX  */
-				delay_ms(1);
-				//transceiver_run();
-				//send_can_value(millis());
-				//if (millis() - lastCycle > TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
-				//{
-					//if(rx_mode)
-						//cmd_str(SRX);
-					//if(tx_mode)
-					//{
-						//tx_mode = 0;
-						//rx_mode = 1;
-						//cmd_str(SRX);
-					//}
-					
-				while(streaming)
-				{
-					delay_ms(1);
-					if (millis() - lastTransmit > 250)
-					{
-						cmd_str(SRX);
-						rx_length = reg_read2F(NUM_RXBYTES);
-						rxFirst = reg_read2F(RXFIRST);
-						rxLast = reg_read2F(RXLAST);
-						/* Got some data */
-						if(rx_length)
-						{	
-							if(rx_length >= 1 + 2)
-							{
-								load_ack();
-								if(new_packet[2] == 2)
-								{
-									for(i = 0; i < num_packs_array[1]; i++)
-									{
-										transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
-										delay_ms(25);
-									}
-									lastTransmit = millis();
-									stream_finished = 1;
-								}
-								if(new_packet[2] == 3 && stream_finished && new_packet[3] == num_expected)
-								{
-									PIN_toggle(LED2);
-									streaming = 0;
-									lastTransmit = millis();
-								}
-							}
-							cmd_str(SIDLE);
-							cmd_str(SFRX);
-							cmd_str(SRX);
-						}
-					}
-					if(millis() - lastTransmit > 300)	// Didn't get an ACK, resend packet.
-					{
-						PIN_toggle(LED3);
-						cmd_str(SIDLE);
-						cmd_str(SFRX);
-						cmd_str(SFTX);
-						delay_ms(1);
-						num_packs_array[0] = 1;
-						num_packs_array[1] = 10;
-						num_expected = 10;
-						transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);	// initiate the stream again.
-						delay_ms(25);
-						lastTransmit = millis();
-						stream_finished = 0;							
-					}			
-				}
-					
-				if (millis() - lastTransmit > 250)
-				{
-					cmd_str(SRX);
-					rx_length = reg_read2F(NUM_RXBYTES);
-					rxFirst = reg_read2F(RXFIRST);
-					rxLast = reg_read2F(RXLAST);
-					/* Got some data */
-					if(rx_length)
-					{
-						if(rx_length >= REAL_PACKET_LENGTH + 2)
-						{
-							load_packet();
-							/* We have a packet */
-							if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
-							{
-								PIN_toggle(LED1);
-								test_reg[0] = rxFirst;
-								test_reg[1] = rxLast;
-								test_reg[2] = rx_length;
-								test_reg[3] = state;
-								send_can_value(test_reg);
-								store_new_packet();
-								rx_length = 0;
-								if(receiving_stream)
-								{
-									packets_so_far++;
-									if(packets_so_far == num_expected)
-									{
-										num_packs_array[0] = 3;
-										num_packs_array[1] = packets_so_far;
-										transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);
-										receiving_stream = 0;
-									}
-								}
-								else
-									prepareAck();
-								cmd_str(STX);
-								delay_ms(1);
-							}						
-						}	
-						else if(rx_length >= ACK_LENGTH + 2)
-						{
-							load_ack();
-							/* We have an acknowledgment */
-							if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
-							{
-								PIN_toggle(LED2);
-								cmd_str(SIDLE);
-								cmd_str(SFRX);
-								cmd_str(SFTX);
-								delay_ms(1);
-								transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
-								delay_ms(1);
-								lastTransmit = millis();
-							}
-						}
-						else if(rx_length >= 1 + 2)
-						{
-							load_ack();
-							/* Someone is trying to stream to us */
-							if(!streaming && new_packet[2] == 1)
-							{
-								receiving_stream = 1;
-								num_expected = new_packet[3];
-								num_packs_array[0] = 2;
-								num_packs_array[1] = 10;
-								transceiver_send(num_packs_array, DEVICE_ADDRESS, 2);						
-							}
-							lastTransmit = millis();
-						}
-						cmd_str(SIDLE);
-						cmd_str(SFRX);
-						cmd_str(SRX);
-					}					
-				}
-				if(millis() - lastTransmit > 300)	// Didn't get an ACK, resend packet.	
-				{
-					PIN_toggle(LED3);
-					cmd_str(SIDLE);
-					cmd_str(SFRX);
-					cmd_str(SFTX);
-					delay_ms(1);
-					transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
-					delay_ms(1);
-					lastTransmit = millis();				
-				}
-
-				//
-
-					//lastCycle = millis();
-				//}
-
-/************************  TX */
-				//if(!receiving_tmf)
-					//transceiver_run();		// Check for incoming packets.
-				//if(rx_mode)
-					//cmd_str(SRX);
-				//if(tx_mode)
-					//cmd_str(STX);
-//
-				////if(tx_mode)
-				////{
-					////tx_mode = 0;
-					////rx_mode = 1;
-
-				////}
-				//if(count == 1000)
-				//{
-					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);	// Periodically transmit a packet.
-					//count = 0;
-				//}
-				//delay_ms(1);
-				//count++;
-/*****************************************/
-				//cmd_str(SRX);
-				//get_status(CHIP_RDYn, state);
-				//if(*state == 0b001)
-				//{
-					//PIN_toggle(LED2);
-					//delay_ms(100);
-				//}
-				//cmd_str(SIDLE);
-				//msg = reg_read(DCFILT_CFG);
-				//if(msg == 0x1C)
-				//{
-					//PIN_toggle(LED1);
-					//delay_ms(100);
-				//}
-				//cmd_str(SRX);
-				
-				// Continually check if coms needs to takeover for OBC
+				delay_ms(250);
+				transceiver_run2();	
+				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
 			}
 			if(SELF_ID == 1)
@@ -362,25 +135,10 @@ int main(void)
 				run_battBalance();
 				//run_batt_heater();
 			}			
-		}
-				
+		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		//run_commands();
+		run_commands();
 	}
-}
-
-static void send_can_value(uint8_t* data)
-{
-	send_arr[7] = (SELF_ID << 4)|OBC_ID;
-	send_arr[6] = MT_COM;
-	send_arr[5] = *(data + 5);
-	send_arr[4] = *(data + 4);
-	send_arr[3] = *(data + 3);
-	send_arr[2] = *(data + 2);
-	send_arr[1] = *(data + 1);
-	send_arr[0] = *data;
-	can_send_message(&(send_arr[0]), CAN1_MB7);
-	return;
 }
 
 static void sys_init(void) 
@@ -419,16 +177,15 @@ static void sys_init(void)
 		spi_send_shunt_dpot_value(0x55);
 	}
 
-	coms_timer_init();
+	if (SELF_ID == 0)
+		coms_timer_init();
 	// Enable global interrupts for Timer execution
 	sei();
 	
 	SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
 	
 	if (SELF_ID == 0)
-	{
 		transceiver_initialize();
-	}
 	
 	if(SELF_ID != 1)
 	{
@@ -586,7 +343,8 @@ static void init_global_vars(void)
 	for(i = 0; i < 77; i ++)
 	{
 		new_packet[i] = i;
-	}	
+		t_message[i] = i;
+	}
 	packet_count = 0;
 	
 	return;

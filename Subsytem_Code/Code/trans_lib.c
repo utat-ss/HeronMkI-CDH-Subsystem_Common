@@ -327,6 +327,70 @@ void transceiver_run(void)
 	return;
 }
 
+void transceiver_run2(void)
+{
+	uint8_t *state, *CHIP_RDYn, rxFirst, rxLast;
+	if (millis() - lastTransmit > 250)
+	{
+		cmd_str(SRX);
+		rx_length = reg_read2F(NUM_RXBYTES);
+		rxFirst = reg_read2F(RXFIRST);
+		rxLast = reg_read2F(RXLAST);
+		/* Got some data */
+		if(rx_length)
+		{
+			if(rx_length >= REAL_PACKET_LENGTH + 2)
+			{
+				load_packet();
+				/* We have a packet */
+				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
+				{
+					PIN_toggle(LED1);
+					test_reg[0] = rxFirst;
+					test_reg[1] = rxLast;
+					test_reg[2] = rx_length;
+					test_reg[3] = state;
+					send_can_value(test_reg);
+					store_new_packet();
+					rx_length = 0;
+					prepareAck();
+					cmd_str(STX);
+					delay_ms(10);
+				}
+			}
+			else if(rx_length >= ACK_LENGTH + 2)
+			{
+				load_ack();
+				/* We have an acknowledgment */
+				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
+				{
+					PIN_toggle(LED2);
+					cmd_str(SIDLE);
+					cmd_str(SFRX);
+					cmd_str(SFTX);
+					delay_ms(5);
+					transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+					delay_ms(10);
+					lastTransmit = millis();
+				}
+			}
+			cmd_str(SIDLE);
+			cmd_str(SFRX);
+			cmd_str(SRX);
+		}
+	}
+	if(millis() - lastTransmit > 300)	// Didn't get an ACK, resend packet.
+	{
+		PIN_toggle(LED3);
+		cmd_str(SIDLE);
+		cmd_str(SFRX);
+		cmd_str(SFTX);
+		delay_ms(5);
+		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+		lastTransmit = millis();
+	}	
+}
+
 static void send_can_value(uint8_t* data)
 {
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
