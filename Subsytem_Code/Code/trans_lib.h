@@ -43,8 +43,9 @@
 /* Packet Structure so that we can have a linked list */
 
 #define STATUS_INTERVAL 1000
-#define ACK_TIMEOUT 2000
+#define ACK_TIMEOUT 1000
 #define TRANSCEIVER_CYCLE 250
+#define TRANSMIT_TIMEOUT 500
 #define DEVICE_ADDRESS 0xA5
 #define REAL_PACKET_LENGTH 76
 #define ACK_LENGTH 3
@@ -290,3 +291,4 @@ void load_packet_to_current_tc(void);
 void load_packet(void);
 void load_ack(void);
 void transceiver_run2(void);
+void transceiver_run3(void);

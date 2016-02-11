@@ -107,8 +107,8 @@ int main(void)
 	if(SELF_ID == 0)
 	{
 		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
-		delay_ms(10);
-		cmd_str(SRX);		
+		delay_ms(25);
+		//cmd_str(SRX);		
 	}
     while(1)
     {	
@@ -124,7 +124,7 @@ int main(void)
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
 				delay_ms(250);
-				transceiver_run2();	
+				transceiver_run3();	
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
 			}
@@ -291,6 +291,7 @@ static void init_global_vars(void)
 	open_valvesf = 0; 
 	collect_pdf = 0;
 	current_transceiver = 0;
+	lastAck = 0;
 	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;
@@ -319,11 +320,13 @@ static void init_global_vars(void)
 	tx_mode = 0;
 	rx_mode = 1;
 	rx_length = 0;
+	tx_length = 0;
 	count32ms = 0;
 	packet_receivedf = 0;
 	current_transceiver = 0;
 	last_packet_height = 0;
 	radio_sequence_control = 0;
+	tx_fail_count = 0;
 	
 	for(i = 0; i < 152; i++)
 	{
