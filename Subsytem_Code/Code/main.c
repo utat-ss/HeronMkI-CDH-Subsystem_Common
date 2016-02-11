@@ -108,7 +108,6 @@ int main(void)
 	{
 		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
 		delay_ms(25);
-		//cmd_str(SRX);		
 	}
     while(1)
     {	

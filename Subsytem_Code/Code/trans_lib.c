@@ -215,25 +215,47 @@ void transceiver_run(void)
 		if (rx_length)
 		{
 			if(rx_length >= REAL_PACKET_LENGTH + 2)
-				load_packet();								// Packet is loaded into new_packet[] for processing.
-			/* We have a packet */
-			if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
 			{
-				PIN_toggle(LED1);
-				test_reg[0] = rxFirst;
-				test_reg[1] = rxLast;
-				test_reg[2] = rx_length;
-				test_reg[3] = state;
-				send_can_value(test_reg);
-				store_new_packet();
-				rx_length = 0;
-				prepareAck();
-				cmd_str(STX);
-				delay_ms(10);
+				load_packet();
+				/* We have a packet */
+				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
+				{
+					PIN_toggle(LED1);
+					test_reg[0] = rxFirst;
+					test_reg[1] = rxLast;
+					test_reg[2] = rx_length;
+					test_reg[3] = state;
+					send_can_value(test_reg);
+					store_new_packet();
+					rx_length = 0;
+					prepareAck();
+					cmd_str(STX);
+					delay_ms(10);
+				}
 			}
-			cmd_str(SIDLE);						// ** May not be necessary.
-			cmd_str(SFRX);
-			cmd_str(SRX);
+			else if(rx_length >= ACK_LENGTH + 2)
+			{
+				load_ack();
+				/* We have an acknowledgment */
+				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
+				{
+					PIN_toggle(LED2);
+					cmd_str(SIDLE);
+					cmd_str(SFRX);
+					cmd_str(SFTX);
+					delay_ms(5);
+					transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+					delay_ms(10);
+					lastTransmit = millis();
+				}
+			}
+			else		// CAn I get rid of this?
+			{
+				cmd_str(SIDLE);
+				cmd_str(SFRX);
+				cmd_str(SRX);				
+			}
+
 			//reg_write2F(TXFIRST, 0);	// So we can send another ACK.
 			/* The packet doesn't seem to be done */
 			//else if (new_packet[0] >= (rxLast - rxFirst + 1)){ }
@@ -250,19 +272,19 @@ void transceiver_run(void)
 	}
 	get_status(&CHIP_RDYn, &state);
     //We will be in this state if we are waiting for an ACK or we are currently receiving an ACK
-	if(tx_mode && (state == STATERX))
-	{
-		// Waited too long, resend.
-		if(millis() - lastTransmit >= ACK_TIMEOUT)
-		{
-			transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
-			//reg_write2F(TXFIRST, 0x00);
-			cmd_str(STX);
-			lastTransmit = millis();
-		}
-	}
+	//if(tx_mode && (state == STATERX))
+	//{
+		//// Waited too long, resend.
+		//if(millis() - lastTransmit >= ACK_TIMEOUT)
+		//{
+			//transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+			////reg_write2F(TXFIRST, 0x00);
+			//cmd_str(STX);
+			//lastTransmit = millis();
+		//}
+	//}
 	// Still sending the data that we have or finished and already received a packet
-	else if(tx_mode && (state == STATETX))
+	if(tx_mode && (state == STATETX))
 	{
 		//PIN_toggle(LED2);
 		rxFirst = reg_read2F(RXFIRST);
@@ -281,65 +303,10 @@ void transceiver_run(void)
 		/* Got some data, so there must be a packet waiting for us. */
 		else if (rxLast)
 		{
-			PIN_toggle(LED2);
 			rx_length = reg_read2F(NUM_RXBYTES);
 			j = 0;
 			clear_new_packet();
 			/* Received a packet in TX Mode */
-            load_packet();
-			cmd_str(SIDLE);
-			cmd_str(SFTX);
-			cmd_str(SFRX);
-			prepareAck();
-			cmd_str(STX);
-			delay_ms(1);
-			tx_mode = 0;
-			rx_mode = 1;
-			rx_length = 0;
-			cmd_str(SRX);
-		}
-		if(rxFirst)
-		{
-			reg_write2F(RXFIRST, 0);
-			reg_write2F(RXLAST, 0);
-			lastTransmit = millis();
-		}
-		if(txLast < txFirst)		// Random error that I've been getting.
-		{
-			reg_write2F(TXLAST, 0);
-			reg_write2F(TXFIRST, 0);
-			tx_mode = 1;
-			rx_mode = 0;
-			cmd_str(STX);
-		}
-	}
-	//get_status(&CHIP_RDYn, &state);
-	if(state == 0b110)
-	{
-		PIN_toggle(LED3);
-		cmd_str(SIDLE);
-		cmd_str(SFRX);
-		//delay_ms(1);
-		cmd_str(SRX);
-		tx_mode = 0;
-		rx_mode = 1;
-	}
-	lastCycle = millis();
-	return;
-}
-
-void transceiver_run2(void)
-{
-	uint8_t *state, *CHIP_RDYn, rxFirst, rxLast;
-	if (millis() - lastTransmit > 250)
-	{
-		cmd_str(SRX);
-		rx_length = reg_read2F(NUM_RXBYTES);
-		rxFirst = reg_read2F(RXFIRST);
-		rxLast = reg_read2F(RXLAST);
-		/* Got some data */
-		if(rx_length)
-		{
 			if(rx_length >= REAL_PACKET_LENGTH + 2)
 			{
 				load_packet();
@@ -375,13 +342,26 @@ void transceiver_run2(void)
 					lastTransmit = millis();
 				}
 			}
-			cmd_str(SIDLE);
-			cmd_str(SFRX);
-			cmd_str(SRX);
-
+			//cmd_str(SIDLE);
+			//cmd_str(SFRX);
+			//cmd_str(STX);
 		}
+		//if(rxFirst)
+		//{
+			//reg_write2F(RXFIRST, 0);
+			//reg_write2F(RXLAST, 0);
+			//lastTransmit = millis();
+		//}
+		//if(txLast < txFirst)		// Random error that I've been getting.
+		//{
+			//reg_write2F(TXLAST, 0);
+			//reg_write2F(TXFIRST, 0);
+			//tx_mode = 1;
+			//rx_mode = 0;
+			//cmd_str(STX);
+		//}
 	}
-	if(millis() - lastTransmit > 100)	// Didn't get an ACK, resend packet.
+	if(millis() - lastTransmit > 300)	// Didn't get an ACK, resend packet.
 	{
 		PIN_toggle(LED3);
 		cmd_str(SIDLE);
@@ -390,7 +370,125 @@ void transceiver_run2(void)
 		delay_ms(5);
 		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
 		lastTransmit = millis();
-	}	
+	}
+	//get_status(&CHIP_RDYn, &state);
+	if(state == 0b110)
+	{
+		//PIN_toggle(LED3);
+		cmd_str(SIDLE);
+		cmd_str(SFRX);
+		//delay_ms(1);
+		cmd_str(SRX);
+		tx_mode = 0;
+		rx_mode = 1;
+	}
+	lastCycle = millis();
+	return;
+}
+
+void transceiver_run2(void)
+{
+	uint8_t state, CHIP_RDYn, rxFirst, rxLast, txFirst, txLast;
+	if (millis() - lastCycle < 250)
+		return;
+	if(!rx_mode && !tx_mode)
+		rx_mode = 1;
+	
+	if(rx_mode)
+	{
+		cmd_str(SRX);
+		rx_length = reg_read2F(NUM_RXBYTES);
+		rxFirst = reg_read2F(RXFIRST);
+		rxLast = reg_read2F(RXLAST);
+		/* Got some data */
+		if(rx_length)
+		{
+			if(rx_length >= REAL_PACKET_LENGTH + 2)
+			{
+				load_packet();
+				/* We have a packet */
+				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
+				{
+					PIN_toggle(LED1);
+					test_reg[0] = rxFirst;
+					test_reg[1] = rxLast;
+					test_reg[2] = rx_length;
+					test_reg[3] = state;
+					send_can_value(test_reg);
+					store_new_packet();
+					rx_length = 0;
+					prepareAck();
+					cmd_str(STX);
+					//delay_ms(10);
+				}
+			}
+			else if(rx_length >= ACK_LENGTH + 2)
+			{
+				load_ack();
+				/* We have an acknowledgment */
+				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
+				{
+					PIN_toggle(LED2);
+					cmd_str(SIDLE);
+					cmd_str(SFRX);
+					cmd_str(SFTX);
+					delay_ms(5);
+					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+					//delay_ms(10);
+					//lastTransmit = millis();
+				}
+			}
+			else
+			{
+				cmd_str(SIDLE);
+				cmd_str(SFRX);
+				cmd_str(SRX);
+			}
+			
+
+		}
+	}
+	get_status(&CHIP_RDYn, &state);
+	test_reg[0] = state;
+	test_reg[1] = rx_mode;
+	test_reg[2] = tx_mode;
+	send_can_value(test_reg);
+	if(tx_mode && state == STATETX)		// Either still transmitting or we received a packet.
+	{
+		//PIN_toggle(LED2);
+		rx_length = reg_read2F(NUM_RXBYTES);
+		rxFirst = reg_read2F(RXFIRST);
+		rxLast = reg_read2F(RXLAST);
+		txFirst = reg_read2F(TXFIRST);
+		txLast = reg_read2F(TXLAST);
+		// Still sending data out, just wait for it
+		if(txLast < txFirst)
+		{
+			cmd_str(SIDLE);
+			cmd_str(SFTX);
+			cmd_str(SRX);
+		}
+	}
+	if(millis() - lastTransmit > 100)	// Didn't get an ACK, resend packet.
+	{
+		PIN_toggle(LED3);
+		cmd_str(SIDLE);
+		cmd_str(SFRX);
+		cmd_str(SFTX);
+		delay_ms(1);
+		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+		lastTransmit = millis();
+	}
+	if(state == 0b110)
+	{
+		cmd_str(SIDLE);
+		cmd_str(SFRX);
+		if(rx_mode)
+			cmd_str(SRX);
+		if(tx_mode)
+			cmd_str(STX);
+	}
+	lastCycle = millis();	
 }
 
 void transceiver_run3(void)
@@ -506,8 +604,8 @@ static void send_can_value(uint8_t* data)
 {
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
 	send_arr[6] = MT_COM;
-	send_arr[5] = 0x00;
-	send_arr[4] = 0x00;
+	send_arr[5] = *(data + 5);
+	send_arr[4] = *(data + 4);
 	send_arr[3] = *(data + 3);
 	send_arr[2] = *(data + 2);
 	send_arr[1] = *(data + 1);
