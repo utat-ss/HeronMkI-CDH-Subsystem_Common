@@ -57,4 +57,8 @@ void SS_set_high(void);
 void SS_set_low(void);
 void SS1_set_high(uint32_t);
 void SS1_set_low(uint32_t);
+void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis);
+void spi_retrieve_humidity(uint8_t *high, uint8_t *low);
+void pressure_sensor_init(uint8_t *pressure_calibration);
+void spi_retrieve_pressure(uint8_t* arr);
 

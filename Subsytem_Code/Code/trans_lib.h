@@ -36,6 +36,7 @@
 #include "port.h"
 #include "Timer.h"
 #include "global_var.h"
+#include "can_api.h"
 
 /*********** DEFINITIONS ******************/
 
@@ -286,7 +287,6 @@ void transceiver_run(void);
 void clear_new_packet(void);
 uint8_t store_new_packet(void);
 void load_packet_to_current_tc(void);
-static void clear_current_tc(void);
 void load_packet(void);
 void load_ack(void);
 void transceiver_run2(void);

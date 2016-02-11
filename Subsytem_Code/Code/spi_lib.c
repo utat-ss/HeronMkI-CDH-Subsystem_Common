@@ -159,7 +159,6 @@ uint8_t spi_transfer(uint8_t message)
 	uint8_t* reg_ptr;
 	uint8_t timeout = SPI_TIMEOUT;
 	uint8_t receive_char;
-	uint8_t i, temp, temp2;
 	
 	reg_ptr = SPDR_BASE;
 	
@@ -212,7 +211,6 @@ uint8_t spi_transfer2(uint8_t message)
 	uint8_t* reg_ptr;
 	uint8_t timeout = SPI_TIMEOUT;
 	uint8_t receive_char;
-	uint8_t i, temp, temp2;
 	
 	//cmd_str(SRES);
 	
@@ -298,9 +296,7 @@ void spi_send_shunt_dpot_value(uint8_t message)
 void spi_retrieve_temp(uint8_t* high, uint8_t* low)
 {
 	uint8_t* reg_ptr;
-	uint8_t timeout = SPI_TIMEOUT;
 	uint8_t receive_char;
-	uint8_t i, temp, temp2;
 	
 	reg_ptr = SPDR_BASE;
 	
@@ -337,7 +333,7 @@ void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size)
 
 //Acceleration: ADXL362 
 //axis: 1=x; 2=y; 3=z
-spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
+void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
 {	
 	uint8_t *reg_ptr = SPDR_BASE;	
 	uint8_t acc_reg_H, acc_reg_L;
@@ -372,11 +368,11 @@ spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
 
 //Humidity: HIH7000 Series
 
-void spi_retrieve_humidity(uint8_t *high, uint8_t *low){
+void spi_retrieve_humidity(uint8_t *high, uint8_t *low)
+{
 	
 	uint8_t *reg_ptr = SPDR_BASE;
 	*reg_ptr = 0;
-	uint8_t hi, lo;
 	
 	//SS1_set_low(PAY_HUM);
 	SS_set_low();
@@ -384,7 +380,7 @@ void spi_retrieve_humidity(uint8_t *high, uint8_t *low){
 	delay_us(128);
 	high = *reg_ptr;
 	delay_us(128);
-	lo = *reg_ptr;
+	low = *reg_ptr;
 	
 	SS_set_high();
 	
@@ -415,7 +411,8 @@ void pressure_sensor_init(uint8_t *pressure_calibration)
 //These are stored in array arr in this function. 
 //Still need to test the order of the variables etc.
 
-void spi_retrieve_pressure(uint8_t* arr){
+void spi_retrieve_pressure(uint8_t* arr)
+{
 	uint8_t* reg_ptr;
 	reg_ptr = SPDR_BASE;
 	int i = 0;

@@ -159,6 +159,7 @@
 #include "trans_lib.h"
 
 static void send_can_value(uint8_t* data);
+static void clear_current_tc(void);
 
 void transceiver_initialize(void)
 {	
@@ -188,7 +189,7 @@ void transceiver_initialize(void)
 void transceiver_run(void)
 {
 	uint8_t state, CHIP_RDYn, rxFirst, rxLast, i, j, txFirst, txLast;
-	uint8_t test_reg[4] = {0};
+	//uint8_t test_reg[4] = {0};
 	uint8_t t_message[128];		
 
 	if (millis() - lastCycle < TRANSCEIVER_CYCLE)	// Only run this function once every TRANSCEIVER_CYCLE ms.
@@ -510,7 +511,7 @@ uint8_t reg_read(uint8_t addr)
 
 void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 {
-	uint8_t msg, check, i;
+	uint8_t msg;
 	
 	SS_set_low();
 	msg = spi_transfer(addr);		// Send the desired address
@@ -547,7 +548,7 @@ uint8_t reg_read2F(uint8_t addr)
 void reg_write2F(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 {
 	cmd_str(SNOP);
-	uint8_t msg, i, check;
+	uint8_t msg;
 	msg = 0b00101111;
 	
 	SS_set_low();

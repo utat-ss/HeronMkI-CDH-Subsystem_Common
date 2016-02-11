@@ -60,6 +60,8 @@ void enter_take_over(void);
 void exit_take_over(void);
 void open_valves(void);
 void collect_pd(void);
+void pause_operations(void);
+void resume_operations(void);
 
 /*****************************************************/
 #endif
