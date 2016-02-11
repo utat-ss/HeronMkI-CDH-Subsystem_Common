@@ -311,11 +311,14 @@ uint8_t new_packet[152];
 uint8_t packet_receivedf;
 uint8_t current_transceiver;
 uint32_t countcycles;
-uint8_t last_packet_height;
-uint32_t radio_sequence_control;
+uint8_t last_rx_packet_height;
+uint8_t last_tx_packet_height;
+uint32_t receiving_sequence_control;
+uint32_t transmitting_sequence_control;
 uint8_t test_reg[6];
 uint8_t t_message[128];
 uint8_t tx_fail_count;
+uint8_t ack_acquired;
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;

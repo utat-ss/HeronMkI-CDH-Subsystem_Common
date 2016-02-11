@@ -47,7 +47,7 @@
 #define TRANSCEIVER_CYCLE 250
 #define TRANSMIT_TIMEOUT 500
 #define DEVICE_ADDRESS 0xA5
-#define REAL_PACKET_LENGTH 76
+#define REAL_PACKET_LENGTH 80
 #define ACK_LENGTH 3
 
 //define crystal oscillator frequency to 32MHz
@@ -292,3 +292,6 @@ void load_packet(void);
 void load_ack(void);
 void transceiver_run2(void);
 void transceiver_run3(void);
+uint8_t transmit_packet(void);
+void setup_fake_tc(void);
+uint16_t fletcher16(uint8_t* data, int count);
