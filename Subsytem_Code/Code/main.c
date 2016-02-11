@@ -108,7 +108,9 @@ int main(void)
 	{
 		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
 		delay_ms(10);
-		cmd_str(SRX);		
+		cmd_str(SRX);
+		rx_mode = 1;
+		tx_mode = 0;	
 	}
     while(1)
     {	
@@ -319,11 +321,13 @@ static void init_global_vars(void)
 	tx_mode = 0;
 	rx_mode = 1;
 	rx_length = 0;
+	tx_length = 0;
 	count32ms = 0;
 	packet_receivedf = 0;
 	current_transceiver = 0;
 	last_packet_height = 0;
 	radio_sequence_control = 0;
+	t_fail_count = 0;
 	
 	for(i = 0; i < 152; i++)
 	{

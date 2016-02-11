@@ -304,6 +304,7 @@ long int lastToggle;
 uint8_t tx_mode;
 uint8_t rx_mode;
 uint8_t rx_length;
+uint8_t tx_length;
 volatile uint32_t count32ms;
 uint8_t new_packet[152];
 uint8_t packet_receivedf;
@@ -313,6 +314,7 @@ uint8_t last_packet_height;
 uint32_t radio_sequence_control;
 uint8_t test_reg[6];
 uint8_t t_message[128];
+uint8_t t_fail_count;
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;
