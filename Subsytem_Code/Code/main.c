@@ -122,8 +122,12 @@ int main(void)
 			{
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
-				delay_ms(250);
-				transceiver_run3();	
+				if(!receiving_tmf)
+				{
+					delay_ms(250);
+					transceiver_run3();					
+				}
+
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
 			}
