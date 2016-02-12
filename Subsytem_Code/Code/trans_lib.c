@@ -493,7 +493,7 @@ void transceiver_run2(void)
 
 void transceiver_run3(void)
 {
-	uint8_t *state, *CHIP_RDYn, rxFirst, rxLast, txFirst, txLast;
+	uint8_t *state, *CHIP_RDYn, rxFirst, rxLast, txFirst, txLast, check;
 	if (millis() - lastCycle < TRANSCEIVER_CYCLE)
 		return;
 	
@@ -546,11 +546,15 @@ void transceiver_run3(void)
 					test_reg[2] = rx_length;
 					test_reg[3] = state;
 					send_can_value(test_reg);
-					store_new_packet();
+					check = store_new_packet();
 					rx_length = 0;
-					prepareAck();
-					cmd_str(STX);
-					delay_ms(10);
+					if(!check)									// Packet was accepted and stored internally.
+					{
+						prepareAck();
+						cmd_str(STX);
+						delay_ms(10);				
+					}
+
 				}
 			}
 			else if(rx_length >= ACK_LENGTH + 2)
@@ -566,6 +570,9 @@ void transceiver_run3(void)
 					delay_ms(5);
 					lastAck = millis();
 					lastTransmit = millis();
+					if(last_tx_packet_height)
+						current_tm_fullf = 0;				// Second half of packet was sent, set current_tm_fullf to zero.
+					ack_acquired = 1;
 				}
 			}
 			else
@@ -587,14 +594,14 @@ void transceiver_run3(void)
 		delay_ms((uint8_t)rand());
 		lastAck = millis();
 	}
-	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Didn't get an ACK, resend packet.
+	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
 	{
 		PIN_toggle(LED3);
 		cmd_str(SIDLE);
 		cmd_str(SFRX);
 		cmd_str(SFTX);
 		delay_ms(5);
-		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+		transmit_packet();
 		lastTransmit = millis();
 	}
 	lastCycle = millis();
@@ -995,8 +1002,8 @@ uint8_t store_new_packet(void)
 	uint32_t rsc;
 	if(packet_count == 5)		
 	{
-		last_packet_height = 0;
-		radio_sequence_control = 0;
+		last_rx_packet_height = 0;
+		receiving_sequence_control = 0;
 		return 0xFF;		// Packet_list is currently full, cannot accept new packets.
 	}
 	/* There is room in the packet list */
@@ -1005,18 +1012,18 @@ uint8_t store_new_packet(void)
 	rsc += ((uint32_t)new_packet[77]) << 8;
 	rsc += (uint32_t)new_packet[76];
 	
-	if(last_packet_height && packet_height)
+	if(last_rx_packet_height && packet_height)
 	{
-		last_packet_height = 0;
-		radio_sequence_control = 0;		
+		last_rx_packet_height = 0;
+		receiving_sequence_control = 0;		
 		return 0xFF;		// H/L received out of order.
 	}
-	if(!radio_sequence_control)
-		radio_sequence_control = rsc;
-	else if(radio_sequence_control != rsc - 1)
+	if(!receiving_sequence_control)
+		receiving_sequence_control = rsc;
+	else if(receiving_sequence_control != rsc - 1)
 	{
-		last_packet_height = 0;
-		radio_sequence_control = 0;
+		last_rx_packet_height = 0;
+		receiving_sequence_control = 0;
 		return 0xFF;		// Packet received out of order.
 	}
 	if(!packet_height)
@@ -1034,9 +1041,44 @@ uint8_t store_new_packet(void)
 		}
 		packet_count++;
 	}
-	last_packet_height = packet_height;
-	radio_sequence_control = rsc;
+	last_rx_packet_height = packet_height;
+	receiving_sequence_control = rsc;
 	return 0x00;
+}
+
+// The packet to be transmitted is assumed to be tm_to_downlink[] and be 76 bytes long.
+uint8_t transmit_packet(void)
+{
+	uint8_t i, offset = 0;
+	if(!current_tm_fullf)
+		return;
+	if(last_tx_packet_height > 1)
+		last_tx_packet_height = 0;
+	
+	// Adjust the sequence control variables if an acknowledgment was received.
+	if(ack_acquired)
+	{
+		if(!last_tx_packet_height)
+			last_tx_packet_height = 1;
+		else
+			last_tx_packet_height = 0;
+		transmitting_sequence_control++;
+		ack_acquired = 0;
+	}
+	
+	// Place the sequence control variables in the packet to be sent.
+	t_message[79] = last_tx_packet_height;
+	t_message[78] = (uint8_t)(transmitting_sequence_control >> 16);
+	t_message[77] = (uint8_t)(transmitting_sequence_control >> 8);
+	t_message[76] = (uint8_t)transmitting_sequence_control;
+	
+	if(last_tx_packet_height)
+		offset = 76;
+	for(i = 0; i < 76; i++)
+	{
+		t_message[i] = tm_to_downlink[i + offset];
+	}
+	transceiver_send(t_message, DEVICE_ADDRESS, 80);
 }
 
 void load_packet_to_current_tc(void)
@@ -1090,4 +1132,62 @@ void load_ack(void)
 		new_packet[i] = reg_read(STDFIFO);
 	}
 	return;
+}
+
+void setup_fake_tc(void)
+{
+	uint8_t version, type, sequence_flags, service_type, service_sub_type;
+	uint16_t pec;
+	version = 0;
+	type = 1;
+	sequence_flags = 0x02;
+	service_type = 5;			// HK Service
+	service_sub_type = 9;		// Req HK Definition report
+	// Packet Header
+	tm_to_downlink[151] = ((version & 0x07) << 5) | ((type & 0x01) << 4) | (0x08);
+	tm_to_downlink[150] = HK_GROUND_ID;
+	tm_to_downlink[149] = sequence_flags;
+	tm_to_downlink[148] = transmitting_sequence_control;
+	tm_to_downlink[147] = 0x00;
+	tm_to_downlink[146] = PACKET_LENGTH - 1;
+	version = 1;
+	// Data Field Header
+	tm_to_downlink[145] = ((version & 0x07) << 4) | 0x80;
+	tm_to_downlink[144] = service_type;
+	tm_to_downlink[143] = service_sub_type;
+	tm_to_downlink[142] = transmitting_sequence_control;
+	tm_to_downlink[141] = HK_TASK_ID;
+	tm_to_downlink[140] = 0;
+	tm_to_downlink[139] = 0;
+	for(i = 0; i < 139; i++)
+	{
+		tm_to_downlink[i] = 0;
+	}
+	pec = fletcher16(tm_to_downlink + 2, 150);
+	tm_to_downlink[1] = (uint8_t)(pec >> 8);
+	tm_to_downlink[0] = (uint8_t)(pec);
+	return;
+}
+
+/************************************************************************/
+/* FLETCHER16				                                            */
+/* @Purpose: This function runs Fletcher's checksum algorithm on spimem	*/
+/* @param: *data: pointer to the point in memory that you would to start*/
+/* hashing.																*/
+/* @param: count: how many BYTES in memory, you would like to hash		*/
+/* @return: the 16-bit checksum value.									*/
+/************************************************************************/
+uint16_t fletcher16(uint8_t* data, int count)
+{
+	uint16_t sum1 = 0;
+	uint16_t sum2 = 0;
+	int i;
+	
+	for(i = 0; i < count; i++)
+	{
+		sum1 = (sum1 + data[i]) % 255;
+		sum2 = (sum2 + sum1) % 255;
+	}
+	
+	return (sum2 << 8) | sum1;
 }

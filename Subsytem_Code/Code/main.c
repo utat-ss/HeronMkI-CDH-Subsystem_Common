@@ -106,7 +106,9 @@ int main(void)
 	/*		Begin Main Program Loop					*/
 	if(SELF_ID == 0)
 	{
-		transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);
+		setup_fake_tc();
+		current_tm_fullf = 1;
+		transmit_packet();
 		delay_ms(25);
 	}
     while(1)
@@ -327,13 +329,17 @@ static void init_global_vars(void)
 	count32ms = 0;
 	packet_receivedf = 0;
 	current_transceiver = 0;
-	last_packet_height = 0;
-	radio_sequence_control = 0;
+	last_rx_packet_height = 0;
+	last_tx_packet_height = 0xFF;
+	receiving_sequence_control = 0;
+	transmitting_sequence_control = 0;
 	tx_fail_count = 0;
+	ack_acquired = 0;
 	
 	for(i = 0; i < 152; i++)
 	{
 		new_packet[i] = 0;
+		tm_to_downlink[i] = i;
 	}
 	
 	/* PUS Packet Variables */
