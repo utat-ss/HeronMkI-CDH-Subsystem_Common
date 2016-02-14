@@ -1,11 +1,32 @@
 /*
- * comm_control.c
- *
- * Created: 2016/1/30 16:15:23
- *  Author: Chris Zhang
- */ 
-#include "comm_comtrol.h"
-#include "trans_lib.h"
+	Author: Chris Zhang
+
+	***********************************************************************
+	*	FILE NAME:		comm_control.h
+	*
+	*	PURPOSE:	This program contains functions SPI devices on comms
+	*
+	*	FILE REFERENCES:		comm_control.h
+	*
+	*	EXTERNAL VARIABLES:	
+	*
+	*	EXTERNAL REFERENCES:	Same a File References.
+	*
+	*	ABORNOMAL TERMINATION CONDITIONS, ERROR AND WARNING MESSAGES: None
+	*
+	*	ASSUMPTIONS, CONSTRAINTS, CONDITIONS:	None
+	*
+	*	NOTES:	
+	*
+	*	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:
+	*	None so far.
+	*
+	*	DEVELOPMENT HISTORY:
+	*	2/13/2016		Created.
+	*
+*/
+
+#include "comm_control.h"
 
 void transceiver_init2(uint8_t tsvNumber, bool isBeacon)
 {
@@ -115,4 +136,13 @@ void set_transceiver(uint8_t tsvNumber)
 		set_coms_SS_low(TSV2_SS_PIN);
 	delay_ms(25);
 	return;
+}
+
+//Switch for UHF. 0 for receive. 1 for transmit
+//Assume both switches turn on/off at the same time
+void switchUHFset(bool mode){
+	if(mode)
+		PIN_set(RFFM_TR);
+	else
+		PIN_clr(RFFM_TR);
 }
