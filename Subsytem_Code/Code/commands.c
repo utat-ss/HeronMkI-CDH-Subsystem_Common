@@ -193,7 +193,7 @@ void send_sensor_data(void)
 	{
 		send_arr[0] = 0x02;
 	}
-	if(sensor_name == BATT_I)
+	if(sensor_name == BATTIN_I)
 	{
 		send_arr[0] = 0x03;
 	}
@@ -225,39 +225,47 @@ void send_sensor_data(void)
 	{
 		send_arr[0] = 0x0A;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == SHUNT_DPOT)
 	{
 		send_arr[0] = 0x0B;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == COMS_TEMP)
 	{
 		send_arr[0] = 0x0C;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == OBC_TEMP)
 	{
 		send_arr[0] = 0x0D;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == PAY_TEMP0)
 	{
 		send_arr[0] = 0x0E;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == PAY_TEMP1)
 	{
 		send_arr[0] = 0x0F;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == PAY_TEMP2)
 	{
 		send_arr[0] = 0x10;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == PAY_TEMP3)
 	{
 		send_arr[0] = 0x11;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == PAY_TEMP4)
 	{
 		send_arr[0] = 0x12;
 	}
-	if(sensor_name == OBC_I)
+	if(sensor_name == PAY_HUM)
+	{
+		send_arr[0] = 0x13;
+	}
+	if(sensor_name == PAY_PRESS)
+	{
+		send_arr[0] = 0x13;
+	}
+	if(sensor_name == PAY_ACCEL)
 	{
 		send_arr[0] = 0x13;
 	}
