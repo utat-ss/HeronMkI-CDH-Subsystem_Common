@@ -511,6 +511,8 @@ void transceiver_run3(void)
 				cmd_str(SRX);
 				rx_mode = 1;
 				tx_mode = 0;
+				lastCycle = millis();
+				return;
 			}
 			else
 				tx_fail_count++;
@@ -527,33 +529,36 @@ void transceiver_run3(void)
 	if(rx_mode)
 	{
 		tx_mode = 0;
-		cmd_str(SRX);
+		//cmd_str(SRX);
 		rx_length = reg_read2F(NUM_RXBYTES);
 		rxFirst = reg_read2F(RXFIRST);
 		rxLast = reg_read2F(RXLAST);
 		/* Got some data */
 		if(rx_length)
 		{
-			if(rx_length >= REAL_PACKET_LENGTH + 2)
+			delay_ms(200);		// Relic of working code.
+			if(rx_length > REAL_PACKET_LENGTH)
 			{
 				load_packet();
 				/* We have a packet */
 				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
 				{
 					PIN_toggle(LED1);
-					test_reg[0] = rxFirst;
-					test_reg[1] = rxLast;
-					test_reg[2] = rx_length;
-					test_reg[3] = state;
-					//send_can_value(test_reg);
-					check = store_new_packet();
+					test_reg[0] = new_packet[0];
+					test_reg[1] = new_packet[1];
+					test_reg[2] = new_packet[2];
+					test_reg[3] = new_packet[75];
+					test_reg[4] = new_packet[76];
+					test_reg[5] = new_packet[77];
+					send_can_value(test_reg);
+					//check = store_new_packet();
 					rx_length = 0;
-					if(!check)									// Packet was accepted and stored internally.
-					{
-						prepareAck();
-						cmd_str(STX);
-						delay_ms(10);				
-					}
+					//if(!check)									// Packet was accepted and stored internally.
+					//{
+						//prepareAck();
+						//cmd_str(STX);
+						//delay_ms(10);				
+					//}
 
 				}
 			}
@@ -564,10 +569,10 @@ void transceiver_run3(void)
 				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
 				{
 					PIN_toggle(LED2);
-					cmd_str(SIDLE);
-					cmd_str(SFRX);
-					cmd_str(SFTX);
-					delay_ms(5);
+					//cmd_str(SIDLE);
+					//cmd_str(SFRX);
+					//cmd_str(SFTX);
+					//delay_ms(5);
 					lastAck = millis();
 					lastTransmit = millis();
 					if(last_tx_packet_height)
@@ -582,28 +587,38 @@ void transceiver_run3(void)
 				cmd_str(SRX);				
 			//}
 		}
-		else
+		get_status(CHIP_RDYn, state);
+		if(*state == 0b110)
 		{
+			cmd_str(SIDLE);
+			cmd_str(SFRX);
 			cmd_str(SRX);
-			rx_mode = 1;
-			tx_mode = 0;
 		}
+		if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
+		{
+			PORTB &= 0xFB;
+			delay_ms(250);
+			PORTB |= 0x04;
+			transceiver_initialize();
+			lastCalibration = millis();			
+		}
+		cmd_str(SRX);
 	}
-	if(millis() - lastAck > ACK_TIMEOUT)
-	{
-		delay_ms((uint8_t)rand());
-		lastAck = millis();
-	}
-	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
-	{
-		PIN_toggle(LED3);
-		cmd_str(SIDLE);
-		cmd_str(SFRX);
-		cmd_str(SFTX);
-		delay_ms(5);
-		transmit_packet();
-		lastTransmit = millis();
-	}
+	//if(millis() - lastAck > ACK_TIMEOUT)
+	//{
+		//delay_ms((uint8_t)rand());
+		//lastAck = millis();
+	//}
+	//if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
+	//{
+		//PIN_toggle(LED3);
+		//cmd_str(SIDLE);
+		//cmd_str(SFRX);
+		//cmd_str(SFTX);
+		//delay_ms(5);
+		//transmit_packet();
+		//lastTransmit = millis();
+	//}
 	lastCycle = millis();
 }
 
@@ -1009,7 +1024,7 @@ uint8_t store_new_packet(void)
 	if(new_packet[77] == 0x18)					// Characteristic of B151 in a telecommand.
 		packet_height = 1;
 	test_reg[0] = new_packet[77];
-	send_can_value(test_reg);
+	//send_can_value(test_reg);
 	
 	if(last_rx_packet_height && packet_height)
 	{

@@ -103,20 +103,21 @@ int main(void)
 {		
 	/* Initialize All Hardware and Interrupts */
 	sys_init();
+	uint32_t count = 0;
 	/*		Begin Main Program Loop					*/
-	if(SELF_ID == 0)
-	{
-		setup_fake_tc();
-		current_tm_fullf = 1;
-		transmit_packet();
-		delay_ms(25);
-	}
+	//if(SELF_ID == 0)
+	//{
+		//setup_fake_tc();
+		//current_tm_fullf = 1;
+		//transmit_packet();
+		//delay_ms(25);
+	//}
     while(1)
     {	
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		can_check_general();
+		//can_check_general();
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
@@ -124,11 +125,27 @@ int main(void)
 			{
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
-				if(!receiving_tmf)
+				//if(!receiving_tmf)
+				//{
+					//delay_ms(250);
+					//transceiver_run3();					
+				//}
+
+				if(count == 5000)
 				{
+					PORTB &= 0xFB;
 					delay_ms(250);
-					transceiver_run3();					
+					PORTB |= 0x04;
+					transceiver_initialize();
+					count = 1;
 				}
+				if(!(count % 1000))
+				{
+					transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);	// Periodically transmit a packet.
+					count = 0;
+				}
+				delay_ms(1);
+				count++;
 
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
@@ -141,7 +158,7 @@ int main(void)
 			}			
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		run_commands();
+		//run_commands();
 	}
 }
 
@@ -152,7 +169,8 @@ static void sys_init(void)
 	CLKPR  = 0;
 	
 	init_global_vars();
-	io_init();	
+	io_init();
+	PORTB |= 0x04;
 	timer_init();
 	adc_initialize();
 	can_init(0);
@@ -335,6 +353,7 @@ static void init_global_vars(void)
 	transmitting_sequence_control = 0;
 	tx_fail_count = 0;
 	ack_acquired = 0;
+	lastCalibration = 0;
 	
 	for(i = 0; i < 152; i++)
 	{

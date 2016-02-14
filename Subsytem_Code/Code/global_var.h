@@ -319,6 +319,7 @@ uint8_t test_reg[6];
 uint8_t t_message[128];
 uint8_t tx_fail_count;
 uint8_t ack_acquired;
+long int lastCalibration;
 
 /* Global variables to be used for CAN communication */
 uint8_t msg_received;
