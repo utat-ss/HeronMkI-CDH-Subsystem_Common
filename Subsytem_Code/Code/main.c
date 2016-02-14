@@ -116,7 +116,7 @@ int main(void)
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		//can_check_general();
+		can_check_general();
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
@@ -141,7 +141,7 @@ int main(void)
 			}			
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		//run_commands();
+		run_commands();
 	}
 }
 

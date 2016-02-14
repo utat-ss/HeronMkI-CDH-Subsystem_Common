@@ -513,7 +513,7 @@ void transceiver_run3(void)
 				tx_mode = 0;
 			}
 			else
-			tx_fail_count++;
+				tx_fail_count++;
 		}
 		else
 		{
@@ -545,7 +545,7 @@ void transceiver_run3(void)
 					test_reg[1] = rxLast;
 					test_reg[2] = rx_length;
 					test_reg[3] = state;
-					send_can_value(test_reg);
+					//send_can_value(test_reg);
 					check = store_new_packet();
 					rx_length = 0;
 					if(!check)									// Packet was accepted and stored internally.
@@ -575,12 +575,12 @@ void transceiver_run3(void)
 					ack_acquired = 1;
 				}
 			}
-			else
-			{
+			//else
+			//{
 				cmd_str(SIDLE);			// Need to get rid of this.
 				cmd_str(SFRX);
 				cmd_str(SRX);				
-			}
+			//}
 		}
 		else
 		{
@@ -998,55 +998,40 @@ void clear_new_packet(void)
 
 uint8_t store_new_packet(void)
 {
-	uint8_t i, packet_height;
+	uint8_t i, packet_height, offset = 0;
 	uint32_t rsc;
 	if(packet_count == 5)		
 	{
 		last_rx_packet_height = 0;
-		receiving_sequence_control = 0;
 		return 0xFF;		// Packet_list is currently full, cannot accept new packets.
 	}
 	/* There is room in the packet list */
-	packet_height = new_packet[79];
-	rsc =  ((uint32_t)new_packet[78]) << 16;
-	rsc += ((uint32_t)new_packet[77]) << 8;
-	rsc += (uint32_t)new_packet[76];
+	if(new_packet[77] == 0x18)					// Characteristic of B151 in a telecommand.
+		packet_height = 1;
+	test_reg[0] = new_packet[77];
+	send_can_value(test_reg);
 	
 	if(last_rx_packet_height && packet_height)
 	{
-		last_rx_packet_height = 0;
-		receiving_sequence_control = 0;		
+		last_rx_packet_height = 0;	
 		return 0xFF;		// H/L received out of order.
 	}
-	if(!receiving_sequence_control)
-		receiving_sequence_control = rsc;
-	else if(receiving_sequence_control != rsc - 1)
-	{
-		last_rx_packet_height = 0;
-		receiving_sequence_control = 0;
-		return 0xFF;		// Packet received out of order.
-	}
 	if(!packet_height)
-	{
-		for (i = 0; i < 76; i++)
-		{
-			packet_list[packet_count].data[i] = new_packet[i];
-		}	
-	}
+		offset = 0;
 	if(packet_height)
 	{
-		for (i = 0; i < 76; i++)
-		{
-			packet_list[packet_count].data[i + 76] = new_packet[i];
-		}
+		offset = 76;
 		packet_count++;
 	}
+	for (i = 0; i < 76; i++)
+	{
+		packet_list[packet_count].data[i + offset] = new_packet[i + 2];
+	}
 	last_rx_packet_height = packet_height;
-	receiving_sequence_control = rsc;
 	return 0x00;
 }
 
-// The packet to be transmitted is assumed to be tm_to_downlink[] and be 76 bytes long.
+// The packet to be transmitted is assumed to be tm_to_downlink[] and be 152 bytes long.
 uint8_t transmit_packet(void)
 {
 	uint8_t i, offset = 0;
@@ -1062,15 +1047,16 @@ uint8_t transmit_packet(void)
 			last_tx_packet_height = 1;
 		else
 			last_tx_packet_height = 0;
-		transmitting_sequence_control++;
+		//transmitting_sequence_control++;
 		ack_acquired = 0;
 	}
 	
 	// Place the sequence control variables in the packet to be sent.
-	t_message[79] = last_tx_packet_height;
-	t_message[78] = (uint8_t)(transmitting_sequence_control >> 16);
-	t_message[77] = (uint8_t)(transmitting_sequence_control >> 8);
-	t_message[76] = (uint8_t)transmitting_sequence_control;
+	//t_message[79] = last_tx_packet_height;
+	//t_message[78] = (uint8_t)(transmitting_sequence_control >> 16);
+	//t_message[77] = (uint8_t)(transmitting_sequence_control >> 8);
+	//t_message[76] = (uint8_t)transmitting_sequence_control;
+	//send_can_value(t_message + 74);
 	
 	if(last_tx_packet_height)
 		offset = 76;
@@ -1078,7 +1064,7 @@ uint8_t transmit_packet(void)
 	{
 		t_message[i] = tm_to_downlink[i + offset];
 	}
-	transceiver_send(t_message, DEVICE_ADDRESS, 80);
+	transceiver_send(t_message, DEVICE_ADDRESS, 76);
 }
 
 void load_packet_to_current_tc(void)
@@ -1136,7 +1122,7 @@ void load_ack(void)
 
 void setup_fake_tc(void)
 {
-	uint8_t version, type, sequence_flags, service_type, service_sub_type;
+	uint8_t version, type, sequence_flags, service_type, service_sub_type, i;
 	uint16_t pec;
 	version = 0;
 	type = 1;

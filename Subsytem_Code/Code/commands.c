@@ -185,36 +185,82 @@ void send_sensor_data(void)
 	{
 		send_arr[0] = pyi;
 	}
-	//if(sensor_name == BATTM_V)
-	//{
-	//}
-	//if(sensor_name == BATT_V)
-	//{
-	//}
-	//if(sensor_name == BATT_I)
-	//{
-	//}
-	//if(sensor_name == BATT_TEMP)
-	//{
-	//}
-	//if(sensor_name == COMS_V)
-	//{
-	//}
-	//if(sensor_name == COMS_I)
-	//{
-	//}
-	//if(sensor_name == PAY_V)
-	//{
-	//}
-	//if(sensor_name == PAY_I)
-	//{
-	//}
-	//if(sensor_name == OBC_V)
-	//{
-	//}
-	//if(sensor_name == OBC_I)
-	//{
-	//}
+	if(sensor_name == BATTM_V)
+	{
+		send_arr[0] = 0x01;
+	}
+	if(sensor_name == BATT_V)
+	{
+		send_arr[0] = 0x02;
+	}
+	if(sensor_name == BATT_I)
+	{
+		send_arr[0] = 0x03;
+	}
+	if(sensor_name == BATT_TEMP)
+	{
+		send_arr[0] = 0x04;
+	}
+	if(sensor_name == COMS_V)
+	{
+		send_arr[0] = 0x05;
+	}
+	if(sensor_name == COMS_I)
+	{
+		send_arr[0] = 0x06;
+	}
+	if(sensor_name == PAY_V)
+	{
+		send_arr[0] = 0x07;
+	}
+	if(sensor_name == PAY_I)
+	{
+		send_arr[0] = 0x08;
+	}
+	if(sensor_name == OBC_V)
+	{
+		send_arr[0] = 0x09;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x0A;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x0B;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x0C;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x0D;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x0E;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x0F;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x10;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x11;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x12;
+	}
+	if(sensor_name == OBC_I)
+	{
+		send_arr[0] = 0x13;
+	}
 
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_DATA;
@@ -655,6 +701,10 @@ void alert_obc_tcp_ready(void)
 	send_arr[6] = MT_COM;
 	send_arr[5] = TC_PACKET_READY;
 	send_arr[4] = CURRENT_MINUTE;
+	send_arr[3] = 0;
+	send_arr[2] = 0;
+	send_arr[1] = 0;
+	send_arr[0] = 0;
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;
 }

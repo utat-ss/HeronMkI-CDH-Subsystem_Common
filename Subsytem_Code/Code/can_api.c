@@ -202,26 +202,26 @@ void decode_command(uint8_t* command_array)
 	switch(command)
 	{
 		case REQ_RESPONSE :
-			if(SELF_ID != 1)
-			{
-				PIN_toggle(LED3);
-			}
+			//if(SELF_ID != 1)
+			//{
+				//PIN_toggle(LED3);
+			//}
 			send_now = 1;
 		case REQ_DATA :
-			if(SELF_ID != 1)
-			{
-				PIN_toggle(LED1);
-			}
+			//if(SELF_ID != 1)
+			//{
+				//PIN_toggle(LED1);
+			//}
 			send_data = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				data_req_arr[i] = *(command_array + i);
 			}
 		case REQ_HK :
-			if(SELF_ID != 1)
-			{
-				PIN_toggle(LED2);
-			}
+			//if(SELF_ID != 1)
+			//{
+				//PIN_toggle(LED2);
+			//}
 			send_hk = 1;
 		case REQ_READ:
 			read_response = 1;
