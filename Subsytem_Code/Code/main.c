@@ -105,13 +105,13 @@ int main(void)
 	sys_init();
 	uint32_t count = 0;
 	/*		Begin Main Program Loop					*/
-	//if(SELF_ID == 0)
-	//{
-		//setup_fake_tc();
-		//current_tm_fullf = 1;
-		//transmit_packet();
-		//delay_ms(25);
-	//}
+	if(SELF_ID == 0)
+	{
+		setup_fake_tc();
+		current_tm_fullf = 1;
+		transmit_packet();
+		delay_ms(25);
+	}
     while(1)
     {	
 		/* Reset the WDT */
@@ -125,27 +125,27 @@ int main(void)
 			{
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
-				//if(!receiving_tmf)
-				//{
-					//delay_ms(250);
-					//transceiver_run3();					
-				//}
-
-				if(count == 5000)
+				if(!receiving_tmf)
 				{
-					PORTB &= 0xFB;
 					delay_ms(250);
-					PORTB |= 0x04;
-					transceiver_initialize();
-					count = 1;
+					transceiver_run3();					
 				}
-				if(!(count % 1000))
-				{
-					transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);	// Periodically transmit a packet.
-					count = 0;
-				}
-				delay_ms(1);
-				count++;
+
+				//if(count == 5000)
+				//{
+					//PORTB &= 0xFB;
+					//delay_ms(250);
+					//PORTB |= 0x04;
+					//transceiver_initialize();
+					//count = 1;
+				//}
+				//if(!(count % 1000))
+				//{
+					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);	// Periodically transmit a packet.
+					//count = 0;
+				//}
+				//delay_ms(1);
+				//count++;
 
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();

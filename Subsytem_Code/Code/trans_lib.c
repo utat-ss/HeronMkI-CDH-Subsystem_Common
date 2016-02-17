@@ -550,25 +550,27 @@ void transceiver_run3(void)
 					test_reg[3] = new_packet[75];
 					test_reg[4] = new_packet[76];
 					test_reg[5] = new_packet[77];
-					send_can_value(test_reg);
-					//check = store_new_packet();
+					//send_can_value(test_reg);
+					check = store_new_packet();
 					rx_length = 0;
-					//if(!check)									// Packet was accepted and stored internally.
-					//{
-						//prepareAck();
-						//cmd_str(STX);
-						//delay_ms(10);				
-					//}
+					if(!check)									// Packet was accepted and stored internally.
+					{
+						prepareAck();
+						cmd_str(STX);
+						return;
+						//delay_ms(100);				
+					}
 
 				}
 			}
 			else if(rx_length >= ACK_LENGTH + 2)
 			{
 				load_ack();
+				PIN_toggle(LED2);
 				/* We have an acknowledgment */
 				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
 				{
-					PIN_toggle(LED2);
+
 					//cmd_str(SIDLE);
 					//cmd_str(SFRX);
 					//cmd_str(SFTX);
@@ -594,31 +596,31 @@ void transceiver_run3(void)
 			cmd_str(SFRX);
 			cmd_str(SRX);
 		}
-		if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
-		{
-			PORTB &= 0xFB;
-			delay_ms(250);
-			PORTB |= 0x04;
-			transceiver_initialize();
-			lastCalibration = millis();			
-		}
-		cmd_str(SRX);
+		cmd_str(SRX);			// Make sure we're in RXSTATE while in rx-mode.
 	}
-	//if(millis() - lastAck > ACK_TIMEOUT)
-	//{
-		//delay_ms((uint8_t)rand());
-		//lastAck = millis();
-	//}
-	//if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
-	//{
-		//PIN_toggle(LED3);
-		//cmd_str(SIDLE);
-		//cmd_str(SFRX);
-		//cmd_str(SFTX);
-		//delay_ms(5);
-		//transmit_packet();
-		//lastTransmit = millis();
-	//}
+	if(millis() - lastAck > ACK_TIMEOUT)
+	{
+		delay_ms((uint8_t)rand());
+		lastAck = millis();
+	}
+	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
+	{
+		PORTB &= 0xFB;
+		delay_ms(250);
+		PORTB |= 0x04;
+		transceiver_initialize();
+		lastCalibration = millis();
+	}
+	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
+	{
+		PIN_toggle(LED3);
+		cmd_str(SIDLE);
+		cmd_str(SFRX);
+		cmd_str(SFTX);
+		delay_ms(5);
+		transmit_packet();
+		lastTransmit = millis();
+	}
 	lastCycle = millis();
 }
 
@@ -972,8 +974,8 @@ void transceiver_send(uint8_t* message, uint8_t address, uint8_t length)
 	//set up TX FIFO pointers
 	reg_write2F(TXFIRST, 0x00);            //set TX FIRST to 0
 	reg_write2F(TXLAST, length+3);				//set TX LAST (maximum OF 0X7F)
-	reg_write2F(RXFIRST, 0x00);              //set TX FIRST to 0
-	reg_write2F(RXLAST, 0x00); //set TX LAST (maximum OF 0X7F)
+	//reg_write2F(RXFIRST, 0x00);              //set TX FIRST to 0
+	//reg_write2F(RXLAST, 0x00); //set TX LAST (maximum OF 0X7F)
 	//strobe commands to start TX
 	cmd_str(STX);
 	tx_mode = 1;
@@ -1001,6 +1003,9 @@ void prepareAck(void)
 	reg_write2F(TXLAST, (3 + 3));
 	reg_write2F(RXFIRST, 0x00);
 	reg_write2F(RXLAST, 0x00);
+	tx_mode = 1;
+	rx_mode = 0;
+	lastTransmit = millis();
 	return;
 }
 
@@ -1041,6 +1046,14 @@ uint8_t store_new_packet(void)
 	for (i = 0; i < 76; i++)
 	{
 		packet_list[packet_count].data[i + offset] = new_packet[i + 2];
+	}
+	if(packet_count)
+	{
+		test_reg[0] = packet_list[packet_count - 1].data[0];
+		test_reg[1] = packet_list[packet_count - 1].data[1];
+		test_reg[2] = packet_list[packet_count - 1].data[150];
+		test_reg[3] = packet_list[packet_count - 1].data[151];
+		send_can_value(test_reg);
 	}
 	last_rx_packet_height = packet_height;
 	return 0x00;
@@ -1160,10 +1173,6 @@ void setup_fake_tc(void)
 	tm_to_downlink[141] = HK_TASK_ID;
 	tm_to_downlink[140] = 0;
 	tm_to_downlink[139] = 0;
-	for(i = 0; i < 139; i++)
-	{
-		tm_to_downlink[i] = 0;
-	}
 	pec = fletcher16(tm_to_downlink + 2, 150);
 	tm_to_downlink[1] = (uint8_t)(pec >> 8);
 	tm_to_downlink[0] = (uint8_t)(pec);
