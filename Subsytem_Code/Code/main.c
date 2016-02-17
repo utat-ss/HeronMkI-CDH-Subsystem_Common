@@ -315,6 +315,7 @@ static void init_global_vars(void)
 	collect_pdf = 0;
 	current_transceiver = 0;
 	lastAck = 0;
+	low_half_acquired = 0;
 	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;

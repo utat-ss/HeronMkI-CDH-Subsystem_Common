@@ -503,7 +503,6 @@ void transceiver_run3(void)
 		tx_length = reg_read2F(NUM_TXBYTES);
 		if(tx_length)
 		{
-			cmd_str(STX);
 			if(tx_fail_count)
 			{
 				cmd_str(SIDLE);
@@ -516,7 +515,10 @@ void transceiver_run3(void)
 				return;
 			}
 			else
+			{
+				cmd_str(STX);
 				tx_fail_count++;
+			}
 		}
 		else
 		{
@@ -551,7 +553,7 @@ void transceiver_run3(void)
 					test_reg[3] = new_packet[75];
 					test_reg[4] = new_packet[76];
 					test_reg[5] = new_packet[77];
-					send_can_value(test_reg);
+					//send_can_value(test_reg);
 					check = store_new_packet();
 					rx_length = 0;
 					if(!check)									// Packet was accepted and stored internally.
@@ -1019,7 +1021,7 @@ void clear_new_packet(void)
 
 uint8_t store_new_packet(void)
 {
-	uint8_t i, packet_height, offset = 0;
+	uint8_t i, packet_height = 0, offset = 0;
 	uint32_t rsc;
 	if(packet_count == 5)		
 	{
@@ -1029,32 +1031,45 @@ uint8_t store_new_packet(void)
 	/* There is room in the packet list */
 	if(new_packet[77] == 0x18)					// Characteristic of B151 in a telecommand.
 		packet_height = 1;
+	else if (new_packet[77] == 0x88)
+	{
+		packet_height = 0;
+		low_half_acquired = 1;
+	}
+	else
+		return 0xFF;							// Invalid packet.
 	test_reg[0] = new_packet[77];
 	//send_can_value(test_reg);
-	
 	if(last_rx_packet_height && packet_height)
 	{
 		last_rx_packet_height = 0;	
 		return 0xFF;		// H/L received out of order.
 	}
+	if(packet_height && !low_half_acquired)
+		return 0xFF;		// Must receive the lower half first.
+		
 	if(!packet_height)
 		offset = 0;
 	if(packet_height)
 	{
 		offset = 76;
+		low_half_acquired = 0;
 		packet_count++;
 	}
+	packet_count++;
 	for (i = 0; i < 76; i++)
 	{
-		packet_list[packet_count].data[i + offset] = new_packet[i + 2];
+		packet_list[packet_count].data[i + 76] = new_packet[i + 2];
 	}
 	if(packet_count)
 	{
 		test_reg[0] = packet_list[packet_count - 1].data[0];
 		test_reg[1] = packet_list[packet_count - 1].data[1];
-		test_reg[2] = packet_list[packet_count - 1].data[150];
-		test_reg[3] = packet_list[packet_count - 1].data[151];
-		//send_can_value(test_reg);
+		test_reg[2] = packet_list[packet_count - 1].data[75];
+		test_reg[3] = packet_list[packet_count - 1].data[76];
+		test_reg[4] = packet_list[packet_count - 1].data[150];
+		test_reg[5] = packet_list[packet_count - 1].data[151];
+		send_can_value(test_reg);
 	}
 	last_rx_packet_height = packet_height;
 	return 0x00;
@@ -1175,6 +1190,9 @@ void setup_fake_tc(void)
 	pec = fletcher16(tm_to_downlink + 2, 150);
 	tm_to_downlink[1] = (uint8_t)(pec >> 8);
 	tm_to_downlink[0] = (uint8_t)(pec);
+	
+	tm_to_downlink[75] = 0x88;		// Indicator of this being the lower 76 bytes.
+	
 	return;
 }
 
