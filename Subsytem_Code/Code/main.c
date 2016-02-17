@@ -285,7 +285,7 @@ static void init_global_vars(void)
 	{
 		current_tm[i] = 0;
 		current_tc[i] = 0;
-		tm_to_downlink[i] = 0;
+		tm_to_downlink[i] = i;
 	}
 	/* Initialize Global Command Flags to zero */
 	send_now = 0;

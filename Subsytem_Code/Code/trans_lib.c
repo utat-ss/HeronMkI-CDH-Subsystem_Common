@@ -511,6 +511,7 @@ void transceiver_run3(void)
 				cmd_str(SRX);
 				rx_mode = 1;
 				tx_mode = 0;
+				tx_fail_count = 0;
 				lastCycle = millis();
 				return;
 			}
@@ -550,7 +551,7 @@ void transceiver_run3(void)
 					test_reg[3] = new_packet[75];
 					test_reg[4] = new_packet[76];
 					test_reg[5] = new_packet[77];
-					//send_can_value(test_reg);
+					send_can_value(test_reg);
 					check = store_new_packet();
 					rx_length = 0;
 					if(!check)									// Packet was accepted and stored internally.
@@ -563,7 +564,7 @@ void transceiver_run3(void)
 
 				}
 			}
-			else if(rx_length >= ACK_LENGTH + 2)
+			else if(rx_length > ACK_LENGTH)
 			{
 				load_ack();
 				PIN_toggle(LED2);
@@ -594,7 +595,7 @@ void transceiver_run3(void)
 		{
 			cmd_str(SIDLE);
 			cmd_str(SFRX);
-			cmd_str(SRX);
+			//cmd_str(SRX);
 		}
 		cmd_str(SRX);			// Make sure we're in RXSTATE while in rx-mode.
 	}
@@ -1053,7 +1054,7 @@ uint8_t store_new_packet(void)
 		test_reg[1] = packet_list[packet_count - 1].data[1];
 		test_reg[2] = packet_list[packet_count - 1].data[150];
 		test_reg[3] = packet_list[packet_count - 1].data[151];
-		send_can_value(test_reg);
+		//send_can_value(test_reg);
 	}
 	last_rx_packet_height = packet_height;
 	return 0x00;
@@ -1088,11 +1089,7 @@ uint8_t transmit_packet(void)
 	
 	if(last_tx_packet_height)
 		offset = 76;
-	for(i = 0; i < 76; i++)
-	{
-		t_message[i] = tm_to_downlink[i + offset];
-	}
-	transceiver_send(t_message, DEVICE_ADDRESS, 76);
+	transceiver_send(tm_to_downlink + offset, DEVICE_ADDRESS, 76);
 }
 
 void load_packet_to_current_tc(void)
@@ -1131,6 +1128,7 @@ static void clear_current_tc(void)
 void load_packet(void)
 {
 	uint8_t i;
+	//new_packet[0] = reg_read(STDFIFO);
 	for(i = 0; i < (REAL_PACKET_LENGTH + 2); i++)
 	{
 		new_packet[i] = reg_read(STDFIFO);
@@ -1141,6 +1139,7 @@ void load_packet(void)
 void load_ack(void)
 {
 	uint8_t i;
+	//new_packet[0] = reg_read(STDFIFO);
 	for(i = 0; i < (ACK_LENGTH + 2); i++)
 	{
 		new_packet[i] = reg_read(STDFIFO);
