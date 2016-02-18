@@ -198,7 +198,6 @@ void decode_command(uint8_t* command_array)
 {		
 	uint8_t i, command  = *(command_array + 5);
 	uint8_t req_by = (*(command_array + 7)) >> 4;
-
 	switch(command)
 	{
 		case REQ_RESPONSE :
@@ -267,6 +266,7 @@ void decode_command(uint8_t* command_array)
 		case TC_TRANSACTION_RESP:
 			tc_transfer_completef = *command_array;
 		case OK_START_TC_PACKET:
+			PIN_toggle(LED2);
 			start_tc_transferf = 1;
 		case OBC_IS_ALIVE:
 			TAKEOVER = 0;

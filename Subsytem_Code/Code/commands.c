@@ -601,7 +601,7 @@ void set_var(void)
 		case SSM_CTT:
 			ssm_consec_trans_timeout = incom_val;
 		case SSM_OGT:
-			ssm_ok_go_timeout = incom_val;
+			ssm_ok_go_timeout = (uint32_t)incom_val;
 		case COMS_FDIR_SIGNAL:
 			if(SELF_ID == 0)
 				ssm_fdir_signal = incom_val;
@@ -730,51 +730,64 @@ static void store_current_tm(void)
 
 void send_pus_packet_tc(void)
 {
-	uint8_t i, timeout;
+	uint8_t i;
 	uint8_t num_transfers = PACKET_LENGTH / 4;
 	tc_transfer_completef = 0;
 	start_tc_transferf = 0;
+	long int tc_transfer_time;
 	uint8_t data[4];
-	alert_obc_tcp_ready();
-	timeout = ssm_ok_go_timeout;
-	while(!start_tc_transferf)			// Wait a maximum of 2.5ms for the OBC to respond.
-	{
-		if(!timeout--)
-		{
-			data[0] = ssm_ok_go_timeout;
-			//errorREPORT(TC_OK_GO_TIMED_OUT, data);	// Let the OBC know that OK-GO timed out.
-			return;
-		}
-		delay_us(10);
-	}				
-	start_tc_transferf = 0;
 	
+	if(start_tc_transferf)		// A timeout was triggered before the response was received.
+		start_tc_transferf = 0;
+
+	alert_obc_tcp_ready();
+	tc_transfer_time = millis();
+	
+	while(!start_tc_transferf) 
+	{
+		if(millis() - tc_transfer_time > ssm_ok_go_timeout)	// Timeout triggered.
+		{
+			//PIN_toggle(LED2);
+			return;		
+		}
+		can_check_general();
+		delay_ms(10);
+	}
+	
+	/* A TC transaction has now begun	*/	//start_tc_transferf = 1 here.	
+	start_tc_transferf = 0;
+	//PIN_toggle(LED2);
 	for(i = 0; i < num_transfers; i++)
 	{
 		if(tc_transfer_completef == 0xFF)
+		{
+			//PIN_toggle(LED2);			
 			return;
+		}
 		send_arr[0] = current_tc[(i * 4)];
 		send_arr[1] = current_tc[(i * 4) + 1];
 		send_arr[2] = current_tc[(i * 4) + 2];
 		send_arr[3] = current_tc[(i * 4) + 3];
 		send_tc_can_msg(i);							// Send a TC message to the OBC.
-		delay_ms(1);								// Give the OBC 1ms to process that CAN message.
+		delay_ms(10);								// Give the OBC 10ms to process that CAN message.
+		can_check_general();
 	}
 	
-	timeout = ssm_consec_trans_timeout;
+	
 	while(!tc_transfer_completef)					// Delay for ~10 ms for the OBC to send final transaction response.
 	{
-		if(!timeout--)
+		if(millis() - tc_transfer_time > ssm_ok_go_timeout)	// Timeout triggered.
 		{
-			data[0] = ssm_consec_trans_timeout;
-			//errorASSERT(TC_CONSEC_TIMED_OUT, data);	// Let the OBC know that a consecutive transfer timed out.
+			//PIN_toggle(LED2);
 			return;
 		}
-		delay_us(100);
+		can_check_general();
+		delay_ms(1);
 	}
 	
 	if(tc_transfer_completef != 35)
 	{
+		//PIN_toggle(LED2);
 		tc_transfer_completef = 0;
 		return;
 	}

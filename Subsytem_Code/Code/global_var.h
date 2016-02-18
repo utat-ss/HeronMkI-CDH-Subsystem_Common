@@ -274,7 +274,7 @@ uint8_t LOW_POWER_MODE;
 uint8_t PAUSE;
 
 /* Global variables used for operational timeouts */
-uint8_t ssm_ok_go_timeout;
+uint32_t ssm_ok_go_timeout;
 uint8_t ssm_consec_trans_timeout;
 
 /* Signal for FDIR Error Handling (SSM Loops on this) */

@@ -117,7 +117,7 @@ int main(void)
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		//can_check_general();
+		can_check_general();
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
@@ -130,23 +130,6 @@ int main(void)
 					delay_ms(250);
 					transceiver_run3();					
 				}
-
-				//if(count == 5000)
-				//{
-					//PORTB &= 0xFB;
-					//delay_ms(250);
-					//PORTB |= 0x04;
-					//transceiver_initialize();
-					//count = 1;
-				//}
-				//if(!(count % 1000))
-				//{
-					//transceiver_send(&t_message[0], DEVICE_ADDRESS, 76);	// Periodically transmit a packet.
-					//count = 0;
-				//}
-				//delay_ms(1);
-				//count++;
-
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
 			}
@@ -158,7 +141,7 @@ int main(void)
 			}			
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		//run_commands();
+		run_commands();
 	}
 }
 
@@ -313,9 +296,7 @@ static void init_global_vars(void)
 	resume_operationsf = 0;
 	open_valvesf = 0; 
 	collect_pdf = 0;
-	current_transceiver = 0;
-	lastAck = 0;
-	low_half_acquired = 0;
+
 	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;
@@ -330,8 +311,8 @@ static void init_global_vars(void)
 	MAX_WAIT_TIME = 18400;
 	
 	/* Initialize Operational Timeouts */
-	ssm_ok_go_timeout = 250;				// ~2.5 ms
-	ssm_consec_trans_timeout = 100;			// ~10 ms
+	ssm_ok_go_timeout = 1000;			// ~1000 ms
+	ssm_consec_trans_timeout = 100;		// ~10 ms
 	
 	ssm_fdir_signal = 0;
 	
@@ -355,6 +336,9 @@ static void init_global_vars(void)
 	tx_fail_count = 0;
 	ack_acquired = 0;
 	lastCalibration = 0;
+	current_transceiver = 0;
+	lastAck = 0;
+	low_half_acquired = 0;
 	
 	for(i = 0; i < 152; i++)
 	{

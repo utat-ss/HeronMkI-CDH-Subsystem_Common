@@ -239,7 +239,7 @@ void transceiver_run(void)
 				/* We have an acknowledgment */
 				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
 				{
-					PIN_toggle(LED2);
+					//PIN_toggle(LED2);
 					cmd_str(SIDLE);
 					cmd_str(SFRX);
 					cmd_str(SFTX);
@@ -332,7 +332,7 @@ void transceiver_run(void)
 				/* We have an acknowledgment */
 				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
 				{
-					PIN_toggle(LED2);
+					//PIN_toggle(LED2);
 					cmd_str(SIDLE);
 					cmd_str(SFRX);
 					cmd_str(SFTX);
@@ -569,11 +569,11 @@ void transceiver_run3(void)
 			else if(rx_length > ACK_LENGTH)
 			{
 				load_ack();
-				PIN_toggle(LED2);
+
 				/* We have an acknowledgment */
 				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
 				{
-
+					//PIN_toggle(LED2);
 					//cmd_str(SIDLE);
 					//cmd_str(SFRX);
 					//cmd_str(SFTX);
@@ -1051,7 +1051,7 @@ uint8_t store_new_packet(void)
 		test_reg[3] = packet_list[packet_count - 1].data[76];
 		test_reg[4] = packet_list[packet_count - 1].data[150];
 		test_reg[5] = packet_list[packet_count - 1].data[151];
-		send_can_value(test_reg);
+		//send_can_value(test_reg);
 	}
 	last_rx_packet_height = packet_height;
 	return 0x00;
@@ -1099,7 +1099,7 @@ void load_packet_to_current_tc(void)
 	{
 		current_tc[i] = packet_list[0].data[i];
 	}
-	for(j = 0; j < (packet_count - 1); j++)
+	for(j = 0; j < (packet_count - 1); j++)			// Shift the packet list down.
 	{
 		for(i = 0; i < PACKET_LENGTH; i++)
 		{
