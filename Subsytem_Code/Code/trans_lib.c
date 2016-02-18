@@ -580,9 +580,9 @@ void transceiver_run3(void)
 					//delay_ms(5);
 					lastAck = millis();
 					lastTransmit = millis();
-					if(last_tx_packet_height)
-						current_tm_fullf = 0;				// Second half of packet was sent, set current_tm_fullf to zero.
-					ack_acquired = 1;
+					//if(last_tx_packet_height)
+						//current_tm_fullf = 0;				// Second half of packet was sent, set current_tm_fullf to zero.
+					//ack_acquired = 1;
 				}
 			}
 			//else
@@ -1022,45 +1022,27 @@ void clear_new_packet(void)
 uint8_t store_new_packet(void)
 {
 	uint8_t i, packet_height = 0, offset = 0;
+	uint16_t pec;
 	uint32_t rsc;
 	if(packet_count == 5)		
-	{
-		last_rx_packet_height = 0;
 		return 0xFF;		// Packet_list is currently full, cannot accept new packets.
-	}
-	/* There is room in the packet list */
-	if(new_packet[77] == 0x18)					// Characteristic of B151 in a telecommand.
-		packet_height = 1;
-	else if (new_packet[77] == 0x88)
-	{
-		packet_height = 0;
-		low_half_acquired = 1;
-	}
-	else
-		return 0xFF;							// Invalid packet.
-	test_reg[0] = new_packet[77];
-	//send_can_value(test_reg);
-	if(last_rx_packet_height && packet_height)
-	{
-		last_rx_packet_height = 0;	
-		return 0xFF;		// H/L received out of order.
-	}
-	if(packet_height && !low_half_acquired)
-		return 0xFF;		// Must receive the lower half first.
 		
-	if(!packet_height)
-		offset = 0;
-	if(packet_height)
-	{
-		offset = 76;
-		low_half_acquired = 0;
-		packet_count++;
-	}
-	packet_count++;
+	/* There is room in the packet list */
+	if(new_packet[77] != 0x18)					// Characteristic of B151 in a telecommand.
+		return 0xFF;
+
 	for (i = 0; i < 76; i++)
 	{
 		packet_list[packet_count].data[i + 76] = new_packet[i + 2];
 	}
+	for(i = 0; i < 76; i++)
+	{
+		packet_list[packet_count].data[i] = 0;
+	}
+	pec = fletcher16(packet_list[packet_count].data + 2, 150);
+	packet_list[packet_count].data[1] = (uint8_t)(pec >> 8);
+	packet_list[packet_count].data[0] = (uint8_t)(pec);
+	packet_count++;
 	if(packet_count)
 	{
 		test_reg[0] = packet_list[packet_count - 1].data[0];
@@ -1079,21 +1061,19 @@ uint8_t store_new_packet(void)
 uint8_t transmit_packet(void)
 {
 	uint8_t i, offset = 0;
-	if(!current_tm_fullf)
-		return;
-	if(last_tx_packet_height > 1)
-		last_tx_packet_height = 0;
+	//if(!current_tm_fullf)
+		//return;
 	
 	// Adjust the sequence control variables if an acknowledgment was received.
-	if(ack_acquired)
-	{
-		if(!last_tx_packet_height)
-			last_tx_packet_height = 1;
-		else
-			last_tx_packet_height = 0;
-		//transmitting_sequence_control++;
-		ack_acquired = 0;
-	}
+	//if(ack_acquired)
+	//{
+		//if(!last_tx_packet_height)
+			//last_tx_packet_height = 1;
+		//else
+			//last_tx_packet_height = 0;
+		////transmitting_sequence_control++;
+		//ack_acquired = 0;
+	//}
 	
 	// Place the sequence control variables in the packet to be sent.
 	//t_message[79] = last_tx_packet_height;
@@ -1102,9 +1082,9 @@ uint8_t transmit_packet(void)
 	//t_message[76] = (uint8_t)transmitting_sequence_control;
 	//send_can_value(t_message + 74);
 	
-	if(last_tx_packet_height)
-		offset = 76;
-	transceiver_send(tm_to_downlink + offset, DEVICE_ADDRESS, 76);
+	//if(last_tx_packet_height)
+		//offset = 76;
+	transceiver_send(tm_to_downlink + 76, DEVICE_ADDRESS, 76);
 }
 
 void load_packet_to_current_tc(void)
