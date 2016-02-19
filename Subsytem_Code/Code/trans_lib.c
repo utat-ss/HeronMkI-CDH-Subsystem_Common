@@ -471,7 +471,7 @@ void transceiver_run2(void)
 	}
 	if(millis() - lastTransmit > 100)	// Didn't get an ACK, resend packet.
 	{
-		PIN_toggle(LED3);
+		//PIN_toggle(LED3);
 		cmd_str(SIDLE);
 		cmd_str(SFRX);
 		cmd_str(SFTX);

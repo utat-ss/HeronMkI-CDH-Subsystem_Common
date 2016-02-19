@@ -81,11 +81,11 @@ void can_check_general(void)
 		{
 			if(message.status == MOB_RX_COMPLETED)
 			{
+				
 				for (i = 0; i < 8; i ++)		// Transfer the message to the receive array.
 				{
 					receive_arr[i] = *(message.pt_data + i);
 				}
-				
 					switch(receive_arr[6]) // BIG TYPE
 					{
 						case MT_COM :
@@ -94,6 +94,7 @@ void can_check_general(void)
 						case MT_HK :
 							break;
 						case MT_DATA :
+							
 							break;
 						case MT_TC :
 							break;
@@ -198,6 +199,7 @@ void decode_command(uint8_t* command_array)
 {		
 	uint8_t i, command  = *(command_array + 5);
 	uint8_t req_by = (*(command_array + 7)) >> 4;
+	//PIN_toggle(LED2);
 	switch(command)
 	{
 		case REQ_RESPONSE :
@@ -266,7 +268,7 @@ void decode_command(uint8_t* command_array)
 		case TC_TRANSACTION_RESP:
 			tc_transfer_completef = *command_array;
 		case OK_START_TC_PACKET:
-			PIN_toggle(LED2);
+			//PIN_toggle(LED2);
 			start_tc_transferf = 1;
 		case OBC_IS_ALIVE:
 			TAKEOVER = 0;
@@ -369,7 +371,7 @@ void clean_up_msg(uint8_t mailbox)
 		message.dlc = 8;			 // Max length of a CAN message.
 		mob_number = mailbox;
 		message.pt_data = &data1[0];
-		message.id.std = SUB0_ID1;
+		message.id.std = id_array[1];
 		while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED);
 		return;
 	}

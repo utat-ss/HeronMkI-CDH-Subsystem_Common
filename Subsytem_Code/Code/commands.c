@@ -62,7 +62,10 @@ void run_commands(void)
 	if (send_hk)
 		send_housekeeping();
 	if (send_data)
+	{
+		//PIN_toggle(LED2);
 		send_sensor_data();
+	}
 	if (msg_received)
 		send_coms_packet();
 	if (read_response)
@@ -750,13 +753,15 @@ void send_pus_packet_tc(void)
 			//PIN_toggle(LED2);
 			return;		
 		}
+		alert_obc_tcp_ready();
+		delay_ms(100);
 		can_check_general();
-		delay_ms(10);
+		wdt_reset();
 	}
 	
 	/* A TC transaction has now begun	*/	//start_tc_transferf = 1 here.	
 	start_tc_transferf = 0;
-	//PIN_toggle(LED2);
+	PIN_toggle(LED2);
 	for(i = 0; i < num_transfers; i++)
 	{
 		if(tc_transfer_completef == 0xFF)
@@ -764,13 +769,15 @@ void send_pus_packet_tc(void)
 			//PIN_toggle(LED2);			
 			return;
 		}
+		PIN_toggle(LED3);
 		send_arr[0] = current_tc[(i * 4)];
 		send_arr[1] = current_tc[(i * 4) + 1];
 		send_arr[2] = current_tc[(i * 4) + 2];
 		send_arr[3] = current_tc[(i * 4) + 3];
 		send_tc_can_msg(i);							// Send a TC message to the OBC.
-		delay_ms(10);								// Give the OBC 10ms to process that CAN message.
+		delay_ms(100);								// Give the OBC 100ms to process that CAN message.
 		can_check_general();
+		wdt_reset();
 	}
 	
 	
@@ -783,6 +790,7 @@ void send_pus_packet_tc(void)
 		}
 		can_check_general();
 		delay_ms(1);
+		wdt_reset();
 	}
 	
 	if(tc_transfer_completef != 35)

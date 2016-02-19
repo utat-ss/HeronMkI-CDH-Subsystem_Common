@@ -32,6 +32,7 @@
 #define COMMANDS_H
 
 #include "can_api.h"
+#include <avr/wdt.h>
 #include "can_lib.h"
 #include "global_var.h"
 #include "trans_lib.h"
