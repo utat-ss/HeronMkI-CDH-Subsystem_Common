@@ -118,10 +118,10 @@ int main(void)
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		//can_check_general();
 		if(!PAUSE)
-		{
-			/*		TRANSCEIVER COMMUNICATION	*/
+		{	
 			if(SELF_ID == 0)
 			{
+				/*		TRANSCEIVER COMMUNICATION	*/
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
@@ -133,10 +133,14 @@ int main(void)
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
 			}
+			
 			if(SELF_ID == 1)
 			{
-				run_mppt();
-				run_battBalance();
+				//run_mppt();
+				//run_battBalance();
+				//spi_send_shunt_dpot_value(0xAC);
+				PIN_toggle(LED3);
+				delay_ms(1);
 				//run_batt_heater();
 			}			
 		}		
@@ -147,6 +151,8 @@ int main(void)
 
 static void sys_init(void) 
 {
+	// Enable all code pieces that are GENERAL
+	
 	// Make sure sys clock is at least 8MHz
 	CLKPR = 0x80;
 	CLKPR  = 0;
@@ -158,44 +164,54 @@ static void sys_init(void)
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
-	if(SELF_ID == 2)
-		dac_initialize();
-	
 	//enable watchdog timer - 2 second reset time approximate
-	wdt_enable(WDTO_2S);
+	//wdt_enable(WDTO_2S);
 
-	/* Enable the timer for MMPT */
+	// Enable all code pieces that are EPS Specific		
 	if(SELF_ID == 1)
 	{
-		PIN_set(LED1);
+		// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
+		DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO 
+		DDRC = 0b11010001;	// s3 | s0 | X | eps_temp | X | X | X | RED LED 
+		DDRD = 0b01101011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED
+		
+		// Ensure all SS bits set high
+		PIN_set(DPOT_SS_P);
+		PIN_set(EPS_TEMP);
+		PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave 
+		
 		mppt_timer_init();
 		mpptx = 0x3F;
 		mppty = 0x1F;
-		balance_l = 1;
-		balance_h = 1;
-		batt_heater_control = 0;
+		balance_l = 0;				// Turn off the low transistor (NPN)
+		balance_h = 0;				// Turn off the high transistor (PNP) **THIS IS CURRENTLY AN ISSUE AS I NEED TO ADD AN INVERTER
+		batt_heater_control = 0;	// Start with heaters off
 		pxv = 0xBF;
 		pxi	= 0x0F;
 		pyv = 0x5F;
 		pyi = 0x2F;
-		spi_send_shunt_dpot_value(0x55);
+		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the cirrect value because we are using the H and W so 0 Ohms = 0xFF
+		PIN_set(LED1);							// Indicator that we made it to the end of the INIT
 	}
+	
+	// Enable all code pieces that are PAYLOAD Specific
+	if(SELF_ID == 2)
+		dac_initialize();
 
+	// Enable all code pieces that are COMS Specific																	
 	if (SELF_ID == 0)
 		coms_timer_init();
+	
+	
 	// Enable global interrupts for Timer execution
 	sei();
 	
-	SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
-	
 	if (SELF_ID == 0)
-		transceiver_initialize();
-	
-	if(SELF_ID != 1)
 	{
+		transceiver_initialize();
+		SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
 		PIN_toggle(LED1);
 	}
-
 }
 
 static void io_init(void) 

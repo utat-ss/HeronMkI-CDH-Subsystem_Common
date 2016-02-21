@@ -36,7 +36,7 @@ typedef struct{
 #define DATA_BUFFER_SIZE 8 // 8 bytes max
 
 /*				MY CAN DEFINES								*/
-#define SELF_ID					0 // Current SSM is EPS.
+#define SELF_ID					1 // Current SSM is EPS.
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
 
@@ -265,6 +265,24 @@ uint16_t battmv_high, battmv_low, battv_high, battv_low, battin_high, battin_low
 uint16_t battout_high, battout_low, epstemp_high, epstemp_low, comsv_high, comsv_low, comsi_high, comsi_low;
 uint16_t payv_high, payv_low, payi_high, payi_low, obcv_high, obcv_low, obci_high, obci_low;
 uint8_t mpptx, mppty, balance_h, balance_l, batt_heater_control;
+
+//PINS FOR EPS
+	#if SELF_ID == 1
+
+	#define BALANCE_L_P	26
+	#define BALANCE_H_P	27
+	#define MPPTX_P		13
+	#define MPPTY_P		14
+	#define BATT_HEAT_P	16
+	#define DPOT_SS_P	32
+
+	#define Z_P			18
+	#define S0_P		22
+	#define S1_P		23
+	#define S2_P		24
+	#define S3_P		25
+
+#endif /* SELF_ID == 1 */
 
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
 uint8_t CURRENT_MINUTE;

@@ -43,7 +43,7 @@
 #define SPSR_BASE	0x4D
 #define SPDR_BASE	0x4E
 
-#define SPI_TIMEOUT	1000				// Timeout for SPI polling operations.
+#define SPI_TIMEOUT	250				// Timeout for SPI polling operations.
 #define SPI_SPSR_SPIF (0x1u << 7)		// SPIF flag in the SPSR register.
 
 void spi_initialize_master(void);

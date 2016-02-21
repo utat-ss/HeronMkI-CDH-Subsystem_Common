@@ -1159,6 +1159,8 @@ void setup_fake_tc(void)
 	tm_to_downlink[141] = HK_TASK_ID;
 	tm_to_downlink[140] = 0;
 	tm_to_downlink[139] = 0;
+	
+	uint8_t i;
 	for(i = 0; i < 139; i++)
 	{
 		tm_to_downlink[i] = 0;
