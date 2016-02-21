@@ -761,7 +761,7 @@ void send_pus_packet_tc(void)
 	
 	/* A TC transaction has now begun	*/	//start_tc_transferf = 1 here.	
 	start_tc_transferf = 0;
-	PIN_toggle(LED2);
+	//PIN_toggle(LED2);
 	for(i = 0; i < num_transfers; i++)
 	{
 		if(tc_transfer_completef == 0xFF)
@@ -779,17 +779,17 @@ void send_pus_packet_tc(void)
 		can_check_general();
 		wdt_reset();
 	}
-	
-	
+
+	tc_transfer_time = millis();
 	while(!tc_transfer_completef)					// Delay for ~10 ms for the OBC to send final transaction response.
 	{
-		if(millis() - tc_transfer_time > ssm_ok_go_timeout)	// Timeout triggered.
+		if(millis() - tc_transfer_time > 1000)	// Timeout triggered.
 		{
 			//PIN_toggle(LED2);
 			return;
 		}
 		can_check_general();
-		delay_ms(1);
+		delay_ms(100);
 		wdt_reset();
 	}
 	
@@ -801,6 +801,7 @@ void send_pus_packet_tc(void)
 	}
 	else
 	{
+		PIN_toggle(LED2);
 		tc_transfer_completef = 0;
 		tc_packet_readyf = 0;
 		return;

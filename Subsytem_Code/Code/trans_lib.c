@@ -616,7 +616,7 @@ void transceiver_run3(void)
 	}
 	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
 	{
-		PIN_toggle(LED3);
+		//PIN_toggle(LED3);
 		cmd_str(SIDLE);
 		cmd_str(SFRX);
 		cmd_str(SFTX);

@@ -147,10 +147,11 @@ int main(void)
 
 static void sys_init(void) 
 {
-	// Make sure sys clock is at least 8MHz
+	/* Make sure sys clock is at least 8MHz */
 	CLKPR = 0x80;
 	CLKPR  = 0;
 	
+	/* Common Initialization */
 	init_global_vars();
 	io_init();
 	PORTB |= 0x04;
@@ -159,16 +160,19 @@ static void sys_init(void)
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
-	if(SELF_ID == 2)
-		dac_initialize();
-	
-	//enable watchdog timer - 2 second reset time approximate
-	wdt_enable(WDTO_2S);
 
-	/* Enable the timer for MMPT */
+	/* Enable watchdog timer - 2s */
+	wdt_enable(WDTO_2S);
+	
+	/* COMS ONLY Initialization */
+	if (SELF_ID == 0)
+		coms_timer_init();
+
+	/* EPS ONLY Initialization */
 	if(SELF_ID == 1)
 	{
 		PIN_set(LED1);
+		/* Enable the timer for MMPT */
 		mppt_timer_init();
 		mpptx = 0x3F;
 		mppty = 0x1F;
@@ -182,21 +186,20 @@ static void sys_init(void)
 		spi_send_shunt_dpot_value(0x55);
 	}
 
-	if (SELF_ID == 0)
-		coms_timer_init();
-	// Enable global interrupts for Timer execution
+	/* PAY ONLY Initialization */
+	if(SELF_ID == 2)
+		dac_initialize();
+
+	/* Enable global interrupts (required for timers) */
 	sei();
-	
-	SS1_set_high(EPS_TEMP);		// SPI Temp Sensor.
-	
+
+	/* COMS ONLY Initialization */
 	if (SELF_ID == 0)
-		transceiver_initialize();
-	
-	if(SELF_ID != 1)
 	{
+		SS1_set_high(COMS_TEMP);		// SPI Temp Sensor.		
+		transceiver_initialize();
 		PIN_toggle(LED1);
 	}
-
 }
 
 static void io_init(void) 

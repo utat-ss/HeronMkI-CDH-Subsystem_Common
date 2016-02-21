@@ -452,7 +452,7 @@ void SS_set_high(void)
 void SS1_set_high(uint32_t sensor_id)
 {
 	switch(sensor_id){
-		case EPS_TEMP:
+		case COMS_TEMP:
 			PORTC |= (1 << 4);
 	}
 }
@@ -470,7 +470,7 @@ void SS1_set_low(uint32_t sensor_id){
 	
 	switch(sensor_id){
 		
-		case EPS_TEMP:
+		case COMS_TEMP:
 			PORTC &= (0xEF);
 	
 }
