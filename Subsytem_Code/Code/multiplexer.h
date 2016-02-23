@@ -10,5 +10,5 @@
 #include "adc_lib.h"
 #include "sensors.h"
 
-void select_multiplexer_output(uint8_t A);
-uint8_t* read_multiplexer_sensor(uint8_t sensor_id);
+void select_multiplexer_output(uint8_t sensor_id);
+int read_multiplexer_sensor(uint8_t sensor_id, uint8_t* result_container);

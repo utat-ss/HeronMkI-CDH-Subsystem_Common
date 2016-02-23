@@ -200,6 +200,12 @@
     <Compile Include="mppt_timer.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="multiplexer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="multiplexer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="port.c">
       <SubType>compile</SubType>
     </Compile>

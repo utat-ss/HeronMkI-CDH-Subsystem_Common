@@ -88,6 +88,7 @@
 #include "commands.h"
 #include "mppt_timer.h"
 #include "battBalance.h"
+#include "multiplexer.h"
 #include "comsTimer.h"
 #include "global_var.h"
 
@@ -116,7 +117,7 @@ int main(void)
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		//can_check_general();
+		can_check_general();
 		if(!PAUSE)
 		{	
 			if(SELF_ID == 0)
@@ -139,13 +140,24 @@ int main(void)
 				//run_mppt();
 				//run_battBalance();
 				//spi_send_shunt_dpot_value(0xAC);
+				
+				uint8_t* mux_result;
+				read_multiplexer_sensor(COMS_I, mux_result);
+				test_reg[0] = *mux_result;
+				test_reg[1] = *(mux_result + 1);
+				send_can_value(test_reg);
+				
+				if ((*(mux_result + 1)) > 0x09 && (*(mux_result + 1) < 0xF0))
+				{
+					PIN_toggle(LED1);
+				}
 				PIN_toggle(LED3);
-				delay_ms(1);
+				delay_ms(200);
 				//run_batt_heater();
 			}			
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		//run_commands();
+		run_commands();
 	}
 }
 
@@ -171,6 +183,7 @@ static void sys_init(void)
 	if(SELF_ID == 1)
 	{
 		// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
+		// Move this to an if statement in I/O init
 		DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO 
 		DDRC = 0b11010001;	// s3 | s0 | X | eps_temp | X | X | X | RED LED 
 		DDRD = 0b01101011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED
@@ -190,7 +203,8 @@ static void sys_init(void)
 		pxi	= 0x0F;
 		pyv = 0x5F;
 		pyi = 0x2F;
-		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the cirrect value because we are using the H and W so 0 Ohms = 0xFF
+		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
+		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
 		PIN_set(LED1);							// Indicator that we made it to the end of the INIT
 	}
 	
@@ -365,6 +379,11 @@ static void init_global_vars(void)
 		{
 			packet_list[j].data[i] = 0;
 		}
+	}
+	
+	for(i = 0; i < 6; i++)
+	{
+		test_reg[i] = 0;
 	}
 	
 	for(i = 0; i < 77; i ++)

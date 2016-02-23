@@ -267,7 +267,7 @@ uint16_t payv_high, payv_low, payi_high, payi_low, obcv_high, obcv_low, obci_hig
 uint8_t mpptx, mppty, balance_h, balance_l, batt_heater_control;
 
 //PINS FOR EPS
-	#if SELF_ID == 1
+	//#if (SELF_ID == 1)
 
 	#define BALANCE_L_P	26
 	#define BALANCE_H_P	27
@@ -282,7 +282,7 @@ uint8_t mpptx, mppty, balance_h, balance_l, batt_heater_control;
 	#define S2_P		24
 	#define S3_P		25
 
-#endif /* SELF_ID == 1 */
+//#endif /* SELF_ID == 1 */
 
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
 uint8_t CURRENT_MINUTE;

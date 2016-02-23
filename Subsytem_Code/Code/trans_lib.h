@@ -295,3 +295,4 @@ void transceiver_run3(void);
 uint8_t transmit_packet(void);
 void setup_fake_tc(void);
 uint16_t fletcher16(uint8_t* data, int count);
+void send_can_value(uint8_t* data);

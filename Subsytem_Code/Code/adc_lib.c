@@ -46,6 +46,13 @@
 void adc_initialize(void)
 {
 	uint8_t* ptr;
+	
+	if (SELF_ID == 1)	// If you are the EPS, set the ADC to use pin ADC9 (No external voltage, data right justified)
+	{
+		ptr = ADMUX_BASE;		// Initialize ADMUX_BASE
+		*ptr = 0b00001001;		// REFS1 | REFS0 | ADLAR | MUX4 | MUX3 | MUX2 | MUX1 | MUX0
+	}
+	
 	ptr = ADCSRA_BASE;		// Initialize ADCSRA
 	*ptr = 0b11010010;
 	ptr = ADCSRB_BASE;		// Initialize ADCSRB

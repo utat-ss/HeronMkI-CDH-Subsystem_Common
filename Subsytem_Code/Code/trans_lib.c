@@ -158,7 +158,6 @@
 
 #include "trans_lib.h"
 
-static void send_can_value(uint8_t* data);
 static void clear_current_tc(void);
 
 void transceiver_initialize(void)
@@ -607,7 +606,7 @@ void transceiver_run3(void)
 	lastCycle = millis();
 }
 
-static void send_can_value(uint8_t* data)
+void send_can_value(uint8_t* data)
 {
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
 	send_arr[6] = MT_COM;
