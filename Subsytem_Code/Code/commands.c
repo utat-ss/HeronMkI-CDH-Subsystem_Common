@@ -774,14 +774,15 @@ void send_pus_packet_tc(void)
 		send_arr[1] = current_tc[(i * 4) + 1];
 		send_arr[2] = current_tc[(i * 4) + 2];
 		send_arr[3] = current_tc[(i * 4) + 3];
+		tc_transfer_completef = 0;
 		send_tc_can_msg(i);							// Send a TC message to the OBC.
-		delay_ms(100);								// Give the OBC 100ms to process that CAN message.
+		delay_ms(10);								// Give the OBC 100ms to process that CAN message.
 		can_check_general();
 		wdt_reset();
 	}
 
 	tc_transfer_time = millis();
-	while(!tc_transfer_completef)					// Delay for ~10 ms for the OBC to send final transaction response.
+	while(tc_transfer_completef != (PACKET_LENGTH / 4 - 1))		// Delay for ~10 ms for the OBC to send final transaction response.
 	{
 		if(millis() - tc_transfer_time > 1000)	// Timeout triggered.
 		{
@@ -795,7 +796,6 @@ void send_pus_packet_tc(void)
 	
 	if(tc_transfer_completef != (PACKET_LENGTH / 4 - 1))
 	{
-		//PIN_toggle(LED2);
 		tc_transfer_completef = 0;
 		return;
 	}
