@@ -716,7 +716,7 @@ void alert_obc_tcp_ready(void)
 	send_arr[2] = 0;
 	send_arr[1] = 0;
 	send_arr[0] = 0;
-	can_send_message(&(send_arr[0]), CAN1_MB7);
+	can_send_message(&(send_arr[0]), CAN1_MB2);
 	return;
 }
 
@@ -793,7 +793,7 @@ void send_pus_packet_tc(void)
 		wdt_reset();
 	}
 	
-	if(tc_transfer_completef != 35)
+	if(tc_transfer_completef != (PACKET_LENGTH / 4 - 1))
 	{
 		//PIN_toggle(LED2);
 		tc_transfer_completef = 0;
@@ -801,7 +801,7 @@ void send_pus_packet_tc(void)
 	}
 	else
 	{
-		PIN_toggle(LED2);
+		PIN_toggle(LED2);				// Transaction Complete!
 		tc_transfer_completef = 0;
 		tc_packet_readyf = 0;
 		return;
@@ -815,7 +815,7 @@ static void send_tc_can_msg(uint8_t packet_count)
 	send_arr[6] = MT_COM;
 	send_arr[5] = SEND_TC;
 	send_arr[4] = packet_count;
-	can_send_message(&(send_arr[0]), CAN1_MB7);
+	can_send_message(&(send_arr[0]), CAN1_MB2);
 	return;
 }
 

@@ -1021,39 +1021,30 @@ void clear_new_packet(void)
 
 uint8_t store_new_packet(void)
 {
-	uint8_t i, packet_height = 0, offset = 0;
+	uint8_t i;	// packet_height = 0, offset = 0;
 	uint16_t pec;
-	uint32_t rsc;
+	//uint32_t rsc;
 	if(packet_count == 5)		
 		return 0xFF;		// Packet_list is currently full, cannot accept new packets.
-		
+
 	/* There is room in the packet list */
 	if(new_packet[77] != 0x18)					// Characteristic of B151 in a telecommand.
 		return 0xFF;
 
+	packet_count++;
 	for (i = 0; i < 76; i++)
 	{
-		packet_list[packet_count].data[i + 76] = new_packet[i + 2];
+		packet_list[packet_count - 1].data[i + 76] = new_packet[i + 2];
 	}
 	for(i = 0; i < 76; i++)
 	{
-		packet_list[packet_count].data[i] = 0;
+		packet_list[packet_count - 1].data[i] = 0;
 	}
-	pec = fletcher16(packet_list[packet_count].data + 2, 150);
-	packet_list[packet_count].data[1] = (uint8_t)(pec >> 8);
-	packet_list[packet_count].data[0] = (uint8_t)(pec);
-	packet_count++;
-	if(packet_count)
-	{
-		test_reg[0] = packet_list[packet_count - 1].data[0];
-		test_reg[1] = packet_list[packet_count - 1].data[1];
-		test_reg[2] = packet_list[packet_count - 1].data[75];
-		test_reg[3] = packet_list[packet_count - 1].data[76];
-		test_reg[4] = packet_list[packet_count - 1].data[150];
-		test_reg[5] = packet_list[packet_count - 1].data[151];
-		//send_can_value(test_reg);
-	}
-	last_rx_packet_height = packet_height;
+	pec = fletcher16(packet_list[packet_count - 1].data + 2, 150);
+	packet_list[packet_count - 1].data[1] = (uint8_t)(pec >> 8);
+	packet_list[packet_count - 1].data[0] = (uint8_t)pec;
+
+	//last_rx_packet_height = packet_height;
 	return 0x00;
 }
 
@@ -1123,7 +1114,6 @@ static void clear_current_tc(void)
 void load_packet(void)
 {
 	uint8_t i;
-	//new_packet[0] = reg_read(STDFIFO);
 	for(i = 0; i < (REAL_PACKET_LENGTH + 2); i++)
 	{
 		new_packet[i] = reg_read(STDFIFO);
@@ -1134,7 +1124,6 @@ void load_packet(void)
 void load_ack(void)
 {
 	uint8_t i;
-	//new_packet[0] = reg_read(STDFIFO);
 	for(i = 0; i < (ACK_LENGTH + 2); i++)
 	{
 		new_packet[i] = reg_read(STDFIFO);
@@ -1149,22 +1138,21 @@ void setup_fake_tc(void)
 	version = 0;
 	type = 1;
 	sequence_flags = 0x02;
-	service_type = 5;			// HK Service
+	service_type = 3;			// HK Service
 	service_sub_type = 9;		// Req HK Definition report
 	// Packet Header
 	tm_to_downlink[151] = ((version & 0x07) << 5) | ((type & 0x01) << 4) | (0x08);
-	tm_to_downlink[150] = HK_GROUND_ID;
+	tm_to_downlink[150] = HK_TASK_ID;
 	tm_to_downlink[149] = sequence_flags;
 	tm_to_downlink[148] = transmitting_sequence_control;
 	tm_to_downlink[147] = 0x00;
 	tm_to_downlink[146] = PACKET_LENGTH - 1;
 	version = 1;
 	// Data Field Header
-	tm_to_downlink[145] = ((version & 0x07) << 4) | 0x80;
+	tm_to_downlink[145] = ((version & 0x07) << 4) | 0x8A;
 	tm_to_downlink[144] = service_type;
 	tm_to_downlink[143] = service_sub_type;
-	tm_to_downlink[142] = transmitting_sequence_control;
-	tm_to_downlink[141] = HK_TASK_ID;
+	tm_to_downlink[142] = HK_GROUND_ID;
 	tm_to_downlink[140] = 0;
 	tm_to_downlink[139] = 0;
 	pec = fletcher16(tm_to_downlink + 2, 150);

@@ -68,9 +68,9 @@ typedef struct{
 
 #define CAN1_MB0				10
 #define CAN1_MB1				10
-#define CAN1_MB2				10
-#define CAN1_MB3				10
-#define CAN1_MB4				14
+#define CAN1_MB2				11
+#define CAN1_MB3				11
+#define CAN1_MB4				11
 #define CAN1_MB5				14
 #define CAN1_MB6				14
 #define CAN1_MB7				17
