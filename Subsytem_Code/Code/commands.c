@@ -635,7 +635,7 @@ static void send_tm_transaction_response(uint8_t req_by, uint8_t code)
 	send_arr[2] = 0;
 	send_arr[1] = 0;
 	send_arr[0] = code;
-	can_send_message(&(send_arr[0]), CAN1_MB7);
+	can_send_message(&(send_arr[0]), CAN1_MB2);
 	return;
 }
 
@@ -655,12 +655,12 @@ void receive_tm_msg(void)
 	uint8_t req_by, obc_seq_count;
 	req_by = new_tm_msg[7] >> 4;
 	obc_seq_count = new_tm_msg[4];
-
+	new_tm_msgf = 0;
+	
 	if(obc_seq_count > (tm_sequence_count + 1))
 	{
 		send_tm_transaction_response(req_by, 0xFF);		// Let the OBC know that the transaction failed.
 		tm_sequence_count = 0;
-		new_tm_msgf = 0;
 		receiving_tmf = 0;
 		clear_current_tm();
 		return;
@@ -669,7 +669,6 @@ void receive_tm_msg(void)
 	{
 		send_tm_transaction_response(req_by, 0xFF);
 		tm_sequence_count = 0;
-		new_tm_msgf = 0;
 		receiving_tmf = 0;
 		return;
 	}
@@ -682,15 +681,15 @@ void receive_tm_msg(void)
 		current_tm[(obc_seq_count * 4) + 1] = new_tm_msg[1];
 		current_tm[(obc_seq_count * 4) + 2] = new_tm_msg[2];
 		current_tm[(obc_seq_count * 4) + 3] = new_tm_msg[3];
-		if(obc_seq_count == 35)
+		if(obc_seq_count == PACKET_LENGTH / 4 - 1)
 		{
+			PIN_toggle(LED2);
 			tm_sequence_count = 0;									// Reset tm_sequence_count, transmission has completed.
 			receiving_tmf = 0;
-			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
-			store_current_tm();										// Put current_tm[] into tm_to_downlink[]
+			//current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
+			//store_current_tm();										// Put current_tm[] into tm_to_downlink[]
 			send_tm_transaction_response(req_by, obc_seq_count);	// Let the OBC know that the transaction succeeded.
 		}
-		new_tm_msgf = 0;
 		return;
 	}
 	else
@@ -698,7 +697,6 @@ void receive_tm_msg(void)
 		send_tm_transaction_response(req_by, 0xFF);
 		tm_sequence_count = 0;
 		receiving_tmf = 0;
-		new_tm_msgf = 0;
 		clear_current_tm();
 		return;
 	}

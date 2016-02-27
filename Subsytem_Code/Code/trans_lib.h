@@ -31,6 +31,8 @@
 	*					which have gone by.
 	*
 */
+#ifndef TRANS_LIB_H
+#define TRANS_LIB_H
 
 #include "spi_lib.h"
 #include "port.h"
@@ -50,6 +52,7 @@
 #define DEVICE_ADDRESS 0xA5
 #define REAL_PACKET_LENGTH 76
 #define ACK_LENGTH 3
+#define TM_TIMEOUT 5000
 
 //define crystal oscillator frequency to 32MHz
 #define f_xosc 32000000;							// What is this used for?
@@ -296,3 +299,5 @@ void transceiver_run3(void);
 uint8_t transmit_packet(void);
 void setup_fake_tc(void);
 uint16_t fletcher16(uint8_t* data, int count);
+
+#endif

@@ -28,6 +28,7 @@
 #include "config.h"
 #include "can_lib.h"
 #include "global_var.h"
+#include "trans_lib.h"
 #include "commands.h"
 #include "port.h"
 

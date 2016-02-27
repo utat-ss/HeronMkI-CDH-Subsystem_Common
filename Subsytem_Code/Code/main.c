@@ -130,6 +130,8 @@ int main(void)
 					delay_ms(250);
 					transceiver_run3();					
 				}
+				if(millis() - startedReceivingTM > TM_TIMEOUT)
+					receiving_tmf = 0;
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
 			}
@@ -342,6 +344,7 @@ static void init_global_vars(void)
 	current_transceiver = 0;
 	lastAck = 0;
 	low_half_acquired = 0;
+	startedReceivingTM = 0;
 	
 	for(i = 0; i < 152; i++)
 	{
