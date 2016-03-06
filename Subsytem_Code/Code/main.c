@@ -114,9 +114,14 @@
 static void io_init(void);
 static void sys_init(void);
 static void init_global_vars(void);
+
+static void check_send_beacon(void);
+
 #if (SELF_ID == 2)
 static void init_port_expander_pins(void);
 #endif
+
+
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
@@ -459,9 +464,16 @@ static void init_global_vars(void)
 	set_sens_l = 0;
 	set_varf = 0;
 	pause_operationsf = 0;
+	
 	resume_operationsf = 0;	
 	event_readyf = 0;
-
+	
+	/* Initialize beacon variables */
+	send_beaconf = 0;
+	BEACON_COUNTER = 0;
+	MAX_BEACON_WAIT = (5 * 468750); //should be once every 5 minutes (see comsTimer)
+	
+	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;
 	PAUSE = 0;
@@ -549,3 +561,13 @@ static void init_port_expander_pins(void)
 	return;
 }
 #endif
+
+static void check_send_beacon(void)
+{
+	//check if the counter got to max allowed
+	if (BEACON_COUNTER > MAX_BEACON_WAIT) {
+		//reset counter, set flag
+		BEACON_COUNTER = 0;
+		send_beaconf = 1;
+	}
+}

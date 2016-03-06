@@ -271,6 +271,11 @@ uint8_t mpptx, mppty, balance_h, balance_l, batt_heater_control;
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
 uint8_t CURRENT_MINUTE;
 
+// Global variables for sending the beacon
+uint8_t send_beaconf;
+uint32_t BEACON_COUNTER;
+uint32_t MAX_BEACON_WAIT;
+
 // Global variables for the different modes that the SSM can be in.
 uint8_t LOW_POWER_MODE;
 uint8_t PAUSE;
