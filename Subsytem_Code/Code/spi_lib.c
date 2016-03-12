@@ -107,20 +107,23 @@
 
 /************************************************************************/
 void spi_initialize_master(void)
-{
-	uint8_t* reg_ptr;
-	uint8_t temp = 0;
-	
-	reg_ptr = MCUCR_BASE;
-	temp = 0b01111111;
-	*reg_ptr = *reg_ptr & (temp);	// We set SPIPS to 0 (select MISO, so NOT MISO_A)
-	
-	reg_ptr = SPCR_BASE;
-	temp = 0b01111111;
-	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, spiclk = fioclk/128, CPOL = 1 (SCK high when idle), CPHA = 0
-	temp = 0b01010011;
-	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/4
+{	
+	MCUCR = MCUCR & 0b01111111;
+	SPCR = 0b01011111;
 	return;
+}
+
+uint8_t spi_transfer5(uint8_t volatile message)
+{
+	SPDR = message;
+	uint8_t timeout_counter = 0;
+	while(!(SPSR & (1<<SPIF)) && timeout_counter++ < 254);
+	if (timeout_counter == 254) {
+		PIN_toggle(LED2);
+		return 0;
+	} else {
+		return SPDR; // reading SPSR register and then reading SPDR automatically resets the SPIF bit
+	}
 }
 
 /* Slave Initialize */
@@ -180,10 +183,6 @@ uint8_t spi_transfer(uint8_t message)
 			}
 		}
 	}	
-
-	
-
-	
 	//SS_set_high();
 		
 	delay_cycles(11);

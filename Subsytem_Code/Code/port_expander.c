@@ -47,24 +47,23 @@
 #include "port_expander.h"
 #include "global_var.h"
 
+
 void port_expander_init()
 {
-	//_write_control_byte = 0b01000000;
-	//if (A2 == 1) _write_control_byte = _write_control_byte | (0b00001000);
-	//if (A1 == 1) _write_control_byte = _write_control_byte | (0b00000100);
-	//if (A0 == 1) _write_control_byte = _write_control_byte | (0b00000010);
-	//_read_control_byte = _write_control_byte | (0b00000001);
+	_write_control_byte = 0b01000000;
+	if (A2 == 1) _write_control_byte = _write_control_byte | (0b00001000);
+	if (A1 == 1) _write_control_byte = _write_control_byte | (0b00000100);
+	if (A0 == 1) _write_control_byte = _write_control_byte | (0b00000010);
+	_read_control_byte = _write_control_byte | (0b00000001);
 	port_expander_write(IOCON, 0b00001000); // Set configuration register with hardware addressing enabled
 }
 
 void port_expander_write(uint8_t register_address, uint8_t data)
 {
 	PIN_clr(SS_PIN);
-	//spi_transfer(_write_control_byte);
-	delay_us(20);
-	spi_transfer(register_address);
-	delay_us(20);
-	spi_transfer(data);
+	spi_transfer5(_write_control_byte);
+	spi_transfer5(register_address);
+	spi_transfer5(data);
 	PIN_set(SS_PIN);
 	return;
 }
@@ -72,9 +71,9 @@ void port_expander_write(uint8_t register_address, uint8_t data)
 void port_expander_read(uint8_t register_address, uint8_t* data)
 {
 	PIN_clr(SS_PIN);
-	//spi_transfer4(_read_control_byte);
-	spi_transfer4(register_address);
-	*data = spi_transfer4(0x00); // receive data
+	spi_transfer5(_read_control_byte);
+	spi_transfer5(register_address);
+	*data = spi_transfer5(0x00); // receive data
 	PIN_set(SS_PIN);
 	return;
 }

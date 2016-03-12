@@ -11,6 +11,9 @@
 #define GPIO_BASE  0x12
 #define IOCON      0x0A // MCP23x17 Configuration Register
 
+uint8_t _write_control_byte;
+uint8_t _read_control_byte;
+
 /************************************************************************/
 /* Initializes the port expander. Must be called before use.            */
 /************************************************************************/
