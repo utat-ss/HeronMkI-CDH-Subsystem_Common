@@ -119,7 +119,6 @@ uint8_t spi_transfer5(uint8_t volatile message)
 	uint8_t timeout_counter = 0;
 	while(!(SPSR & (1<<SPIF)) && timeout_counter++ < 254);
 	if (timeout_counter == 254) {
-		PIN_toggle(LED2);
 		return 0;
 	} else {
 		return SPDR; // reading SPSR register and then reading SPDR automatically resets the SPIF bit

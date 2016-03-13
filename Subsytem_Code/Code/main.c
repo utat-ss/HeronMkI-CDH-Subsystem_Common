@@ -114,8 +114,9 @@ int main(void)
 		delay_ms(25);
 	}
 	
-port_expander_init();
-port_expander_write(IODIR_BASE, 0b00000000);
+	port_expander_init();
+	gpioa_pin_mode(7, OUTPUT);
+	//port_expander_write(GPIO_BASE, 0b11111111);
     
 	while(1)
     {	
@@ -144,12 +145,17 @@ port_expander_write(IODIR_BASE, 0b00000000);
 			{
 				//delay_ms(250);
 				//PIN_toggle(LED2);
-				uint8_t mydata;
-				port_expander_write(GPIO_BASE, 0b11110000);
-				port_expander_read(GPIO_BASE, &mydata);
-				if(mydata!=0b11110000)
+				uint8_t mydata = 0;
+				set_gpioa_pin(7);
+				delay_ms(500);
+				clr_gpioa_pin(7);
+				delay_ms(500);
+				//mydata = read_gpioa_pin(7);
+				if (mydata==1)
 				{
-					PIN_toggle(LED3);
+					PIN_set(LED2);
+				} else{
+					PIN_clr(LED2);
 				}
 				delay_ms(50);
 			}			
