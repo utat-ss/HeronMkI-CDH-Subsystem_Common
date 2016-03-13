@@ -114,7 +114,8 @@ int main(void)
 		delay_ms(25);
 	}
 	
-	port_expander_init();
+port_expander_init();
+port_expander_write(IODIR_BASE, 0b00000000);
     
 	while(1)
     {	
@@ -143,9 +144,13 @@ int main(void)
 			{
 				//delay_ms(250);
 				//PIN_toggle(LED2);
-				port_expander_init();
-				port_expander_write(IODIR_BASE, 0b00000000);
+				uint8_t mydata;
 				port_expander_write(GPIO_BASE, 0b11110000);
+				port_expander_read(GPIO_BASE, &mydata);
+				if(mydata!=0b11110000)
+				{
+					PIN_toggle(LED3);
+				}
 				delay_ms(50);
 			}			
 		}		
