@@ -113,6 +113,18 @@ void spi_initialize_master(void)
 	return;
 }
 
+/************************************************************************/
+/*      SPI Transfer 5                                                  */
+/*																		*/
+/*      spi_transfers0-4 Keenan claims work but they are too flaky.     */
+/*      e.g. they will not allow multiple bytes to be sent, send bytes  */
+/*      out of order, etc.                                              */
+/*                                                                      */
+/*      This code definitely works, allowing multiple bytes to be sent  */
+/*      and its operation was confirmed on an oscilloscope.             */
+/*      This code is used by the port expander                          */
+/*																		*/
+/************************************************************************/
 uint8_t spi_transfer5(uint8_t volatile message)
 {
 	SPDR = message;

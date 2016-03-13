@@ -29,7 +29,10 @@
 *							X|X|0
 *							0|X|0		
 *							  ^	
-*							  MOSI				
+*							  MOSI			
+*               2016/03/12 Test and confirmed public API works at least for gpio A. Able to set pin mode, set output state, and read state.
+*                          The problem was narrowed down to spi_lib which sent bytes out-of-order and often not at all. A new function, spi_transfer5
+*                          was written to fix this.	
 *
 *	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:	
 *
