@@ -115,8 +115,7 @@ int main(void)
 	}
 	
 	port_expander_init();
-	gpioa_pin_mode(7, OUTPUT);
-	//port_expander_write(GPIO_BASE, 0b11111111);
+	gpioa_pin_mode(7, INPUT);
     
 	while(1)
     {	
@@ -146,11 +145,7 @@ int main(void)
 				//delay_ms(250);
 				//PIN_toggle(LED2);
 				uint8_t mydata = 0;
-				set_gpioa_pin(7);
-				delay_ms(500);
-				clr_gpioa_pin(7);
-				delay_ms(500);
-				//mydata = read_gpioa_pin(7);
+				mydata = read_gpioa_pin(7);
 				if (mydata==1)
 				{
 					PIN_set(LED2);

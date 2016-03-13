@@ -145,7 +145,7 @@ uint8_t read_gpioa_pin(uint8_t id)
 {
 	uint8_t state;
 	port_expander_read(GPIO_BASE, &state);
-	if ( (state & (1 << id) ) == 1 )
+	if ( (state & (1 << id) ) > 0 )
 	{
 		return 1;	
 	}
@@ -160,7 +160,7 @@ uint8_t read_gpiob_pin(uint8_t id)
 {
 	uint8_t state;
 	port_expander_read(GPIO_BASE + 0x01, &state);
-	if ( (state & (1 << id) ) == 1 )
+	if ( (state & (1 << id) ) > 0 )
 	{
 		return 1;
 	}
