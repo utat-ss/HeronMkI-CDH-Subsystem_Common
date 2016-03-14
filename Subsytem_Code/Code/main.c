@@ -90,6 +90,7 @@
 #include "battBalance.h"
 #include "comsTimer.h"
 #include "global_var.h"
+#include "port_expander.h"
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
@@ -112,7 +113,11 @@ int main(void)
 		//transmit_packet();
 		//delay_ms(25);
 	}
-    while(1)
+	
+	//port_expander_init();
+	//gpioa_pin_mode(7, INPUT);
+    
+	while(1)
     {	
 		/* Reset the WDT */
 		wdt_reset();
@@ -137,9 +142,17 @@ int main(void)
 			}
 			if(SELF_ID == 1)
 			{
-				run_mppt();
-				run_battBalance();
-				//run_batt_heater();
+				//delay_ms(250);
+				//PIN_toggle(LED2);
+				uint8_t mydata = 0;
+				mydata = read_gpioa_pin(7);
+				if (mydata==1)
+				{
+					PIN_set(LED2);
+				} else{
+					PIN_clr(LED2);
+				}
+				delay_ms(50);
 			}			
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
@@ -152,6 +165,7 @@ static void sys_init(void)
 	/* Make sure sys clock is at least 8MHz */
 	CLKPR = 0x80;
 	CLKPR  = 0;
+	PIN_clr(LED1);
 	
 	/* Common Initialization */
 	init_global_vars();
@@ -174,19 +188,6 @@ static void sys_init(void)
 	/* EPS ONLY Initialization */
 	if(SELF_ID == 1)
 	{
-		PIN_set(LED1);
-		/* Enable the timer for MMPT */
-		mppt_timer_init();
-		mpptx = 0x3F;
-		mppty = 0x1F;
-		balance_l = 1;
-		balance_h = 1;
-		batt_heater_control = 0;
-		pxv = 0xBF;
-		pxi	= 0x0F;
-		pyv = 0x5F;
-		pyi = 0x2F;
-		spi_send_shunt_dpot_value(0x55);
 	}
 
 	/* PAY ONLY Initialization */

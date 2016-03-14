@@ -123,6 +123,30 @@ void spi_initialize_master(void)
 	return;
 }
 
+/************************************************************************/
+/*      SPI Transfer 5                                                  */
+/*																		*/
+/*      spi_transfers0-4 Keenan claims work but they are too flaky.     */
+/*      e.g. they will not allow multiple bytes to be sent, send bytes  */
+/*      out of order, etc.                                              */
+/*                                                                      */
+/*      This code definitely works, allowing multiple bytes to be sent  */
+/*      and its operation was confirmed on an oscilloscope.             */
+/*      This code is used by the port expander                          */
+/*																		*/
+/************************************************************************/
+uint8_t spi_transfer5(uint8_t volatile message)
+{
+	SPDR = message;
+	uint8_t timeout_counter = 0;
+	while(!(SPSR & (1<<SPIF)) && timeout_counter++ < 254);
+	if (timeout_counter == 254) {
+		return 0;
+	} else {
+		return SPDR; // reading SPSR register and then reading SPDR automatically resets the SPIF bit
+	}
+}
+
 /* Slave Initialize */
 
 //void spi_initialize(void)
@@ -180,10 +204,6 @@ uint8_t spi_transfer(uint8_t message)
 			}
 		}
 	}	
-
-	
-
-	
 	//SS_set_high();
 		
 	delay_cycles(11);

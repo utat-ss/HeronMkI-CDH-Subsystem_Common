@@ -29,7 +29,10 @@
 *							X|X|0
 *							0|X|0		
 *							  ^	
-*							  MOSI				
+*							  MOSI			
+*               2016/03/12 Test and confirmed public API works at least for gpio A. Able to set pin mode, set output state, and read state.
+*                          The problem was narrowed down to spi_lib which sent bytes out-of-order and often not at all. A new function, spi_transfer5
+*                          was written to fix this.	
 *
 *	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:	
 *
@@ -47,24 +50,23 @@
 #include "port_expander.h"
 #include "global_var.h"
 
+
 void port_expander_init()
 {
-	//_write_control_byte = 0b01000000;
-	//if (A2 == 1) _write_control_byte = _write_control_byte | (0b00001000);
-	//if (A1 == 1) _write_control_byte = _write_control_byte | (0b00000100);
-	//if (A0 == 1) _write_control_byte = _write_control_byte | (0b00000010);
-	//_read_control_byte = _write_control_byte | (0b00000001);
+	_write_control_byte = 0b01000000;
+	if (A2 == 1) _write_control_byte = _write_control_byte | (0b00001000);
+	if (A1 == 1) _write_control_byte = _write_control_byte | (0b00000100);
+	if (A0 == 1) _write_control_byte = _write_control_byte | (0b00000010);
+	_read_control_byte = _write_control_byte | (0b00000001);
 	port_expander_write(IOCON, 0b00001000); // Set configuration register with hardware addressing enabled
 }
 
 void port_expander_write(uint8_t register_address, uint8_t data)
 {
 	PIN_clr(SS_PIN);
-	//spi_transfer(_write_control_byte);
-	delay_us(20);
-	spi_transfer(register_address);
-	delay_us(20);
-	spi_transfer(data);
+	spi_transfer5(_write_control_byte);
+	spi_transfer5(register_address);
+	spi_transfer5(data);
 	PIN_set(SS_PIN);
 	return;
 }
@@ -72,9 +74,9 @@ void port_expander_write(uint8_t register_address, uint8_t data)
 void port_expander_read(uint8_t register_address, uint8_t* data)
 {
 	PIN_clr(SS_PIN);
-	//spi_transfer4(_read_control_byte);
-	spi_transfer4(register_address);
-	*data = spi_transfer4(0x00); // receive data
+	spi_transfer5(_read_control_byte);
+	spi_transfer5(register_address);
+	*data = spi_transfer5(0x00); // receive data
 	PIN_set(SS_PIN);
 	return;
 }
@@ -146,7 +148,7 @@ uint8_t read_gpioa_pin(uint8_t id)
 {
 	uint8_t state;
 	port_expander_read(GPIO_BASE, &state);
-	if ( (state & (1 << id) ) == 1 )
+	if ( (state & (1 << id) ) > 0 )
 	{
 		return 1;	
 	}
@@ -161,7 +163,7 @@ uint8_t read_gpiob_pin(uint8_t id)
 {
 	uint8_t state;
 	port_expander_read(GPIO_BASE + 0x01, &state);
-	if ( (state & (1 << id) ) == 1 )
+	if ( (state & (1 << id) ) > 0 )
 	{
 		return 1;
 	}
