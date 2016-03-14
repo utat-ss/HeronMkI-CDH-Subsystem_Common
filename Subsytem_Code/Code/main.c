@@ -108,9 +108,9 @@ int main(void)
 	if(SELF_ID == 0)
 	{
 		setup_fake_tc();
-		current_tm_fullf = 1;
-		transmit_packet();
-		delay_ms(25);
+		//current_tm_fullf = 1;
+		//transmit_packet();
+		//delay_ms(25);
 	}
     while(1)
     {	
@@ -128,7 +128,7 @@ int main(void)
 				if(!receiving_tmf)
 				{
 					delay_ms(250);
-					transceiver_run3();					
+					transceiver_run3();			
 				}
 				if(millis() - startedReceivingTM > TM_TIMEOUT)
 					receiving_tmf = 0;
@@ -156,7 +156,8 @@ static void sys_init(void)
 	/* Common Initialization */
 	init_global_vars();
 	io_init();
-	PORTB |= 0x04;
+	//PORTB |= 0x04;
+	PORTD |= 0x02;
 	timer_init();
 	adc_initialize();
 	can_init(0);
@@ -210,12 +211,12 @@ static void io_init(void)
 	DDRB = 0xFE;
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
-	DDRC = 0x11;		// PC4 == SS1 for SPI_TEMP
+	DDRC = 0x13;		// PC4 == SS1 for SPI_TEMP
 						//Arbitrary: PC5 for SPI_PRESSURE
 	PORTC = 0x00;
 	
 	// Init PORTD[7:0]
-	DDRD = 0x09;		// PD3 is the SS for SPI communications.
+	DDRD = 0x0B;		// PD3 is the SS for SPI communications.
 	PORTD = 0x01;		// PD3 should only go low during an SPI message.
 	
 	// Init PORTE[2:0]
@@ -345,6 +346,24 @@ static void init_global_vars(void)
 	lastAck = 0;
 	low_half_acquired = 0;
 	startedReceivingTM = 0;
+	
+	// Dummy Values for Testing Housekeeping
+	pxv = 0x01;
+	pxi = 0x02;
+	pyv = 0x03;
+	pyi = 0x04;
+	battmv = 0x05;
+	battv = 0x06;
+	epstemp = 0x07;
+	shuntdpot = 0x08;
+	battin = 0x09;
+	battout = 0x0A;
+	comsv = 0x0B;
+	comsi = 0x0C;
+	payv = 0x0D;
+	payi = 0x0E;
+	obcv = 0x0F;
+	obci = 0x10;
 	
 	for(i = 0; i < 152; i++)
 	{
