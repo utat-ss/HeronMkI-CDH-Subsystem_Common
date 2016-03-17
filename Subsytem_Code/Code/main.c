@@ -113,10 +113,7 @@ int main(void)
 		//transmit_packet();
 		//delay_ms(25);
 	}
-	
-	//port_expander_init();
-	//gpioa_pin_mode(7, INPUT);
-    
+	    
 	while(1)
     {	
 		/* Reset the WDT */
@@ -188,6 +185,21 @@ static void sys_init(void)
 	/* EPS ONLY Initialization */
 	if(SELF_ID == 1)
 	{
+		PIN_set(LED1);
+		/* Enable the timer for MMPT */
+		mppt_timer_init();
+		mpptx = 0x3F;
+		mppty = 0x1F;
+		balance_l = 1;
+		balance_h = 1;
+		batt_heater_control = 0;
+		pxv = 0xBF;
+		pxi	= 0x0F;
+		pyv = 0x5F;
+		pyi = 0x2F;
+		//spi_send_shunt_dpot_value(0x55);
+		//port_expander_init();
+		//gpioa_pin_mode(7, INPUT);	
 	}
 
 	/* PAY ONLY Initialization */

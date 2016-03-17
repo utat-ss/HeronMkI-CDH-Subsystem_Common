@@ -153,6 +153,7 @@ void send_housekeeping(void)
 #endif
 				
 #if (SELF_ID == 1)
+	delay_ms(25);			// Used to stagger the responses of the SSMs.
 	// EPS Temp Collection
 	send_arr[4] = EPS_TEMP;
 	send_arr[1] = (uint8_t)(epstemp >> 8);
@@ -245,6 +246,7 @@ void send_housekeeping(void)
 #endif
 
 #if (SELF_ID == 2)
+	delay_ms(50);		// Used to stagger the responses of the SSMs.
 	// Environmental Sensor Collection
 	send_arr[4] = PAY_TEMP0;
 	send_arr[1] = 0x00;
