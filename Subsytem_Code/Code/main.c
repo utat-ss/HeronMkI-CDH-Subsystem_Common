@@ -167,8 +167,8 @@ static void sys_init(void)
 	/* Common Initialization */
 	init_global_vars();
 	io_init();
-	PORTB |= 0x04;
-	//PORTD |= 0x02;
+	//PORTB |= 0x04;
+	PORTD |= 0x02;
 	timer_init();
 	adc_initialize();
 	can_init(0);
@@ -359,6 +359,24 @@ static void init_global_vars(void)
 	lastAck = 0;
 	low_half_acquired = 0;
 	startedReceivingTM = 0;
+
+	// Dummy Values for Testing Housekeeping
+	pxv = 0x01;
+	pxi = 0x02;
+	pyv = 0x03;
+	pyi = 0x04;
+	battmv = 0x05;
+	battv = 0x06;
+	epstemp = 0x07;
+	shuntdpot = 0x08;
+	battin = 0x09;
+	battout = 0x0A;
+	comsv = 0x0B;
+	comsi = 0x0C;
+	payv = 0x0D;
+	payi = 0x0E;
+	obcv = 0x0F;
+	obci = 0x10;
 	
 	// Dummy Values for Testing Housekeeping
 	pxv = 0x01;

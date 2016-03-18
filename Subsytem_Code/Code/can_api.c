@@ -266,15 +266,9 @@ void decode_command(uint8_t* command_array)
 				}			
 			}
 		case TM_PACKET_READY:
-			current_tm_fullf = 0;
-			if(SELF_ID == 0)
-			{
-				if((!current_tm_fullf) && (!receiving_tmf))
-				{
-					PIN_toggle(LED2);
-					start_tm_packet();
-				}
-			}
+			//current_tm_fullf = 0;
+			//if((!current_tm_fullf) && (!receiving_tmf))
+				start_tm_packet();
 		case TC_TRANSACTION_RESP:
 			if(SELF_ID == 0)
 				tc_transfer_completef = *command_array;

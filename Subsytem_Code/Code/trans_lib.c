@@ -571,9 +571,9 @@ void transceiver_run3(void)
 					//ack_acquired = 1;
 				}
 			}
-				cmd_str(SIDLE);			// Want to get rid of this.
-				cmd_str(SFRX);
-				cmd_str(SRX);				
+			cmd_str(SIDLE);			// Need to get rid of this.
+			cmd_str(SFRX);
+			cmd_str(SRX);				
 		}
 		get_status(CHIP_RDYn, state);
 		if(*state == 0b110)
@@ -591,11 +591,11 @@ void transceiver_run3(void)
 	}
 	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
 	{
-		//PORTD &= 0xFD;
-		PORTB &= 0xFB;
+		//PORTB &= 0xFB;
+		PORTD &= 0xFD;
 		delay_ms(250);
-		PORTB |= 0x04;
-		//PORTD |= 0x02;
+		//PORTB |= 0x04;
+		PORTD |= 0x02;
 		transceiver_initialize();
 		lastCalibration = millis();
 	}

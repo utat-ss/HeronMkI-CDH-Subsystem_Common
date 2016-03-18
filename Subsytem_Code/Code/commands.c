@@ -144,7 +144,7 @@ void send_housekeeping(void)
 #if (SELF_ID == 0)
 	if(receiving_tmf)		// Housekeeping takes a while, don't do it while receiving a TM packet.
 		return;
-	delay_ms(100);
+	delay_ms(60);
 	// Temperature Collection
 	send_arr[4] = COMS_TEMP;
 	send_arr[1] = 0x00;
@@ -152,16 +152,15 @@ void send_housekeeping(void)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
 #endif
-				
+
 #if (SELF_ID == 1)
-	delay_ms(51);			// Used to stagger the responses of the SSMs.
+	delay_ms(50);
 	// EPS Temp Collection
 	send_arr[4] = EPS_TEMP;
 	send_arr[1] = (uint8_t)(epstemp >> 8);
 	send_arr[0] = (uint8_t)epstemp;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
-	
 	// Panel Voltage / Current Collection
 	send_arr[4] = PANELX_V;
 	send_arr[1] = (uint8_t)(pxv >> 8);
@@ -183,7 +182,7 @@ void send_housekeeping(void)
 	send_arr[0] = (uint8_t)pyi;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
-	
+
 	// Battery Voltage / Current Collection
 	send_arr[4] = BATTM_V;
 	send_arr[1] = (uint8_t)(battmv >> 8);
@@ -212,7 +211,7 @@ void send_housekeeping(void)
 	send_arr[0] = (uint8_t)epstemp;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
-	
+
 	// Subsystem Voltages and Current Collection
 	send_arr[4] = COMS_V;
 	send_arr[1] = (uint8_t)(comsv >> 8);
@@ -247,7 +246,7 @@ void send_housekeeping(void)
 #endif
 
 #if (SELF_ID == 2)
-	delay_ms(50);		// Used to stagger the responses of the SSMs.
+	delay_ms(70);		// Used to stagger the responses of the SSMs.
 	// Environmental Sensor Collection
 	send_arr[4] = PAY_TEMP0;
 	send_arr[1] = 0x00;
