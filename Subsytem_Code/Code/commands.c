@@ -142,7 +142,136 @@ void send_housekeeping(void)
 	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
 	send_arr[4] = CURRENT_MINUTE;
 
+#if (SELF_ID == 0)
+	if(receiving_tmf)		// Housekeeping takes a while, don't do it while receiving a TM packet.
+		return;
+	delay_ms(60);
+	// Temperature Collection
+	send_arr[4] = COMS_TEMP;
+	send_arr[1] = 0x00;
+	send_arr[0] = 0x44;		// (dummy value for now)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+#endif
+
+#if (SELF_ID == 1)
+	delay_ms(50);
+	// EPS Temp Collection
+	send_arr[4] = EPS_TEMP;
+	send_arr[1] = (uint8_t)(epstemp >> 8);
+	send_arr[0] = (uint8_t)epstemp;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+
+	// Panel Voltage / Current Collection
+	send_arr[4] = PANELX_V;
+	send_arr[1] = (uint8_t)(pxv >> 8);
+	send_arr[0] = (uint8_t)pxv;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PANELX_I;
+	send_arr[1] = (uint8_t)(pxi >> 8);
+	send_arr[0] = (uint8_t)pxi;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PANELY_V;
+	send_arr[1] = (uint8_t)(pyv >> 8);
+	send_arr[0] = (uint8_t)pyv;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PANELY_I;
+	send_arr[1] = (uint8_t)(pyi >> 8);
+	send_arr[0] = (uint8_t)pyi;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+
+	// Battery Voltage / Current Collection
+	send_arr[4] = BATTM_V;
+	send_arr[1] = (uint8_t)(battmv >> 8);
+	send_arr[0] = (uint8_t)battmv;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = BATT_V;
+	send_arr[1] = (uint8_t)(battv >> 8);
+	send_arr[0] = (uint8_t)battv;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = BATTIN_I;
+	send_arr[1] = (uint8_t)(battin >> 8);
+	send_arr[0] = (uint8_t)battin;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = BATTOUT_I;
+	send_arr[1] = (uint8_t)(battout >> 8);
+	send_arr[0] = (uint8_t)battout;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+
+	// Battery Temperature
+	send_arr[4] = BATT_TEMP;
+	send_arr[1] = (uint8_t)(epstemp >> 8);
+	send_arr[0] = (uint8_t)epstemp;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+
+	// Subsystem Voltages and Current Collection
+	send_arr[4] = COMS_V;
+	send_arr[1] = (uint8_t)(comsv >> 8);
+	send_arr[0] = (uint8_t)comsv;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = COMS_I;
+	send_arr[1] = (uint8_t)(comsi >> 8);
+	send_arr[0] = (uint8_t)comsi;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_V;
+	send_arr[1] = (uint8_t)(payv >> 8);
+	send_arr[0] = (uint8_t)payv;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_I;
+	send_arr[1] = (uint8_t)(payi >> 8);
+	send_arr[0] = (uint8_t)payi;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = OBC_V;
+	send_arr[1] = (uint8_t)(obcv >> 8);
+	send_arr[0] = (uint8_t)obcv;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = OBC_I;
+	send_arr[1] = (uint8_t)(obci >> 8);
+	send_arr[0] = (uint8_t)obci;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+#endif
+
+#if (SELF_ID == 2)
+	delay_ms(70);
+	// Environmental Sensor Collection
+	send_arr[4] = PAY_TEMP0;
+	send_arr[1] = 0x00;
+	send_arr[0] = 0x66;		// (dummy value for now)
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_HUM;
+	send_arr[1] = 0x00;
+	send_arr[0] = 0x77;		// (dummy value for now)
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_PRESS;
+	send_arr[1] = 0x00;
+	send_arr[0] = 0x88;		// (dummy value for now)
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_ACCEL;
+	send_arr[1] = 0x00;
+	send_arr[0] = 0x99;		// (dummy value for now)
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+#endif
+
 	send_hk = 0;
 	return;
 }
@@ -686,8 +815,8 @@ void receive_tm_msg(void)
 			PIN_toggle(LED2);
 			tm_sequence_count = 0;									// Reset tm_sequence_count, transmission has completed.
 			receiving_tmf = 0;
-			//current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
-			//store_current_tm();										// Put current_tm[] into tm_to_downlink[]
+			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
+			store_current_tm();										// Put current_tm[] into tm_to_downlink[]
 			send_tm_transaction_response(req_by, obc_seq_count);	// Let the OBC know that the transaction succeeded.
 		}
 		return;
@@ -722,7 +851,7 @@ void alert_obc_tcp_ready(void)
 static void store_current_tm(void)
 {
 	uint8_t i;
-	for (i = 0; i < 143; i++)
+	for (i = 0; i < PACKET_LENGTH; i++)
 	{
 		tm_to_downlink[i] = current_tm[i];
 	}
@@ -767,7 +896,7 @@ void send_pus_packet_tc(void)
 			//PIN_toggle(LED2);			
 			return;
 		}
-		PIN_toggle(LED3);
+		//PIN_toggle(LED3);
 		send_arr[0] = current_tc[(i * 4)];
 		send_arr[1] = current_tc[(i * 4) + 1];
 		send_arr[2] = current_tc[(i * 4) + 2];

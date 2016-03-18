@@ -259,7 +259,7 @@ uint8_t event_readyf;
 uint8_t event_arr[8];
 
 /* Global Variables for EPS		*/
-uint8_t* pxv, pxi, pyv, pyi, battmv, battv, epstemp, shuntdpot, battin, battout, comsv, comsi, payv, payi, obcv, obci;
+uint16_t pxv, pxi, pyv, pyi, battmv, battv, epstemp, shuntdpot, battin, battout, comsv, comsi, payv, payi, obcv, obci;
 uint16_t pxv_high, pxv_low, pxi_high, pxi_low, pyv_high, pyv_low, pyi_high, pyi_low;
 uint16_t battmv_high, battmv_low, battv_high, battv_low, battin_high, battin_low;
 uint16_t battout_high, battout_low, epstemp_high, epstemp_low, comsv_high, comsv_low, comsi_high, comsi_low;

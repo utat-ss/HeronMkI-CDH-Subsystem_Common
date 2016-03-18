@@ -532,7 +532,6 @@ void transceiver_run3(void)
 	if(rx_mode)
 	{
 		tx_mode = 0;
-		//cmd_str(SRX);
 		rx_length = reg_read2F(NUM_RXBYTES);
 		rxFirst = reg_read2F(RXFIRST);
 		rxLast = reg_read2F(RXLAST);
@@ -547,21 +546,13 @@ void transceiver_run3(void)
 				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
 				{
 					PIN_toggle(LED1);
-					test_reg[0] = new_packet[0];
-					test_reg[1] = new_packet[1];
-					test_reg[2] = new_packet[2];
-					test_reg[3] = new_packet[75];
-					test_reg[4] = new_packet[76];
-					test_reg[5] = new_packet[77];
-					//send_can_value(test_reg);
 					check = store_new_packet();
 					rx_length = 0;
 					if(!check)									// Packet was accepted and stored internally.
 					{
 						prepareAck();
 						cmd_str(STX);
-						return;
-						//delay_ms(100);				
+						return;			
 					}
 
 				}
@@ -573,24 +564,16 @@ void transceiver_run3(void)
 				/* We have an acknowledgment */
 				if(new_packet[2] == 0x41 && new_packet[3] == 0x43 && new_packet[4] == 0x4B)	// Received proper acknowledgment.
 				{
-					//PIN_toggle(LED2);
-					//cmd_str(SIDLE);
-					//cmd_str(SFRX);
-					//cmd_str(SFTX);
-					//delay_ms(5);
 					lastAck = millis();
 					lastTransmit = millis();
 					//if(last_tx_packet_height)
-						//current_tm_fullf = 0;				// Second half of packet was sent, set current_tm_fullf to zero.
+					current_tm_fullf = 0;				// Second half of packet was sent, set current_tm_fullf to zero.
 					//ack_acquired = 1;
 				}
 			}
-			//else
-			//{
-				cmd_str(SIDLE);			// Need to get rid of this.
-				cmd_str(SFRX);
-				cmd_str(SRX);				
-			//}
+			cmd_str(SIDLE);			// Need to get rid of this.
+			cmd_str(SFRX);
+			cmd_str(SRX);				
 		}
 		get_status(CHIP_RDYn, state);
 		if(*state == 0b110)
@@ -608,15 +591,17 @@ void transceiver_run3(void)
 	}
 	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
 	{
-		PORTB &= 0xFB;
+		//PORTB &= 0xFB;
+		PORTD &= 0xFD;
 		delay_ms(250);
-		PORTB |= 0x04;
+		//PORTB |= 0x04;
+		PORTD |= 0x02;
 		transceiver_initialize();
 		lastCalibration = millis();
 	}
 	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
 	{
-		//PIN_toggle(LED3);
+		PIN_toggle(LED3);
 		cmd_str(SIDLE);
 		cmd_str(SFRX);
 		cmd_str(SFTX);
@@ -1052,8 +1037,8 @@ uint8_t store_new_packet(void)
 uint8_t transmit_packet(void)
 {
 	uint8_t i, offset = 0;
-	//if(!current_tm_fullf)
-		//return;
+	if(!current_tm_fullf)
+		return;
 	
 	// Adjust the sequence control variables if an acknowledgment was received.
 	//if(ack_acquired)
@@ -1075,6 +1060,7 @@ uint8_t transmit_packet(void)
 	
 	//if(last_tx_packet_height)
 		//offset = 76;
+	tm_to_downlink[151] = 0x18;
 	transceiver_send(tm_to_downlink + 76, DEVICE_ADDRESS, 76);
 }
 
