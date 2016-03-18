@@ -591,11 +591,11 @@ void transceiver_run3(void)
 	}
 	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
 	{
-		PORTD &= 0xFD;
-		//PORTB &= 0xFB;
+		//PORTD &= 0xFD;
+		PORTB &= 0xFB;
 		delay_ms(250);
-		//PORTB |= 0x04;
-		PORTD |= 0x02;
+		PORTB |= 0x04;
+		//PORTD |= 0x02;
 		transceiver_initialize();
 		lastCalibration = millis();
 	}

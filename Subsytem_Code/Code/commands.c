@@ -78,9 +78,9 @@ void run_commands(void)
 		set_sensor_low();
 	if (set_varf)
 		set_var();
-	if (new_tm_msgf)
+	if (new_tm_msgf && !SELF_ID)
 		receive_tm_msg();
-	if (packet_count)
+	if (packet_count && !SELF_ID)
 	{
 		load_packet_to_current_tc();
 		send_pus_packet_tc();
@@ -94,11 +94,11 @@ void run_commands(void)
 	if (exit_low_powerf)
 		exit_low_power();
 	if (enter_take_overf)
-		enter_take_over();
+		//enter_take_over();
 	if (exit_take_overf)
 		exit_take_over();
 	if (pause_operationsf)
-		pause_operations();
+		//pause_operations();
 	if (resume_operationsf)
 		resume_operations();
 	if (open_valvesf)
@@ -144,6 +144,7 @@ void send_housekeeping(void)
 #if (SELF_ID == 0)
 	if(receiving_tmf)		// Housekeeping takes a while, don't do it while receiving a TM packet.
 		return;
+	delay_ms(100);
 	// Temperature Collection
 	send_arr[4] = COMS_TEMP;
 	send_arr[1] = 0x00;
@@ -153,7 +154,7 @@ void send_housekeeping(void)
 #endif
 				
 #if (SELF_ID == 1)
-	delay_ms(25);			// Used to stagger the responses of the SSMs.
+	delay_ms(51);			// Used to stagger the responses of the SSMs.
 	// EPS Temp Collection
 	send_arr[4] = EPS_TEMP;
 	send_arr[1] = (uint8_t)(epstemp >> 8);

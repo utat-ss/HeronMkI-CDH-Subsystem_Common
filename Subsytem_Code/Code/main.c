@@ -142,14 +142,14 @@ int main(void)
 				//delay_ms(250);
 				//PIN_toggle(LED2);
 				uint8_t mydata = 0;
-				mydata = read_gpioa_pin(7);
+				//mydata = read_gpioa_pin(7);
 				if (mydata==1)
 				{
 					PIN_set(LED2);
 				} else{
 					PIN_clr(LED2);
 				}
-				delay_ms(50);
+				//delay_ms(50);
 			}			
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
@@ -167,8 +167,8 @@ static void sys_init(void)
 	/* Common Initialization */
 	init_global_vars();
 	io_init();
-	//PORTB |= 0x04;
-	PORTD |= 0x02;
+	PORTB |= 0x04;
+	//PORTD |= 0x02;
 	timer_init();
 	adc_initialize();
 	can_init(0);
@@ -187,7 +187,7 @@ static void sys_init(void)
 	{
 		PIN_set(LED1);
 		/* Enable the timer for MMPT */
-		mppt_timer_init();
+		//mppt_timer_init();
 		mpptx = 0x3F;
 		mppty = 0x1F;
 		balance_l = 1;
