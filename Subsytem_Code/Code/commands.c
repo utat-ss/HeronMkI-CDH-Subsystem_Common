@@ -142,15 +142,15 @@ void send_housekeeping(void)
 	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
 
 #if (SELF_ID == 0)
-	if(receiving_tmf)		// Housekeeping takes a while, don't do it while receiving a TM packet.
-		return;
-	delay_ms(60);
+	//if(receiving_tmf)		// Housekeeping takes a while, don't do it while receiving a TM packet.
+	//	return;
+	//delay_ms(60);
 	// Temperature Collection
 	send_arr[4] = COMS_TEMP;
 	send_arr[1] = 0x00;
 	send_arr[0] = 0x44;		// (dummy value for now)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(100);
+	//delay_ms(100);
 #endif
 
 #if (SELF_ID == 1)

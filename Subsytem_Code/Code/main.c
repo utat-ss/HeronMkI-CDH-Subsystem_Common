@@ -140,17 +140,19 @@ int main(void)
 			if(SELF_ID == 1)
 			{
 				//delay_ms(250);
-				//PIN_toggle(LED2);
+				PIN_toggle(LED2);
 				uint8_t mydata = 0;
 				//mydata = read_gpioa_pin(7);
-				if (mydata==1)
-				{
-					PIN_set(LED2);
-				} else{
-					PIN_clr(LED2);
-				}
-				//delay_ms(50);
-			}			
+				//if (mydata==1)
+				//{
+					//PIN_set(LED2);
+				//} else{
+					//PIN_clr(LED2);
+				//}
+				delay_ms(50);
+			}
+			if(SELF_ID == 2)
+				delay_ms(50);	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
