@@ -178,52 +178,16 @@ uint8_t spi_transfer5(uint8_t volatile message)
 /*		received on the MISO line during the transfer.					*/
 /*																		*/
 /************************************************************************/
-uint8_t spi_transfer(uint8_t message)
+uint8_t spi_transfer(uint8_t volatile message)
 {
-	uint8_t* reg_ptr;
-	uint8_t timeout = SPI_TIMEOUT;
-	uint8_t receive_char;
-	
-	reg_ptr = SPDR_BASE;
-	
-	// Commence the SPI message.
-	//SS_set_low();
-	*reg_ptr = message;
-		
-	reg_ptr = SPSR_BASE;
-
-	while(!(*reg_ptr & SPI_SPSR_SPIF))		// Check if the transmission has completed yet.
-	{
-		if(!timeout--)
-		{
-			//SS_set_high();
-			return 0x00;						// Something went wrong, so the function times out.
-			if(SELF_ID != 1)
-			{
-				PIN_toggle(LED2);
-			}
-		}
-	}	
-	//SS_set_high();
-		
-	delay_cycles(11);
-
-	reg_ptr = SPDR_BASE;
-	receive_char = *reg_ptr;
-	// I was assuming that SPI messages would be received MSB first.
-	// Comment out the following if that is not the case.
-	
-	//temp = 0, temp2 = 0;
-	//
-	//for (i = 0; i < 8; i ++)
-	//{
-		//temp2 = receive_char << (7 - i);	// reverses the order of the bits.
-		//temp2 = temp2 >> 7;
-		//temp2 = temp2 << (7 - i);		
-		//temp += temp2;
-	//}
-	
-	return receive_char;					// Transmission was successful, return the character that was received.
+	SPDR = message;
+	uint8_t timeout_counter = 0;
+	while(!(SPSR & (1<<SPIF)) && timeout_counter++ < 254);
+	if (timeout_counter == 254) {
+		return 0;
+		} else {
+		return SPDR; // reading SPSR register and then reading SPDR automatically resets the SPIF bit
+	}
 }
 
 uint8_t spi_transfer2(uint8_t message)
