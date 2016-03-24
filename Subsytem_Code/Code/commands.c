@@ -816,6 +816,7 @@ void receive_tm_msg(void)
 			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
 			store_current_tm();										// Put current_tm[] into tm_to_downlink[]
 			send_tm_transaction_response(req_by, obc_seq_count);	// Let the OBC know that the transaction succeeded.
+			transmit_packet();
 		}
 		return;
 	}

@@ -268,6 +268,7 @@ void decode_command(uint8_t* command_array)
 		case TM_PACKET_READY:
 			//current_tm_fullf = 0;
 			//if((!current_tm_fullf) && (!receiving_tmf))
+			if(!receiving_tmf)
 				start_tm_packet();
 		case TC_TRANSACTION_RESP:
 			if(SELF_ID == 0)
@@ -478,6 +479,7 @@ void can_init_mobs(void)
 // Let the OBC know that you are ready to receive TM packet.
 static void start_tm_packet(void)
 {
+	uint8_t waiting = 100;
 	send_arr[7] = (SELF_ID << 4)|COMS_TASK_ID;
 	send_arr[6] = MT_COM;
 	send_arr[5] = OK_START_TM_PACKET;
@@ -486,6 +488,19 @@ static void start_tm_packet(void)
 		startedReceivingTM = millis();
 	receiving_tmf = 1;
 	can_send_message(&(send_arr[0]), CAN1_MB2);
+	
+	while(waiting--)	// Timeout of 100ms.
+	{
+		delay_ms(1);								// Give the OBC 100ms to process that CAN message.
+		can_check_general();
+		wdt_reset();
+		if(new_tm_msgf)
+		{
+			receive_tm_msg();
+			waiting = 100;
+		}
+	}
+	receiving_tmf = 0;
 	return;
 }
 
