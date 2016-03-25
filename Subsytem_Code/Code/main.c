@@ -129,7 +129,7 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
 				{
-					delay_ms(250);
+					delay_ms(50);
 					transceiver_run3();			
 				}
 				if(millis() - startedReceivingTM > TM_TIMEOUT)

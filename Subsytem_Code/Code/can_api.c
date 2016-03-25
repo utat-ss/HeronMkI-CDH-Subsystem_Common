@@ -499,6 +499,8 @@ static void start_tm_packet(void)
 			receive_tm_msg();
 			waiting = 100;
 		}
+		if(current_tm_fullf)
+			return;
 	}
 	receiving_tmf = 0;
 	return;

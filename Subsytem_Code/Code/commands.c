@@ -880,7 +880,7 @@ void send_pus_packet_tc(void)
 			return;		
 		}
 		alert_obc_tcp_ready();
-		delay_ms(100);
+		delay_ms(1);
 		can_check_general();
 		wdt_reset();
 	}
@@ -902,7 +902,7 @@ void send_pus_packet_tc(void)
 		send_arr[3] = current_tc[(i * 4) + 3];
 		tc_transfer_completef = 0;
 		send_tc_can_msg(i);							// Send a TC message to the OBC.
-		delay_ms(10);								// Give the OBC 100ms to process that CAN message.
+		delay_ms(1);								// Give the OBC 100ms to process that CAN message.
 		can_check_general();
 		wdt_reset();
 	}
@@ -916,7 +916,7 @@ void send_pus_packet_tc(void)
 			return;
 		}
 		can_check_general();
-		delay_ms(100);
+		delay_ms(1);
 		wdt_reset();
 	}
 	
