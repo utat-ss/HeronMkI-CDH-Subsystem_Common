@@ -158,6 +158,8 @@
 
 #include "trans_lib.h"
 
+#if (SELF_ID == 0)
+
 static void send_can_value(uint8_t* data);
 static void clear_current_tc(void);
 
@@ -1168,3 +1170,5 @@ uint16_t fletcher16(uint8_t* data, int count)
 	
 	return (sum2 << 8) | sum1;
 }
+
+#endif

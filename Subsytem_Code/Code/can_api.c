@@ -187,9 +187,7 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 	{
 		data4[i] = *(data_array + i) ;		// Message to be sent back to the OBC.
 	}
-	
 	while(can_cmd(&message, mob_number) != CAN_CMD_ACCEPTED); // wait for MOb4 to configure
-
 	while(can_get_status(&message, mob_number) == CAN_STATUS_NOT_COMPLETED); // wait for a message to send or fail.
 
 	return;
@@ -199,30 +197,17 @@ void decode_command(uint8_t* command_array)
 {		
 	uint8_t i, command  = *(command_array + 5);
 	uint8_t req_by = (*(command_array + 7)) >> 4;
-	//PIN_toggle(LED2);
 	switch(command)
 	{
 		case REQ_RESPONSE :
-			//if(SELF_ID != 1)
-			//{
-				//PIN_toggle(LED3);
-			//}
 			send_now = 1;
 		case REQ_DATA :
-			//if(SELF_ID != 1)
-			//{
-				//PIN_toggle(LED1);
-			//}
 			send_data = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				data_req_arr[i] = *(command_array + i);
 			}
 		case REQ_HK :
-			//if(SELF_ID != 1)
-			//{
-				//PIN_toggle(LED2);
-			//}
 			send_hk = 1;
 		case REQ_READ:
 			read_response = 1;
@@ -256,6 +241,7 @@ void decode_command(uint8_t* command_array)
 			}
 		case SET_TIME:
 			CURRENT_MINUTE = *(command_array);
+#if (SELF_ID == 0)
 		case SEND_TM:
 			#if (SELF_ID == 0)
 				new_tm_msgf = 1;
@@ -274,7 +260,6 @@ void decode_command(uint8_t* command_array)
 				tc_transfer_completef = *command_array;
 			#endif
 		case OK_START_TC_PACKET:
-			//PIN_toggle(LED2);
 			#if (SELF_ID == 0)
 				start_tc_transferf = 1;
 			#endif
@@ -284,18 +269,22 @@ void decode_command(uint8_t* command_array)
 			REQUEST_TAKEOVER = 0;
 			ISALIVE_COUNTER = 0;
 			FAILED_COUNT = 0;
-		case ENTER_LOW_POWER_COM:
-			if((SELF_ID == 1) && !LOW_POWER_MODE)
-				enter_low_powerf = 1;
-		case EXIT_LOW_POWER_COM:
-			if((SELF_ID == 1) && LOW_POWER_MODE)
-				exit_low_powerf = 1;
+
 		case ENTER_COMS_TAKEOVER_COM:
 			if(!SELF_ID && !TAKEOVER)
 				enter_take_overf = 1;
 		case EXIT_COMS_TAKEOVER_COM:
 			if(!SELF_ID && TAKEOVER)
 				exit_take_overf = 1;
+#endif
+#if (SELF_ID == 1)
+		case ENTER_LOW_POWER_COM:
+			if((SELF_ID == 1) && !LOW_POWER_MODE)
+				enter_low_powerf = 1;
+		case EXIT_LOW_POWER_COM:
+			if((SELF_ID == 1) && LOW_POWER_MODE)
+				exit_low_powerf = 1;
+#endif
 		case PAUSE_OPERATIONS:
 			pause_operationsf = 1;
 			for (i = 0; i < 8; i ++)
@@ -308,10 +297,12 @@ void decode_command(uint8_t* command_array)
 			{
 				resume_msg[i] = *(command_array + i);
 			}
+#if (SELF_ID == 2)
 		case OPEN_VALVES:
 			open_valvesf = 1;
 		case COLLECT_PD:
 			collect_pdf = 1;
+#endif
 		default:
 			return;
 	}
@@ -360,7 +351,6 @@ void set_up_msg(uint8_t mailbox)
 
 void clean_up_msg(uint8_t mailbox)
 {
-
 	if(mailbox == 0)
 	{
 		message.ctrl.ide = 0;		 // standard CAN frame type (2.0A)
@@ -477,6 +467,7 @@ void can_init_mobs(void)
 	return;
 }
 
+#if (SELF_ID == 0)
 // Let the OBC know that you are ready to receive TM packet.
 static void start_tm_packet(void)
 {
@@ -492,7 +483,7 @@ static void start_tm_packet(void)
 	
 	while(waiting--)	// Timeout of 100ms.
 	{
-		delay_ms(1);								// Give the OBC 100ms to process that CAN message.
+		delay_ms(1);
 		can_check_general();
 		wdt_reset();
 		if(new_tm_msgf)
@@ -506,4 +497,4 @@ static void start_tm_packet(void)
 	receiving_tmf = 0;
 	return;
 }
-
+#endif

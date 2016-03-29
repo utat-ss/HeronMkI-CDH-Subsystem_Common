@@ -62,10 +62,7 @@ void run_commands(void)
 	if (send_hk)
 		send_housekeeping();
 	if (send_data)
-	{
-		//PIN_toggle(LED2);
 		send_sensor_data();
-	}
 	if (msg_received)
 		send_coms_packet();
 	if (read_response)
@@ -78,33 +75,39 @@ void run_commands(void)
 		set_sensor_low();
 	if (set_varf)
 		set_var();
-	if (new_tm_msgf && !SELF_ID)
+#if (SELF_ID == 0)
+	if (new_tm_msgf)
 		receive_tm_msg();
-	if (packet_count && !SELF_ID)
+	if (packet_count)
 	{
 		load_packet_to_current_tc();
 		send_pus_packet_tc();
 	}
-	if (event_readyf)
-		send_event();
 	if (ask_alive)
 		send_ask_alive();
-	if (enter_low_powerf)
-		enter_low_power();
-	if (exit_low_powerf)
-		exit_low_power();
 	if (enter_take_overf)
 		//enter_take_over();
 	if (exit_take_overf)
 		exit_take_over();
+#endif
+	if (event_readyf)
+		send_event();
+#if (SELF_ID == 1)
+	if (enter_low_powerf)
+		enter_low_power();
+	if (exit_low_powerf)
+		exit_low_power();
+#endif
 	if (pause_operationsf)
 		//pause_operations();
 	if (resume_operationsf)
 		resume_operations();
+#if (SELF_ID == 2)
 	if (open_valvesf)
 		open_valves();
 	if (collect_pdf)
 		collect_pd();
+#endif
 
 	return;	
 }
@@ -298,7 +301,7 @@ void send_sensor_data(void)
 		send_arr[1] = high;			// SPI temperature sensor readings.
 		send_arr[0] = low;
 	}
-	
+#if (SELF_ID == 1)
 	if(sensor_name == PANELX_V)
 	{
 		send_arr[0] = pxv;
@@ -359,14 +362,14 @@ void send_sensor_data(void)
 	{
 		send_arr[0] = 0x0B;
 	}
+#endif
+#if (SELF_ID == 0)
 	if(sensor_name == COMS_TEMP)
 	{
 		send_arr[0] = 0x0C;
 	}
-	if(sensor_name == OBC_TEMP)
-	{
-		send_arr[0] = 0x0D;
-	}
+#endif
+#if (SELF_ID == 2)
 	if(sensor_name == PAY_TEMP0)
 	{
 		send_arr[0] = 0x0E;
@@ -399,7 +402,7 @@ void send_sensor_data(void)
 	{
 		send_arr[0] = 0x13;
 	}
-
+#endif
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_DATA;
 	send_arr[5] = sensor_name;
@@ -425,7 +428,9 @@ void send_coms_packet(void)
 	send_arr[6] = MT_DATA;
 	send_arr[5] = COMS_PACKET;
 	send_arr[4] = CURRENT_MINUTE;
-	send_arr[0] = trans_msg[0];	// ASCII character which was received.
+	#if (SELF_ID == 0)
+		send_arr[0] = trans_msg[0];	// ASCII character which was received.
+	#endif
 	
 	can_send_message(&(send_arr[0]), CAN1_MB0);		//CAN1_MB0 is the data reception MB.
 	msg_received = 0;
@@ -511,20 +516,19 @@ void set_sensor_high(void)
 	sensor_name = sensh_arr[3];
 	req_by = sensh_arr[7] >> 4;
 	
+#if (SELF_ID == 1)
 	if(sensor_name == EPS_TEMP)
 	{
 		epstemp_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
 		epstemp_high |= (high << 8);
 	}
-	
 	if(sensor_name == PANELX_V)
 	{
 		pxv_high = sensh_arr[0];
 		high = (uint16_t)sensh_arr[1];
 		pxv_high |= (high << 8);		
 	}
-	
 	if(sensor_name == PANELX_I)
 	{
 		pxi_high = sensh_arr[0];
@@ -603,6 +607,7 @@ void set_sensor_high(void)
 		high = (uint16_t)sensh_arr[1];
 		obci_high |= (high << 8);
 	}
+#endif
 	
 	set_sens_h = 0;
 	return;
@@ -615,20 +620,19 @@ void set_sensor_low(void)
 	sensor_name = sensl_arr[3];
 	req_by = sensl_arr[7] >> 4;
 	
+#if (SELF_ID == 1)
 	if(sensor_name == EPS_TEMP)
 	{
 		epstemp_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
 		epstemp_low |= (low << 8);
 	}
-	
 	if(sensor_name == PANELX_V)
 	{
 		pxv_low = sensl_arr[0];
 		low = (uint16_t)sensl_arr[1];
 		pxv_low |= (low << 8);
 	}
-	
 	if(sensor_name == PANELX_I)
 	{
 		pxi_low = sensl_arr[0];
@@ -707,6 +711,7 @@ void set_sensor_low(void)
 		low = (uint16_t)sensl_arr[1];
 		obci_low |= (low << 8);
 	}
+#endif
 	
 	set_sens_l = 0;
 	return;
@@ -716,10 +721,19 @@ void set_var(void)
 {
 	uint8_t var_name, incom_val;
 	var_name = setv_arr[3];
-	incom_val  =setv_arr[0];
+	incom_val = setv_arr[0];
 	
 	switch(var_name)
 	{
+#if (SELF_ID == 0)
+		case SSM_CTT:
+			ssm_consec_trans_timeout = incom_val;
+		case SSM_OGT:
+			ssm_ok_go_timeout = (uint32_t)incom_val;
+		case COMS_FDIR_SIGNAL:
+			ssm_fdir_signal = incom_val;
+#endif
+#if (SELF_ID == 1)
 		case MPPTX:
 			mpptx = incom_val;
 		case MPPTY:
@@ -728,26 +742,16 @@ void set_var(void)
 			balance_h = incom_val;
 		case BALANCE_L:
 			balance_l = incom_val;
-		case SSM_CTT:
-			ssm_consec_trans_timeout = incom_val;
-		case SSM_OGT:
-			ssm_ok_go_timeout = (uint32_t)incom_val;
-		case COMS_FDIR_SIGNAL:
-			#if (SELF_ID == 0)
-				ssm_fdir_signal = incom_val;
 		case EPS_FDIR_SIGNAL:
-			#if (SELF_ID == 1)
-				ssm_fdir_signal = incom_val;
-			#endif
-			#endif		
-		case PAY_FDIR_SIGNAL:
-			#if (SELF_ID == 2)
-				ssm_fdir_signal = incom_val;
-			#endif
+			ssm_fdir_signal = incom_val;
 		case BATT_HEAT:
-				batt_heater_control = incom_val;
+			batt_heater_control = incom_val;
+#endif
+#if (SELF_ID == 2)	
+		case PAY_FDIR_SIGNAL:
+			ssm_fdir_signal = incom_val;
+#endif
 		default:
-			set_varf = 0;
 			break;
 	}
 	set_varf = 0;
@@ -755,6 +759,7 @@ void set_var(void)
 }
 
 // Helper
+#if (SELF_ID == 0)
 static void send_tm_transaction_response(uint8_t req_by, uint8_t code)
 {			
 	send_arr[7] = (SELF_ID << 4)|req_by;
@@ -948,21 +953,6 @@ static void send_tc_can_msg(uint8_t packet_count)
 	return;
 }
 
-// event_readyf should be set when an event to report on has been placed in event_arr[]
-void send_event(void)
-{
-	send_arr[7] = (SELF_ID << 4)|OBC_PACKET_ROUTER_ID;
-	send_arr[6] = MT_COM;
-	send_arr[5] = SEND_EVENT;
-	send_arr[4] = CURRENT_MINUTE;
-	send_arr[3] = event_arr[3];		// 1=Normal, 2=low-sev error, 3=med-sev, 4=high-sev
-	send_arr[2] = event_arr[2];		// ReportID
-	send_arr[1] = event_arr[1];
-	send_arr[0] = event_arr[0];
-	can_send_message(&(send_arr[0]), CAN1_MB7);
-	return;
-}
-
 void send_ask_alive(void)
 {
 	send_arr[7] = (SELF_ID << 4)|OBC_ID;
@@ -972,32 +962,6 @@ void send_ask_alive(void)
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	ask_alive = 0;
 	return;
-}
-
-void enter_low_power(void)
-{
-	// Sam: Fill this in with what needs to be done for low power mode.
-	enter_low_powerf = 0;
-	LOW_POWER_MODE = 1;
-	send_arr[7] = (SELF_ID << 4)|OBC_ID;
-	send_arr[6] = MT_COM;
-	send_arr[5] = LOW_POWER_MODE_ENTERED;
-	send_arr[4] = CURRENT_MINUTE;
-	can_send_message(&(send_arr[0]), CAN1_MB7);
-	return;
-}
-
-void exit_low_power(void)
-{	
-	// Sam: Fill this in with what needs to be done to exit low power mode.
-	LOW_POWER_MODE = 0;
-	exit_low_powerf = 0;
-	send_arr[7] = (SELF_ID << 4)|OBC_ID;
-	send_arr[6] = MT_COM;
-	send_arr[5] = LOW_POWER_MODE_EXITED;
-	send_arr[4] = CURRENT_MINUTE;
-	can_send_message(&(send_arr[0]), CAN1_MB7);
-	return;	
 }
 
 void enter_take_over(void)
@@ -1024,6 +988,52 @@ void exit_take_over(void)
 	return;
 }
 
+#endif		// COMS COMMAND SECTION ABOVE ^^
+
+// event_readyf should be set when an event to report on has been placed in event_arr[]
+void send_event(void)
+{
+	send_arr[7] = (SELF_ID << 4)|OBC_PACKET_ROUTER_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = SEND_EVENT;
+	send_arr[4] = CURRENT_MINUTE;
+	send_arr[3] = event_arr[3];		// 1=Normal, 2=low-sev error, 3=med-sev, 4=high-sev
+	send_arr[2] = event_arr[2];		// ReportID
+	send_arr[1] = event_arr[1];
+	send_arr[0] = event_arr[0];
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+#if (SELF_ID == 1)
+void enter_low_power(void)
+{
+	// Sam: Fill this in with what needs to be done for low power mode.
+	enter_low_powerf = 0;
+	LOW_POWER_MODE = 1;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = LOW_POWER_MODE_ENTERED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;
+}
+
+void exit_low_power(void)
+{	
+	// Sam: Fill this in with what needs to be done to exit low power mode.
+	LOW_POWER_MODE = 0;
+	exit_low_powerf = 0;
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = LOW_POWER_MODE_EXITED;
+	send_arr[4] = CURRENT_MINUTE;
+	can_send_message(&(send_arr[0]), CAN1_MB7);
+	return;	
+}
+
+#endif		// EPS COMMAND SECTION ABOVE ^^
+
 void pause_operations(void)
 {
 	PAUSE = 1;
@@ -1048,6 +1058,7 @@ void resume_operations(void)
 	return;	
 }
 
+#if (SELF_ID == 2)
 void open_valves(void)
 {
 	open_valvesf = 0;
@@ -1068,3 +1079,5 @@ void collect_pd(void)
 	can_send_message(&(send_arr[0]), CAN1_MB7);
 	return;
 }
+
+#endif 		// PAY COMMAND SECTION ABOVE ^^

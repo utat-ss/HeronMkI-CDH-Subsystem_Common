@@ -72,6 +72,11 @@
 	*					header for this. In addition, I created an initialization function init_global_vars()
 	*					and put it in sys_init().
 	*
+	*	03/29/2016		COMS, EPS, PAY are now three functionally separate programs as I have made use of #if (SELF_ID == X)
+	*					statements throughout this project. It is also much clearer now where the boundaries stand
+	*					between each of the programs. Any new functionality which pertains to a single SSM should be
+	*					contained within a similar statement.			
+	*
 */
 
 #include <avr/io.h>
@@ -84,6 +89,7 @@
 #include "dac_lib.h"
 #include "can_api.h"
 #include "spi_lib.h"
+#include "global_var.h"
 #if (SELF_ID == 0)
 	#include "trans_lib.h"
 	#include "comsTimer.h"
@@ -93,13 +99,9 @@
 	#include "mppt_timer.h"
 	#include "battBalance.h"
 #endif
-#include "global_var.h"
 #if (SELF_ID == 1 || SELF_ID == 2)
 	#include "port_expander.h"
 #endif
-
-
-	
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
@@ -226,19 +228,15 @@ static void sys_init(void)
 
 static void io_init(void) 
 {	
-	// Init PORTB[7:0] // LED port
+	/* Init PORTB[7:0] */
 	DDRB = 0xFE;
-	
-	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
-	DDRC = 0x13;		// PC4 == SS1 for SPI_TEMP
-						//Arbitrary: PC5 for SPI_PRESSURE
+	/* Init PORTC[7:0] */	// Note: PORTC[3:2] => RXCAN:TXCAN
+	DDRC = 0x13;
 	PORTC = 0x00;
-	
-	// Init PORTD[7:0]
-	DDRD = 0x0B;		// PD3 is the SS for SPI communications.
-	PORTD = 0x01;		// PD3 should only go low during an SPI message.
-	
-	// Init PORTE[2:0]
+	/* Init PORTD[7:0] */
+	DDRD = 0x0B;			// Note: PD3 currently SS for SPI communications.
+	PORTD = 0x01;			// Note: PD3 should only go low during an SPI message.
+	// Init PORTE[2:0] */
 	DDRE = 0x00;
 	PORTE = 0x00;
 }
@@ -246,30 +244,137 @@ static void io_init(void)
 static void init_global_vars(void)
 {	
 	uint8_t i, j;
-	#if (SELF_ID == 0)
+	#if (SELF_ID == 0)			// COMS Variable Initialization
 		id_array[0] = SUB0_ID0;
 		id_array[1] = SUB0_ID1;
 		id_array[2] = SUB0_ID2;
 		id_array[3] = SUB0_ID3;
 		id_array[4] = SUB0_ID4;
 		id_array[5] = SUB0_ID5;
+		
+		for (i = 0; i < 152; i++)		// Initialize the TM/TC Packet arrays.
+		{
+			current_tm[i] = 0;
+			current_tc[i] = 0;
+			tm_to_downlink[i] = i;
+			new_packet[i] = 0;
+		}
+		for (i = 0; i < 8; i++)
+		{
+			new_tm_msg[i] = 0;
+			new_tc_msg[i] = 0;		
+		}
+
+		/* Initialize Global coms takeover flags to zero */
+		TAKEOVER = 0;
+		REQUEST_TAKEOVER = 0;
+		REQUEST_ALIVE_IN_PROG = 0;
+		FAILED_COUNT = 0;
+		ISALIVE_COUNTER = 0;
+		MAX_WAIT_TIME = 18400;
+	
+		/* Initialize Operational Timeouts */
+		ssm_ok_go_timeout = 1000;			// ~1000 ms
+		ssm_consec_trans_timeout = 100;		// ~10 ms
+
+		/* Transceiver Variables */
+		previousTime = 0;
+		currentTime = 0;
+		lastTransmit = 0;
+		lastCycle = 0;
+		lastToggle = 0;
+		tx_mode = 0;
+		rx_mode = 1;
+		rx_length = 0;
+		tx_length = 0;
+		count32ms = 0;
+		packet_receivedf = 0;
+		current_transceiver = 0;
+		last_rx_packet_height = 0;
+		last_tx_packet_height = 0xFF;
+		receiving_sequence_control = 0;
+		transmitting_sequence_control = 0;
+		tx_fail_count = 0;
+		ack_acquired = 0;
+		lastCalibration = 0;
+		current_transceiver = 0;
+		lastAck = 0;
+		low_half_acquired = 0;
+		startedReceivingTM = 0;
+
+		/* PUS Packet Variables */
+		for(j = 0; j < 5; j++)
+		{
+			for(i = 0; i < 152; i++)
+			{
+				packet_list[j].data[i] = 0;
+			}
+		}
+		for(i = 0; i < 77; i ++)
+		{
+			new_packet[i] = i;
+			t_message[i] = i;
+		}
+		packet_count = 0;
+		
+		/* Command Flags */
+		new_tm_msgf = 0;
+		tm_sequence_count = 0;
+		current_tm_fullf = 0;
+		tc_packet_readyf = 0;
+		tc_transfer_completef = 0;
+		start_tc_transferf = 0;
+		receiving_tmf = 0;
+		ask_alive = 0;
+		enter_take_overf = 0;
+		exit_take_overf = 0;
+	
 	#endif
-	#if (SELF_ID == 1)
+	#if (SELF_ID == 1)			// EPS Variable Initialization
 		id_array[0] = SUB1_ID0;
 		id_array[1] = SUB1_ID1;
 		id_array[2] = SUB1_ID2;
 		id_array[3] = SUB1_ID3;
 		id_array[4] = SUB1_ID4;
 		id_array[5] = SUB1_ID5;
+
+		/* Dummy Values for Testing Housekeeping */
+		pxv = 0x01;
+		pxi = 0x02;
+		pyv = 0x03;
+		pyi = 0x04;
+		battmv = 0x05;
+		battv = 0x06;
+		epstemp = 0x07;
+		shuntdpot = 0x08;
+		battin = 0x09;
+		battout = 0x0A;
+		comsv = 0x0B;
+		comsi = 0x0C;
+		payv = 0x0D;
+		payi = 0x0E;
+		obcv = 0x0F;
+		obci = 0x10;
+		
+		/* Command Flags */
+		enter_low_powerf = 0;
+		exit_low_powerf = 0;
+	
 	#endif
-	#if (SELF_ID == 2)
+	#if (SELF_ID == 2)			// PAY Variable Initialization
 		id_array[0] = SUB2_ID0;
 		id_array[1] = SUB2_ID1;
 		id_array[2] = SUB2_ID2;
 		id_array[3] = SUB2_ID3;
 		id_array[4] = SUB2_ID4;
 		id_array[5] = SUB2_ID5;
+		
+		/* Command Flags */
+		open_valvesf = 0;
+		collect_pdf = 0;
 	#endif
+	
+	/* Common Variable Initialization */	
 	for (i = 0; i < 8; i ++)
 	{
 		receive_arr[i] = 0;			// Reset the message array to zero after each message.
@@ -280,18 +385,11 @@ static void init_global_vars(void)
 		sensh_arr[i] = 0;
 		sensl_arr[i] = 0;
 		setv_arr[i] = 0;
-		new_tm_msg[i] = 0;
-		new_tc_msg[i] = 0;
 		event_arr[i] = 0;
 		pause_msg[i] = 0;
 		resume_msg[i] = 0;
 	}
-	for (i = 0; i < 152; i++)		// Initialize the TM/TC Packet arrays.
-	{
-		current_tm[i] = 0;
-		current_tc[i] = 0;
-		tm_to_downlink[i] = i;
-	}
+
 	/* Initialize Global Command Flags to zero */
 	send_now = 0;
 	send_hk = 0;
@@ -301,129 +399,19 @@ static void init_global_vars(void)
 	set_sens_h = 0;
 	set_sens_l = 0;
 	set_varf = 0;
-	new_tm_msgf = 0;
-	tm_sequence_count = 0;
-	current_tm_fullf = 0;
-	tc_packet_readyf = 0;
-	tc_transfer_completef = 0;
-	start_tc_transferf = 0;
-	receiving_tmf = 0;
-	event_readyf = 0;
-	ask_alive = 0;
-	enter_low_powerf = 0;
-	exit_low_powerf = 0;
-	enter_take_overf = 0;
-	exit_take_overf = 0;
 	pause_operationsf = 0;
-	resume_operationsf = 0;
-	open_valvesf = 0; 
-	collect_pdf = 0;
+	resume_operationsf = 0;	
+	event_readyf = 0;
 
-	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;
 	PAUSE = 0;
-	
-	/* Initialize Global coms takeover flags to zero */
-	TAKEOVER = 0;
-	REQUEST_TAKEOVER = 0;
-	REQUEST_ALIVE_IN_PROG = 0;
-	FAILED_COUNT = 0;
-	ISALIVE_COUNTER = 0;
-	MAX_WAIT_TIME = 18400;
-	
-	/* Initialize Operational Timeouts */
-	ssm_ok_go_timeout = 1000;			// ~1000 ms
-	ssm_consec_trans_timeout = 100;		// ~10 ms
-	
 	ssm_fdir_signal = 0;
-	
-	/* Transceiver Variables */
-	previousTime = 0;
-	currentTime = 0;
-	lastTransmit = 0;
-	lastCycle = 0;
-	lastToggle = 0;
-	tx_mode = 0;
-	rx_mode = 1;
-	rx_length = 0;
-	tx_length = 0;
-	count32ms = 0;
-	packet_receivedf = 0;
-	current_transceiver = 0;
-	last_rx_packet_height = 0;
-	last_tx_packet_height = 0xFF;
-	receiving_sequence_control = 0;
-	transmitting_sequence_control = 0;
-	tx_fail_count = 0;
-	ack_acquired = 0;
-	lastCalibration = 0;
-	current_transceiver = 0;
-	lastAck = 0;
-	low_half_acquired = 0;
-	startedReceivingTM = 0;
-
-	// Dummy Values for Testing Housekeeping
-	pxv = 0x01;
-	pxi = 0x02;
-	pyv = 0x03;
-	pyi = 0x04;
-	battmv = 0x05;
-	battv = 0x06;
-	epstemp = 0x07;
-	shuntdpot = 0x08;
-	battin = 0x09;
-	battout = 0x0A;
-	comsv = 0x0B;
-	comsi = 0x0C;
-	payv = 0x0D;
-	payi = 0x0E;
-	obcv = 0x0F;
-	obci = 0x10;
-	
-	// Dummy Values for Testing Housekeeping
-	pxv = 0x01;
-	pxi = 0x02;
-	pyv = 0x03;
-	pyi = 0x04;
-	battmv = 0x05;
-	battv = 0x06;
-	epstemp = 0x07;
-	shuntdpot = 0x08;
-	battin = 0x09;
-	battout = 0x0A;
-	comsv = 0x0B;
-	comsi = 0x0C;
-	payv = 0x0D;
-	payi = 0x0E;
-	obcv = 0x0F;
-	obci = 0x10;
-	
-	for(i = 0; i < 152; i++)
-	{
-		new_packet[i] = 0;
-		tm_to_downlink[i] = i;
-	}
-	
-	/* PUS Packet Variables */
-	for(j = 0; j < 5; j++)
-	{
-		for(i = 0; i < 152; i++)
-		{
-			packet_list[j].data[i] = 0;
-		}
-	}
-	
-	for(i = 0; i < 77; i ++)
-	{
-		new_packet[i] = i;
-		t_message[i] = i;
-	}
-	packet_count = 0;
-	
+		
 	return;
 }
 
+#if (SELF_ID == 0)
 void check_obc_alive(void) {
 	if (!REQUEST_ALIVE_IN_PROG)
 	{
@@ -449,6 +437,6 @@ void check_obc_alive(void) {
 		FAILED_COUNT++;
 		REQUEST_ALIVE_IN_PROG = 0;
 	}
-	
 	//else, wait while the ISALIVE_COUNTER increments.
 }
+#endif

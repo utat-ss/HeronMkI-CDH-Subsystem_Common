@@ -41,7 +41,6 @@ ISR(TIMER0_OVF_vect)
 	else 
 		ISALIVE_COUNTER = 0;
 }
-#endif
 
 void coms_timer_init(void)
 {	
@@ -52,4 +51,4 @@ void coms_timer_init(void)
 	TIMSK0 = 0x01; // Overflow interrupt enabled. (Occurs when TCNT0 == 255)
 	return;
 }
-
+#endif

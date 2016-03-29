@@ -266,8 +266,10 @@
 #define RXLAST            0xD4
 #define TXLAST            0xD5
 
-/* Macro Definitions			*/
+/* Macro Definitions		*/
+#if (SELF_ID == 0)
 #define millis() (count32ms << 5)
+#endif
 
 //uint8_t new_packet[77];		// 76B data + 1B length
 

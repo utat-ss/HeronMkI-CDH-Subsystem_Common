@@ -28,7 +28,9 @@
 #include "config.h"
 #include "can_lib.h"
 #include "global_var.h"
-#include "trans_lib.h"
+#if (SELF_ID == 0)
+	#include "trans_lib.h"
+#endif
 #include "commands.h"
 #include "port.h"
 

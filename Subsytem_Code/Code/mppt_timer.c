@@ -48,7 +48,7 @@ ISR(TIMER0_OVF_vect) {
 	PIN_set(LED2);
 	PIN_set(LED3);
 }
-#endif
+
 
 //********************************************************************************
 // Start of function section 
@@ -84,3 +84,5 @@ void run_mppt(void) {
 	set_duty_cycleX(mpptx);
 	set_duty_cycleY(mppty);	
 }
+
+#endif

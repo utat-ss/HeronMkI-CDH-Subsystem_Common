@@ -27,7 +27,7 @@
 	*	2015/11/08		Updated to be ready for physical testing
 */
 #include "battBalance.h"
-
+#if (SELF_ID == 1)
 //if the flag is set from commands, then flip the pin that controls the battBalance on.
 //batt balance pins are 23 and 24 
 
@@ -52,4 +52,4 @@ void run_battBalance()
 	return;
 };
 
-
+#endif

@@ -71,6 +71,8 @@
 	*
 	*	12/05/2015		Made some changes to SS_set_low, SS_set_high and spi_transfer.
 	*
+	*	03/20/2016		spi_transfer() has been updated.
+	*
 	*
 */
 
