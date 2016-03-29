@@ -136,7 +136,7 @@ int main(void)
 				if(!receiving_tmf)
 				{
 					delay_ms(50);
-					transceiver_run3();			
+					transceiver_run();			
 				}
 				if(millis() - startedReceivingTM > TM_TIMEOUT)
 					receiving_tmf = 0;
