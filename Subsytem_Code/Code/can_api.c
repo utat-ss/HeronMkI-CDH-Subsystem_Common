@@ -257,26 +257,27 @@ void decode_command(uint8_t* command_array)
 		case SET_TIME:
 			CURRENT_MINUTE = *(command_array);
 		case SEND_TM:
-			if(SELF_ID == 0)
-			{
+			#if (SELF_ID == 0)
 				new_tm_msgf = 1;
 				for (i = 0; i < 8; i ++)
 				{
 					new_tm_msg[i] = *(command_array + i);
 				}			
-			}
+			#endif
 		case TM_PACKET_READY:
 			//current_tm_fullf = 0;
 			//if((!current_tm_fullf) && (!receiving_tmf))
 			if(!receiving_tmf)
 				start_tm_packet();
 		case TC_TRANSACTION_RESP:
-			if(SELF_ID == 0)
+			#if (SELF_ID == 0)
 				tc_transfer_completef = *command_array;
+			#endif
 		case OK_START_TC_PACKET:
 			//PIN_toggle(LED2);
-			if(SELF_ID == 0)
+			#if (SELF_ID == 0)
 				start_tc_transferf = 1;
+			#endif
 		case OBC_IS_ALIVE:
 			TAKEOVER = 0;
 			REQUEST_ALIVE_IN_PROG = 0;

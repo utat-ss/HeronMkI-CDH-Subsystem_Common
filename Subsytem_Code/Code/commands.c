@@ -733,14 +733,17 @@ void set_var(void)
 		case SSM_OGT:
 			ssm_ok_go_timeout = (uint32_t)incom_val;
 		case COMS_FDIR_SIGNAL:
-			if(SELF_ID == 0)
+			#if (SELF_ID == 0)
 				ssm_fdir_signal = incom_val;
 		case EPS_FDIR_SIGNAL:
-			if(SELF_ID == 1)
-				ssm_fdir_signal = incom_val;		
-		case PAY_FDIR_SIGNAL:
-			if(SELF_ID == 2)
+			#if (SELF_ID == 1)
 				ssm_fdir_signal = incom_val;
+			#endif
+			#endif		
+		case PAY_FDIR_SIGNAL:
+			#if (SELF_ID == 2)
+				ssm_fdir_signal = incom_val;
+			#endif
 		case BATT_HEAT:
 				batt_heater_control = incom_val;
 		default:

@@ -84,13 +84,22 @@
 #include "dac_lib.h"
 #include "can_api.h"
 #include "spi_lib.h"
-#include "trans_lib.h"
+#if (SELF_ID == 0)
+	#include "trans_lib.h"
+	#include "comsTimer.h"
+#endif
 #include "commands.h"
-#include "mppt_timer.h"
-#include "battBalance.h"
-#include "comsTimer.h"
+#if (SELF_ID == 1)
+	#include "mppt_timer.h"
+	#include "battBalance.h"
+#endif
 #include "global_var.h"
-#include "port_expander.h"
+#if (SELF_ID == 1 || SELF_ID == 2)
+	#include "port_expander.h"
+#endif
+
+
+	
 
 /* Function Prototypes for functions in this file */
 static void io_init(void);
@@ -105,15 +114,11 @@ int main(void)
 	/* Initialize All Hardware and Interrupts */
 	sys_init();
 	uint32_t count = 0;
-	/*		Begin Main Program Loop					*/
-	if(SELF_ID == 0)
-	{
+	#if (SELF_ID == 0)
 		setup_fake_tc();
-		//current_tm_fullf = 1;
-		//transmit_packet();
-		//delay_ms(25);
-	}
-	    
+	#endif
+	/*		Begin Main Program Loop					*/
+
 	while(1)
     {	
 		/* Reset the WDT */
@@ -123,8 +128,7 @@ int main(void)
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
-			if(SELF_ID == 0)
-			{
+			#if (SELF_ID == 0)
 				// If you are COMS, please check that receiving_tmf == 0 before
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
@@ -136,9 +140,8 @@ int main(void)
 					receiving_tmf = 0;
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
-			}
-			if(SELF_ID == 1)
-			{
+			#endif
+			#if (SELF_ID == 1)
 				//delay_ms(250);
 				PIN_toggle(LED2);
 				uint8_t mydata = 0;
@@ -150,9 +153,10 @@ int main(void)
 					//PIN_clr(LED2);
 				//}
 				delay_ms(50);
-			}
-			if(SELF_ID == 2)
-				delay_ms(50);	
+			#endif
+			#if (SELF_ID == 2)
+				delay_ms(50);
+			#endif	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
@@ -181,12 +185,12 @@ static void sys_init(void)
 	wdt_enable(WDTO_2S);
 	
 	/* COMS ONLY Initialization */
-	if (SELF_ID == 0)
+	#if (SELF_ID == 0)
 		coms_timer_init();
+	#endif
 
 	/* EPS ONLY Initialization */
-	if(SELF_ID == 1)
-	{
+	#if (SELF_ID == 1)
 		PIN_set(LED1);
 		/* Enable the timer for MMPT */
 		//mppt_timer_init();
@@ -202,22 +206,22 @@ static void sys_init(void)
 		//spi_send_shunt_dpot_value(0x55);
 		//port_expander_init();
 		//gpioa_pin_mode(7, INPUT);	
-	}
+	#endif
 
 	/* PAY ONLY Initialization */
-	if(SELF_ID == 2)
+	#if (SELF_ID == 2)
 		dac_initialize();
+	#endif
 
 	/* Enable global interrupts (required for timers) */
 	sei();
 
 	/* COMS ONLY Initialization */
-	if (SELF_ID == 0)
-	{
+	#if (SELF_ID == 0)
 		SS1_set_high(COMS_TEMP);		// SPI Temp Sensor.		
 		transceiver_initialize();
 		PIN_toggle(LED1);
-	}
+	#endif
 }
 
 static void io_init(void) 
@@ -242,33 +246,30 @@ static void io_init(void)
 static void init_global_vars(void)
 {	
 	uint8_t i, j;
-	if (SELF_ID == 0)
-	{
+	#if (SELF_ID == 0)
 		id_array[0] = SUB0_ID0;
 		id_array[1] = SUB0_ID1;
 		id_array[2] = SUB0_ID2;
 		id_array[3] = SUB0_ID3;
 		id_array[4] = SUB0_ID4;
 		id_array[5] = SUB0_ID5;
-	}
-	if(SELF_ID == 1)
-	{
+	#endif
+	#if (SELF_ID == 1)
 		id_array[0] = SUB1_ID0;
 		id_array[1] = SUB1_ID1;
 		id_array[2] = SUB1_ID2;
 		id_array[3] = SUB1_ID3;
 		id_array[4] = SUB1_ID4;
 		id_array[5] = SUB1_ID5;
-	}
-	if(SELF_ID == 2)
-	{
+	#endif
+	#if (SELF_ID == 2)
 		id_array[0] = SUB2_ID0;
 		id_array[1] = SUB2_ID1;
 		id_array[2] = SUB2_ID2;
 		id_array[3] = SUB2_ID3;
 		id_array[4] = SUB2_ID4;
 		id_array[5] = SUB2_ID5;
-	}
+	#endif
 	for (i = 0; i < 8; i ++)
 	{
 		receive_arr[i] = 0;			// Reset the message array to zero after each message.

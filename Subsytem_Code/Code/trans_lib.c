@@ -911,11 +911,7 @@ void trans_check(void)
 	if(state == 0b110 || state == 0b111)
 	{
 		cmd_str(SIDLE);
-
-		if(SELF_ID != 1)
-		{
-			PIN_toggle(LED1);
-		}
+		PIN_toggle(LED1);
 		
 		// Here we would send our message to the OBC.
 		
