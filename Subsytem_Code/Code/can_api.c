@@ -66,7 +66,9 @@
 
 #include "can_api.h"
 
+#if(SELF_ID == 0)
 static void start_tm_packet(void);
+#endif
 
 void can_check_general(void)
 {
@@ -196,7 +198,7 @@ void can_send_message(uint8_t* data_array, uint8_t id)
 void decode_command(uint8_t* command_array)
 {		
 	uint8_t i, command  = *(command_array + 5);
-	uint8_t req_by = (*(command_array + 7)) >> 4;
+	//uint8_t req_by = (*(command_array + 7)) >> 4;
 	switch(command)
 	{
 		case REQ_RESPONSE :

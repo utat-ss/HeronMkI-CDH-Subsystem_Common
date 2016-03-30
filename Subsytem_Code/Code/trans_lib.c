@@ -190,7 +190,9 @@ void transceiver_initialize(void)
 
 void transceiver_run(void)
 {
-	uint8_t *state, *CHIP_RDYn, rxFirst, rxLast, txFirst, txLast, check;
+	uint8_t *state, *CHIP_RDYn, rxFirst, rxLast, check;
+	*state = 0;
+	*CHIP_RDYn = 0;
 	if (millis() - lastCycle < TRANSCEIVER_CYCLE)
 		return;
 	
@@ -427,9 +429,8 @@ uint8_t reg_read(uint8_t addr)
 }
 
 void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
-{
-	uint8_t msg;
-	
+{	
+	uint8_t msg = 0;
 	SS_set_low();
 	msg = spi_transfer(addr);		// Send the desired address
 	//delay_us(1);
@@ -691,9 +692,8 @@ uint8_t store_new_packet(void)
 // The packet to be transmitted is assumed to be tm_to_downlink[] and be 152 bytes long.
 uint8_t transmit_packet(void)
 {
-	uint8_t i, offset = 0;
 	if(!current_tm_fullf)
-		return;
+		return 0xFF;
 	
 	// Adjust the sequence control variables if an acknowledgment was received.
 	//if(ack_acquired)
@@ -717,6 +717,7 @@ uint8_t transmit_packet(void)
 		//offset = 76;
 	tm_to_downlink[151] = 0x18;		// Required in order to quickly authenticate the packet.
 	transceiver_send(tm_to_downlink + 76, DEVICE_ADDRESS, 76);
+	return 1;
 }
 
 void load_packet_to_current_tc(void)
@@ -774,7 +775,7 @@ void load_ack(void)
 
 void setup_fake_tc(void)
 {
-	uint8_t version, type, sequence_flags, service_type, service_sub_type, i;
+	uint8_t version, type, sequence_flags, service_type, service_sub_type;
 	uint16_t pec;
 	version = 0;
 	type = 1;

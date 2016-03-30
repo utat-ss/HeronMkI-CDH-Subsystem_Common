@@ -25,6 +25,7 @@ Author: Keenan Burnett
 
 #include "global_var.h"
 #include "can_lib.h"
+#include "can_api.h"
 
 //ERROR IDs as defined in FDIR document
 

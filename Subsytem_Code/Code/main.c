@@ -115,7 +115,7 @@ int main(void)
 {		
 	/* Initialize All Hardware and Interrupts */
 	sys_init();
-	uint32_t count = 0;
+	//uint32_t count = 0;
 	#if (SELF_ID == 0)
 		setup_fake_tc();
 	#endif

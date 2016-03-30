@@ -39,6 +39,7 @@
 #include "Timer.h"
 #include "global_var.h"
 #include "can_api.h"
+#include <stdlib.h>
 
 /*********** DEFINITIONS ******************/
 

@@ -32,6 +32,7 @@
 #define COMMANDS_H
 
 #include "can_api.h"
+#include "Timer.h"
 #include <avr/wdt.h>
 #include "can_lib.h"
 #include "global_var.h"
@@ -40,6 +41,7 @@
 #endif
 #include "error_handling.h"
 #include <stdint.h>
+#include "spi_lib.h"
 
 /* Function Prototypes								 */	
 void run_commands(void);

@@ -42,11 +42,11 @@
 */
 
 #include "commands.h"
-#include "global_var.h"
 
+#if (SELF_ID == 0)
 static void store_current_tm(void);
 static void send_tc_can_msg(uint8_t packet_count);
-
+#endif
 
 /************************************************************************/
 /* RUN COMMANDS                                                         */
@@ -872,7 +872,6 @@ void send_pus_packet_tc(void)
 	tc_transfer_completef = 0;
 	start_tc_transferf = 0;
 	long int tc_transfer_time;
-	uint8_t data[4];
 	
 	if(start_tc_transferf)		// A timeout was triggered before the response was received.
 		start_tc_transferf = 0;
