@@ -379,19 +379,20 @@ void pressure_sensor_init(uint8_t *pressure_calibration)
 {
 	//pressure_calibration[0]-[11] used for these values
 	//6x16-bit calibration values
-	uint8_t* reg_ptr;
-	reg_ptr = SPDR_BASE;
 	//SS1_set_low(PAY_PRESS); //use this
-	SS_set_low(); //use for testing
-	*reg_ptr = 0x1E; //reset command for sensor
-	delay_us(128); //us or ms??
 	int i = 0;
+	PORTD &= (0xFB);
+	spi_transfer(0x1E); //reset command for sensor
+	delay_ms(3); //us or ms??
+	PORTD |= (1 << 2);
+	delay_ms(3);
+	PORTD &= (0xFB);	// Verify this part
 	for (i = 0; i < 12; i++)
 	{
-		pressure_calibration[i] = *reg_ptr;
-		delay_us(128);
+		pressure_calibration[i] = spi_transfer(0);
+		//delay_us(128);
 	}
-	SS_set_high();
+	PORTD |= (1 << 2);
 }
 //Pressure sensor returns two 24-bit values for temp and pressure
 //These are stored in array arr in this function. 
@@ -404,16 +405,18 @@ void spi_retrieve_pressure(uint8_t* arr)
 	int i = 0;
 	
 	//SS1_set_low(PAY_HUM); //use this
-	SS_set_low(); //use for testing
-	*reg_ptr = 0;
+	PORTD &= (0xFB);
+	spi_transfer(0);
 	delay_us(128); //us or ms??
-	
+	PORTD |= (1 << 2);
+	delay_ms(3);
+	PORTD &= (0xFB);
 	for (i = 0; i < 6; i++)
 	{
-		arr[i] = *reg_ptr;
-		delay_us(128);
+		arr[i] = spi_transfer(0);
+		//delay_us(128);
 	}
-	SS_set_high();	
+	PORTD |= (1 << 3);
 }
 /************************************************************************/
 

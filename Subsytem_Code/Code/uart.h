@@ -31,7 +31,7 @@
 
 #define UART_BUFF_LEN	512
 extern volatile uint8_t uart_buffer[UART_BUFF_LEN];
-extern volatile uint8_t uart_index;
+extern volatile uint16_t uart_index;
 extern volatile uint8_t uart_overflow;
 
 
@@ -39,5 +39,9 @@ extern volatile uint8_t uart_overflow;
 void uart_init(void);
 uint8_t uart_transmit(uint8_t msg);
 uint8_t uart_receive(void);
+uint8_t uart_sendmsg(char* msg);
+void uart_debug();
+void uart_printf(char* format, ...);
+void usr_serial_cmd();
 
 #endif

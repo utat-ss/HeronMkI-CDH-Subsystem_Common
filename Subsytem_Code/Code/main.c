@@ -82,6 +82,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
+#include <avr/io.h>
+#include <string.h>
+#include <stdio.h>
 #include "port.h"
 #include "Timer.h"
 #include "can_lib.h"
@@ -90,6 +93,7 @@
 #include "can_api.h"
 #include "spi_lib.h"
 #include "global_var.h"
+#include "uart.h"
 #if (SELF_ID == 0)
 	#include "trans_lib.h"
 	#include "comsTimer.h"
@@ -120,13 +124,14 @@ int main(void)
 		setup_fake_tc();
 	#endif
 	/*		Begin Main Program Loop					*/
-
+	char* msg = "TRANSMITTING...\n\r";
+	int x = 0;
 	while(1)
     {	
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		can_check_general();
+		//can_check_general();
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
@@ -161,7 +166,10 @@ int main(void)
 			#endif	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		run_commands();
+		//run_commands();
+		delay_ms(1000);
+		uart_printf("SENDING VARIABLE: %d \n\r", x);
+		x++;
 	}
 }
 
@@ -182,7 +190,7 @@ static void sys_init(void)
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
-
+	uart_init();
 	/* Enable watchdog timer - 2s */
 	wdt_enable(WDTO_2S);
 	
@@ -234,7 +242,7 @@ static void io_init(void)
 	DDRC = 0x13;
 	PORTC = 0x00;
 	/* Init PORTD[7:0] */
-	DDRD = 0x0B;			// Note: PD3 currently SS for SPI communications.
+	DDRD = 0x0D;			// Note: PD3 currently SS for SPI communications.
 	PORTD = 0x01;			// Note: PD3 should only go low during an SPI message.
 	// Init PORTE[2:0] */
 	DDRE = 0x00;
