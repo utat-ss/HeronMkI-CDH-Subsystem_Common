@@ -375,48 +375,110 @@ void spi_retrieve_humidity(uint8_t *high, uint8_t *low)
 
 //pressure sensor has 6 x 16-bit calibration values used to calculate
 //temperature compensated pressure
-void pressure_sensor_init(uint8_t *pressure_calibration)
+//pressure_calibration[0]-[11] used for these values
+//6x16-bit calibration values
+void pressure_sensor_init(uint8_t* pressure_calibration)
 {
-	//pressure_calibration[0]-[11] used for these values
-	//6x16-bit calibration values
 	//SS1_set_low(PAY_PRESS); //use this
-	int i = 0;
 	PORTD &= (0xFB);
-	spi_transfer(0x1E); //reset command for sensor
-	delay_ms(3); //us or ms??
-	PORTD |= (1 << 2);
+	spi_transfer(PRES_RESET); //reset command for sensor
 	delay_ms(3);
-	PORTD &= (0xFB);	// Verify this part
-	for (i = 0; i < 12; i++)
-	{
-		pressure_calibration[i] = spi_transfer(0);
-		//delay_us(128);
-	}
 	PORTD |= (1 << 2);
+	delay_ms(1);
+	for (uint8_t i = 0; i < 12; i+=2)
+	{
+		PORTD &= (0xFB);
+		spi_transfer(PROM_READ | ((i / 2 + 1) << 1));		
+		pressure_calibration[i + 1] = spi_transfer(0);
+		pressure_calibration[i] = spi_transfer(0);
+		PORTD |= (1 << 2);		
+		delay_ms(1);
+	}
+	uart_sendmsg("PRESSURE SENSOR INITIALIZED\n\r");
+	return;
 }
 //Pressure sensor returns two 24-bit values for temp and pressure
 //These are stored in array arr in this function. 
 //Still need to test the order of the variables etc.
 
-void spi_retrieve_pressure(uint8_t* arr)
+// NOTE: This is uncompensated, need to use calibration values to correct it.
+uint32_t spi_retrieve_pressure(void)
 {
-	uint8_t* reg_ptr;
-	reg_ptr = SPDR_BASE;
-	int i = 0;
-	
-	//SS1_set_low(PAY_HUM); //use this
+	//SS1_set_low(PAY_PRESS); //use this
+	uint32_t ret_val = 0;
+	uint8_t arr[3];
 	PORTD &= (0xFB);
-	spi_transfer(0);
-	delay_us(128); //us or ms??
+	spi_transfer(CONVERT_PRES_OSR_256);
+	delay_ms(9);
 	PORTD |= (1 << 2);
-	delay_ms(3);
+	delay_ms(1);
 	PORTD &= (0xFB);
-	for (i = 0; i < 6; i++)
+	spi_transfer(ADC_READ);
+	arr[2] = spi_transfer(0);
+	arr[1] = spi_transfer(0);
+	arr[0] = spi_transfer(0);
+	ret_val += (uint32_t)arr[0];
+	ret_val += ((uint32_t)arr[1]) << 8;
+	ret_val += ((uint32_t)arr[2]) << 16;
+	PORTD |= (1 << 2);
+	return ret_val;
+}
+
+// NOTE: This is uncompensated, need to use calibration values to correct it.
+// This returns the temperature as collected by the pressure sensor.
+uint32_t spi_retrieve_pressure_temp(void)
+{
+	//SS1_set_low(PAY_PRESS); //use this
+	uint32_t ret_val = 0;
+	uint8_t val = 0;
+	PORTD &= (0xFB);
+	spi_transfer(CONVERT_TEMP_OSR_256);
+	delay_ms(9);
+	PORTD |= (1 << 2);
+	delay_ms(1);
+	PORTD &= (0xFB);
+	spi_transfer(ADC_READ);
+	for (uint8_t i = 3; i > 0; i--)
 	{
-		arr[i] = spi_transfer(0);
-		//delay_us(128);
+		val = spi_transfer(0);
+		ret_val += (((uint32_t)val) << (8 * (i - 1)));
 	}
-	PORTD |= (1 << 3);
+	PORTD |= (1 << 2);
+	return ret_val;
+}
+
+void convert_temp_press(void)
+{
+	long int press_raw = 0, temp_raw = 0;
+	long int t_ref, temp_sens, tco, off_t1, sens_t1, tcs;
+	long int dT, temp, press;
+	long int off, sens;	
+	
+	t_ref = (long int)pressure_calib[8];
+	t_ref += ((long int)pressure_calib[9]) << 8;
+	dT = temp_raw - t_ref * (1 << 8);
+	uart_printf("TREF: %lu\n\r", t_ref);
+	uart_printf("DT: %ld\n\r", dT);
+			
+	temp_sens = (long int)pressure_calib[10];
+	temp_sens += ((long int)pressure_calib[11]) << 8;
+	temp = 2000 + dT * temp_sens / (1 << 23);
+			
+	off_t1 = (long int)pressure_calib[2];
+	off_t1 += ((long int)pressure_calib[3]) << 8;
+	tco = (long int)pressure_calib[6];
+	tco += ((long int)pressure_calib[7]) << 8;
+	off = (off_t1 * (1 << 17)) + (tco * dT) / (1 << 6);
+	uart_printf("OFF: %lu\n\r", off);
+			
+	sens_t1 = (long int)pressure_calib[0];
+	sens_t1 += ((long int)pressure_calib[1]) << 8;
+	tcs = (long int)pressure_calib[4];
+	tcs += ((long int)pressure_calib[5]) << 8;
+	sens = (sens_t1 * (1 << 16)) + (tcs * dT) / (1 << 7);
+	uart_printf("SENS: %lu\n\r", sens);
+	press = (press_raw * sens / (1 << 21) - off) / (1 << 15);
+	return;
 }
 /************************************************************************/
 

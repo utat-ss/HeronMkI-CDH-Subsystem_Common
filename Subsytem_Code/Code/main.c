@@ -119,13 +119,17 @@ int main(void)
 {		
 	/* Initialize All Hardware and Interrupts */
 	sys_init();
+	uint8_t i;
+	long long int press_raw = 0, temp_raw = 0;
+	long long int t_ref, temp_sens, tco, tcs;
+	long long int dT, temp, press;
+	long long int off, sens, off_t1, sens_t1;
+	int temporary;
 	//uint32_t count = 0;
 	#if (SELF_ID == 0)
 		setup_fake_tc();
 	#endif
 	/*		Begin Main Program Loop					*/
-	char* msg = "TRANSMITTING...\n\r";
-	int x = 0;
 	while(1)
     {	
 		/* Reset the WDT */
@@ -166,10 +170,7 @@ int main(void)
 			#endif	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		//run_commands();
-		delay_ms(1000);
-		uart_printf("SENDING VARIABLE: %d \n\r", x);
-		x++;
+		run_commands();
 	}
 }
 
@@ -220,6 +221,7 @@ static void sys_init(void)
 
 	/* PAY ONLY Initialization */
 	#if (SELF_ID == 2)
+		SS1_set_high(COMS_TEMP);		// SPI Temp Sensor.
 		dac_initialize();
 	#endif
 
@@ -231,6 +233,11 @@ static void sys_init(void)
 		SS1_set_high(COMS_TEMP);		// SPI Temp Sensor.		
 		transceiver_initialize();
 		PIN_toggle(LED1);
+	#endif
+	
+	/* PAY ONLY Initialization */
+	#if (SELF_ID == 2)
+		pressure_sensor_init(pressure_calib);
 	#endif
 }
 

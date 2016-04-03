@@ -33,6 +33,7 @@
 //-----------FILE INCLUDES---------------
 #include "config.h"
 #include "port.h"
+#include "uart.h"
 #include "Timer.h"
 #include "global_var.h"
 //---------------------------------------
@@ -45,6 +46,13 @@
 
 #define SPI_TIMEOUT	1000				// Timeout for SPI polling operations.
 #define SPI_SPSR_SPIF (0x1u << 7)		// SPIF flag in the SPSR register.
+
+/* PRESSURE SENSOR DEFINITIONS */
+#define PROM_READ				0xA0
+#define PRES_RESET				0x1E
+#define CONVERT_PRES_OSR_256	0x40
+#define CONVERT_TEMP_OSR_256	0x50
+#define ADC_READ				0x00
 
 void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);
@@ -59,6 +67,7 @@ void SS1_set_high(uint32_t);
 void SS1_set_low(uint32_t);
 void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis);
 void spi_retrieve_humidity(uint8_t *high, uint8_t *low);
-void pressure_sensor_init(uint8_t *pressure_calibration);
-void spi_retrieve_pressure(uint8_t* arr);
+void pressure_sensor_init(uint8_t* pressure_calibration);
+uint32_t spi_retrieve_pressure(void);
+uint32_t spi_retrieve_pressure_temp(void);
 

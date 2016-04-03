@@ -341,3 +341,7 @@ uint8_t check;
 
 /*****************************************************/
 #endif
+
+#if (SELF_ID == 2)
+uint8_t pressure_calib[12];
+#endif
