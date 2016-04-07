@@ -51,7 +51,9 @@
 #define PROM_READ				0xA0
 #define PRES_RESET				0x1E
 #define CONVERT_PRES_OSR_256	0x40
+#define CONVERT_PRES_OSR_4096	0x48
 #define CONVERT_TEMP_OSR_256	0x50
+#define CONVERT_TEMP_OSR_4096	0x58
 #define ADC_READ				0x00
 
 void spi_initialize_master(void);

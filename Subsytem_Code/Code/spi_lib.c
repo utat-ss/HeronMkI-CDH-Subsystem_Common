@@ -408,7 +408,7 @@ uint32_t spi_retrieve_pressure(void)
 	uint32_t ret_val = 0;
 	uint8_t arr[3];
 	PORTD &= (0xFB);
-	spi_transfer(CONVERT_PRES_OSR_256);
+	spi_transfer(CONVERT_PRES_OSR_4096);
 	delay_ms(9);
 	PORTD |= (1 << 2);
 	delay_ms(1);
@@ -432,7 +432,7 @@ uint32_t spi_retrieve_pressure_temp(void)
 	uint32_t ret_val = 0;
 	uint8_t val = 0;
 	PORTD &= (0xFB);
-	spi_transfer(CONVERT_TEMP_OSR_256);
+	spi_transfer(CONVERT_TEMP_OSR_4096);
 	delay_ms(9);
 	PORTD |= (1 << 2);
 	delay_ms(1);
