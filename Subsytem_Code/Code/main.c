@@ -119,12 +119,6 @@ int main(void)
 {		
 	/* Initialize All Hardware and Interrupts */
 	sys_init();
-	uint8_t i;
-	long long int press_raw = 0, temp_raw = 0;
-	long long int t_ref, temp_sens, tco, tcs;
-	long long int dT, temp, press;
-	long long int off, sens, off_t1, sens_t1;
-	int temporary;
 	//uint32_t count = 0;
 	#if (SELF_ID == 0)
 		setup_fake_tc();
@@ -166,54 +160,12 @@ int main(void)
 				delay_ms(50);
 			#endif
 			#if (SELF_ID == 2)
-				delay_ms(50);
+				collect_pressure();
+				delay_ms(1000);
 			#endif	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
-		//uart_sendmsg("PRESSURE CALIBRATION:\n\r");
-		//pressure_sensor_init(pressure_calib);
-		//for(i = 0; i < 12; i += 2)
-		//{
-			//temporary = (int)pressure_calib[i];
-			//temporary += ((int)pressure_calib[i + 1]) << 8;
-			//uart_printf("%u\n\r", temporary);
-		//}
-		//uart_sendmsg("ACQUIRING PRESSURE, TEMP:\n\r");
-		press_raw = spi_retrieve_pressure();
-		//temp_raw = spi_retrieve_pressure_temp();
-		//t_ref = (long int)pressure_calib[8];
-		//t_ref += ((long int)pressure_calib[9]) << 8;
-		//dT = temp_raw - t_ref * (1 << 8);
-		//uart_printf("TREF: %lu\n\r", t_ref);
-		//uart_printf("DT: %ld\n\r", dT);
-		//
-		//temp_sens = (long int)pressure_calib[10];
-		//temp_sens += ((long int)pressure_calib[11]) << 8;
-		//temp = (dT * temp_sens);
-		//temp = temp >> 23;
-		//temp += 2000;		
-		//
-		//off_t1 = (long int)pressure_calib[2];
-		//off_t1 += ((long int)pressure_calib[3]) << 8;
-		//tco = (long int)pressure_calib[6];
-		//tco += ((long int)pressure_calib[7]) << 8;
-		//off = (off_t1 * (1 << 17)) + (tco * dT) / (1 << 6);
-		//uart_printf("OFF: %lu\n\r", off);
-		//
-		//sens_t1 = (long int)pressure_calib[0];
-		//sens_t1 += ((long int)pressure_calib[1]) << 8;
-		//tcs = (long int)pressure_calib[4];
-		//tcs += ((long int)pressure_calib[5]) << 8;
-		//sens = (sens_t1 * (1 << 16)) + (tcs * dT) / (1 << 7);
-		//uart_printf("SENS: %lu\n\r", sens);
-		//press = (press_raw * sens / (1 << 21) - off) / (1 << 15);
-		//
-		uart_printf("PRESSURE(RAW)		:	%lu\n\r", press_raw);
-		//uart_printf("TEMPERATURE(RAW)	:	%ld\n\r", temp_raw);
-		//uart_printf("PRESSURE		:	%ld\n\r", press);
-		//uart_printf("TEMPERATURE		:	%ld\n\r", temp);
-		delay_ms(1000);
 	}
 }
 

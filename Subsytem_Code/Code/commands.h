@@ -67,6 +67,7 @@ void open_valves(void);
 void collect_pd(void);
 void pause_operations(void);
 void resume_operations(void);
+uint16_t collect_pressure(void);
 
 /*****************************************************/
 #endif

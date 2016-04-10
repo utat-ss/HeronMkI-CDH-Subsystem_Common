@@ -23,7 +23,7 @@
 	*	DEVELOPMENT HISTORY:
 	*	08/19/2015		Created.
 	*
-	* http://www.avrfreaks.net/forum/usart-interrupt-atmega32m1
+	*
 */
 #include "config.h"
 #include <avr/io.h>
@@ -38,12 +38,7 @@ volatile uint16_t uart_index = 0;
 volatile uint8_t uart_overflow = 0;
 
 #define UART_BAUD	9600
-
-ISR (LIN_TC_vect){
-	uart_buffer[uart_index] = LINDAT;
-	uart_index++;
-	uart_overflow = uart_index >= UART_BUFF_LEN;
-}
+#define UART_DISABLE 0
 
 /************************************************************************/
 /* UART INITIALIZE                                                      */
@@ -51,6 +46,20 @@ ISR (LIN_TC_vect){
 /* This function initializes the registers which are required for UART	*/
 /* communication.														*/
 /************************************************************************/
+#if UART_DISABLE
+uint8_t uart_receive (void){ return 0; }
+void uart_init(void){}
+uint8_t uart_transmit (uint8_t msg) { return 0; }
+uint8_t uart_sendmsg(char* msg) { return 0; }
+void uart_debug(){return;}
+void uart_printf(char* format, ...){ return; }
+
+#else
+ISR (LIN_TC_vect){
+	uart_buffer[uart_index] = LINDAT;
+	uart_index++;
+	uart_overflow = uart_index >= UART_BUFF_LEN;
+}
 
 void uart_init(void){
 	// initialize chip
@@ -138,3 +147,4 @@ void usr_serial_cmd(){
 		uart_index -= msgLen + 1;
 	}
 }
+#endif
