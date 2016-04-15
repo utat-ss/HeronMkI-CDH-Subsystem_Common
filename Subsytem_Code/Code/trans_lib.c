@@ -369,7 +369,7 @@ void reg_settings(void)
 	//reg_write_bit(PREAMBLE_CFG0, 5, 1);     //PQT_EN: 0x00           Preamble detection disabled
 	reg_write(PREAMBLE_CFG1, 0x14);
 	reg_write(PREAMBLE_CFG0, 0x2A);
-	//reg_write(SYMBOL_RATE2, 0x73);
+	reg_write(SYMBOL_RATE2, 0x73);
 	//reg_write(SYMBOL_RATE1, 0x05);
 	//reg_write(SYMBOL_RATE0, 0xBC);
 	
