@@ -38,9 +38,7 @@
 /************************************************************************/
 void dac_initialize(void)
 {
-	uint8_t* ptr;
-	ptr = DACON;
-	*ptr = 0b0000011;	// Output to D2A Enabled, Output Enabled.
+	DACON = 0x03;
 	return;
 }
 
@@ -56,10 +54,7 @@ void dac_initialize(void)
 
 void dac_set(uint8_t* dac)
 {
-	uint8_t* ptr;
-	ptr = DACL;
-	*ptr = *dac;
-	ptr = DACH;
-	*ptr = 0x03 & *(dac + 1);
+	DACL = *dac;
+	DACH = (*(dac + 1)) & 0x03;
 	return;
 }

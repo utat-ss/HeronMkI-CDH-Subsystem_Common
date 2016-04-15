@@ -229,9 +229,17 @@ static void sys_init(void)
 
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
+		dac_initialize();
+		uint8_t dac_reg[2];
+		dac_reg[0] = 0xBA;
+		dac_reg[1] = 0x02;
+		dac_set(dac_reg);
 		SS1_set_high(COMS_TEMP_SS);		// SPI Temp Sensor.	
 		SS1_set_high(COMS_VHF_SS);
 		SS1_set_low(COMS_UHF_SS);
+		PIN_set(UHF_FE_EN);
+		PIN_set(UHF_FE_TR);
+		PIN_clr(UHF_FE_BYP);
 		transceiver_initialize();
 		//PIN_toggle(LED1);
 	#endif
@@ -250,12 +258,15 @@ static void io_init(void)
 	DDRC = 0x13;
 	PORTC = 0x00;
 	/* Init PORTD[7:0] */
-	//DDRD = 0x0D;			// Note: PD3 currently SS for SPI communications.
-	DDRD = 0x4F;
+	DDRD = 0x0D;			// Note: PD3 currently SS for SPI communications.
 	PORTD = 0x00;			// Note: PD3 should only go low during an SPI message.
 	// Init PORTE[2:0] */
 	DDRE = 0x00;
-	PORTE = 0x00;	
+	PORTE = 0x00;
+#if (SELF_ID == 0)
+	DDRD = 0x6F;	
+	DDRC = 0x33;
+#endif		
 }
 
 static void init_global_vars(void)

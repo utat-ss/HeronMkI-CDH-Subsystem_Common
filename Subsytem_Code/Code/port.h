@@ -55,6 +55,13 @@
 #define A0_P		27
 #define A1_P		17
 
+//FOR COMS
+#define UHF_RST		14
+#define VHF_RST		16
+#define UHF_FE_EN	32
+#define UHF_FE_TR	13
+#define UHF_FE_BYP	18
+
 void LED_Reg_Write(uint8_t val);
 void PIN_set(uint8_t PIN);
 void PIN_clr(uint8_t PIN);
