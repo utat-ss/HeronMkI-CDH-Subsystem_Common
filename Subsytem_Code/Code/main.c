@@ -93,7 +93,9 @@
 #include "can_api.h"
 #include "spi_lib.h"
 #include "global_var.h"
+#if (SELF_ID != 0)
 #include "uart.h"
+#endif
 #if (SELF_ID == 0)
 	#include "trans_lib.h"
 	#include "comsTimer.h"
@@ -174,19 +176,21 @@ static void sys_init(void)
 	/* Make sure sys clock is at least 8MHz */
 	CLKPR = 0x80;
 	CLKPR  = 0;
-	PIN_clr(LED1);
+	//PIN_clr(LED1);
 	
 	/* Common Initialization */
 	init_global_vars();
 	io_init();
 	//PORTB |= 0x04;
-	PORTD |= 0x02;
+	PORTD |= (1 << 6);
 	timer_init();
 	adc_initialize();
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
+	#if (SELF_ID != 0)
 	uart_init();
+	#endif
 	/* Enable watchdog timer - 2s */
 	wdt_enable(WDTO_2S);
 	
@@ -225,9 +229,11 @@ static void sys_init(void)
 
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
-		SS1_set_high(COMS_TEMP);		// SPI Temp Sensor.		
+		SS1_set_high(COMS_TEMP_SS);		// SPI Temp Sensor.	
+		SS1_set_high(COMS_VHF_SS);
+		SS1_set_low(COMS_UHF_SS);
 		transceiver_initialize();
-		PIN_toggle(LED1);
+		//PIN_toggle(LED1);
 	#endif
 	
 	/* PAY ONLY Initialization */
@@ -244,11 +250,12 @@ static void io_init(void)
 	DDRC = 0x13;
 	PORTC = 0x00;
 	/* Init PORTD[7:0] */
-	DDRD = 0x0D;			// Note: PD3 currently SS for SPI communications.
-	PORTD = 0x01;			// Note: PD3 should only go low during an SPI message.
+	//DDRD = 0x0D;			// Note: PD3 currently SS for SPI communications.
+	DDRD = 0x4F;
+	PORTD = 0x00;			// Note: PD3 should only go low during an SPI message.
 	// Init PORTE[2:0] */
 	DDRE = 0x00;
-	PORTE = 0x00;
+	PORTE = 0x00;	
 }
 
 static void init_global_vars(void)

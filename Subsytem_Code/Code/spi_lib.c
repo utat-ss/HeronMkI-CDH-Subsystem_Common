@@ -120,7 +120,7 @@ void spi_initialize_master(void)
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, CPOL = 0 (SCK low when idle), CPHA = 0
-	temp = 0b01010000;
+	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/128
 	return;
 }
@@ -447,6 +447,7 @@ uint32_t spi_retrieve_pressure_temp(void)
 	return ret_val;
 }
 
+#if (SELF_ID == 2)
 void convert_temp_press(void)
 {
 	long int press_raw = 0, temp_raw = 0;
@@ -480,6 +481,7 @@ void convert_temp_press(void)
 	press = (press_raw * sens / (1 << 21) - off) / (1 << 15);
 	return;
 }
+#endif
 /************************************************************************/
 
 
@@ -502,9 +504,19 @@ void SS_set_high(void)
 
 void SS1_set_high(uint32_t sensor_id)
 {
-	switch(sensor_id){
-		case COMS_TEMP:
+	switch(sensor_id)
+	{
+		case COMS_TEMP_SS:
 			PORTC |= (1 << 4);
+			break;
+		case COMS_UHF_SS:
+			PORTD |= (1 << 0);
+			break;
+		case COMS_VHF_SS:
+			PORTB |= (1 << 6);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -517,14 +529,22 @@ void SS1_set_high(uint32_t sensor_id)
 /*																		*/
 /************************************************************************/
 
-void SS1_set_low(uint32_t sensor_id){
-	
-	switch(sensor_id){
-		
-		case COMS_TEMP:
+void SS1_set_low(uint32_t sensor_id)
+{
+	switch(sensor_id)
+	{	
+		case COMS_TEMP_SS:
 			PORTC &= (0xEF);
-	
-}
+			break;
+		case COMS_UHF_SS:
+			PORTD &= (0xFE);
+			break;
+		case COMS_VHF_SS:
+			PORTB &= (0xBF);
+			break;
+		default:
+			break;
+	}
 }
 
 void SS_set_low(void)

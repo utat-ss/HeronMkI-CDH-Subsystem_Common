@@ -29,7 +29,7 @@
 #ifndef UART_H
 #define UART_H
 
-#define UART_BUFF_LEN	512
+#define UART_BUFF_LEN	128
 extern volatile uint8_t uart_buffer[UART_BUFF_LEN];
 extern volatile uint16_t uart_index;
 extern volatile uint8_t uart_overflow;
