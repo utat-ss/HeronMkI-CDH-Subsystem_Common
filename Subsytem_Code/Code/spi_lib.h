@@ -39,13 +39,13 @@
 //---------------------------------------
 
 //-----------CONSTANT DEFINES------------
-#define	MCUCR_BASE	0x55
-#define SPCR_BASE	0X4C
-#define SPSR_BASE	0x4D
-#define SPDR_BASE	0x4E
+#define	MCUCR_BASE		0x55
+#define SPCR_BASE		0X4C
+#define SPSR_BASE		0x4D
+#define SPDR_BASE		0x4E
 
-#define SPI_TIMEOUT	1000				// Timeout for SPI polling operations.
-#define SPI_SPSR_SPIF (0x1u << 7)		// SPIF flag in the SPSR register.
+#define SPI_TIMEOUT		1000				// Timeout for SPI polling operations.
+#define SPI_SPSR_SPIF	(0x1u << 7)		// SPIF flag in the SPSR register.
 
 /* PRESSURE SENSOR DEFINITIONS */
 #define PROM_READ				0xA0
@@ -55,6 +55,37 @@
 #define CONVERT_TEMP_OSR_256	0x50
 #define CONVERT_TEMP_OSR_4096	0x58
 #define ADC_READ				0x00
+
+/* SPI Chip Selects (All SSMs)	*/
+#define COMS_TEMP_CS			0
+#define COMS_HVF_CS				1
+#define COMS_UHF_CS				2
+#define EPS_TEMP_CS				3
+#define EPS_DPOT_CS				4
+#define PAY_EXP1_CS				5
+#define PAY_HEATER1_CS			6
+#define PAY_HEATER2_CS			7
+#define PAY_HEATER3_CS			8
+#define PAY_HEATER4_CS			9
+#define PAY_HEATER5_CS			10
+#define PAY_VALVE_1n_CS			11
+#define PAY_VALVE_1p_CS			12
+#define PAY_VALVE_2n_CS			13
+#define PAY_VALVE_2p_CS			14
+#define PAY_VALVE_3n_CS			15
+#define PAY_VALVE_3p_CS			16
+#define PAY_VALVE_4n_CS			17
+#define PAY_VALVE_4p_CS			18
+#define PAY_ACCEL_CS			19
+#define PAY_PRESL_CS			20
+#define PAY_PRESH_CS			21
+#define PAY_HUM_CS				22
+#define PAY_TEMP0_CS			23
+#define PAY_TEMP1_CS			24
+#define PAY_TEMP2_CS			25
+#define PAY_TEMP3_Cs			26
+#define PAY_TEMP3_Cs			27
+
 
 void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);

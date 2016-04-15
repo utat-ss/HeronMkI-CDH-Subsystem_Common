@@ -519,12 +519,21 @@ void SS1_set_high(uint32_t sensor_id)
 
 void SS1_set_low(uint32_t sensor_id){
 	
-	switch(sensor_id){
-		
+	switch(sensor_id)
+	{
+#if (SELF_ID == 0)
 		case COMS_TEMP:
 			PORTC &= (0xEF);
-	
-}
+#endif
+
+#if (SELF_ID == 1)
+
+#endif
+
+#if (SELF_ID == 2)
+
+#endif
+	}
 }
 
 void SS_set_low(void)
