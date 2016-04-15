@@ -46,6 +46,7 @@
 void adc_initialize(void)
 {
 	uint8_t* ptr;
+	ADMUX |= 0xC0;
 	ptr = ADCSRA_BASE;		// Initialize ADCSRA
 	*ptr = 0b11010010;
 	ptr = ADCSRB_BASE;		// Initialize ADCSRB

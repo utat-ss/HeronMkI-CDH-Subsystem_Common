@@ -244,7 +244,7 @@ void transceiver_run(void)
 				/* We have a packet */
 				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
 				{
-					PIN_toggle(LED1);
+					//PIN_toggle(LED1);
 					check = store_new_packet();
 					rx_length = 0;
 					if(!check)									// Packet was accepted and stored internally.
@@ -291,10 +291,10 @@ void transceiver_run(void)
 	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
 	{
 		//PORTB &= 0xFB;
-		PORTD &= 0xFD;
+		PORTD &= 0xBF;
 		delay_ms(250);
 		//PORTB |= 0x04;
-		PORTD |= 0x02;
+		PORTD |= (1 << 6);
 		transceiver_initialize();
 		lastCalibration = millis();
 	}
@@ -692,8 +692,8 @@ uint8_t store_new_packet(void)
 // The packet to be transmitted is assumed to be tm_to_downlink[] and be 152 bytes long.
 uint8_t transmit_packet(void)
 {
-	if(!current_tm_fullf)
-		return 0xFF;
+	//if(!current_tm_fullf)
+	//	return 0xFF;
 	
 	// Adjust the sequence control variables if an acknowledgment was received.
 	//if(ack_acquired)

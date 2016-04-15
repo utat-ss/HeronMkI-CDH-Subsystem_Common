@@ -447,6 +447,7 @@ uint32_t spi_retrieve_pressure_temp(void)
 	return ret_val;
 }
 
+#if (SELF_ID == 2)
 void convert_temp_press(void)
 {
 	long int press_raw = 0, temp_raw = 0;
@@ -480,6 +481,7 @@ void convert_temp_press(void)
 	press = (press_raw * sens / (1 << 21) - off) / (1 << 15);
 	return;
 }
+#endif
 /************************************************************************/
 
 
@@ -502,9 +504,19 @@ void SS_set_high(void)
 
 void SS1_set_high(uint32_t sensor_id)
 {
-	switch(sensor_id){
-		case COMS_TEMP:
+	switch(sensor_id)
+	{
+		case COMS_TEMP_SS:
 			PORTC |= (1 << 4);
+			break;
+		case COMS_UHF_SS:
+			PORTD |= (1 << 0);
+			break;
+		case COMS_VHF_SS:
+			PORTB |= (1 << 6);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -517,22 +529,21 @@ void SS1_set_high(uint32_t sensor_id)
 /*																		*/
 /************************************************************************/
 
-void SS1_set_low(uint32_t sensor_id){
-	
+void SS1_set_low(uint32_t sensor_id)
+{
 	switch(sensor_id)
-	{
-#if (SELF_ID == 0)
-		case COMS_TEMP:
+	{	
+		case COMS_TEMP_SS:
 			PORTC &= (0xEF);
-#endif
-
-#if (SELF_ID == 1)
-
-#endif
-
-#if (SELF_ID == 2)
-
-#endif
+			break;
+		case COMS_UHF_SS:
+			PORTD &= (0xFE);
+			break;
+		case COMS_VHF_SS:
+			PORTB &= (0xBF);
+			break;
+		default:
+			break;
 	}
 }
 

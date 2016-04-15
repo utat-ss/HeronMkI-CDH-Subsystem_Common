@@ -56,10 +56,10 @@
 #define CONVERT_TEMP_OSR_4096	0x58
 #define ADC_READ				0x00
 
-/* SPI Chip Selects (All SSMs)	*/
-#define COMS_TEMP_CS			0
-#define COMS_HVF_CS				1
-#define COMS_UHF_CS				2
+/* SPI CHIP SELECT DEFINITIONS */
+#define COMS_TEMP_SS			0
+#define COMS_UHF_SS				1
+#define COMS_VHF_SS				2
 #define EPS_TEMP_CS				3
 #define EPS_DPOT_CS				4
 #define PAY_EXP1_CS				5
@@ -85,7 +85,6 @@
 #define PAY_TEMP2_CS			25
 #define PAY_TEMP3_Cs			26
 #define PAY_TEMP3_Cs			27
-
 
 void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);
