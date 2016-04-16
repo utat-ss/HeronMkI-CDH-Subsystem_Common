@@ -300,7 +300,7 @@ void transceiver_run(void)
 	}
 	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
 	{
-		PIN_toggle(LED3);
+		//PIN_toggle(LED3);
 		cmd_str(SIDLE);
 		cmd_str(SFRX);
 		cmd_str(SFTX);
@@ -692,8 +692,8 @@ uint8_t store_new_packet(void)
 // The packet to be transmitted is assumed to be tm_to_downlink[] and be 152 bytes long.
 uint8_t transmit_packet(void)
 {
-	//if(!current_tm_fullf)
-	//	return 0xFF;
+	if(!current_tm_fullf)
+		return 0xFF;
 	
 	// Adjust the sequence control variables if an acknowledgment was received.
 	//if(ack_acquired)

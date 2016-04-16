@@ -203,46 +203,59 @@ void decode_command(uint8_t* command_array)
 	{
 		case REQ_RESPONSE :
 			send_now = 1;
+			break;
 		case REQ_DATA :
+			if(SELF_ID == 0)
+			{
+				PIN_toggle(LED3);
+			}
 			send_data = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				data_req_arr[i] = *(command_array + i);
 			}
+			break;
 		case REQ_HK :
 			send_hk = 1;
+			break;
 		case REQ_READ:
 			read_response = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				read_arr[i] = *(command_array + i);
 			}
+			break;
 		case REQ_WRITE:
 			write_response = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				write_arr[i] = *(command_array + i);
 			}
+			break;
 		case SET_SENSOR_HIGH:
 			set_sens_h = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				sensh_arr[i] = *(command_array + i);
 			}
+			break;
 		case SET_SENSOR_LOW:
 			set_sens_l = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				sensl_arr[i] = *(command_array + i);
 			}
+			break;
 		case SET_VAR:
 			set_varf = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				setv_arr[i] = *(command_array + i);
-			}
+			}		
+			break;
 		case SET_TIME:
 			CURRENT_MINUTE = *(command_array);
+			break;
 #if (SELF_ID == 0)
 		case SEND_TM:
 			#if (SELF_ID == 0)
@@ -252,40 +265,48 @@ void decode_command(uint8_t* command_array)
 					new_tm_msg[i] = *(command_array + i);
 				}			
 			#endif
+			break;
 		case TM_PACKET_READY:
 			//current_tm_fullf = 0;
 			//if((!current_tm_fullf) && (!receiving_tmf))
 			if(!receiving_tmf)
 				start_tm_packet();
+			break;
 		case TC_TRANSACTION_RESP:
 			#if (SELF_ID == 0)
 				tc_transfer_completef = *command_array;
 			#endif
+			break;
 		case OK_START_TC_PACKET:
 			#if (SELF_ID == 0)
 				start_tc_transferf = 1;
 			#endif
+			break;
 		case OBC_IS_ALIVE:
 			TAKEOVER = 0;
 			REQUEST_ALIVE_IN_PROG = 0;
 			REQUEST_TAKEOVER = 0;
 			ISALIVE_COUNTER = 0;
 			FAILED_COUNT = 0;
-
+			break;
 		case ENTER_COMS_TAKEOVER_COM:
 			if(!SELF_ID && !TAKEOVER)
 				enter_take_overf = 1;
+			break;
 		case EXIT_COMS_TAKEOVER_COM:
 			if(!SELF_ID && TAKEOVER)
 				exit_take_overf = 1;
+			break;
 #endif
 #if (SELF_ID == 1)
 		case ENTER_LOW_POWER_COM:
 			if((SELF_ID == 1) && !LOW_POWER_MODE)
 				enter_low_powerf = 1;
+			break;
 		case EXIT_LOW_POWER_COM:
 			if((SELF_ID == 1) && LOW_POWER_MODE)
 				exit_low_powerf = 1;
+			break;
 #endif
 		case PAUSE_OPERATIONS:
 			pause_operationsf = 1;
@@ -293,17 +314,21 @@ void decode_command(uint8_t* command_array)
 			{
 				pause_msg[i] = *(command_array + i);
 			}
+			break;
 		case RESUME_OPERATIONS:
 			resume_operationsf = 1;
 			for (i = 0; i < 8; i ++)
 			{
 				resume_msg[i] = *(command_array + i);
 			}
+			break;
 #if (SELF_ID == 2)
 		case OPEN_VALVES:
 			open_valvesf = 1;
+			break;
 		case COLLECT_PD:
 			collect_pdf = 1;
+			break;
 #endif
 		default:
 			return;
