@@ -344,11 +344,6 @@ uint8_t can_get_status (st_cmd_t* cmd, uint8_t mob_number)
 			break;
 			
         case MOB_RX_COMPLETED_DLCW:
-			//if(SELF_ID != 1)
-			//{
-				//PIN_toggle(LED2);
-			//}
-
             cmd->ctrl.rtr = Can_get_rtr();
             if (Can_get_ide()) // if extended frame
             {

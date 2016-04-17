@@ -823,7 +823,7 @@ void receive_tm_msg(void)
 		current_tm[(obc_seq_count * 4) + 3] = new_tm_msg[3];
 		if(obc_seq_count == PACKET_LENGTH / 4 - 1)
 		{
-			PIN_toggle(LED2);
+			//PIN_toggle(LED2);
 			tm_sequence_count = 0;									// Reset tm_sequence_count, transmission has completed.
 			receiving_tmf = 0;
 			current_tm_fullf = 1;									// TM buffer now full, ready to downlink to ground.
@@ -939,7 +939,7 @@ void send_pus_packet_tc(void)
 	}
 	else
 	{
-		PIN_toggle(LED2);				// Transaction Complete!
+		//PIN_toggle(LED2);				// Transaction Complete!
 		tc_transfer_completef = 0;
 		tc_packet_readyf = 0;
 		return;
