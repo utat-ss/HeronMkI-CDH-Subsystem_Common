@@ -264,7 +264,7 @@ static void io_init(void)
 	DDRE = 0x00;
 	PORTE = 0x00;
 #if (SELF_ID == 0)
-	DDRD = 0x6F;	
+	DDRD = 0x63;	
 	DDRC = 0x33;
 #endif		
 }

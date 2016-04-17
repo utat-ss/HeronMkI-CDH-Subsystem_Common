@@ -205,10 +205,10 @@ void decode_command(uint8_t* command_array)
 			send_now = 1;
 			break;
 		case REQ_DATA :
-			if(SELF_ID == 0)
-			{
-				PIN_toggle(LED3);
-			}
+			//if(SELF_ID == 0)
+			//{
+				//PIN_toggle(LED3);
+			//}
 			send_data = 1;
 			for (i = 0; i < 8; i ++)
 			{
