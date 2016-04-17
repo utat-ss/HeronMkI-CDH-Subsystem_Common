@@ -149,17 +149,9 @@ int main(void)
 				//check_obc_alive();
 			#endif
 			#if (SELF_ID == 1)
-				//delay_ms(250);
-				PIN_toggle(LED2);
-				uint8_t mydata = 0;
-				//mydata = read_gpioa_pin(7);
-				//if (mydata==1)
-				//{
-					//PIN_set(LED2);
-				//} else{
-					//PIN_clr(LED2);
-				//}
-				delay_ms(50);
+				delay_ms(250);
+				PIN_toggle(LED3);
+				spi_send_shunt_dpot_value(0xAC);
 			#endif
 			#if (SELF_ID == 2)
 				collect_pressure();
@@ -201,21 +193,24 @@ static void sys_init(void)
 
 	/* EPS ONLY Initialization */
 	#if (SELF_ID == 1)
-		PIN_set(LED1);
-		/* Enable the timer for MMPT */
+		// Ensure all SS bits set high
+		PIN_set(DPOT_SS_P);
+		PIN_set(EPS_TEMP);
+		PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
+		
 		//mppt_timer_init();
 		mpptx = 0x3F;
 		mppty = 0x1F;
-		balance_l = 1;
-		balance_h = 1;
-		batt_heater_control = 0;
+		balance_l = 0;				// Turn off the low transistor (NPN)
+		balance_h = 0;				// Turn off the high transistor (PNP) **THIS IS CURRENTLY AN ISSUE AS I NEED TO ADD AN INVERTER
+		batt_heater_control = 0;	// Start with heaters off
 		pxv = 0xBF;
 		pxi	= 0x0F;
 		pyv = 0x5F;
 		pyi = 0x2F;
-		//spi_send_shunt_dpot_value(0x55);
-		//port_expander_init();
-		//gpioa_pin_mode(7, INPUT);	
+		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
+		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
+		PIN_set(LED1);	
 	#endif
 
 	/* PAY ONLY Initialization */
@@ -266,7 +261,13 @@ static void io_init(void)
 #if (SELF_ID == 0)
 	DDRD = 0x6F;	
 	DDRC = 0x33;
-#endif		
+#endif	
+#if (SELF_ID == 1)
+	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
+	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
+	DDRC = 0b11010001;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
+	DDRD = 0b01101011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
+#endif
 }
 
 static void init_global_vars(void)

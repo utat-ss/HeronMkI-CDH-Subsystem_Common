@@ -265,17 +265,50 @@ uint8_t spi_transfer4(uint8_t message)
 
 void spi_send_shunt_dpot_value(uint8_t message)
 {
-	// Set the NV register
-	PIN_clr(32);
-	spi_transfer3(0x10);
-	spi_transfer3(message);
-	PIN_set(32);
-	
+	uint8_t spi_result, temp;
+	uint8_t saved_spi_setting;
+	uint8_t change_spi_mode = 0;
+	uint8_t* reg_ptr;
+	reg_ptr = SPCR_BASE;
+
+	// Disable SPI
+	*reg_ptr &= (0b10111111);
+
+	saved_spi_setting = *reg_ptr;
+	change_spi_mode = 0b00001100;		// Leave all existing settings as is, but change the mode to CPOL = 1 and CPHA = 1
+	// After this we should have SPCR = 0b01011111 which is SPIE = 0 | SPE = 1 | MSB = 0 | MSTR = 1 | CPOL = 1 | CPHA = 1 | 1 | 1 spiclk = fioclk/128
+	*reg_ptr = *reg_ptr | (change_spi_mode);
+
+	// Enable SPI
+	*reg_ptr |= (0b01000000);
+
+	delay_cycles(32);
+
+	PIN_clr(DPOT_SS_P);
+
 	// Set the wiper
-	PIN_clr(32);
-	spi_transfer3(0x00);
-	spi_transfer3(message);
-	PIN_set(32);
+	spi_result = spi_transfer(0x00);
+	//delay_cycles(8); // This NEEDS to be here! Why? IDK
+	spi_result = spi_transfer(message);
+	//spi_result = spi_transfer(message);
+	PIN_set(DPOT_SS_P);
+	delay_ms(1);
+	PIN_clr(DPOT_SS_P);
+	// Copy the wiper value to the NV register
+	spi_result = spi_transfer(0x20);
+	PIN_set(DPOT_SS_P);
+	// Wait for the NV register to FIO its shit
+	delay_ms(15);
+	
+	// Remove our SPI conditions
+	// Disable SPI
+	*reg_ptr &= (0b10111111);
+
+	*reg_ptr = saved_spi_setting;
+	// Enable SPI
+	*reg_ptr |= (0b01000000);
+
+	delay_us(1);
 	return;
 }
 
