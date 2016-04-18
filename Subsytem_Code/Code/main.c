@@ -131,7 +131,7 @@ int main(void)
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		//can_check_general();
+		can_check_general();
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
@@ -229,17 +229,17 @@ static void sys_init(void)
 
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
-		dac_initialize();
-		uint8_t dac_reg[2];
-		dac_reg[0] = 0xBA;
-		dac_reg[1] = 0x02;
-		dac_set(dac_reg);
+		//dac_initialize();
+		//uint8_t dac_reg[2];
+		//dac_reg[0] = 0xBA;
+		//dac_reg[1] = 0x02;
+		//dac_set(dac_reg);
 		SS1_set_high(COMS_TEMP_SS);		// SPI Temp Sensor.	
 		SS1_set_high(COMS_VHF_SS);
 		SS1_set_low(COMS_UHF_SS);
 		PIN_set(UHF_FE_EN);
 		PIN_set(UHF_FE_TR);
-		PIN_clr(UHF_FE_BYP);
+		PIN_set(UHF_FE_BYP);
 		transceiver_initialize();
 		//PIN_toggle(LED1);
 	#endif
@@ -265,7 +265,7 @@ static void io_init(void)
 	PORTE = 0x00;
 #if (SELF_ID == 0)
 	DDRD = 0x6F;	
-	DDRC = 0x33;
+	DDRC = 0x37;
 #endif		
 }
 
