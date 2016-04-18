@@ -29,13 +29,17 @@
 	*
 */
 
-
+#ifndef SPI_LIB_H
+#define SPI_LIB_H
 //-----------FILE INCLUDES---------------
 #include "config.h"
 #include "port.h"
 #include "uart.h"
 #include "Timer.h"
 #include "global_var.h"
+#if	(SELF_ID == 2)
+#include "port_expander.h"
+#endif
 //---------------------------------------
 
 //-----------CONSTANT DEFINES------------
@@ -68,23 +72,34 @@
 #define PAY_HEATER3_CS			8
 #define PAY_HEATER4_CS			9
 #define PAY_HEATER5_CS			10
-#define PAY_VALVE_1n_CS			11
-#define PAY_VALVE_1p_CS			12
-#define PAY_VALVE_2n_CS			13
-#define PAY_VALVE_2p_CS			14
-#define PAY_VALVE_3n_CS			15
-#define PAY_VALVE_3p_CS			16
-#define PAY_VALVE_4n_CS			17
-#define PAY_VALVE_4p_CS			18
-#define PAY_ACCEL_CS			19
-#define PAY_PRESL_CS			20
-#define PAY_PRESH_CS			21
-#define PAY_HUM_CS				22
-#define PAY_TEMP0_CS			23
-#define PAY_TEMP1_CS			24
-#define PAY_TEMP2_CS			25
-#define PAY_TEMP3_Cs			26
-#define PAY_TEMP3_Cs			27
+#define PAY_VALVE_1A_CS			11
+#define PAY_VALVE_1B_CS			12
+#define PAY_VALVE_2A_CS			13
+#define PAY_VALVE_2B_CS			14
+#define PAY_VALVE_3A_CS			15
+#define PAY_VALVE_3B_CS			16
+#define PAY_VALVE_4A_CS			17
+#define PAY_VALVE_4B_CS			18
+#define PAY_PRESL_CS			19
+#define PAY_PRESH_CS			20
+#define PAY_ACCEL_CS			21
+#define PAY_TEMP_CS				22
+#define PAY_HUM_CS				23
+#define PAY_TEMP0_CS			24
+#define PAY_TEMP1_CS			25
+#define PAY_TEMP2_CS			26
+#define PAY_TEMP3_CS			27
+#define PAY_TEMP4_CS			28
+
+/* SPI CHIP SELECT PIN DEFINITIONS */
+#define COMS_TEMP_PIN			14
+#define COMS_UHF_PIN			29
+#define COMS_VHF_PIN			27
+#define EPS_TEMP_PIN			17
+#define EPS_DPOT_PIN			32
+#define PAY_EXP1_PIN			32
+
+
 
 void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);
@@ -92,7 +107,7 @@ uint8_t spi_transfer2(uint8_t message);
 uint8_t spi_transfer3(uint8_t message);
 uint8_t spi_transfer4(uint8_t message);
 void spi_send_shunt_dpot_value(uint8_t message);
-void spi_retrieve_temp(uint8_t* high, uint8_t* low);
+uint16_t spi_retrieve_temp(uint8_t chip_select);
 void SS_set_high(void);
 void SS_set_low(void);
 void SS1_set_high(uint32_t);
@@ -103,3 +118,4 @@ void pressure_sensor_init(uint8_t* pressure_calibration);
 uint32_t spi_retrieve_pressure(void);
 uint32_t spi_retrieve_pressure_temp(void);
 
+#endif

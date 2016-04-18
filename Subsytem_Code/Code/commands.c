@@ -151,8 +151,9 @@ void send_housekeeping(void)
 	//delay_ms(60);
 	// Temperature Collection
 	send_arr[4] = COMS_TEMP;
-	send_arr[1] = 0x00;
-	send_arr[0] = 0x44;		// (dummy value for now)
+	temp = spi_retrieve_temp(COMS_TEMP_SS);
+	send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+	send_arr[0] = (uint8_t)(temp);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	//delay_ms(100);
 #endif
@@ -161,8 +162,9 @@ void send_housekeeping(void)
 	delay_ms(50);
 	// EPS Temp Collection
 	send_arr[4] = EPS_TEMP;
-	send_arr[1] = (uint8_t)(epstemp >> 8);
-	send_arr[0] = (uint8_t)epstemp;
+	temp = spi_retrieve_temp(EPS_TEMP_CS);
+	send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+	send_arr[0] = (uint8_t)(temp);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
 	// Panel Voltage / Current Collection
@@ -253,8 +255,9 @@ void send_housekeeping(void)
 	delay_ms(70);		// Used to stagger the responses of the SSMs.
 	// Environmental Sensor Collection
 	send_arr[4] = PAY_TEMP0;
-	send_arr[1] = 0x00;
-	send_arr[0] = 0x66;		// (dummy value for now)
+	temp = spi_retrieve_temp(PAY_TEMP_CS);
+	send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+	send_arr[0] = (uint8_t)(temp);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
 	send_arr[4] = PAY_HUM;
@@ -298,13 +301,14 @@ void send_sensor_data(void)
 	send_arr[0] = 0;
 	uint16_t temp = 0;
 	
+
+#if (SELF_ID == 1)
 	if(sensor_name == EPS_TEMP)
 	{
-		spi_retrieve_temp(&high, &low);
-		send_arr[1] = high;			// SPI temperature sensor readings.
-		send_arr[0] = low;
+		temp = spi_retrieve_temp(EPS_TEMP_CS);
+		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+		send_arr[0] = (uint8_t)(temp);
 	}
-#if (SELF_ID == 1)
 	if(sensor_name == PANELX_V)
 	{
 		send_arr[0] = pxv;
@@ -369,13 +373,23 @@ void send_sensor_data(void)
 #if (SELF_ID == 0)
 	if(sensor_name == COMS_TEMP)
 	{
-		send_arr[0] = 0x0C;
+		temp = spi_retrieve_temp(COMS_TEMP_SS);
+		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+		send_arr[0] = (uint8_t)(temp);
 	}
 #endif
 #if (SELF_ID == 2)
+	if(sensor_name == PAY_TEMP)
+	{
+		temp = spi_retrieve_temp(PAY_TEMP_CS);
+		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+		send_arr[0] = (uint8_t)(temp);
+	}
 	if(sensor_name == PAY_TEMP0)
 	{
-		send_arr[0] = 0x0E;
+		temp = spi_retrieve_temp(PAY_TEMP_CS);
+		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+		send_arr[0] = (uint8_t)(temp);
 	}
 	if(sensor_name == PAY_TEMP1)
 	{

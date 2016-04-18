@@ -290,11 +290,9 @@ void transceiver_run(void)
 	}
 	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
 	{
-		//PORTB &= 0xFB;
-		PORTD &= 0xBF;
+		PIN_clr(UHF_RST);
 		delay_ms(250);
-		//PORTB |= 0x04;
-		PORTD |= (1 << 6);
+		PIN_set(UHF_RST);
 		transceiver_initialize();
 		lastCalibration = millis();
 	}
@@ -420,11 +418,8 @@ uint8_t reg_read(uint8_t addr)
 
 	SS_set_low();
 	msg = spi_transfer(addr_new);		// Send the desired address
-	//delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
-	
 	return msg;
 }
 
@@ -433,11 +428,8 @@ void reg_write(uint8_t addr, uint8_t data)		// Doesn't need to return anything.
 	uint8_t msg = 0;
 	SS_set_low();
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(1);
-
 	return;
 }
 
@@ -448,12 +440,9 @@ uint8_t reg_read2F(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
 	return msg;
 }
 
@@ -471,12 +460,9 @@ void reg_write2F(uint8_t addr, uint8_t data)		// Doesn't need to return anything
 	
 	SS_set_low();
 	spi_transfer(msg);
-	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(1);
 
 	return;
 }
@@ -506,11 +492,8 @@ void get_status(uint8_t *CHIP_RDYn, uint8_t *state)
 uint8_t cmd_str(uint8_t addr)
 {
 	uint8_t msg;
-	//SS_set_low();
 	msg = spi_transfer(addr);
-	
 	delay_us(1);
-	//SS_set_high();
 	return msg;
 }
 
@@ -529,12 +512,9 @@ uint8_t dir_FIFO_read(uint8_t addr)
 	
 	SS_set_low();
 	msg = spi_transfer(msg);
-	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
 	msg = spi_transfer(0x00);
 	SS_set_high();
-	//delay_ms(1);
 	return msg;
 }
 
@@ -546,12 +526,9 @@ void dir_FIFO_write(uint8_t addr, uint8_t data)
 	
 	SS_set_low();
 	spi_transfer(msg);
-	//delay_us(1);
 	msg = spi_transfer(addr);		// Send the desired address
-	//delay_us(1);
 	msg = spi_transfer(data);		// Send the desired data
 	SS_set_high();
-	//delay_ms(1);
 	
 	return;
 }
@@ -825,7 +802,6 @@ uint16_t fletcher16(uint8_t* data, int count)
 		sum1 = (sum1 + data[i]) % 255;
 		sum2 = (sum2 + sum1) % 255;
 	}
-	
 	return (sum2 << 8) | sum1;
 }
 

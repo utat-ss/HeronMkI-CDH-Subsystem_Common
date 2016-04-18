@@ -272,84 +272,65 @@ void spi_send_shunt_dpot_value(uint8_t message)
 	reg_ptr = SPCR_BASE;
 
 	// Disable SPI
-	*reg_ptr &= (0b10111111);
-
-	saved_spi_setting = *reg_ptr;
+	SPCR &= (0b10111111);
+	saved_spi_setting = SPCR;
 	change_spi_mode = 0b00001100;		// Leave all existing settings as is, but change the mode to CPOL = 1 and CPHA = 1
 	// After this we should have SPCR = 0b01011111 which is SPIE = 0 | SPE = 1 | MSB = 0 | MSTR = 1 | CPOL = 1 | CPHA = 1 | 1 | 1 spiclk = fioclk/128
-	*reg_ptr = *reg_ptr | (change_spi_mode);
-
+	SPCR |= (change_spi_mode);
 	// Enable SPI
-	*reg_ptr |= (0b01000000);
+	SPCR |= (0b01000000);
 
 	delay_cycles(32);
 
-	PIN_clr(DPOT_SS_P);
+	SS1_set_low(EPS_DPOT_CS);
 
 	// Set the wiper
 	spi_result = spi_transfer(0x00);
 	//delay_cycles(8); // This NEEDS to be here! Why? IDK
 	spi_result = spi_transfer(message);
 	//spi_result = spi_transfer(message);
-	PIN_set(DPOT_SS_P);
+	SS1_set_high(EPS_DPOT_CS);
 	delay_ms(1);
-	PIN_clr(DPOT_SS_P);
+	SS1_set_low(EPS_DPOT_CS);
 	// Copy the wiper value to the NV register
 	spi_result = spi_transfer(0x20);
-	PIN_set(DPOT_SS_P);
+	SS1_set_high(EPS_DPOT_CS);
 	// Wait for the NV register to FIO its shit
 	delay_ms(15);
 	
 	// Remove our SPI conditions
 	// Disable SPI
-	*reg_ptr &= (0b10111111);
-
+	SPCR &= (0b10111111);
 	*reg_ptr = saved_spi_setting;
 	// Enable SPI
-	*reg_ptr |= (0b01000000);
-
+	SPCR |= (0b01000000);
 	delay_us(1);
 	return;
 }
 
-void spi_retrieve_temp(uint8_t* high, uint8_t* low)
+uint16_t spi_retrieve_temp(uint8_t chip_select)
 {
 	uint8_t* reg_ptr;
 	uint8_t receive_char;
-	
 	reg_ptr = SPDR_BASE;
-	
+	uint16_t ret_val = 0;
+	if(SELF_ID == 0)
+		SS1_set_high(COMS_UHF_SS);
 	// Commence the SPI message.
-
-	SS1_set_low(EPS_TEMP);
+	SS1_set_low(chip_select);
 	*reg_ptr = 0;	// We don't want to pass a message during the first SCK cycles.
 	delay_us(128);
-	*high = *reg_ptr;
+	ret_val = ((uint16_t)*reg_ptr) << 8;
 	delay_us(128);
-	*low = *reg_ptr;	
-	SS1_set_high(EPS_TEMP);
-	
-	return;
+	ret_val += (uint16_t)*reg_ptr;	
+	SS1_set_high(chip_select);
+	if(SELF_ID == 0)
+		SS1_set_low(COMS_UHF_SS);
+	return ret_val;
 }
 
 /*******************************IN PROGRESS*************************************/
-
-//Just a tentative outline for a function we could implement once all other work
-//This doesn't work for acceleration
-void spi_read_sensor(uint32_t sensor_name, uint8_t* out_array, uint8_t out_size)
-{
-	uint8_t *reg_ptr = SPDR_BASE;
-	*reg_ptr = 0;
-	int i = 0;
-	SS1_set_low(sensor_name);
-	delay_us(128);
-	for (i = 0; i < out_size; i++)
-	{
-		out_array[i] = *reg_ptr;
-		delay_us(128);
-	}
-}
-
+#if (SELF_ID == 2)
 //Acceleration: ADXL362 
 //axis: 1=x; 2=y; 3=z
 void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
@@ -372,7 +353,7 @@ void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
 		acc_reg_L = 0x12;
 	}
 	*reg_ptr = 0x0B;
-	SS_set_low();
+	SS1_set_low(PAY_ACCEL_CS);
 	delay_us(128);
 	*reg_ptr = acc_reg_H;
 	delay_us(128);
@@ -380,9 +361,9 @@ void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
 	*reg_ptr = acc_reg_L;
 	delay_us(128);
 	*low = *reg_ptr;
-	//check datasheet: is this how burst read works?
-	
-	SS_set_high();
+	//check datasheet: is this how burst read works?	
+	SS1_set_high(PAY_ACCEL_CS);
+	return;
 }
 
 //Humidity: HIH7000 Series
@@ -392,17 +373,13 @@ void spi_retrieve_humidity(uint8_t *high, uint8_t *low)
 	
 	uint8_t *reg_ptr = SPDR_BASE;
 	*reg_ptr = 0;
-	
-	//SS1_set_low(PAY_HUM);
-	SS_set_low();
-	
+	SS1_set_low(PAY_HUM_CS);
 	delay_us(128);
 	high = *reg_ptr;
 	delay_us(128);
 	low = *reg_ptr;
-	
-	SS_set_high();
-	
+	SS1_set_high(PAY_HUM_CS);
+	return;
 }
 /**********************Pressure Sensor Driver*****************/
 
@@ -412,19 +389,18 @@ void spi_retrieve_humidity(uint8_t *high, uint8_t *low)
 //6x16-bit calibration values
 void pressure_sensor_init(uint8_t* pressure_calibration)
 {
-	//SS1_set_low(PAY_PRESS); //use this
-	PORTD &= (0xFB);
+	SS1_set_low(PAY_PRESL_CS);
 	spi_transfer(PRES_RESET); //reset command for sensor
 	delay_ms(3);
-	PORTD |= (1 << 2);
+	SS1_set_high(PAY_PRESL_CS);
 	delay_ms(1);
 	for (uint8_t i = 0; i < 12; i+=2)
 	{
-		PORTD &= (0xFB);
+		SS1_set_low(PAY_PRESL_CS);
 		spi_transfer(PROM_READ | ((i / 2 + 1) << 1));		
 		pressure_calibration[i + 1] = spi_transfer(0);
 		pressure_calibration[i] = spi_transfer(0);
-		PORTD |= (1 << 2);		
+		SS1_set_high(PAY_PRESL_CS);		
 		delay_ms(1);
 	}
 	uart_sendmsg("PRESSURE SENSOR INITIALIZED\n\r");
@@ -440,12 +416,12 @@ uint32_t spi_retrieve_pressure(void)
 	//SS1_set_low(PAY_PRESS); //use this
 	uint32_t ret_val = 0;
 	uint8_t arr[3];
-	PORTD &= (0xFB);
+	SS1_set_low(PAY_PRESL_CS);
 	spi_transfer(CONVERT_PRES_OSR_4096);
 	delay_ms(9);
-	PORTD |= (1 << 2);
+	SS1_set_high(PAY_PRESL_CS);
 	delay_ms(1);
-	PORTD &= (0xFB);
+	SS1_set_low(PAY_PRESL_CS);
 	spi_transfer(ADC_READ);
 	arr[2] = spi_transfer(0);
 	arr[1] = spi_transfer(0);
@@ -453,7 +429,7 @@ uint32_t spi_retrieve_pressure(void)
 	ret_val += (uint32_t)arr[0];
 	ret_val += ((uint32_t)arr[1]) << 8;
 	ret_val += ((uint32_t)arr[2]) << 16;
-	PORTD |= (1 << 2);
+	SS1_set_high(PAY_PRESL_CS);
 	return ret_val;
 }
 
@@ -464,23 +440,23 @@ uint32_t spi_retrieve_pressure_temp(void)
 	//SS1_set_low(PAY_PRESS); //use this
 	uint32_t ret_val = 0;
 	uint8_t val = 0;
-	PORTD &= (0xFB);
+	SS1_set_low(PAY_PRESL_CS);
 	spi_transfer(CONVERT_TEMP_OSR_4096);
 	delay_ms(9);
-	PORTD |= (1 << 2);
+	SS1_set_high(PAY_PRESL_CS);
 	delay_ms(1);
-	PORTD &= (0xFB);
+	SS1_set_low(PAY_PRESL_CS);
 	spi_transfer(ADC_READ);
 	for (uint8_t i = 3; i > 0; i--)
 	{
 		val = spi_transfer(0);
 		ret_val += (((uint32_t)val) << (8 * (i - 1)));
 	}
-	PORTD |= (1 << 2);
+	SS1_set_high(PAY_PRESL_CS);
 	return ret_val;
 }
 
-#if (SELF_ID == 2)
+
 void convert_temp_press(void)
 {
 	long int press_raw = 0, temp_raw = 0;
@@ -534,19 +510,81 @@ void SS_set_high(void)
 }
 
 
-
 void SS1_set_high(uint32_t sensor_id)
 {
 	switch(sensor_id)
 	{
 		case COMS_TEMP_SS:
-			PORTC |= (1 << 4);
+			PIN_set(COMS_TEMP_PIN);
 			break;
 		case COMS_UHF_SS:
-			PORTD |= (1 << 0);
+			PIN_set(COMS_UHF_PIN);
 			break;
 		case COMS_VHF_SS:
-			PORTB |= (1 << 6);
+			PIN_set(COMS_VHF_PIN);
+			break;
+		case EPS_TEMP_CS:
+			PIN_set(EPS_TEMP_PIN);
+			break;
+		case EPS_DPOT_CS:
+			PIN_set(EPS_DPOT_PIN);
+			break;
+		case PAY_EXP1_CS:
+			PIN_set(PAY_EXP1_CS);
+			break;
+		case PAY_HEATER1_CS:
+			set_gpiob_pin(1, 0);
+			break;
+		case PAY_HEATER2_CS:
+			set_gpiob_pin(1, 1);
+			break;
+		case PAY_HEATER3_CS:
+			set_gpiob_pin(1, 2);
+			break;
+		case PAY_HEATER4_CS:
+			set_gpiob_pin(1, 3);
+			break;
+		case PAY_HEATER5_CS:
+			set_gpiob_pin(1, 4);
+			break;
+		case PAY_VALVE_1A_CS:
+			set_gpioa_pin(1, 0);
+			break;
+		case PAY_VALVE_1B_CS:
+			set_gpioa_pin(1, 1);
+			break;
+		case PAY_VALVE_2A_CS:
+			set_gpioa_pin(1, 2);
+			break;
+		case PAY_VALVE_2B_CS:
+			set_gpioa_pin(1, 3);
+			break;
+		case PAY_VALVE_3A_CS:
+			set_gpioa_pin(1, 4);
+			break;
+		case PAY_VALVE_3B_CS:
+			set_gpioa_pin(1, 5);
+			break;
+		case PAY_VALVE_4A_CS:
+			set_gpioa_pin(1, 6);
+			break;
+		case PAY_VALVE_4B_CS:
+			set_gpioa_pin(1, 7);
+			break;
+		case PAY_PRESL_CS:
+			set_gpiob_pin(0, 0);
+			break;
+		case PAY_PRESH_CS:
+			set_gpiob_pin(0, 1);
+			break;
+		case PAY_ACCEL_CS:
+			set_gpiob_pin(0, 2);
+			break;
+		case PAY_TEMP_CS:
+			set_gpiob_pin(0, 3);
+			break;
+		case PAY_HUM_CS:
+			set_gpiob_pin(0, 4);
 			break;
 		default:
 			break;
@@ -567,14 +605,77 @@ void SS1_set_low(uint32_t sensor_id)
 	switch(sensor_id)
 	{	
 		case COMS_TEMP_SS:
-			PORTC &= (0xEF);
+			PIN_clr(COMS_TEMP_PIN);
 			break;
 		case COMS_UHF_SS:
-			PORTD &= (0xFE);
+			PIN_clr(COMS_UHF_PIN);
 			break;
 		case COMS_VHF_SS:
-			PORTB &= (0xBF);
+			PIN_clr(COMS_VHF_PIN);
 			break;
+		case EPS_TEMP_CS:
+			PIN_clr(EPS_TEMP_PIN);
+			break;
+		case EPS_DPOT_CS:
+			PIN_clr(EPS_DPOT_PIN);
+			break;
+		case PAY_EXP1_CS:
+			PIN_clr(PAY_EXP1_CS);
+			break;
+		case PAY_HEATER1_CS:
+			clr_gpiob_pin(1, 0);
+			break;
+		case PAY_HEATER2_CS:
+			clr_gpiob_pin(1, 1);
+			break;
+		case PAY_HEATER3_CS:
+			clr_gpiob_pin(1, 2);
+			break;
+		case PAY_HEATER4_CS:
+			clr_gpiob_pin(1, 3);
+			break;
+		case PAY_HEATER5_CS:
+			clr_gpiob_pin(1, 4);
+			break;
+		case PAY_VALVE_1A_CS:
+			clr_gpioa_pin(1, 0);
+			break;
+		case PAY_VALVE_1B_CS:
+			clr_gpioa_pin(1, 1);
+			break;
+		case PAY_VALVE_2A_CS:
+			clr_gpioa_pin(1, 2);
+			break;
+		case PAY_VALVE_2B_CS:
+			clr_gpioa_pin(1, 3);
+			break;
+		case PAY_VALVE_3A_CS:
+			clr_gpioa_pin(1, 4);
+			break;
+		case PAY_VALVE_3B_CS:
+			clr_gpioa_pin(1, 5);
+			break;
+		case PAY_VALVE_4A_CS:
+			clr_gpioa_pin(1, 6);
+			break;
+		case PAY_VALVE_4B_CS:
+			clr_gpioa_pin(1, 7);
+			break;
+		case PAY_PRESL_CS:
+			clr_gpiob_pin(0, 0);
+			break;		
+		case PAY_PRESH_CS:
+			clr_gpiob_pin(0, 1);
+			break;		
+		case PAY_ACCEL_CS:
+			clr_gpiob_pin(0, 2);
+			break;		
+		case PAY_TEMP_CS:
+			clr_gpiob_pin(0, 3);
+			break;		
+		case PAY_HUM_CS:
+			clr_gpiob_pin(0, 4);
+			break;		
 		default:
 			break;
 	}
@@ -585,15 +686,6 @@ void SS_set_low(void)
 	//PORTD &= (0xF7);
 	delay_us(1);
 }
-
-
-/*
-void SS1_set_low(void)
-{
-	PORTC &= (0xEF);
-	//delay_us(1);
-}
-*/
 
 //set certain ss pin to low
 void set_coms_SS_low(uint8_t PIN)

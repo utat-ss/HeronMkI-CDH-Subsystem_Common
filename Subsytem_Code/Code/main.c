@@ -105,7 +105,7 @@
 	#include "mppt_timer.h"
 	#include "battBalance.h"
 #endif
-#if (SELF_ID == 1 || SELF_ID == 2)
+#if (SELF_ID == 2)
 	#include "port_expander.h"
 #endif
 
@@ -113,6 +113,7 @@
 static void io_init(void);
 static void sys_init(void);
 static void init_global_vars(void);
+static void init_port_exander_pins(void);
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
@@ -173,8 +174,6 @@ static void sys_init(void)
 	/* Common Initialization */
 	init_global_vars();
 	io_init();
-	//PORTB |= 0x04;
-	PORTD |= (1 << 6);
 	timer_init();
 	adc_initialize();
 	can_init(0);
@@ -188,14 +187,15 @@ static void sys_init(void)
 	
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
+		PIN_set(UHF_RST);
 		coms_timer_init();
 	#endif
 
 	/* EPS ONLY Initialization */
 	#if (SELF_ID == 1)
 		// Ensure all SS bits set high
-		PIN_set(DPOT_SS_P);
-		PIN_set(EPS_TEMP);
+		SS1_set_high(EPS_DPOT_CS);
+		SS1_set_high(EPS_TEMP_CS);
 		PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
 		
 		//mppt_timer_init();
@@ -236,11 +236,16 @@ static void sys_init(void)
 		PIN_set(UHF_FE_TR);
 		PIN_set(UHF_FE_BYP);
 		transceiver_initialize();
-		//PIN_toggle(LED1);
 	#endif
 	
 	/* PAY ONLY Initialization */
 	#if (SELF_ID == 2)
+		PIN_set(EXP_RST);
+		for(uint8_t i = 0; i < 8; i++)		// Initializes config registers of Port Expanders themselves
+		{
+			port_expander_init(i);			
+		}
+		init_port_exander_pins();
 		pressure_sensor_init(pressure_calib);
 	#endif
 }
@@ -253,8 +258,8 @@ static void io_init(void)
 	DDRC = 0x13;
 	PORTC = 0x00;
 	/* Init PORTD[7:0] */
-	DDRD = 0x0D;			// Note: PD3 currently SS for SPI communications.
-	PORTD = 0x00;			// Note: PD3 should only go low during an SPI message.
+	DDRD = 0x0D;
+	PORTD = 0x00;
 	// Init PORTE[2:0] */
 	DDRE = 0x00;
 	PORTE = 0x00;
@@ -267,6 +272,10 @@ static void io_init(void)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
 	DDRC = 0b11010001;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
 	DDRD = 0b01101011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
+#endif
+#if (SELF_ID == 2)
+	DDRC |= 0b11000000;
+	DDRD = 0b00000010;
 #endif
 }
 
@@ -468,4 +477,49 @@ void check_obc_alive(void) {
 	}
 	//else, wait while the ISALIVE_COUNTER increments.
 }
+
+// This function is in charge with initializing the direction and level
+// of pins on all the port expanders in the payload.
+#if (SELF_ID == 2)
+static void init_port_exander_pins(void)
+{
+	uint8_t pex_id = 0;
+	uint8_t i;
+	/* PORT EXPANDER 000 (*8 on INT PCB)	*/
+	/* (The one with the sensors)			*/
+	// Set the data direction to output.
+	for(i = 0; i < 5; i++)
+	{
+		gpioa_pin_mode(pex_id, i, OUTPUT);
+	}
+	// Set the default output to high (off for a SPI select)
+	for(i = 0; i < 5; i++)
+	{
+		set_gpioa_pin(pex_id, i);
+	}
+	
+	/* PORT EXPANDER 001 (*4 on INT PCB)	*/
+	/* (The one with heaters and valves)	*/
+	pex_id = 1;
+	// Set the data direction
+	for(i = 0; i < 5; i++)
+	{
+		gpiob_pin_mode(pex_id, i, OUTPUT);
+	}
+	for(i = 0; i < 8; i++)
+	{
+		gpioa_pin_mode(pex_id, i, OUTPUT);
+	}
+	// Set the default pin level
+	for(i = 0; i < 5; i++)
+	{
+		clr_gpiob_pin(pex_id, i);	// All heaters off initially.
+	}
+	for(i = 0; i < 8; i++)
+	{
+		clr_gpioa_pin(pex_id, i);	// All valves pin low initially.
+	}
+}
+#endif
+
 #endif

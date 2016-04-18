@@ -216,6 +216,7 @@ typedef struct{
 #define PAY_HUM					0x19
 #define PAY_PRESS				0x1A
 #define PAY_ACCEL				0x1B
+#define PAY_TEMP				0x1C
 
 /* VARIABLE NAMES		*/
 #define MPPTX					0xFF

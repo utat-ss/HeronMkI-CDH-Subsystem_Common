@@ -59,6 +59,9 @@
 #define UHF_FE_TR	13
 #define UHF_FE_BYP	18
 
+//FOR PAY
+#define EXP_RST		22
+
 void LED_Reg_Write(uint8_t val);
 void PIN_set(uint8_t PIN);
 void PIN_clr(uint8_t PIN);
