@@ -176,20 +176,22 @@ static void sys_init(void)
 	/* Common Initialization */
 	init_global_vars();
 	io_init();
+	#if (SELF_ID == 0)
+		PIN_set(UHF_RST);
+	#endif
 	timer_init();
 	adc_initialize();
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
 	#if (SELF_ID != 0)
-	uart_init();
+		uart_init();
 	#endif
 	/* Enable watchdog timer - 2s */
 	wdt_enable(WDTO_2S);
 	
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
-		PIN_set(UHF_RST);
 		coms_timer_init();
 	#endif
 
@@ -266,7 +268,10 @@ static void io_init(void)
 	DDRE = 0x00;
 	PORTE = 0x00;
 #if (SELF_ID == 0)
-	DDRD = 0x63;	
+	if(PUS_COMMUNICATION_ON)
+		DDRD = 0x6F;
+	else
+		DDRD = 0x63;	
 	DDRC = 0x37;
 #endif	
 #if (SELF_ID == 1)
