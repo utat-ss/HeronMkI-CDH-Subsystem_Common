@@ -226,7 +226,11 @@ static void sys_init(void)
 
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
+<<<<<<< HEAD
 		dac_initialize();
+=======
+		//dac_initialize();
+>>>>>>> coms_fix
 		//uint8_t dac_reg[2];
 		//dac_reg[0] = 0xBA;
 		//dac_reg[1] = 0x02;
@@ -266,6 +270,7 @@ static void io_init(void)
 	DDRE = 0x00;
 	PORTE = 0x00;
 #if (SELF_ID == 0)
+<<<<<<< HEAD
 	DDRD = 0x63;	
 	DDRC = 0x33;
 #endif	
@@ -279,6 +284,11 @@ static void io_init(void)
 	DDRC |= 0b11000000;
 	DDRD = 0b00000010;
 #endif
+=======
+	DDRD = 0x6F;	
+	DDRC = 0x37;
+#endif		
+>>>>>>> coms_fix
 }
 
 static void init_global_vars(void)
