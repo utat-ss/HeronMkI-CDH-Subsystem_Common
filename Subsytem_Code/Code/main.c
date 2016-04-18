@@ -226,11 +226,7 @@ static void sys_init(void)
 
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
-<<<<<<< HEAD
-		dac_initialize();
-=======
 		//dac_initialize();
->>>>>>> coms_fix
 		//uint8_t dac_reg[2];
 		//dac_reg[0] = 0xBA;
 		//dac_reg[1] = 0x02;
@@ -270,25 +266,20 @@ static void io_init(void)
 	DDRE = 0x00;
 	PORTE = 0x00;
 #if (SELF_ID == 0)
-<<<<<<< HEAD
 	DDRD = 0x63;	
-	DDRC = 0x33;
+	DDRC = 0x37;
 #endif	
 #if (SELF_ID == 1)
 	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
-	DDRC = 0b11010001;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
+	DDRC = 0b11010101;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
 	DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
 #endif
 #if (SELF_ID == 2)
-	DDRC |= 0b11000000;
+	DDRC |= 0b11000100;
 	DDRD = 0b00000010;
 #endif
-=======
-	DDRD = 0x6F;	
-	DDRC = 0x37;
-#endif		
->>>>>>> coms_fix
+
 }
 
 static void init_global_vars(void)
