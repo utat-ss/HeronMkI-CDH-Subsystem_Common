@@ -113,7 +113,9 @@
 static void io_init(void);
 static void sys_init(void);
 static void init_global_vars(void);
-static void init_port_exander_pins(void);
+#if (SELF_ID == 2)
+static void init_port_expander_pins(void);
+#endif
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
@@ -196,7 +198,7 @@ static void sys_init(void)
 		// Ensure all SS bits set high
 		SS1_set_high(EPS_DPOT_CS);
 		SS1_set_high(EPS_TEMP_CS);
-		PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
+		//PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
 		
 		//mppt_timer_init();
 		mpptx = 0x3F;
@@ -245,7 +247,7 @@ static void sys_init(void)
 		{
 			port_expander_init(i);			
 		}
-		init_port_exander_pins();
+		init_port_expander_pins();
 		pressure_sensor_init(pressure_calib);
 	#endif
 }
@@ -271,7 +273,7 @@ static void io_init(void)
 	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
 	DDRC = 0b11010001;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
-	DDRD = 0b01101011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
+	DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
 #endif
 #if (SELF_ID == 2)
 	DDRC |= 0b11000000;
@@ -477,11 +479,12 @@ void check_obc_alive(void) {
 	}
 	//else, wait while the ISALIVE_COUNTER increments.
 }
+#endif
 
 // This function is in charge with initializing the direction and level
 // of pins on all the port expanders in the payload.
 #if (SELF_ID == 2)
-static void init_port_exander_pins(void)
+static void init_port_expander_pins(void)
 {
 	uint8_t pex_id = 0;
 	uint8_t i;
@@ -519,7 +522,6 @@ static void init_port_exander_pins(void)
 	{
 		clr_gpioa_pin(pex_id, i);	// All valves pin low initially.
 	}
+	return;
 }
-#endif
-
 #endif

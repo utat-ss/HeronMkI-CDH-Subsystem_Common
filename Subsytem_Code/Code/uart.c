@@ -38,7 +38,7 @@ volatile uint16_t uart_index = 0;
 volatile uint8_t uart_overflow = 0;
 
 #define UART_BAUD	9600
-#define UART_DISABLE 0
+#define UART_DISABLE 1
 
 /************************************************************************/
 /* UART INITIALIZE                                                      */
