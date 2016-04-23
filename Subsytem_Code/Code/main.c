@@ -129,12 +129,13 @@ int main(void)
 		setup_fake_tc();
 	#endif
 	/*		Begin Main Program Loop					*/
+	uint8_t state1, state2;
 	while(1)
     {	
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		can_check_general();
+		//can_check_general();
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
@@ -158,11 +159,25 @@ int main(void)
 			#endif
 			#if (SELF_ID == 2)
 				collect_pressure();
+				//clr_gpioa_pin(0, 0);
+				//delay_ms(1000);
+				//gpioa_pin_mode(0, 0, OUTPUT);
+
+
+				//port_expander_write(0, IODIR_BASE, 0xF0);
+				//port_expander_read(0, IODIR_BASE, &state1);
+				//port_expander_write(0, GPIO_BASE, 0x0F);
+				//port_expander_read(0, GPIO_BASE, &state2);
+				//state2 &= 0x0F;
+				//uart_printf("IODIR_BASE: %d\n\r", state1);
+				//uart_printf("GPIO_BASE: %d\n\r", state2);
+				//clr_gpioa_pin(0, 0);
 				delay_ms(1000);
+				
 			#endif	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		run_commands();
+		//run_commands();
 	}
 }
 
@@ -219,7 +234,6 @@ static void sys_init(void)
 
 	/* PAY ONLY Initialization */
 	#if (SELF_ID == 2)
-		SS1_set_high(COMS_TEMP);		// SPI Temp Sensor.
 		dac_initialize();
 	#endif
 
@@ -497,12 +511,15 @@ static void init_port_expander_pins(void)
 	/* PORT EXPANDER 000 (*8 on INT PCB)	*/
 	/* (The one with the sensors)			*/
 	// Set the data direction to output.
-	for(i = 0; i < 5; i++)
+	for(i = 0; i < 4; i++)
 	{
 		gpioa_pin_mode(pex_id, i, OUTPUT);
 	}
+	gpioa_pin_mode(pex_id, 7, OUTPUT);
+	gpioa_pin_mode(pex_id, 6, INPUT);
+	gpioa_pin_mode(pex_id, 5, INPUT);	
 	// Set the default output to high (off for a SPI select)
-	for(i = 0; i < 5; i++)
+	for(i = 0; i < 4; i++)
 	{
 		set_gpioa_pin(pex_id, i);
 	}

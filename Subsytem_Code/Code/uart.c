@@ -32,13 +32,13 @@
 #include <stdarg.h>
 #include <avr/interrupt.h>
 #include "uart.h"
+#include "global_var.h"
 
 volatile uint8_t uart_buffer[UART_BUFF_LEN] = {0};
 volatile uint16_t uart_index = 0;
 volatile uint8_t uart_overflow = 0;
 
 #define UART_BAUD	9600
-#define UART_DISABLE 1
 
 /************************************************************************/
 /* UART INITIALIZE                                                      */

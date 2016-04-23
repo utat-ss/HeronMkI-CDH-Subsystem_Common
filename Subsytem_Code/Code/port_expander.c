@@ -74,7 +74,7 @@ void port_expander_write(uint8_t pex_id, uint8_t register_address, uint8_t data)
 	SPCR &= (0b10111111);
 	/* Save SPI Config */
 	SPCR_SAVED = SPCR;
-	SPCR = 0b01011111;
+	SPCR = 0b00011111;
 	/* Enable SPI  */
 	SPCR |= (0b01000000);
 	port_expander_select(pex_id);
@@ -99,7 +99,7 @@ void port_expander_read(uint8_t pex_id, uint8_t register_address, uint8_t* data)
 	SPCR &= (0b10111111);
 	/* Save SPI Config */
 	SPCR_SAVED = SPCR;
-	SPCR = 0b01011111;
+	SPCR = 0b00011111;
 	/* Enable SPI  */
 	SPCR |= (0b01000000);
 	port_expander_select(pex_id);

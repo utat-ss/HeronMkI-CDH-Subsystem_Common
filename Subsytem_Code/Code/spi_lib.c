@@ -121,7 +121,7 @@ void spi_initialize_master(void)
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, CPOL = 0 (SCK low when idle), CPHA = 0
 	temp = 0b01010000;
-	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/128
+	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/128	
 	return;
 }
 
@@ -367,7 +367,7 @@ void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
 }
 
 //Humidity: HIH7000 Series
-
+// Need new port expander before this will work.
 void spi_retrieve_humidity(uint8_t *high, uint8_t *low)
 {
 	
@@ -530,7 +530,7 @@ void SS1_set_high(uint32_t sensor_id)
 			PIN_set(EPS_DPOT_PIN);
 			break;
 		case PAY_EXP1_CS:
-			PIN_set(PAY_EXP1_CS);
+			PIN_set(32);
 			break;
 		case PAY_HEATER1_CS:
 			set_gpiob_pin(1, 0);
@@ -572,19 +572,19 @@ void SS1_set_high(uint32_t sensor_id)
 			set_gpioa_pin(1, 7);
 			break;
 		case PAY_PRESL_CS:
-			set_gpiob_pin(0, 0);
+			set_gpioa_pin(0, 0);
 			break;
 		case PAY_PRESH_CS:
-			set_gpiob_pin(0, 1);
+			set_gpioa_pin(0, 1);
 			break;
 		case PAY_ACCEL_CS:
-			set_gpiob_pin(0, 2);
+			set_gpioa_pin(0, 2);
 			break;
 		case PAY_TEMP_CS:
-			set_gpiob_pin(0, 3);
+			set_gpioa_pin(0, 3);
 			break;
 		case PAY_HUM_CS:
-			set_gpiob_pin(0, 4);
+			set_gpioa_pin(0, 4);
 			break;
 		default:
 			break;
@@ -620,7 +620,7 @@ void SS1_set_low(uint32_t sensor_id)
 			PIN_clr(EPS_DPOT_PIN);
 			break;
 		case PAY_EXP1_CS:
-			PIN_clr(PAY_EXP1_CS);
+			PIN_clr(32);
 			break;
 		case PAY_HEATER1_CS:
 			clr_gpiob_pin(1, 0);
@@ -662,19 +662,19 @@ void SS1_set_low(uint32_t sensor_id)
 			clr_gpioa_pin(1, 7);
 			break;
 		case PAY_PRESL_CS:
-			clr_gpiob_pin(0, 0);
+			clr_gpioa_pin(0, 0);
 			break;		
 		case PAY_PRESH_CS:
-			clr_gpiob_pin(0, 1);
+			clr_gpioa_pin(0, 1);
 			break;		
 		case PAY_ACCEL_CS:
-			clr_gpiob_pin(0, 2);
+			clr_gpioa_pin(0, 2);
 			break;		
 		case PAY_TEMP_CS:
-			clr_gpiob_pin(0, 3);
+			clr_gpioa_pin(0, 3);
 			break;		
 		case PAY_HUM_CS:
-			clr_gpiob_pin(0, 4);
+			clr_gpioa_pin(0, 4);
 			break;		
 		default:
 			break;
