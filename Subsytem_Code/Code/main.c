@@ -163,14 +163,18 @@ int main(void)
 				//delay_ms(1000);
 				//gpioa_pin_mode(0, 0, OUTPUT);
 
-
-				//port_expander_write(0, IODIR_BASE, 0xF0);
 				//port_expander_read(0, IODIR_BASE, &state1);
-				//port_expander_write(0, GPIO_BASE, 0x0F);
-				//port_expander_read(0, GPIO_BASE, &state2);
-				//state2 &= 0x0F;
 				//uart_printf("IODIR_BASE: %d\n\r", state1);
-				//uart_printf("GPIO_BASE: %d\n\r", state2);
+				////port_expander_write(0, GPIO_BASE + 1, 0x01);
+				//clr_gpioa_pin(0, 0);
+				//port_expander_read(0, GPIO_BASE, &state1);
+				//delay_ms(1000);
+				//wdt_reset();
+				////port_expander_write(0, GPIO_BASE + 1, 0x00);
+				//set_gpioa_pin(0, 0);
+				//port_expander_read(0, GPIO_BASE, &state2);
+				//uart_printf("GPIO_BASE1: %d\n\r", state1);
+				//uart_printf("GPIO_BASE2: %d\n\r", state2);
 				//clr_gpioa_pin(0, 0);
 				delay_ms(1000);
 				
@@ -265,6 +269,7 @@ static void sys_init(void)
 		}
 		init_port_expander_pins();
 		pressure_sensor_init(pressure_calib);
+		gpiob_pin_mode(0, 0, OUTPUT);
 	#endif
 }
 
@@ -515,18 +520,20 @@ static void init_port_expander_pins(void)
 	{
 		gpioa_pin_mode(pex_id, i, OUTPUT);
 	}
-	gpioa_pin_mode(pex_id, 7, OUTPUT);
+	gpioa_pin_mode(pex_id, 7, INPUT);
 	gpioa_pin_mode(pex_id, 6, INPUT);
-	gpioa_pin_mode(pex_id, 5, INPUT);	
+	gpioa_pin_mode(pex_id, 5, INPUT);
+	//gpioa_pin_mode(pex_id, 4, INPUT);		
 	// Set the default output to high (off for a SPI select)
 	for(i = 0; i < 4; i++)
 	{
 		set_gpioa_pin(pex_id, i);
 	}
+	port_expander_write(0, IODIR_BASE, 0xF0);
 	
 	/* PORT EXPANDER 001 (*4 on INT PCB)	*/
 	/* (The one with heaters and valves)	*/
-	pex_id = 1;
+	pex_id = 4;
 	// Set the data direction
 	for(i = 0; i < 5; i++)
 	{

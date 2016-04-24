@@ -573,6 +573,11 @@ void SS1_set_high(uint32_t sensor_id)
 			break;
 		case PAY_PRESL_CS:
 			set_gpioa_pin(0, 0);
+			//uint8_t state;
+			//port_expander_read(0, GPIO_BASE, &state);
+			//state &= 0x0F;
+			//uart_printf("GPIO_BASE: %d\n\r", state);
+			//delay_ms(50);
 			break;
 		case PAY_PRESH_CS:
 			set_gpioa_pin(0, 1);
@@ -663,6 +668,11 @@ void SS1_set_low(uint32_t sensor_id)
 			break;
 		case PAY_PRESL_CS:
 			clr_gpioa_pin(0, 0);
+			//uint8_t state;
+			//port_expander_read(0, GPIO_BASE, &state);
+			//state &= 0x0F;
+			//uart_printf("GPIO_BASE: %d\n\r", state);
+			//delay_ms(50);
 			break;		
 		case PAY_PRESH_CS:
 			clr_gpioa_pin(0, 1);
