@@ -79,6 +79,7 @@
 	*
 */
 
+#include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
@@ -129,7 +130,9 @@ int main(void)
 		setup_fake_tc();
 	#endif
 	/*		Begin Main Program Loop					*/
-	uint8_t state1, state2;
+	uint32_t temperature;
+	uint32_t* temp_raw = malloc(sizeof(uint32_t));
+	uint8_t sign = 1;
 	while(1)
     {	
 		/* Reset the WDT */
@@ -159,25 +162,14 @@ int main(void)
 			#endif
 			#if (SELF_ID == 2)
 				collect_pressure();
-				//clr_gpioa_pin(0, 0);
-				//delay_ms(1000);
-				//gpioa_pin_mode(0, 0, OUTPUT);
-
-				//port_expander_read(0, IODIR_BASE, &state1);
-				//uart_printf("IODIR_BASE: %d\n\r", state1);
-				////port_expander_write(0, GPIO_BASE + 1, 0x01);
-				//clr_gpioa_pin(0, 0);
-				//port_expander_read(0, GPIO_BASE, &state1);
-				//delay_ms(1000);
-				//wdt_reset();
-				////port_expander_write(0, GPIO_BASE + 1, 0x00);
-				//set_gpioa_pin(0, 0);
-				//port_expander_read(0, GPIO_BASE, &state2);
-				//uart_printf("GPIO_BASE1: %d\n\r", state1);
-				//uart_printf("GPIO_BASE2: %d\n\r", state2);
-				//clr_gpioa_pin(0, 0);
+				*temp_raw = (uint32_t)spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
+				sign = convert_to_temp(temp_raw);
+				temperature = *temp_raw;
+				if(sign)
+					uart_printf("TEMP(C)			:	+%lu\n\r", temperature);
+				else
+					uart_printf("TEMP(C)			:	-%lu\n\r", temperature);				
 				delay_ms(1000);
-				
 			#endif	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */

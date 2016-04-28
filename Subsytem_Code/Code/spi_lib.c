@@ -308,6 +308,16 @@ void spi_send_shunt_dpot_value(uint8_t message)
 	return;
 }
 
+void init_temp_sensor(void)
+{
+	// disable SPI
+	// set MISO to OUTPUT
+	// set MISO to zero
+	// enable SPI
+	
+	// 
+}
+
 uint16_t spi_retrieve_temp(uint8_t chip_select)
 {
 	uint8_t* reg_ptr;
@@ -316,14 +326,34 @@ uint16_t spi_retrieve_temp(uint8_t chip_select)
 	uint16_t ret_val = 0;
 	if(SELF_ID == 0)
 		SS1_set_high(COMS_UHF_SS);
+		
+	/* Disable SPI */
+	SPCR &= (0b10111111);
+	/* Set MISO as output, level = 0*/
+	DDRB |= 0x01;
+	PIN_clr(8);
+	/* Enable SPI  */
+	SPCR |= (0b01000000);
+	
 	// Commence the SPI message.
 	SS1_set_low(chip_select);
-	*reg_ptr = 0;	// We don't want to pass a message during the first SCK cycles.
-	delay_us(128);
-	ret_val = ((uint16_t)*reg_ptr) << 8;
-	delay_us(128);
-	ret_val += (uint16_t)*reg_ptr;	
+	spi_transfer(0);								// Continuous conversion mode.
+	spi_transfer(0);
+	spi_transfer(0);
 	SS1_set_high(chip_select);
+	delay_ms(300);
+	SS1_set_low(chip_select);
+	/* Disable SPI */
+	SPCR &= (0b10111111);
+	/* Set MISO as input*/
+	DDRB &= 0xFE;
+	/* Enable SPI  */
+	SPCR |= (0b01000000);
+	//delay_ms(300);
+	ret_val = ((uint16_t)spi_transfer(0)) << 8;		// Collect temperature data
+	ret_val += (uint16_t)spi_transfer(0);	
+	SS1_set_high(chip_select);
+	
 	if(SELF_ID == 0)
 		SS1_set_low(COMS_UHF_SS);
 	return ret_val;
@@ -403,7 +433,7 @@ void pressure_sensor_init(uint8_t* pressure_calibration)
 		SS1_set_high(PAY_PRESL_CS);		
 		delay_ms(1);
 	}
-	uart_sendmsg("PRESSURE SENSOR INITIALIZED\n\r");
+	//uart_sendmsg("PRESSURE SENSOR INITIALIZED\n\r");
 	return;
 }
 //Pressure sensor returns two 24-bit values for temp and pressure
@@ -586,7 +616,8 @@ void SS1_set_high(uint32_t sensor_id)
 			set_gpioa_pin(0, 2);
 			break;
 		case PAY_TEMP_CS:
-			set_gpioa_pin(0, 3);
+			//set_gpioa_pin(0, 3);
+			port_expander_write(0, GPIO_BASE, 0x1F);
 			break;
 		case PAY_HUM_CS:
 			set_gpioa_pin(0, 4);
@@ -681,7 +712,8 @@ void SS1_set_low(uint32_t sensor_id)
 			clr_gpioa_pin(0, 2);
 			break;		
 		case PAY_TEMP_CS:
-			clr_gpioa_pin(0, 3);
+			//clr_gpioa_pin(0, 3);
+			port_expander_write(0, GPIO_BASE, 0x17);
 			break;		
 		case PAY_HUM_CS:
 			clr_gpioa_pin(0, 4);

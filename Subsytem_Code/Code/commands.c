@@ -1106,22 +1106,22 @@ uint16_t collect_pressure(void)
 	long long int dT, temp;
 	uint64_t off, sens, off_t1, sens_t1, press;
 	int temporary;
-	uart_sendmsg("PRESSURE CALIBRATION:\n\r");
+	//uart_sendmsg("PRESSURE CALIBRATION:\n\r");
 	pressure_sensor_init(pressure_calib);
 	for(i = 0; i < 12; i += 2)
 	{
 		temporary = (int)pressure_calib[i];
 		temporary += ((int)pressure_calib[i + 1]) << 8;
-		uart_printf("%u\n\r", temporary);
+		//uart_printf("%u\n\r", temporary);
 	}
-	uart_sendmsg("ACQUIRING PRESSURE, TEMP:\n\r");
+	//uart_sendmsg("ACQUIRING PRESSURE, TEMP:\n\r");
 	press_raw = spi_retrieve_pressure();
 	temp_raw = spi_retrieve_pressure_temp();
 	t_ref = (long int)pressure_calib[8];
 	t_ref += ((long int)pressure_calib[9]) << 8;
 	dT = temp_raw - t_ref * (1 << 8);
-	uart_printf("TREF: %lu\n\r", t_ref);
-	uart_printf("DT: %ld\n\r", dT);
+	//uart_printf("TREF: %lu\n\r", t_ref);
+	//uart_printf("DT: %ld\n\r", dT);
 	
 	temp_sens = (long int)pressure_calib[10];
 	temp_sens += ((long int)pressure_calib[11]) << 8;
@@ -1138,7 +1138,7 @@ uint16_t collect_pressure(void)
 	off_t1 = off_t1 << 17;
 	off += off_t1;
 	//off = (off_t1 * (1 << 17)) + ((tco * dT) / (1 << 6));
-	uart_printf("OFF/1000: %lu\n\r", off / 1000);
+	//uart_printf("OFF/1000: %lu\n\r", off / 1000);
 	
 	sens_t1 = (long int)pressure_calib[0];
 	sens_t1 += ((long int)pressure_calib[1]) << 8;
@@ -1149,19 +1149,51 @@ uint16_t collect_pressure(void)
 	sens_t1 = sens_t1 << 16;
 	sens += sens_t1;
 	//sens = (sens_t1 * (1 << 16)) + ((tcs * dT) / (1 << 7));
-	uart_printf("SENS/1000: %ld\n\r", sens / 1000);
+	//uart_printf("SENS/1000: %ld\n\r", sens / 1000);
 	sens = sens >> 21;
 	press = sens;
 	press *= press_raw;
 	press -= off;
 	press = press >> 15;
 	//press = (press_raw * (sens / (1 << 21)) - off) / (1 << 15);
-	uart_printf("PRESSURE(RAW)/1000		:	%ld\n\r", press_raw / 1000);
-	uart_printf("TEMPERATURE(RAW)/1000	:	%ld\n\r", temp_raw / 1000);
-	uart_printf("PRESSURE		:	%ld\n\r", press);
-	uart_printf("TEMPERATURE		:	%ld\n\r", temp);
+	//uart_printf("PRESSURE(RAW)/1000		:	%ld\n\r", press_raw / 1000);
+	//uart_printf("TEMPERATURE(RAW)/1000	:	%ld\n\r", temp_raw / 1000);
+	uart_printf("PRESSURE(MILIBAR)	:	%ld\n\r", press / 100);
+	//uart_printf("PRESS TEMP(C)		:	+%ld\n\r", temp / 100);
 	press /= 100;
 	return (uint16_t)press;
 }
 
 #endif 		// PAY COMMAND SECTION ABOVE ^^
+
+/************************************************************************/
+/*		CONVERT TO TEMPERATURE                                          */
+/*																		*/
+/*		This function takes in a reading from the SPI sensor LM95071.	*/
+/*		It then takes this raw reading and converts it into a positive	*/
+/*		temperature reading. The function will return a 1 if the temp	*/
+/*		was nonnegative, and 0 otherwise.								*/
+/************************************************************************/
+uint8_t convert_to_temp(uint32_t* temp)
+{
+	uint32_t temperature;
+	float t = 0.0;
+	temperature = *temp;
+	temperature = temperature >> 2;
+	t = (float)temperature;
+	t *= 0.03125;
+	t = t / (float)1.0;
+	if (t >= (float)0.0)
+	{
+		temperature = (uint32_t)t;
+		*temp = temperature;
+		return 1;
+	}
+	else
+	{
+		temperature *= (float)-1.0;
+		temperature = (uint32_t)t;
+		*temp = temperature;
+		return 0;
+	}
+}

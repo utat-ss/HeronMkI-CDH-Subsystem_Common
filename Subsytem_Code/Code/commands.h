@@ -68,6 +68,7 @@ void collect_pd(void);
 void pause_operations(void);
 void resume_operations(void);
 uint16_t collect_pressure(void);
+uint8_t convert_to_temp(uint32_t* temp);
 
 /*****************************************************/
 #endif
