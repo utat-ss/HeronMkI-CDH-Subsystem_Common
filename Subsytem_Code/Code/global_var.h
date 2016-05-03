@@ -176,6 +176,7 @@ typedef struct{
 #define OPEN_VALVES				0x27
 #define COLLECT_PD				0x28
 #define PD_COLLECTED			0x29
+#define SEND_BEACON				0x2A
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -273,8 +274,6 @@ uint8_t CURRENT_MINUTE;
 
 // Global variables for sending the beacon
 uint8_t send_beaconf;
-uint32_t BEACON_COUNTER;
-uint32_t MAX_BEACON_WAIT;
 
 // Global variables for the different modes that the SSM can be in.
 uint8_t LOW_POWER_MODE;
@@ -312,6 +311,7 @@ unsigned long previousTime;
 unsigned long currentTime;
 long int lastTransmit;
 long int lastCycle;
+long int lastCycleTx, lastCycleRx;
 long int lastAck;
 long int lastToggle;
 uint8_t tx_mode;
@@ -332,6 +332,7 @@ uint8_t t_message[128];
 uint8_t tx_fail_count;
 uint8_t ack_acquired;
 long int lastCalibration;
+long int lastCalibrationTx, lastCalibrationRx;
 long int startedReceivingTM;
 uint8_t low_half_acquired;
 

@@ -41,8 +41,6 @@ ISR(TIMER0_OVF_vect)
 	else 
 		ISALIVE_COUNTER = 0;
 		
-	//counter for sending the beacon
-	BEACON_COUNTER++;
 }
 
 void coms_timer_init(void)

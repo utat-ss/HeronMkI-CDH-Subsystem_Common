@@ -297,6 +297,8 @@ void decode_command(uint8_t* command_array)
 			if(!SELF_ID && TAKEOVER)
 				exit_take_overf = 1;
 			break;
+		case SEND_BEACON:
+			send_beaconf = 1;
 #endif
 #if (SELF_ID == 1)
 		case ENTER_LOW_POWER_COM:
@@ -329,7 +331,6 @@ void decode_command(uint8_t* command_array)
 		case COLLECT_PD:
 			collect_pdf = 1;
 			break;
-#endif
 		default:
 			return;
 	}

@@ -112,7 +112,7 @@ void run_commands(void)
 	if (collect_pdf)
 		collect_pd();
 #endif
->>>>>>> Created coms-dev2 branch. Added code to support a beacon to be sent every 5 minutes.
+
 
 	return;	
 }
