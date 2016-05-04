@@ -886,26 +886,7 @@ static void store_current_tm(void)
 	{
 		tm_to_downlink[i] = current_tm[i];
 	}
-	
-	
-	
-	//check if the service sub type is HK_REPORT
-	if (current_tm[143] == 25)
-	{
-		for (i=0; i<PACKET_LENGTH; i++)
-			last_hk_report[i] = current_tm[i];
-	}
-	
-	if (current_tm[143] == 10) {
-		for (i=0; i<PACKET_LENGTH; i++)
-			last_hk_param[i] = current_tm[i];
-	}
-	
-	/* AS DEFINED IN OBC CODE
-	#define HK_DEFINITON_REPORT				10
-	#define HK_REPORT						25
-	*/
-	
+		
 	return;
 }
 
@@ -1236,6 +1217,6 @@ void send_beacon(void)
 	send_beaconf = 0;
 	
 	//implement sending the beacon data here
-	//last_hk_report[] contains the last HK_REPORT that was sent out
-	//last_hk_param[]  contains the last HK_PARAM_REPORT that was sent out
+	
 }
+
