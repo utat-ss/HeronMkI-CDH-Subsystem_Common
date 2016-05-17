@@ -141,8 +141,8 @@ void set_transceiver(uint8_t tsvNumber)
 //Switch for UHF. 0 for receive. 1 for transmit
 //Assume both switches turn on/off at the same time
 void switchUHFset(bool mode){
-	if(mode)
-		PIN_set(RFFM_TR);
-	else
-		PIN_clr(RFFM_TR);
+	//if(mode)
+//		PIN_set(RFFM_TR);
+//	else
+//		PIN_clr(RFFM_TR);
 }

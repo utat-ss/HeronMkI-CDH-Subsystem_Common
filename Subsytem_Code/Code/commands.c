@@ -42,6 +42,7 @@
 */
 
 #include "commands.h"
+#include "beacon.h"
 
 #if (SELF_ID == 0)
 static void store_current_tm(void);
@@ -1217,6 +1218,7 @@ void send_beacon(void)
 	send_beaconf = 0;
 	
 	//implement sending the beacon data here
-	
+	//make use of beacon.h
+	char beacon_msg[] = "Hello world!";
+	beacon_transmit(beacon_msg);
 }
-
