@@ -1197,3 +1197,11 @@ uint8_t convert_to_temp(uint32_t* temp)
 		return 0;
 	}
 }
+
+// This function is going to be responsible with collecting data from the photodiodes, MIC-style.
+// This means absorbence only.
+// NOTE: There are currently only 3 MIC chips in the payload.
+void collect_fluorescence_data(void)
+{
+	
+}

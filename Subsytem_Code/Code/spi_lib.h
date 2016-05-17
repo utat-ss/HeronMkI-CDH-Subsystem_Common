@@ -60,6 +60,18 @@
 #define CONVERT_TEMP_OSR_4096	0x58
 #define ADC_READ				0x00
 
+/* ACCELEROMETER DEFINITIONS */
+#define ACC_WRITE				0x0A
+#define ACC_READ				0x0B
+#define ACC_READ_FIFO			0x0D	
+#define POWER_CTL				0x2D	
+#define XDATAL					0x0E
+#define XDATAH					0x0F
+#define YDATAL					0x10
+#define YDATAH					0x11
+#define ZDATAL					0x12
+#define ZDATAH					0x13	
+
 /* SPI CHIP SELECT DEFINITIONS */
 #define COMS_TEMP_SS			0
 #define COMS_UHF_SS				1
@@ -90,6 +102,10 @@
 #define PAY_TEMP2_CS			26
 #define PAY_TEMP3_CS			27
 #define PAY_TEMP4_CS			28
+#define ADC1_CS					29
+#define ADC2_CS					30
+#define ADC3_CS					31
+#define ADC_FL_CS				32
 
 /* SPI CHIP SELECT PIN DEFINITIONS */
 #define COMS_TEMP_PIN			14
@@ -112,10 +128,13 @@ void SS_set_high(void);
 void SS_set_low(void);
 void SS1_set_high(uint32_t);
 void SS1_set_low(uint32_t);
-void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis);
+uint16_t spi_retrieve_acc(uint8_t axis)
 void spi_retrieve_humidity(uint8_t *high, uint8_t *low);
 void pressure_sensor_init(uint8_t* pressure_calibration);
 uint32_t spi_retrieve_pressure(void);
 uint32_t spi_retrieve_pressure_temp(void);
+void accelerometer_init(void);
+void initialize_adc_all(void);
+uint16_t spi_retrieve_adc_reading(uint8_t adc, uint8_t channel);
 
 #endif
