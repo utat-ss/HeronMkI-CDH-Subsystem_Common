@@ -363,37 +363,96 @@ uint16_t spi_retrieve_temp(uint8_t chip_select)
 #if (SELF_ID == 2)
 //Acceleration: ADXL362 
 //axis: 1=x; 2=y; 3=z
-void spi_retrieve_acc(uint8_t *high, uint8_t *low, uint8_t axis)
+uint16_t spi_retrieve_acc(uint8_t axis)
 {	
-	uint8_t *reg_ptr = SPDR_BASE;	
-	uint8_t acc_reg_H, acc_reg_L;
+	uint8_t acc_reg_L, low, high;
+	uint16_t ret_val;
 	if (axis == 1)
-	{
-		acc_reg_H = 0x0F;
-		acc_reg_L = 0x0E;
-	}
+		acc_reg_L = XDATAL;
 	if (axis == 2)
-	{
-		acc_reg_H = 0x11; 
-		acc_reg_L = 0x10;
-	}
-	if (axis == 1)
-	{
-		acc_reg_H = 0x13; 
-		acc_reg_L = 0x12;
-	}
-	*reg_ptr = 0x0B;
+		acc_reg_L = YDATAL;
+	if (axis == 3)
+		acc_reg_L = ZDATAL;
 	SS1_set_low(PAY_ACCEL_CS);
-	delay_us(128);
-	*reg_ptr = acc_reg_H;
-	delay_us(128);
-	*high = *reg_ptr;
-	*reg_ptr = acc_reg_L;
-	delay_us(128);
-	*low = *reg_ptr;
-	//check datasheet: is this how burst read works?	
+	spi_transfer(ACC_READ);
+	low = spi_transfer(acc_reg_L);
+	high = spi_transfer(acc_reg_L);
+	SS1_set_low(PAY_ACCEL_CS);
+	ret_val = high;
+	ret_val = ret_val << 8;
+	ret_val += low;
+	return ret_val;
+}
+
+void accelerometer_init(void)
+{
+	uint8_t msg = 0;
+	SS1_set_low(PAY_ACCEL_CS);
+	spi_transfer(ACC_WRITE);
+	spi_transfer(POWER_CTL);
+	msg = spi_transfer(0x00);
 	SS1_set_high(PAY_ACCEL_CS);
+	delay_ms(1);
+	uart_sendmsg("ACCELEROMETER INITIALIZED\n\r");
+	return msg;
+}
+
+// This function is going to be responsible with collecting data from the photodiodes, MIC-style.
+// This means absorbence only.
+// NOTE: There are currently only 3 MIC chips in the payload.
+void collect_fluorescence_data(void)
+{
+	
+}
+
+void initialize_adc_all(void)
+{
+	SS1_set_low(ADC1_CS);
+	spi_transfer(0x10);		// Set to manual mode, manual channel selection.
+	spi_transfer(0x00);
+	SS1_set_low(ADC1_CS);
+	
+	SS1_set_low(ADC2_CS);
+	spi_transfer(0x10);		// Set to manual mode, manual channel selection.
+	spi_transfer(0x00);
+	SS1_set_low(ADC2_CS);
+
+	SS1_set_low(ADC3_CS);
+	spi_transfer(0x10);		// Set to manual mode, manual channel selection.
+	spi_transfer(0x00);
+	SS1_set_low(ADC3_CS);
+
+	SS1_set_low(ADC_FL_CS);
+	spi_transfer(0x10);		// Set to manual mode, manual channel selection.
+	spi_transfer(0x00);
+	SS1_set_low(ADC_FL_CS);
+
+	uart_sendmsg("DIGITAL ADC ALL INITIALIZED\n\r");
 	return;
+}
+
+uint16_t spi_retrieve_adc_reading(uint8_t adc, uint8_t channel)
+{
+	uint8_t val1, val2;
+	uint16_t ret_val;
+	val2 = (channel & 0x01) << 7;	// Channel is split into two different bytes to be sent.
+	val1 = channel >> 1;
+	if(adc < ADC1_CS && adc > ADC_FL_CS)
+		return 0;	// Invalid adc requested.
+	
+	SS1_set_low(adc);
+	spi_transfer(0x10 | val1);
+	spi_transfer(val2);
+	SS1_set_high(adc);
+	delay_ms(100);	// Wait for conversion to complete.
+	SS1_set_low(adc);
+	val1 = spi_transfer(0x10);
+	val2 = spi_transfer(0x00);
+	SS1_set_high(adc);
+	ret_val = val1;
+	ret_val = val1 << 8;
+	ret_val += val2;
+	return ret_val & 0x0FFF;
 }
 
 //Humidity: HIH7000 Series
@@ -433,7 +492,7 @@ void pressure_sensor_init(uint8_t* pressure_calibration)
 		SS1_set_high(PAY_PRESL_CS);		
 		delay_ms(1);
 	}
-	//uart_sendmsg("PRESSURE SENSOR INITIALIZED\n\r");
+	uart_sendmsg("PRESSURE SENSOR INITIALIZED\n\r");
 	return;
 }
 //Pressure sensor returns two 24-bit values for temp and pressure
@@ -622,6 +681,18 @@ void SS1_set_high(uint32_t sensor_id)
 		case PAY_HUM_CS:
 			set_gpioa_pin(0, 4);
 			break;
+		case ADC1_CS:	// MIC1 -- PE2
+			set_gpiob_pin(2, 0);		// Stop comm with ADC on detect board.
+			break;
+		case ADC2_CS:	// MIC2 -- PE3
+			set_gpiob_pin(3, 0);		// Stop comm with ADC on detect board.
+			break;
+		case ADC3_CS:	// MIC3 -- PE4
+			set_gpiob_pin(4, 0);		// Stop comm with ADC on detect board.
+			break;
+		case ADC_FL_CS:	// FL	-- PE7
+			set_gpiob_pin(7, 0);		// Stop comm with ADC on detect board.
+			break;
 		default:
 			break;
 	}
@@ -717,7 +788,22 @@ void SS1_set_low(uint32_t sensor_id)
 			break;		
 		case PAY_HUM_CS:
 			clr_gpioa_pin(0, 4);
-			break;		
+			break;
+		case ADC1_CS:	// MIC1 -- PE2
+			clr_gpiob_pin(2, 0);		// Communicate with PE on detect board.
+			clr_gpiob_pin(2, 0);		// Communicate with digital ADC.
+			break;
+		case ADC2_CS:	// MIC2 -- PE3
+			clr_gpiob_pin(3, 0);		// Communicate with PE on detect board.
+			clr_gpiob_pin(3, 0);		// Communicate with digital ADC.
+			break;
+		case ADC3_CS:	// MIC3 -- PE4
+			clr_gpiob_pin(4, 0);		// Communicate with PE on detect board.
+			clr_gpiob_pin(5, 0);		// Communicate with digital ADC.
+			break;
+		case ADC_FL_CS:	// FL	-- PE7
+			clr_gpiob_pin(7, 0);		// Communicate with PE on detect board.
+			break;	
 		default:
 			break;
 	}

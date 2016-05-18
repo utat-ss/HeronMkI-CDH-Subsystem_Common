@@ -177,7 +177,7 @@ int main(void)
 				else
 					uart_printf("TEMP(C)			:	-%lu\n\r", temperature);				
 				delay_ms(1000);
-			#endif	
+			#endif
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
@@ -269,6 +269,8 @@ static void sys_init(void)
 		}
 		init_port_expander_pins();
 		pressure_sensor_init(pressure_calib);
+		accelerometer_init();
+		initialize_adc_all();
 		gpiob_pin_mode(0, 0, OUTPUT);
 	#endif
 }
