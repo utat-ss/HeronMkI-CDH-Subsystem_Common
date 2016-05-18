@@ -99,7 +99,7 @@
 #define EPS_DPOT_PIN			32
 #define PAY_EXP1_PIN			32
 
-
+#define GPIO_BASE  0x12
 
 void spi_initialize_master(void);
 uint8_t spi_transfer(uint8_t message);

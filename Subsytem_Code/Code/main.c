@@ -133,12 +133,19 @@ int main(void)
 	uint32_t temperature;
 	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	uint8_t sign = 1;
+	uint8_t data[6];
+	data[0] = 1;
+	data[1] = 2;
+	data[2] = 3;
+	data[3] = 4;
+	data[4] = 5;
+	data[5] = 6;	
 	while(1)
     {	
 		/* Reset the WDT */
 		wdt_reset();
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
-		//can_check_general();
+		can_check_general();
 		if(!PAUSE)
 		{
 			/*		TRANSCEIVER COMMUNICATION	*/
@@ -173,7 +180,8 @@ int main(void)
 			#endif	
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
-		//run_commands();
+		run_commands();
+		send_can_value(data);
 	}
 }
 
