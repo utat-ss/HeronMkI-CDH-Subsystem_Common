@@ -64,7 +64,8 @@
 #define ACC_WRITE				0x0A
 #define ACC_READ				0x0B
 #define ACC_READ_FIFO			0x0D	
-#define POWER_CTL				0x2D	
+#define POWER_CTL				0x2D
+#define FILTER_CTL				0x2C	
 #define XDATAL					0x0E
 #define XDATAH					0x0F
 #define YDATAL					0x10
@@ -128,7 +129,7 @@ void SS_set_high(void);
 void SS_set_low(void);
 void SS1_set_high(uint32_t);
 void SS1_set_low(uint32_t);
-uint16_t spi_retrieve_acc(uint8_t axis)
+uint16_t spi_retrieve_acc(uint8_t axis);
 void spi_retrieve_humidity(uint8_t *high, uint8_t *low);
 void pressure_sensor_init(uint8_t* pressure_calibration);
 uint32_t spi_retrieve_pressure(void);

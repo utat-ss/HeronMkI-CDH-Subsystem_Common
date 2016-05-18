@@ -131,15 +131,10 @@ int main(void)
 	#endif
 	/*		Begin Main Program Loop					*/
 	uint32_t temperature;
+	uint16_t acc_data = 0;
 	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	uint8_t sign = 1;
-	uint8_t data[6];
-	data[0] = 1;
-	data[1] = 2;
-	data[2] = 3;
-	data[3] = 4;
-	data[4] = 5;
-	data[5] = 6;	
+	uint8_t state;
 	while(1)
     {	
 		/* Reset the WDT */
@@ -155,7 +150,7 @@ int main(void)
 				if(!receiving_tmf)
 				{
 					delay_ms(50);
-					transceiver_run();			
+					transceiver_run();
 				}
 				if(millis() - startedReceivingTM > TM_TIMEOUT)
 					receiving_tmf = 0;
@@ -175,13 +170,18 @@ int main(void)
 				if(sign)
 					uart_printf("TEMP(C)			:	+%lu\n\r", temperature);
 				else
-					uart_printf("TEMP(C)			:	-%lu\n\r", temperature);				
-				delay_ms(1000);
+					uart_printf("TEMP(C)			:	-%lu\n\r", temperature);
+				acc_data = spi_retrieve_acc(1);
+				uart_printf("ACC (X)		:	+%u\n\r", acc_data);
+				acc_data = spi_retrieve_acc(2);
+				uart_printf("ACC (Y)		:	+%u\n\r", acc_data);
+				acc_data = spi_retrieve_acc(3);
+				uart_printf("ACC (Z)		:	+%u\n\r", acc_data);			
+				delay_ms(500);
 			#endif
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
-		send_can_value(data);
 	}
 }
 
@@ -270,8 +270,8 @@ static void sys_init(void)
 		init_port_expander_pins();
 		pressure_sensor_init(pressure_calib);
 		accelerometer_init();
-		initialize_adc_all();
-		gpiob_pin_mode(0, 0, OUTPUT);
+		//initialize_adc_all();
+		//gpiob_pin_mode(0, 0, OUTPUT);
 	#endif
 }
 

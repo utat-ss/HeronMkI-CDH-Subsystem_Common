@@ -120,7 +120,7 @@ void spi_initialize_master(void)
 	reg_ptr = SPCR_BASE;
 	temp = 0b01111111;
 	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, CPOL = 0 (SCK low when idle), CPHA = 0
-	temp = 0b01010000;
+	temp = 0b01010011;
 	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/128	
 	return;
 }
@@ -375,9 +375,10 @@ uint16_t spi_retrieve_acc(uint8_t axis)
 		acc_reg_L = ZDATAL;
 	SS1_set_low(PAY_ACCEL_CS);
 	spi_transfer(ACC_READ);
-	low = spi_transfer(acc_reg_L);
-	high = spi_transfer(acc_reg_L);
-	SS1_set_low(PAY_ACCEL_CS);
+	spi_transfer(acc_reg_L);
+	low = spi_transfer(0x00);
+	high = spi_transfer(0x00);
+	SS1_set_high(PAY_ACCEL_CS);
 	ret_val = high;
 	ret_val = ret_val << 8;
 	ret_val += low;
@@ -390,9 +391,8 @@ void accelerometer_init(void)
 	SS1_set_low(PAY_ACCEL_CS);
 	spi_transfer(ACC_WRITE);
 	spi_transfer(POWER_CTL);
-	msg = spi_transfer(0x00);
+	msg = spi_transfer(0x02);
 	SS1_set_high(PAY_ACCEL_CS);
-	delay_ms(1);
 	uart_sendmsg("ACCELEROMETER INITIALIZED\n\r");
 	return msg;
 }
@@ -400,10 +400,10 @@ void accelerometer_init(void)
 // This function is going to be responsible with collecting data from the photodiodes, MIC-style.
 // This means absorbence only.
 // NOTE: There are currently only 3 MIC chips in the payload.
-void collect_fluorescence_data(void)
-{
-	
-}
+//void collect_fluorescence_data(void)
+//{
+	//
+//}
 
 void initialize_adc_all(void)
 {
@@ -601,6 +601,7 @@ void SS_set_high(void)
 
 void SS1_set_high(uint32_t sensor_id)
 {
+	uint8_t state;
 	switch(sensor_id)
 	{
 		case COMS_TEMP_SS:
@@ -662,17 +663,18 @@ void SS1_set_high(uint32_t sensor_id)
 			break;
 		case PAY_PRESL_CS:
 			set_gpioa_pin(0, 0);
-			//uint8_t state;
-			//port_expander_read(0, GPIO_BASE, &state);
-			//state &= 0x0F;
-			//uart_printf("GPIO_BASE: %d\n\r", state);
 			//delay_ms(50);
 			break;
 		case PAY_PRESH_CS:
 			set_gpioa_pin(0, 1);
 			break;
 		case PAY_ACCEL_CS:
-			set_gpioa_pin(0, 2);
+			//set_gpioa_pin(0, 2);
+			port_expander_write(0, GPIO_BASE, 0x1F);
+			//port_expander_read(0, GPIO_BASE, &state);
+			//state &= 0x0F;
+			//uart_printf("GPIO_BASE: %d\n\r", state);
+			//delay_ms(50);
 			break;
 		case PAY_TEMP_CS:
 			//set_gpioa_pin(0, 3);
@@ -709,6 +711,7 @@ void SS1_set_high(uint32_t sensor_id)
 
 void SS1_set_low(uint32_t sensor_id)
 {
+	uint8_t state;
 	switch(sensor_id)
 	{	
 		case COMS_TEMP_SS:
@@ -770,17 +773,18 @@ void SS1_set_low(uint32_t sensor_id)
 			break;
 		case PAY_PRESL_CS:
 			clr_gpioa_pin(0, 0);
-			//uint8_t state;
-			//port_expander_read(0, GPIO_BASE, &state);
-			//state &= 0x0F;
-			//uart_printf("GPIO_BASE: %d\n\r", state);
 			//delay_ms(50);
 			break;		
 		case PAY_PRESH_CS:
 			clr_gpioa_pin(0, 1);
 			break;		
 		case PAY_ACCEL_CS:
-			clr_gpioa_pin(0, 2);
+			//clr_gpioa_pin(0, 2);
+			port_expander_write(0, GPIO_BASE, 0x1B);
+			//port_expander_read(0, GPIO_BASE, &state);
+			//state &= 0x0F;
+			//uart_printf("GPIO_BASE: %d\n\r", state);
+			//delay_ms(50);
 			break;		
 		case PAY_TEMP_CS:
 			//clr_gpioa_pin(0, 3);
