@@ -249,6 +249,16 @@ void send_housekeeping(void)
 	send_arr[0] = (uint8_t)obci;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
+	send_arr[4] = MPPTX;
+	send_arr[1] = (uint8_t)(mpptx >> 8);
+	send_arr[0] = (uint8_t)mpptx;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = MPPTY;
+	send_arr[1] = (uint8_t)(mppty >> 8);
+	send_arr[0] = (uint8_t)mppty;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
 #endif
 
 #if (SELF_ID == 2)
@@ -271,9 +281,22 @@ void send_housekeeping(void)
 	send_arr[0] = (uint8_t)temp;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
-	send_arr[4] = PAY_ACCEL;
-	send_arr[1] = 0x00;
-	send_arr[0] = 0x99;		// (dummy value for now)
+	temp = spi_retrieve_acc(1);
+	send_arr[4] = PAY_ACCEL_X;
+	send_arr[1] = (uint8_t)(temp >> 8);
+	send_arr[0] = (uint8_t)temp;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	temp = spi_retrieve_acc(2);
+	send_arr[4] = PAY_ACCEL_Y;
+	send_arr[1] = (uint8_t)(temp >> 8);
+	send_arr[0] = (uint8_t)temp;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	temp = spi_retrieve_acc(3);
+	send_arr[4] = PAY_ACCEL_Z;
+	send_arr[1] = (uint8_t)(temp >> 8);
+	send_arr[0] = (uint8_t)temp;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
 #endif
@@ -301,127 +324,123 @@ void send_sensor_data(void)
 	send_arr[0] = 0;
 	uint16_t temp = 0;
 	
-
-#if (SELF_ID == 1)
-	if(sensor_name == EPS_TEMP)
+	switch(sensor_name)
 	{
-		temp = spi_retrieve_temp(EPS_TEMP_CS);
-		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
-		send_arr[0] = (uint8_t)(temp);
-	}
-	if(sensor_name == PANELX_V)
-	{
-		send_arr[0] = pxv;
-	}
-	if(sensor_name == PANELX_I)
-	{
-		send_arr[0] = pxi;
-	}
-	if(sensor_name == PANELY_V)
-	{
-		send_arr[0] = pyv;
-	}
-	if(sensor_name == PANELY_I)
-	{
-		send_arr[0] = pyi;
-	}
-	if(sensor_name == BATTM_V)
-	{
-		send_arr[0] = 0x01;
-	}
-	if(sensor_name == BATT_V)
-	{
-		send_arr[0] = 0x02;
-	}
-	if(sensor_name == BATTIN_I)
-	{
-		send_arr[0] = 0x03;
-	}
-	if(sensor_name == BATT_TEMP)
-	{
-		send_arr[0] = 0x04;
-	}
-	if(sensor_name == COMS_V)
-	{
-		send_arr[0] = 0x05;
-	}
-	if(sensor_name == COMS_I)
-	{
-		send_arr[0] = 0x06;
-	}
-	if(sensor_name == PAY_V)
-	{
-		send_arr[0] = 0x07;
-	}
-	if(sensor_name == PAY_I)
-	{
-		send_arr[0] = 0x08;
-	}
-	if(sensor_name == OBC_V)
-	{
-		send_arr[0] = 0x09;
-	}
-	if(sensor_name == OBC_I)
-	{
-		send_arr[0] = 0x0A;
-	}
-	if(sensor_name == SHUNT_DPOT)
-	{
-		send_arr[0] = 0x0B;
-	}
-#endif
 #if (SELF_ID == 0)
-	if(sensor_name == COMS_TEMP)
-	{
-		temp = spi_retrieve_temp(COMS_TEMP_SS);
-		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
-		send_arr[0] = (uint8_t)(temp);
-	}
+		case	COMS_TEMP:
+			temp = spi_retrieve_temp(COMS_TEMP_SS);
+			send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+			send_arr[0] = (uint8_t)(temp);
+			break;
+#endif
+#if (SELF_ID == 1)
+		case	EPS_TEMP:
+			temp = spi_retrieve_temp(EPS_TEMP_CS);
+			send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+			send_arr[0] = (uint8_t)(temp);
+			break;
+		case	PANELX_V:
+			send_arr[0] = pxv;
+			break;
+		case	PANELX_I:
+			send_arr[0] = pxi;
+			break;
+		case	PANELY_V:
+			send_arr[0] = pyv;
+			break;
+		case	PANELY_I:
+			send_arr[0] = pyi;
+			break;
+		case	BATTM_V:
+			send_arr[0] = 0x01;
+			break;
+		case	BATT_V:
+			send_arr[0] = 0x02;
+			break;
+		case	BATTIN_I:
+			send_arr[0] = 0x03;
+			break;
+		case	BATT_TEMP:
+			send_arr[0] = 0x04;
+			break;
+		case	COMS_V:
+			send_arr[0] = 0x05;
+			break;
+		case	COMS_I:
+			send_arr[0] = 0x06;
+			break;
+		case	PAY_V:
+			send_arr[0] = 0x07;
+			break;
+		case	PAY_I:
+			send_arr[0] = 0x08;
+			break;
+		case	OBC_V:
+			send_arr[0] = 0x09;
+			break;
+		case	OBC_I:
+			send_arr[0] = 0x0A;
+			break;
+		case	SHUNT_DPOT:
+			send_arr[0] = 0x0B;
+			break;
+		case	MPPTX:
+			send_arr[0] = mpptx;
+			break;
+		case	MPPTY:
+			send_arr[0] = mppty;
+			break;
 #endif
 #if (SELF_ID == 2)
-	if(sensor_name == PAY_TEMP)
-	{
-		temp = spi_retrieve_temp(PAY_TEMP_CS);
-		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
-		send_arr[0] = (uint8_t)(temp);
-	}
-	if(sensor_name == PAY_TEMP0)
-	{
-		temp = spi_retrieve_temp(PAY_TEMP_CS);
-		send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
-		send_arr[0] = (uint8_t)(temp);
-	}
-	if(sensor_name == PAY_TEMP1)
-	{
-		send_arr[0] = 0x0F;
-	}
-	if(sensor_name == PAY_TEMP2)
-	{
-		send_arr[0] = 0x10;
-	}
-	if(sensor_name == PAY_TEMP3)
-	{
-		send_arr[0] = 0x11;
-	}
-	if(sensor_name == PAY_TEMP4)
-	{
-		send_arr[0] = 0x12;
-	}
-	if(sensor_name == PAY_HUM)
-	{
-		send_arr[0] = 0x13;
-	}
-	if(sensor_name == PAY_PRESS)
-	{
-		temp = collect_pressure();
-		send_arr[1] = (uint8_t)(temp >> 8);
-		send_arr[0] = (uint8_t)temp;
-	}
-	if(sensor_name == PAY_ACCEL)
-	{
-		send_arr[0] = 0x13;
-	}
+		case	PAY_TEMP:
+			temp = spi_retrieve_temp(PAY_TEMP_CS);
+			send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+			send_arr[0] = (uint8_t)(temp);
+			break;
+		case	PAY_TEMP0:
+			temp = spi_retrieve_temp(PAY_TEMP_CS);
+			send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
+			send_arr[0] = (uint8_t)(temp);
+			break;
+		case	PAY_TEMP1:
+			send_arr[0] = 0x10;
+			break;
+		case	PAY_TEMP2:
+			send_arr[0] = 0x11;
+			break;
+		case	PAY_TEMP3:
+			send_arr[0] = 0x12;
+			break;
+		case	PAY_TEMP4:
+			send_arr[0] = 0x13;
+			break;
+		case	PAY_HUM:
+			send_arr[0] = 0x14;
+			break;
+		case	PAY_PRESS:
+			temp = collect_pressure();
+			send_arr[1] = (uint8_t)(temp >> 8);
+			send_arr[0] = (uint8_t)temp;
+			break;
+		case	PAY_ACCEL_X:
+			temp = spi_retrieve_acc(1);
+			send_arr[1] = (uint8_t)(temp >> 8);
+			send_arr[0] = (uint8_t)temp;
+			break;
+		case	PAY_ACCEL_Y:
+			temp = spi_retrieve_acc(2);
+			send_arr[1] = (uint8_t)(temp >> 8);
+			send_arr[0] = (uint8_t)temp;
+			break;
+		case	PAY_ACCEL_Z:
+			temp = spi_retrieve_acc(3);
+			send_arr[1] = (uint8_t)(temp >> 8);
+			send_arr[0] = (uint8_t)temp;
+			break;
 #endif
+		default:
+			return;
+	}
 	send_arr[7] = (SELF_ID << 4)|req_by;
 	send_arr[6] = MT_DATA;
 	send_arr[5] = sensor_name;
