@@ -299,6 +299,30 @@ void send_housekeeping(void)
 	send_arr[0] = (uint8_t)temp;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
+	send_arr[4] = PAY_FL_PD0;
+	send_arr[0] = 0x55;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_FL_PD1;
+	send_arr[0] = 0x66;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_FL_PD2;
+	send_arr[0] = 0x77;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_FL_PD3;
+	send_arr[0] = 0x88;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_FL_PD4;
+	send_arr[0] = 0x99;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
+	send_arr[4] = PAY_FL_PD5;
+	send_arr[0] = 0xAA;
+	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
+	delay_ms(100);
 #endif
 
 	send_hk = 0;
@@ -436,6 +460,24 @@ void send_sensor_data(void)
 			temp = spi_retrieve_acc(3);
 			send_arr[1] = (uint8_t)(temp >> 8);
 			send_arr[0] = (uint8_t)temp;
+			break;
+		case	PAY_FL_PD0:
+			send_arr[0] = 0x55;
+			break;
+		case	PAY_FL_PD1:
+			send_arr[0] = 0x66;
+			break;
+		case	PAY_FL_PD2:
+			send_arr[0] = 0x77;
+			break;
+		case	PAY_FL_PD3:
+			send_arr[0] = 0x88;
+			break;
+		case	PAY_FL_PD4:
+			send_arr[0] = 0x99;
+			break;
+		case	PAY_FL_PD5:
+			send_arr[0] = 0xAA;
 			break;
 #endif
 		default:
