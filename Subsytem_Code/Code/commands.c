@@ -144,6 +144,8 @@ void send_housekeeping(void)
 	uint16_t temp;
 	send_arr[7] = (SELF_ID << 4)|HK_TASK_ID;
 	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
+	send_arr[1] = 0;
+	send_arr[0] = 0;
 
 #if (SELF_ID == 0)
 	//if(receiving_tmf)		// Housekeeping takes a while, don't do it while receiving a TM packet.
@@ -188,13 +190,7 @@ void send_housekeeping(void)
 	send_arr[0] = (uint8_t)pyi;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
-
-	// Battery Voltage / Current Collection
-	send_arr[4] = BATTM_V;
-	send_arr[1] = (uint8_t)(battmv >> 8);
-	send_arr[0] = (uint8_t)battmv;
-	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(100);
+	
 	send_arr[4] = BATT_V;
 	send_arr[1] = (uint8_t)(battv >> 8);
 	send_arr[0] = (uint8_t)battv;
@@ -208,13 +204,6 @@ void send_housekeeping(void)
 	send_arr[4] = BATTOUT_I;
 	send_arr[1] = (uint8_t)(battout >> 8);
 	send_arr[0] = (uint8_t)battout;
-	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(100);
-	
-	// Battery Temperature
-	send_arr[4] = BATT_TEMP;
-	send_arr[1] = (uint8_t)(epstemp >> 8);
-	send_arr[0] = (uint8_t)epstemp;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
 
@@ -266,13 +255,9 @@ void send_housekeeping(void)
 	// Environmental Sensor Collection
 	send_arr[4] = PAY_TEMP0;
 	temp = spi_retrieve_temp(PAY_TEMP_CS);
+	temp /= 100;
 	send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
 	send_arr[0] = (uint8_t)(temp);
-	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(100);
-	send_arr[4] = PAY_HUM;
-	send_arr[1] = 0x00;
-	send_arr[0] = 0x77;		// (dummy value for now)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
 	send_arr[4] = PAY_PRESS;
@@ -364,55 +349,60 @@ void send_sensor_data(void)
 			send_arr[0] = (uint8_t)(temp);
 			break;
 		case	PANELX_V:
-			send_arr[0] = pxv;
+			send_arr[1] = (uint8_t)(pxv >> 8);
+			send_arr[0] = (uint8_t)pxv;
 			break;
 		case	PANELX_I:
-			send_arr[0] = pxi;
+			send_arr[1] = (uint8_t)(pxi >> 8);
+			send_arr[0] = (uint8_t)pxi;
 			break;
 		case	PANELY_V:
-			send_arr[0] = pyv;
+			send_arr[1] = (uint8_t)(pyv >> 8);
+			send_arr[0] = (uint8_t)pyv;
 			break;
 		case	PANELY_I:
-			send_arr[0] = pyi;
-			break;
-		case	BATTM_V:
-			send_arr[0] = 0x01;
+			send_arr[1] = (uint8_t)(pyi >> 8);
+			send_arr[0] = (uint8_t)pyi;
 			break;
 		case	BATT_V:
-			send_arr[0] = 0x02;
+			send_arr[1] = (uint8_t)(battv >> 8);
+			send_arr[0] = (uint8_t)battv;
 			break;
 		case	BATTIN_I:
-			send_arr[0] = 0x03;
-			break;
-		case	BATT_TEMP:
-			send_arr[0] = 0x04;
+			send_arr[1] = (uint8_t)(battin >> 8);
+			send_arr[0] = (uint8_t)battin;
 			break;
 		case	COMS_V:
-			send_arr[0] = 0x05;
+			send_arr[1] = (uint8_t)(comsv >> 8);
+			send_arr[0] = (uint8_t)comsv;
 			break;
 		case	COMS_I:
-			send_arr[0] = 0x06;
+			send_arr[1] = (uint8_t)(comsi >> 8);
+			send_arr[0] = (uint8_t)comsi;
 			break;
 		case	PAY_V:
-			send_arr[0] = 0x07;
+			send_arr[1] = (uint8_t)(payv >> 8);
+			send_arr[0] = (uint8_t)payv;
 			break;
 		case	PAY_I:
-			send_arr[0] = 0x08;
+			send_arr[1] = (uint8_t)(payi >> 8);
+			send_arr[0] = (uint8_t)payi;
 			break;
 		case	OBC_V:
-			send_arr[0] = 0x09;
+			send_arr[1] = (uint8_t)(obcv >> 8);
+			send_arr[0] = (uint8_t)obcv;
 			break;
 		case	OBC_I:
-			send_arr[0] = 0x0A;
-			break;
-		case	SHUNT_DPOT:
-			send_arr[0] = 0x0B;
+			send_arr[1] = (uint8_t)(obci >> 8);
+			send_arr[0] = (uint8_t)obci;
 			break;
 		case	MPPTX:
-			send_arr[0] = mpptx;
+			send_arr[1] = (uint8_t)(mpptx >> 8);
+			send_arr[0] = (uint8_t)mpptx;
 			break;
 		case	MPPTY:
-			send_arr[0] = mppty;
+			send_arr[1] = (uint8_t)(mppty >> 8);
+			send_arr[0] = (uint8_t)mppty;
 			break;
 #endif
 #if (SELF_ID == 2)
@@ -425,21 +415,6 @@ void send_sensor_data(void)
 			temp = spi_retrieve_temp(PAY_TEMP_CS);
 			send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
 			send_arr[0] = (uint8_t)(temp);
-			break;
-		case	PAY_TEMP1:
-			send_arr[0] = 0x10;
-			break;
-		case	PAY_TEMP2:
-			send_arr[0] = 0x11;
-			break;
-		case	PAY_TEMP3:
-			send_arr[0] = 0x12;
-			break;
-		case	PAY_TEMP4:
-			send_arr[0] = 0x13;
-			break;
-		case	PAY_HUM:
-			send_arr[0] = 0x14;
 			break;
 		case	PAY_PRESS:
 			temp = collect_pressure();
@@ -462,21 +437,27 @@ void send_sensor_data(void)
 			send_arr[0] = (uint8_t)temp;
 			break;
 		case	PAY_FL_PD0:
+			send_arr[1] = 0;
 			send_arr[0] = 0x55;
 			break;
 		case	PAY_FL_PD1:
+			send_arr[1] = 0;
 			send_arr[0] = 0x66;
 			break;
 		case	PAY_FL_PD2:
+			send_arr[1] = 0;
 			send_arr[0] = 0x77;
 			break;
 		case	PAY_FL_PD3:
+			send_arr[1] = 0;
 			send_arr[0] = 0x88;
 			break;
 		case	PAY_FL_PD4:
+			send_arr[1] = 0;
 			send_arr[0] = 0x99;
 			break;
 		case	PAY_FL_PD5:
+			send_arr[1] = 0;
 			send_arr[0] = 0xAA;
 			break;
 #endif
