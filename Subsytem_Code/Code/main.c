@@ -163,6 +163,8 @@ int main(void)
 				spi_send_shunt_dpot_value(0xAC);
 			#endif
 			#if (SELF_ID == 2)
+				pressure_sensor_init(pressure_calib);
+				accelerometer_init();
 				collect_pressure();
 				*temp_raw = (uint32_t)spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
 				sign = convert_to_temp(temp_raw);
@@ -304,6 +306,7 @@ static void io_init(void)
 #if (SELF_ID == 2)
 	DDRC |= 0b11000100;
 	DDRD = 0b00000010;
+	//DDRD = 0x1F;
 #endif
 
 }
