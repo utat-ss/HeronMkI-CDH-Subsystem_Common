@@ -366,23 +366,34 @@ uint16_t spi_retrieve_temp(uint8_t chip_select)
 uint16_t spi_retrieve_acc(uint8_t axis)
 {	
 	uint8_t acc_reg_L, low, high;
-	uint16_t ret_val;
+	int val;
+	uint8_t count = 0;
+	int total = 0;
 	if (axis == 1)
 		acc_reg_L = XDATAL;
 	if (axis == 2)
 		acc_reg_L = YDATAL;
 	if (axis == 3)
 		acc_reg_L = ZDATAL;
-	SS1_set_low(PAY_ACCEL_CS);
-	spi_transfer(ACC_READ);
-	spi_transfer(acc_reg_L);
-	low = spi_transfer(0x00);
-	high = spi_transfer(0x00);
-	SS1_set_high(PAY_ACCEL_CS);
-	ret_val = high;
-	ret_val = ret_val << 8;
-	ret_val += low;
-	return ret_val;
+	for(uint8_t i = 0; i < 10; i++)
+	{
+		SS1_set_low(PAY_ACCEL_CS);
+		spi_transfer(ACC_READ);
+		spi_transfer(acc_reg_L);
+		low = spi_transfer(0x00);
+		high = spi_transfer(0x00);
+		SS1_set_high(PAY_ACCEL_CS);
+		val = (int)high;
+		val = (int)(val << 8);
+		val += (int)low;
+		if(val < 1200 && val > -1200)
+		{
+			total += val;
+			count++;	
+		}
+	}
+	total /= count;
+	return (uint16_t)total;
 }
 
 void accelerometer_init(void)

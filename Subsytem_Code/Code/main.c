@@ -164,7 +164,7 @@ int main(void)
 			#endif
 			#if (SELF_ID == 2)
 				pressure_sensor_init(pressure_calib);
-				accelerometer_init();
+				//accelerometer_init();
 				collect_pressure();
 				*temp_raw = (uint32_t)spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
 				sign = convert_to_temp(temp_raw);
@@ -173,12 +173,13 @@ int main(void)
 					uart_printf("TEMP(C)			:	+%lu\n\r", temperature);
 				else
 					uart_printf("TEMP(C)			:	-%lu\n\r", temperature);
+				delay_ms(50);
 				acc_data = spi_retrieve_acc(1);
-				uart_printf("ACC (X)		:	+%u\n\r", acc_data);
+				uart_printf("ACC (X)		:	+%d\n\r", acc_data);
 				acc_data = spi_retrieve_acc(2);
-				uart_printf("ACC (Y)		:	+%u\n\r", acc_data);
+				uart_printf("ACC (Y)		:	+%d\n\r", acc_data);
 				acc_data = spi_retrieve_acc(3);
-				uart_printf("ACC (Z)		:	+%u\n\r", acc_data);			
+				uart_printf("ACC (Z)		:	+%d\n\r", acc_data);			
 				delay_ms(500);
 			#endif
 		}		
@@ -306,7 +307,7 @@ static void io_init(void)
 #if (SELF_ID == 2)
 	DDRC |= 0b11000100;
 	DDRD = 0b00000010;
-	//DDRD = 0x1F;
+	DDRD = 0x1F;
 #endif
 
 }

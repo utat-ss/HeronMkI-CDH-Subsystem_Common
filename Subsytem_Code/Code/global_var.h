@@ -41,7 +41,7 @@ typedef struct{
 #define PUS_COMMUNICATION_ON	0 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
 								  // programmable from the laptop interface.
 								  
-#define UART_DISABLE			1 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
+#define UART_DISABLE			0 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
 								  // from the laptop interface
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
@@ -340,6 +340,7 @@ uint16_t battmv_high, battmv_low, battv_high, battv_low, battin_high, battin_low
 uint16_t battout_high, battout_low, epstemp_high, epstemp_low, comsv_high, comsv_low, comsi_high, comsi_low;
 uint16_t payv_high, payv_low, payi_high, payi_low, obcv_high, obcv_low, obci_high, obci_low;
 uint8_t mpptx, mppty, balance_h, balance_l, batt_heater_control;
+uint16_t temp_old, press_old, acc_x_old, acc_y_old, acc_z_old;
 #endif
 
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
