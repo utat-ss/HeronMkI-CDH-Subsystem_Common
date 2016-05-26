@@ -250,7 +250,7 @@ void send_housekeeping(void)
 #endif
 
 #if (SELF_ID == 2)
-	//delay_ms(100);		// Used to stagger the responses of the SSMs.
+	delay_ms(10);		// Used to stagger the responses of the SSMs.
 	// Environmental Sensor Collection
 	send_arr[4] = PAY_TEMP0;
 	temp = spi_retrieve_temp(PAY_TEMP_CS);
@@ -260,7 +260,7 @@ void send_housekeeping(void)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	send_arr[4] = PAY_PRESS;
 	temp = collect_pressure();
 	send_arr[1] = (uint8_t)(temp >> 8);
@@ -268,7 +268,7 @@ void send_housekeeping(void)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	temp = spi_retrieve_acc(1);
 	send_arr[4] = PAY_ACCEL_X;
 	send_arr[1] = (uint8_t)(temp >> 8);
@@ -276,7 +276,7 @@ void send_housekeeping(void)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	temp = spi_retrieve_acc(2);
 	send_arr[4] = PAY_ACCEL_Y;
 	send_arr[1] = (uint8_t)(temp >> 8);
@@ -284,7 +284,7 @@ void send_housekeeping(void)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	temp = spi_retrieve_acc(3);
 	send_arr[4] = PAY_ACCEL_Z;
 	send_arr[1] = (uint8_t)(temp >> 8);
@@ -292,49 +292,49 @@ void send_housekeeping(void)
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	send_arr[4] = PAY_FL_PD0;
 	send_arr[1] = 0;
 	send_arr[0] = 0x55;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	send_arr[4] = PAY_FL_PD1;
 	send_arr[1] = 0;
 	send_arr[0] = 0x66;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	send_arr[4] = PAY_FL_PD2;
 	send_arr[1] = 0;
 	send_arr[0] = 0x77;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	send_arr[4] = PAY_FL_PD3;
 	send_arr[1] = 0;
 	send_arr[0] = 0x88;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	send_arr[4] = PAY_FL_PD4;
 	send_arr[1] = 0;
 	send_arr[0] = 0x99;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 	send_arr[4] = PAY_FL_PD5;
 	send_arr[1] = 0;
 	send_arr[0] = 0xAA;
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
-	delay_ms(1);
+	delay_ms(10);
 #endif
 
 	send_hk = 0;
