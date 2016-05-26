@@ -8,9 +8,17 @@
 #include "beacon.h"
 
 //This function takes one text array and transmit the morse code once.
+//
+//USAGE:
+//
+//string cannot be too long, or it will be cut off
+//only guaranteed to be able to send 15 characters in one boolean array of size 1024
+//(the longest length character is 0, with length = 57 + 9 for space between characters = 66: 1024/66 ~= 15)
+//
+//can only use capital letters, numbers, and spaces
 void beacon_transmit(char text[])
 {
-	bool morse_message[1024] = { 0 };
+	bool morse_message[BOOL_MSG_SIZE] = { 0 };
 	message2morse(text, morse_message);
 	
 	uint8_t message_counter=0;
@@ -118,9 +126,10 @@ break;
 
 case 'K':
 *code1 = 255;
-*code2 = 241;
-*code3 = 31;
-*Length = 21;
+*code2 = 113;
+*code3 = 252;
+*code4 = 7;
+*Length = 27;
 break;
 
 case 'L':
@@ -1266,7 +1275,9 @@ else if (length>40)
 
   for (uint8_t i = 0; i<length; i++)
   {
-    morse[*current + i+128*(*position_counter)] |= bits[length-1-i];
+	uint32_t index = *current + i+128*(*position_counter);
+	if (index < BOOL_MSG_SIZE)
+		morse[index] |= bits[length-1-i];
   }
   //*current += length;
 

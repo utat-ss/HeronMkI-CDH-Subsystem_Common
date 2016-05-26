@@ -184,8 +184,27 @@ void transceiver_initialize(void)
 	rx_length = 0;
 	prepareAck();
 	/* Put In RX Mode */
-	cmd_str(SRX);
+	//cmd_str(SRX); //we need to be in TX mode to send the Ack
 	return;	
+}
+
+void transceiver_calibrate(uint8_t tsvNumber, bool isBeacon) {
+	if (tsvNumber == UHFTSV) {
+		PIN_clr(UHF_RST);
+		delay_ms(250);
+		PIN_set(UHF_RST);
+		transceiver_init2(tsvNumber, isBeacon);
+		
+		if (!isBeacon)
+			lastCalibration = millis();
+	}
+	else if (tsvNumber == VHFTSV) {
+		PIN_clr(VHF_RST);
+		delay_ms(250);
+		PIN_set(VHF_RST);
+		transceiver_init2(tsvNumber, isBeacon);
+	}
+			
 }
 
 void transceiver_run(void)
@@ -204,9 +223,14 @@ void transceiver_run(void)
 		{
 			if(tx_fail_count)
 			{
+				
+				//put transmit trx into idle
 				cmd_str(SIDLE);
 				cmd_str(SFTX);
-				cmd_str(SRX);
+				
+				//switch back to rx
+				transceiver_calibrate(UHFTSV, false);
+				
 				rx_mode = 1;
 				tx_mode = 0;
 				tx_fail_count = 0;
@@ -221,7 +245,9 @@ void transceiver_run(void)
 		}
 		else
 		{
-			cmd_str(SRX);
+			//change to rx mode
+			transceiver_calibrate(UHFTSV, false);
+			
 			rx_mode = 1;
 			tx_mode = 0;
 			lastCycle = millis();
@@ -250,7 +276,6 @@ void transceiver_run(void)
 					if(!check)									// Packet was accepted and stored internally.
 					{
 						prepareAck();
-						cmd_str(STX);
 						return;
 					}
 
@@ -288,21 +313,16 @@ void transceiver_run(void)
 		delay_ms((uint8_t)rand());
 		lastAck = millis();
 	}
-	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceiver.
+	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceivers.
 	{
-		PIN_clr(UHF_RST);
-		delay_ms(250);
-		PIN_set(UHF_RST);
-		transceiver_initialize();
-		lastCalibration = millis();
+		transceiver_calibrate(UHFTSV, 0);
 	}
 	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
 	{
 		PIN_toggle(LED3);
 		cmd_str(SIDLE);
 		cmd_str(SFRX);
-		cmd_str(SFTX);
-		delay_ms(5);
+		
 		transmit_packet();
 		lastTransmit = millis();
 	}
@@ -608,9 +628,13 @@ void prepareAck(void)
 {
 	char* ackMessage = "ACK";
 	uint8_t ackAddress = 0xA5, i;
+	//rx transceiver to idle
 	cmd_str(SIDLE);
 	cmd_str(SFTX);
 	
+	//switch to TX transceiver
+	transceiver_calibrate(VHFTSV, false);
+		
 	// Reset FIFO registers
 	reg_write2F(TXFIRST, 0x00);
 	// Put the ACK Packet in the FIFO
@@ -627,6 +651,9 @@ void prepareAck(void)
 	tx_mode = 1;
 	rx_mode = 0;
 	lastTransmit = millis();
+	
+	cmd_str(STX);
+		
 	return;
 }
 
@@ -671,6 +698,11 @@ uint8_t transmit_packet(void)
 {
 	if(!current_tm_fullf)
 		return 0xFF;
+	
+	//change to TX transceiver
+	transceiver_calibrate(VHFTSV, 0);
+	cmd_str(SFTX);
+	delay_ms(5);
 	
 	// Adjust the sequence control variables if an acknowledgment was received.
 	//if(ack_acquired)

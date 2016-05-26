@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include "trans_lib.h"
 
+#define BOOL_MSG_SIZE 1024
+
 //This function takes one text array and transmit the morse code once.
 void beacon_transmit(char text[]);
 

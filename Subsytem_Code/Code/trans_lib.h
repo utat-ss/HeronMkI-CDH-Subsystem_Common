@@ -40,6 +40,7 @@
 #include "global_var.h"
 #include "can_api.h"
 #include <stdlib.h>
+#include "comm_control.h"
 
 /*********** DEFINITIONS ******************/
 
@@ -277,6 +278,7 @@
 /****** FUNCTION PROTOTYPES ***************/
 
 void transceiver_initialize(void);
+void transceiver_calibrate(uint8_t tsvNumber, bool isBeacon);
 uint8_t reg_read(uint8_t addr);
 void reg_write(uint8_t addr, uint8_t data);
 uint8_t reg_read2F(uint8_t addr);

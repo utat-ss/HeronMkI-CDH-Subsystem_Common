@@ -1217,8 +1217,21 @@ void send_beacon(void)
 {
 	send_beaconf = 0;
 	
-	//implement sending the beacon data here
-	//make use of beacon.h
-	char beacon_msg[] = "Hello world!";
+	//send the beacon data
+	
+	//switch to beacon tx mode
+	transceiver_calibrate(UHFTSV, true);
+	
+	//TODO
+	//use housekeeping to form the beacon message
+	char beacon_msg[] = "HELLO WORLD";
+	
+	
+	
+	//make use of beacon.h to send the message
 	beacon_transmit(beacon_msg);
+	
+	
+	//switch back to rx
+	transceiver_calibrate(UHFTSV, false);
 }

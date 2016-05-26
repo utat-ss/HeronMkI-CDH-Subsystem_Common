@@ -26,11 +26,15 @@
 	*
 */
 
+#ifndef COMM_CONTROL_H
+#define COMM_CONTROL_H
+
 //port number for three spi devices
 #include <stdint.h>
 #include <stdbool.h>
 #include "spi_lib.h"
 #include "trans_lib.h"
+#include "global_var.h"
 
 #define VHFTSV 1
 #define UHFTSV 2
@@ -77,3 +81,6 @@ void reg_settings_UHF_Beacon(uint8_t leave_on);
 void switchVHFset(bool mode);
 void set_transceiver(uint8_t tsvNumber);
 void switchUHFset(bool mode);
+
+
+#endif
