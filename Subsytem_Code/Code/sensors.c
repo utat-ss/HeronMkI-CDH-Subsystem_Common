@@ -34,31 +34,33 @@
 void update_sensor_all(void)
 {
 	update_sensor(PANELX_I);
+	uart_printf("PANELX_I(MILIA)			:	+%u\n\r", pxi);
 	update_sensor(PANELX_V);
+	uart_printf("PANELX_V(MILIV)			:	+%u\n\r", pxv);
 	update_sensor(PANELY_I);
+	uart_printf("PANELY_I(MILIA)			:	+%u\n\r", pyi);
 	update_sensor(PANELY_V);
-	update_sensor(BATTM_V);
+	uart_printf("PANELY_V(MILIV)			:	+%u\n\r", pyv);
 	update_sensor(BATT_V);
+	uart_printf("BATT_V(MILIV)				:	+%u\n\r", battv);
 	update_sensor(BATTIN_I);
+	uart_printf("BATTIN_I(MILIA)			:	+%u\n\r", battin);
 	update_sensor(BATTOUT_I);
+	uart_printf("BATTOUT_I(MILIA)			:	+%u\n\r", battout);
 	update_sensor(EPS_TEMP);
-	update_sensor(SHUNT_DPOT);
+	uart_printf("EPS_TEMP(C)				:	+%u\n\r", epstemp);
 	update_sensor(COMS_V);
+	uart_printf("COMS_V(MILIV)				:	+%u\n\r", comsv);
 	update_sensor(COMS_I);
+	uart_printf("COMS_I(MILIA)				:	+%u\n\r", comsi);
 	update_sensor(PAY_V);
+	uart_printf("PAY_V(MILIV)				:	+%u\n\r", payv);
 	update_sensor(PAY_I);
+	uart_printf("PAY_I)(MILIA)				:	+%u\n\r", payi);
 	update_sensor(OBC_V);
+	uart_printf("OBC_V(MILIV)				:	+%u\n\r", obcv);
 	update_sensor(OBC_I);
-}
-
-/************************************************************************/
-// READ SPI SENSOR
-//
-// @param: sensor_name this is the name of the sensor as defined in global_var.h
-// @NOTE: This function is currently a placeholder until I figure out all of the SPI stuff
-/************************************************************************/
-uint8_t* read_spi_sensor(uint8_t sensor_name)
-{
+	uart_printf("OBC_I(MILIA)				:	+%u\n\r", obci);
 	return;
 }
 
@@ -70,9 +72,15 @@ uint8_t* read_spi_sensor(uint8_t sensor_name)
 /************************************************************************/
 void update_sensor(uint8_t sensor_name)
 {
+	uint32_t analog = 0;
 	if(sensor_name == PANELX_V)
 	{
-		pxv = read_multiplexer_sensor(sensor_name);
+		analog = (uint32_t)read_multiplexer_sensor(sensor_name);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= PXV_MULTIPLIER;
+		analog /= 1000;
+		pxv = (uint16_t)analog
 	}
 	if(sensor_name == PANELX_I)
 	{
@@ -104,11 +112,7 @@ void update_sensor(uint8_t sensor_name)
 	}
 	if(sensor_name == EPS_TEMP)
 	{
-		epstemp = read_spi_sensor(sensor_name);
-	}
-	if(sensor_name == SHUNT_DPOT)
-	{
-		shuntdpot = read_spi_sensor(sensor_name);
+		epstemp = spi_retrieve_temp(EPS_TEMP_CS);
 	}
 	if(sensor_name == COMS_V)
 	{
@@ -134,4 +138,5 @@ void update_sensor(uint8_t sensor_name)
 	{
 		obci  = read_multiplexer_sensor(sensor_name);
 	}
+	return;
 }

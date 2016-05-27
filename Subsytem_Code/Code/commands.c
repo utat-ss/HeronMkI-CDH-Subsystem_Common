@@ -146,7 +146,6 @@ void send_housekeeping(void)
 	send_arr[6] = MT_HK;	// HK will likely require multiple message in the future.
 	send_arr[1] = 0;
 	send_arr[0] = 0;
-	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 
 #if (SELF_ID == 0)
 	//if(receiving_tmf)		// Housekeeping takes a while, don't do it while receiving a TM packet.
@@ -165,9 +164,9 @@ void send_housekeeping(void)
 	delay_ms(50);
 	// EPS Temp Collection
 	send_arr[4] = EPS_TEMP;
-	temp = spi_retrieve_temp(EPS_TEMP_CS);
-	send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
-	send_arr[0] = (uint8_t)(temp);
+	epstemp = spi_retrieve_temp(EPS_TEMP_CS);
+	send_arr[1] = (uint8_t)(epstemp >> 8);			// SPI temperature sensor readings.
+	send_arr[0] = (uint8_t)(epstemp);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
 	delay_ms(100);
 	// Panel Voltage / Current Collection
@@ -256,13 +255,7 @@ void send_housekeeping(void)
 	delay_ms(10);		// Used to stagger the responses of the SSMs.
 	// Environmental Sensor Collection
 	send_arr[4] = PAY_TEMP0;
-	*temp_raw = (uint32_t)spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
-	convert_to_temp(temp_raw);
-	temp = (uint16_t)*temp_raw;
-	if(temp < 20)
-		temp = 20;
-	if(temp > 35)
-		temp = 35;
+	temp = spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
 	send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
 	send_arr[0] = (uint8_t)(temp);
 	can_send_message(&(send_arr[0]), CAN1_MB6);		//CAN1_MB6 is the HK reception MB.
@@ -381,6 +374,7 @@ void send_sensor_data(void)
 {
 	uint8_t high, low, sensor_name, req_by;			
 	sensor_name = data_req_arr[4];
+	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	req_by = data_req_arr[7] >> 4;
 	send_arr[3] = 0;
 	send_arr[2] = 0;
@@ -399,9 +393,9 @@ void send_sensor_data(void)
 #endif
 #if (SELF_ID == 1)
 		case	EPS_TEMP:
-			temp = spi_retrieve_temp(EPS_TEMP_CS);
-			send_arr[1] = (uint8_t)(temp >> 8);			// SPI temperature sensor readings.
-			send_arr[0] = (uint8_t)(temp);
+			epstemp = spi_retrieve_temp(EPS_TEMP_CS);
+			send_arr[1] = (uint8_t)(epstemp >> 8);			// SPI temperature sensor readings.
+			send_arr[0] = (uint8_t)(epstemp);
 			break;
 		case	PANELX_V:
 			send_arr[1] = (uint8_t)(pxv >> 8);
@@ -1300,5 +1294,11 @@ uint8_t convert_to_temp(uint32_t* temp)
 // NOTE: There are currently only 3 MIC chips in the payload.
 void collect_fluorescence_data(void)
 {
+	
+}
+
+void collect_eps_sensors(void)
+{
+	adc_set_pin(9);		// ADC9 = pin 18 on SSM = Z
 	
 }

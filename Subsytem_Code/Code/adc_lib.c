@@ -81,7 +81,7 @@ int adc_read(uint8_t* array_ptr)
 		data[0] = *((uint8_t*) ADCL_BASE);
 		data[1] = *((uint8_t*) ADCSRA_BASE);
 		data[2] = *((uint8_t*) ADCSRB_BASE);
-		errorREPORT(ADC_CONVERSION_ERROR, data);
+		//errorREPORT(ADC_CONVERSION_ERROR, data);
 		return -1;
 	}
 	
@@ -105,7 +105,8 @@ void adc_set_pin(uint8_t ADC_num)
 	{
 		uint8_t data[3];
 		data[0] = ADC_num;
-		errorREPORT(ADC_INVALID_PIN_ERROR, data);
+		return;
+		//errorREPORT(ADC_INVALID_PIN_ERROR, data);
 	}
 	uint8_t* ptr;
 	uint8_t x;

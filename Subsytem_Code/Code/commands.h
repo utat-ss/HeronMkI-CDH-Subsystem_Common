@@ -42,6 +42,7 @@
 #include "error_handling.h"
 #include <stdint.h>
 #include "spi_lib.h"
+#include "adc_lib.h"
 
 /* Function Prototypes								 */	
 void run_commands(void);

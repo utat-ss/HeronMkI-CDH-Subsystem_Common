@@ -262,7 +262,7 @@ uint8_t spi_transfer4(uint8_t message)
 	return *reg_ptr;
 }
 
-
+// MAX5423 digital potentiometer
 void spi_send_shunt_dpot_value(uint8_t message)
 {
 	uint8_t spi_result, temp;
@@ -322,6 +322,7 @@ uint16_t spi_retrieve_temp(uint8_t chip_select)
 {
 	uint8_t* reg_ptr;
 	uint8_t receive_char;
+	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	reg_ptr = SPDR_BASE;
 	uint16_t ret_val = 0;
 	if(SELF_ID == 0)
@@ -350,9 +351,15 @@ uint16_t spi_retrieve_temp(uint8_t chip_select)
 	/* Enable SPI  */
 	SPCR |= (0b01000000);
 	//delay_ms(300);
-	ret_val = ((uint16_t)spi_transfer(0)) << 8;		// Collect temperature data
-	ret_val += (uint16_t)spi_transfer(0);	
+	*temp_raw = ((uint32_t)spi_transfer(0)) << 8;		// Collect temperature data
+	*temp_raw += (uint32_t)spi_transfer(0);
 	SS1_set_high(chip_select);
+	convert_to_temp(temp_raw);
+	ret_val = (uint16_t)*temp_raw;
+	if(ret_val < 20)
+		ret_val = 20;
+	if(ret_val > 35)
+		ret_val = 35;	
 	
 	if(SELF_ID == 0)
 		SS1_set_low(COMS_UHF_SS);

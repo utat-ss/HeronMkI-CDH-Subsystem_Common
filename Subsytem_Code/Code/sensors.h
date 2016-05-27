@@ -26,6 +26,7 @@
 	*
 */
 #include "global_var.h"
+#include "spi_lib.h"
 
 /* Correspond to pin connections to ADG1606 (pinNumber - 1) */
 #define PANELX_I 0
@@ -43,6 +44,19 @@
 #define OBC_I 13
 #define BATT_V 14
 #define BATTM_V 15
+
+/* Multipliers for the EPS analog sensors (calculated for the IT5 Board) */
+
+// Voltages
+#define PXV_MULTIPLIER		1810
+#define PYV_MULTIPLIER		1810
+#define BATT_V_MULTIPLIER	2550
+#define COMS_V_MULTIPLIER	1273
+#define PAY_V_MULTIPLIER	1273
+#define OBC_V_MULTIPLIER	1273
+
+// Currents
+#define PXI_MULTIPLIER		1810
 
 /* Currently for reference
 VARIABLE NAMES

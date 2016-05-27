@@ -160,7 +160,8 @@ int main(void)
 			#if (SELF_ID == 1)
 				delay_ms(250);
 				PIN_toggle(LED3);
-				spi_send_shunt_dpot_value(0xAC);
+				update_sensor_all();
+				spi_send_shunt_dpot_value(shuntdpot);		//shuntdpot is initialized to 0xAC
 			#endif
 			#if (SELF_ID == 2)
 				pressure_sensor_init(pressure_calib);
@@ -234,6 +235,7 @@ static void sys_init(void)
 		pxi	= 0x0F;
 		pyv = 0x5F;
 		pyi = 0x2F;
+		shuntdpot = 0xAC;
 		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
 		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
 		PIN_set(LED1);	
@@ -301,7 +303,7 @@ static void io_init(void)
 #if (SELF_ID == 1)
 	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
-	DDRC = 0b11010101;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
+	DDRC = 0b11010101;	// s3 | s0 | Z | eps_temp | X | X | X | RED LED
 	DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
 #endif
 #if (SELF_ID == 2)

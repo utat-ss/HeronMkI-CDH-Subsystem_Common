@@ -52,6 +52,8 @@
 #define S2_P		24
 #define S3_P		25
 
+
+
 //FOR COMS
 #define UHF_RST		14
 #define VHF_RST		16
