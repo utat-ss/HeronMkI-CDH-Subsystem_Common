@@ -37,6 +37,7 @@
 #include "uart.h"
 #include "Timer.h"
 #include "global_var.h"
+#include "commands.h"
 #if	(SELF_ID == 2)
 #include "port_expander.h"
 #endif

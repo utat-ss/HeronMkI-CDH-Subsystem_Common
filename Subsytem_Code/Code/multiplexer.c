@@ -13,6 +13,10 @@
 /******************************************************************************/
 void select_multiplexer_output(uint8_t A)
 {
+	PIN_clr(S0_P);
+	PIN_clr(S1_P);
+	PIN_clr(S2_P);
+	PIN_clr(S3_P);
 	if ( (A & 1) == 1) PIN_set(S0_P);
 	if ( (A & 2) == 1) PIN_set(S1_P);
 	if ( (A & 4) == 1) PIN_set(S2_P);

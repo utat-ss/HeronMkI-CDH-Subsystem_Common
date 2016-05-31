@@ -97,6 +97,10 @@ void run_commands(void)
 		enter_low_power();
 	if (exit_low_powerf)
 		exit_low_power();
+	if (deploy_antennaf)
+		deploy_antenna();
+	if (turn_off_deployf)
+		turn_off_deploy();
 #endif
 	if (pause_operationsf)
 		//pause_operations();
@@ -985,6 +989,9 @@ void send_pus_packet_tc(void)
 	
 	if(start_tc_transferf)		// A timeout was triggered before the response was received.
 		start_tc_transferf = 0;
+	//if(sending_tc_packetf)
+		//sending_tc_packetf = 0;
+	//sending_tc_packetf = 1;
 
 	alert_obc_tcp_ready();
 	tc_transfer_time = millis();
@@ -994,6 +1001,7 @@ void send_pus_packet_tc(void)
 		if(millis() - tc_transfer_time > ssm_ok_go_timeout)	// Timeout triggered.
 		{
 			//PIN_toggle(LED2);
+			//sending_tc_packetf = 0;
 			return;		
 		}
 		alert_obc_tcp_ready();
@@ -1009,7 +1017,8 @@ void send_pus_packet_tc(void)
 	{
 		if(tc_transfer_completef == 0xFF)
 		{
-			//PIN_toggle(LED2);			
+			//PIN_toggle(LED2);	
+			//sending_tc_packetf = 0;		
 			return;
 		}
 		//PIN_toggle(LED3);
@@ -1030,6 +1039,7 @@ void send_pus_packet_tc(void)
 		if(millis() - tc_transfer_time > 1000)	// Timeout triggered.
 		{
 			//PIN_toggle(LED2);
+			//sending_tc_packetf = 0;
 			return;
 		}
 		can_check_general();
@@ -1040,6 +1050,7 @@ void send_pus_packet_tc(void)
 	if(tc_transfer_completef != (PACKET_LENGTH / 4 - 1))
 	{
 		tc_transfer_completef = 0;
+		//sending_tc_packetf = 0;
 		return;
 	}
 	else
@@ -1047,6 +1058,7 @@ void send_pus_packet_tc(void)
 		//PIN_toggle(LED2);				// Transaction Complete!
 		tc_transfer_completef = 0;
 		tc_packet_readyf = 0;
+		//sending_tc_packetf = 0;
 		return;
 	}
 }
@@ -1141,6 +1153,24 @@ void exit_low_power(void)
 	return;	
 }
 
+// FOR CSDC USE:
+// At the moment we hard-wired the antenna deployer to the EPS board and
+// so the command to deploy the antenna goes to the OPR where it is then
+// redirected to the EPS SSM.
+void deploy_antenna(void)
+{
+	PIN_set(LED3);	// Replace with code to deploy antenna.
+	antenna_deployed = 1;
+	deploy_antennaf = 0;
+	return;
+}
+
+void turn_off_deploy(void)
+{
+	PIN_set(LED3);	// Replace with code to turn off the antenna deployment.
+	turn_off_deployf = 0;
+	return;
+}
 #endif		// EPS COMMAND SECTION ABOVE ^^
 
 void pause_operations(void)
@@ -1297,8 +1327,5 @@ void collect_fluorescence_data(void)
 	
 }
 
-void collect_eps_sensors(void)
-{
-	adc_set_pin(9);		// ADC9 = pin 18 on SSM = Z
-	
-}
+
+

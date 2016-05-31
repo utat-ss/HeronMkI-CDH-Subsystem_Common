@@ -23,9 +23,14 @@
 	*
 	*	DEVELOPMENT HISTORY:
 	*	01/10/2016		Created.
+	*
+	*	05/27/2016		Got rid of sensor values we don't care about, update retrieval of eps_temp
+	*					added in printing values to UART.
 */
 
 #include "sensors.h"
+#include "global_var.h"
+#if (SELF_ID == 1)
 /************************************************************************/
 // UPDATE_SENSOR_ALL
 // 
@@ -33,18 +38,19 @@
 /************************************************************************/
 void update_sensor_all(void)
 {
+	uart_printf("****NEW SENSOR COLLECTION***\n\r", pxi);
 	update_sensor(PANELX_I);
-	uart_printf("PANELX_I(MILIA)			:	+%u\n\r", pxi);
+	uart_printf("PANELX_I(MILIA)				:	+%u\n\r", pxi);
 	update_sensor(PANELX_V);
-	uart_printf("PANELX_V(MILIV)			:	+%u\n\r", pxv);
+	uart_printf("PANELX_V(MILIV)				:	+%u\n\r", pxv);
 	update_sensor(PANELY_I);
-	uart_printf("PANELY_I(MILIA)			:	+%u\n\r", pyi);
+	uart_printf("PANELY_I(MILIA)				:	+%u\n\r", pyi);
 	update_sensor(PANELY_V);
-	uart_printf("PANELY_V(MILIV)			:	+%u\n\r", pyv);
+	uart_printf("PANELY_V(MILIV)				:	+%u\n\r", pyv);
 	update_sensor(BATT_V);
 	uart_printf("BATT_V(MILIV)				:	+%u\n\r", battv);
 	update_sensor(BATTIN_I);
-	uart_printf("BATTIN_I(MILIA)			:	+%u\n\r", battin);
+	uart_printf("BATTIN_I(MILIA)				:	+%u\n\r", battin);
 	update_sensor(BATTOUT_I);
 	uart_printf("BATTOUT_I(MILIA)			:	+%u\n\r", battout);
 	update_sensor(EPS_TEMP);
@@ -75,40 +81,73 @@ void update_sensor(uint8_t sensor_name)
 	uint32_t analog = 0;
 	if(sensor_name == PANELX_V)
 	{
-		analog = (uint32_t)read_multiplexer_sensor(sensor_name);
+		analog = (uint32_t)read_multiplexer_sensor(PANELX_V_PIN);
+		uart_printf("PANELX_V(RAW)				:	+%lu\n\r", analog);
 		analog *= 3300;
 		analog /= 1024;
 		analog *= PXV_MULTIPLIER;
 		analog /= 1000;
-		pxv = (uint16_t)analog
+		pxv = (uint16_t)analog;
 	}
 	if(sensor_name == PANELX_I)
 	{
-		pxi = read_multiplexer_sensor(sensor_name);
+		analog = (uint32_t)read_multiplexer_sensor(PANELX_I_PIN);
+		uart_printf("PANELX_I(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= 500000;
+		analog /= PXI_MULTIPLIER;
+		pxi = (uint16_t)analog;
 	}
 	if(sensor_name == PANELY_V)
 	{
-		pyv = read_multiplexer_sensor(sensor_name);
+		analog = (uint32_t)read_multiplexer_sensor(PANELY_V_PIN);
+		uart_printf("PANELY_V(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= PYV_MULTIPLIER;
+		analog /= 1000;
+		pyv = (uint16_t)analog;
 	}
 	if(sensor_name == PANELY_I)
 	{
-		pyi  = read_multiplexer_sensor(sensor_name);
-	}
-	if(sensor_name == BATTM_V)
-	{
-		battmv  = read_multiplexer_sensor(sensor_name);
+		analog = (uint32_t)read_multiplexer_sensor(PANELY_I_PIN);
+		uart_printf("PANELY_I(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= 500000;
+		analog /= PYI_MULTIPLIER;
+		pyi = (uint16_t)analog;
 	}
 	if(sensor_name == BATT_V)
 	{
-		battv  = read_multiplexer_sensor(sensor_name);
+		analog = (uint32_t)read_multiplexer_sensor(BATT_V_PIN);
+		uart_printf("BATT_V(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= BATT_V_MULTIPLIER;
+		analog /= 1000;
+		battv = (uint16_t)analog;		
 	}
 	if(sensor_name == BATTIN_I)
 	{
-		battin  = read_multiplexer_sensor(sensor_name);
+		analog  = (uint32_t)read_multiplexer_sensor(BATTIN_I_PIN);
+		uart_printf("BATTIN_I(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= 500000;
+		analog /= BATTIN_MULTIPLIER;
+		battin = (uint16_t)analog;
 	}
 	if(sensor_name == BATTOUT_I)
 	{
-		battout  = read_multiplexer_sensor(sensor_name);
+		analog  = (uint32_t)read_multiplexer_sensor(BATTOUT_I_PIN);
+		uart_printf("BATTOUT_I(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= 500000;
+		analog /= BATTOUT_MULTIPLIER;
+		battout = (uint16_t)analog;
 	}
 	if(sensor_name == EPS_TEMP)
 	{
@@ -116,27 +155,65 @@ void update_sensor(uint8_t sensor_name)
 	}
 	if(sensor_name == COMS_V)
 	{
-		comsv  = read_multiplexer_sensor(sensor_name);
+		analog  = (uint32_t)read_multiplexer_sensor(COMS_V_PIN);
+		uart_printf("COMS_V(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= COMS_V_MULTIPLIER;
+		analog /= 1000;
+		comsv = (uint16_t)analog;
 	}
 	if(sensor_name == COMS_I)
 	{
-		comsi  = read_multiplexer_sensor(sensor_name);
+		analog  = (uint32_t)read_multiplexer_sensor(COMS_I_PIN);
+		uart_printf("COMS_I(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= 500000;
+		analog /= COMS_I_MULTIPLIER;
+		comsi = (uint16_t)analog;
 	}
 	if(sensor_name == PAY_V)
 	{
-		payv  = read_multiplexer_sensor(sensor_name);
+		analog = (uint32_t)read_multiplexer_sensor(PAY_V_PIN);
+		uart_printf("PAY_V(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= PAY_V_MULTIPLIER;
+		analog /= 1000;
+		payv = (uint16_t)analog;
 	}
 	if(sensor_name == PAY_I)
 	{
-		payi  = read_multiplexer_sensor(sensor_name);
+		analog  = (uint32_t)read_multiplexer_sensor(PAY_I_PIN);
+		uart_printf("PAY_I(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= 500000;
+		analog /= PAY_I_MULTIPLIER;
+		payi = (uint16_t)analog;
 	}
 	if(sensor_name == OBC_V)
 	{
-		obcv  = read_multiplexer_sensor(sensor_name);
+		analog  = (uint32_t)read_multiplexer_sensor(OBC_V_PIN);
+		uart_printf("OBC_V(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= OBC_V_MULTIPLIER;
+		analog /= 1000;
+		obcv = (uint16_t)analog;
 	}
 	if(sensor_name == OBC_I)
 	{
-		obci  = read_multiplexer_sensor(sensor_name);
+		analog  = (uint32_t)read_multiplexer_sensor(OBC_I_PIN);
+		uart_printf("OBC_I(RAW)				:	+%lu\n\r", analog);
+		analog *= 3300;
+		analog /= 1024;
+		analog *= 500000;
+		analog /= OBC_I_MULTIPLIER;
+		obci = (uint16_t)analog;
 	}
 	return;
 }
+
+#endif

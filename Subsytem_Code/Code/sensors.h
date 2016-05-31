@@ -25,25 +25,26 @@
 	*	01/10/2016		Created.
 	*
 */
-#include "global_var.h"
 #include "spi_lib.h"
-
+#include "multiplexer.h"
+#include "global_var.h"
+#include "uart.h"
 /* Correspond to pin connections to ADG1606 (pinNumber - 1) */
-#define PANELX_I 0
-#define PANELX_V 1
-#define PANELY_I 2
-#define PANELY_V 3
-#define DPOT_SAMPLE_V 4
-#define COMS_V 5
-#define COMS_I 6
-#define BATTIN_I 8
-#define BATTOUT_I 9
-#define PAY_I 10
-#define PAY_V 11
-#define OBC_V 12
-#define OBC_I 13
-#define BATT_V 14
-#define BATTM_V 15
+#define PANELX_I_PIN 0
+#define PANELX_V_PIN 1
+#define PANELY_I_PIN 2
+#define PANELY_V_PIN 3
+#define DPOT_SAMPLE_V_PIN 4
+#define COMS_V_PIN 5
+#define COMS_I_PIN 6
+#define BATTIN_I_PIN 8
+#define BATTOUT_I_PIN 9
+#define PAY_I_PIN 10
+#define PAY_V_PIN 11
+#define OBC_V_PIN 12
+#define OBC_I_PIN 13
+#define BATT_V_PIN 14
+#define BATTM_V_PIN 15
 
 /* Multipliers for the EPS analog sensors (calculated for the IT5 Board) */
 
@@ -56,8 +57,13 @@
 #define OBC_V_MULTIPLIER	1273
 
 // Currents
-#define PXI_MULTIPLIER		1810
-
+#define PXI_MULTIPLIER		823350
+#define PYI_MULTIPLIER		823350
+#define BATTIN_MULTIPLIER	647150
+#define BATTOUT_MULTIPLIER	647150
+#define COMS_I_MULTIPLIER	364000
+#define PAY_I_MULTIPLIER	823350
+#define OBC_I_MULTIPLIER	823350
 /* Currently for reference
 VARIABLE NAMES
 #define MPPTX					0xFF

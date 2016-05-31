@@ -85,8 +85,8 @@ int adc_read(uint8_t* array_ptr)
 		return -1;
 	}
 	
-	*array_ptr = *address;				// Read the new sample.
-	*(array_ptr + 1) = *(address + 1);
+	*array_ptr = ADCL;				// Read the new sample.
+	*(array_ptr + 1) = ADCH;
 	
 	return 0;
 }
@@ -102,12 +102,7 @@ void adc_set_pin(uint8_t ADC_num)
 {
 	
 	if (ADC_num > 10)
-	{
-		uint8_t data[3];
-		data[0] = ADC_num;
 		return;
-		//errorREPORT(ADC_INVALID_PIN_ERROR, data);
-	}
 	uint8_t* ptr;
 	uint8_t x;
 	ptr = ADMUX_BASE;		// Initialize ADMUX_BASE

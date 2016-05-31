@@ -622,6 +622,7 @@ void SS1_set_high(uint32_t sensor_id)
 	uint8_t state;
 	switch(sensor_id)
 	{
+#if	(SELF_ID == 0)
 		case COMS_TEMP_SS:
 			PIN_set(COMS_TEMP_PIN);
 			break;
@@ -631,12 +632,16 @@ void SS1_set_high(uint32_t sensor_id)
 		case COMS_VHF_SS:
 			PIN_set(COMS_VHF_PIN);
 			break;
+#endif
+#if (SELF_ID == 1)
 		case EPS_TEMP_CS:
 			PIN_set(EPS_TEMP_PIN);
 			break;
 		case EPS_DPOT_CS:
 			PIN_set(EPS_DPOT_PIN);
 			break;
+#endif
+#if (SELF_ID == 2)
 		case PAY_EXP1_CS:
 			PIN_set(32);
 			break;
@@ -713,6 +718,7 @@ void SS1_set_high(uint32_t sensor_id)
 		case ADC_FL_CS:	// FL	-- PE7
 			set_gpiob_pin(7, 0);		// Stop comm with ADC on detect board.
 			break;
+#endif
 		default:
 			break;
 	}
@@ -732,6 +738,7 @@ void SS1_set_low(uint32_t sensor_id)
 	uint8_t state;
 	switch(sensor_id)
 	{	
+#if (SELF_ID == 0)
 		case COMS_TEMP_SS:
 			PIN_clr(COMS_TEMP_PIN);
 			break;
@@ -741,12 +748,16 @@ void SS1_set_low(uint32_t sensor_id)
 		case COMS_VHF_SS:
 			PIN_clr(COMS_VHF_PIN);
 			break;
+#endif
+#if (SELF_ID == 1)
 		case EPS_TEMP_CS:
 			PIN_clr(EPS_TEMP_PIN);
 			break;
 		case EPS_DPOT_CS:
 			PIN_clr(EPS_DPOT_PIN);
 			break;
+#endif
+#if (SELF_ID == 2)
 		case PAY_EXP1_CS:
 			PIN_clr(32);
 			break;
@@ -825,7 +836,8 @@ void SS1_set_low(uint32_t sensor_id)
 			break;
 		case ADC_FL_CS:	// FL	-- PE7
 			clr_gpiob_pin(7, 0);		// Communicate with PE on detect board.
-			break;	
+			break;
+#endif
 		default:
 			break;
 	}

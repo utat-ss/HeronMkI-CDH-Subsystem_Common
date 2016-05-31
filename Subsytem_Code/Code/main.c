@@ -105,6 +105,7 @@
 #if (SELF_ID == 1)
 	#include "mppt_timer.h"
 	#include "battBalance.h"
+	#include "sensors.h"
 #endif
 #if (SELF_ID == 2)
 	#include "port_expander.h"
@@ -130,11 +131,13 @@ int main(void)
 		setup_fake_tc();
 	#endif
 	/*		Begin Main Program Loop					*/
+	#if (SELF_ID) == 2
 	uint32_t temperature;
 	uint16_t acc_data = 0;
 	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	uint8_t sign = 1;
 	uint8_t state;
+	#endif
 	while(1)
     {	
 		/* Reset the WDT */
@@ -159,8 +162,8 @@ int main(void)
 			#endif
 			#if (SELF_ID == 1)
 				delay_ms(250);
-				PIN_toggle(LED3);
-				update_sensor_all();
+				//PIN_toggle(LED3);
+				//update_sensor_all();
 				spi_send_shunt_dpot_value(shuntdpot);		//shuntdpot is initialized to 0xAC
 			#endif
 			#if (SELF_ID == 2)
@@ -238,7 +241,11 @@ static void sys_init(void)
 		shuntdpot = 0xAC;
 		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
 		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
-		PIN_set(LED1);	
+		PIN_set(LED1);
+		PIN_clr(S0_P);
+		PIN_set(S1_P);
+		PIN_set(S2_P);
+		PIN_set(S3_P);
 	#endif
 
 	/* PAY ONLY Initialization */
@@ -309,7 +316,7 @@ static void io_init(void)
 #if (SELF_ID == 2)
 	DDRC |= 0b11000100;
 	DDRD = 0b00000010;
-	DDRD = 0x1F;
+	//DDRD = 0x1F;
 #endif
 
 }
@@ -398,6 +405,7 @@ static void init_global_vars(void)
 		tc_transfer_completef = 0;
 		start_tc_transferf = 0;
 		receiving_tmf = 0;
+		sending_tc_packetf = 0;
 		ask_alive = 0;
 		enter_take_overf = 0;
 		exit_take_overf = 0;
@@ -474,7 +482,10 @@ static void init_global_vars(void)
 	set_varf = 0;
 	pause_operationsf = 0;
 	resume_operationsf = 0;	
+	deploy_antennaf = 0;
+	turn_off_deployf = 0;
 	event_readyf = 0;
+	antenna_deployed = 0;
 
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;

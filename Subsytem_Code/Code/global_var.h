@@ -36,12 +36,12 @@ typedef struct{
 #define DATA_BUFFER_SIZE		8 // 8 bytes max
 
 /*				MY CAN DEFINES								*/
-#define SELF_ID					2 // Current SSM is EPS.
+#define SELF_ID					0 // Current SSM is EPS.
 
-#define PUS_COMMUNICATION_ON	0 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
+#define PUS_COMMUNICATION_ON	1 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
 								  // programmable from the laptop interface.
 								  
-#define UART_DISABLE			0 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
+#define UART_DISABLE			1 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
 								  // from the laptop interface
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
@@ -176,6 +176,8 @@ typedef struct{
 #define OPEN_VALVES				0x27
 #define COLLECT_PD				0x28
 #define PD_COLLECTED			0x29
+#define DEP_ANT_COMMAND			0x2A
+#define DEP_ANT_OFF				0x2B
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -326,7 +328,8 @@ typedef struct{
 
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;
-uint8_t enter_low_powerf, exit_low_powerf, enter_take_overf, exit_take_overf, pause_operationsf, resume_operationsf;
+uint8_t enter_low_powerf, exit_low_powerf, enter_take_overf, exit_take_overf, pause_operationsf, resume_operationsf, deploy_antennaf;
+uint8_t turn_off_deployf, antenna_deployed;
 uint8_t read_response, write_response, open_valvesf, collect_pdf;
 uint8_t receive_arr[8], send_arr[8], read_arr[8], write_arr[8], data_req_arr[8];
 uint8_t sensh_arr[8], sensl_arr[8], setv_arr[8], pause_msg[8], resume_msg[8];
@@ -366,7 +369,7 @@ uint8_t event_arr[8];
 #if (SELF_ID == 0)
 /* Global variables used for PUS packet communication */
 uint8_t new_tm_msg[8], new_tc_msg[8], tm_sequence_count, new_tm_msgf, current_tm_fullf, tc_packet_readyf;
-uint8_t tc_transfer_completef, start_tc_transferf, receiving_tmf;
+uint8_t tc_transfer_completef, start_tc_transferf, receiving_tmf, sending_tc_packetf;
 uint8_t current_tm[PACKET_LENGTH], tm_to_downlink[PACKET_LENGTH], current_tc[PACKET_LENGTH];
 
 // Global Flags and Constants for Coms TakeOver
