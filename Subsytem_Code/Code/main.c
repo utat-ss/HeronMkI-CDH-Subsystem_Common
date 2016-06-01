@@ -94,9 +94,7 @@
 #include "can_api.h"
 #include "spi_lib.h"
 #include "global_var.h"
-#if (SELF_ID != 0)
 #include "uart.h"
-#endif
 #if (SELF_ID == 0)
 	#include "trans_lib.h"
 	#include "comsTimer.h"
@@ -127,7 +125,17 @@ int main(void)
 	sys_init();
 	//uint32_t count = 0;
 	#if (SELF_ID == 0)
+	{
+		PIN_toggle(LED3);
+		delay_ms(100);
+		PIN_toggle(LED3);
+		delay_ms(100);
+		PIN_toggle(LED3);
+		delay_ms(100);
+		PIN_toggle(LED3);
 		setup_fake_tc();
+		uart_printf("*** RESET COMS ***\n\r");
+	}
 	#endif
 	/*		Begin Main Program Loop					*/
 	uint32_t temperature;
@@ -149,7 +157,7 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
 				{
-					delay_ms(50);
+					delay_ms(250);
 					transceiver_run();
 				}
 				if(millis() - startedReceivingTM > TM_TIMEOUT)
@@ -206,11 +214,11 @@ static void sys_init(void)
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
-	#if (SELF_ID != 0)
+	//#if (SELF_ID != 0)
 		uart_init();
-	#endif
+	//#endif
 	/* Enable watchdog timer - 2s */
-	wdt_enable(WDTO_2S);
+	wdt_enable(WDTO_8S);
 	
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
@@ -307,7 +315,7 @@ static void io_init(void)
 #if (SELF_ID == 2)
 	DDRC |= 0b11000100;
 	DDRD = 0b00000010;
-	DDRD = 0x1F;
+	//DDRD = 0x1F;
 #endif
 
 }
@@ -399,6 +407,7 @@ static void init_global_vars(void)
 		ask_alive = 0;
 		enter_take_overf = 0;
 		exit_take_overf = 0;
+		alert_deployf = 0;
 	
 	#endif
 	#if (SELF_ID == 1)			// EPS Variable Initialization

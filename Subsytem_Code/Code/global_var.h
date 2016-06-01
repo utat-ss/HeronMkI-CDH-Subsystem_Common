@@ -36,9 +36,9 @@ typedef struct{
 #define DATA_BUFFER_SIZE		8 // 8 bytes max
 
 /*				MY CAN DEFINES								*/
-#define SELF_ID					2 // Current SSM is EPS.
+#define SELF_ID					0 // Current SSM is EPS.
 
-#define PUS_COMMUNICATION_ON	0 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
+#define PUS_COMMUNICATION_ON	1 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
 								  // programmable from the laptop interface.
 								  
 #define UART_DISABLE			0 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
@@ -176,7 +176,7 @@ typedef struct{
 #define OPEN_VALVES				0x27
 #define COLLECT_PD				0x28
 #define PD_COLLECTED			0x29
-
+#define ALERT_DEPLOY			0x2A
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
 
@@ -366,6 +366,7 @@ uint8_t event_arr[8];
 #if (SELF_ID == 0)
 /* Global variables used for PUS packet communication */
 uint8_t new_tm_msg[8], new_tc_msg[8], tm_sequence_count, new_tm_msgf, current_tm_fullf, tc_packet_readyf;
+uint8_t alert_deployf;
 uint8_t tc_transfer_completef, start_tc_transferf, receiving_tmf;
 uint8_t current_tm[PACKET_LENGTH], tm_to_downlink[PACKET_LENGTH], current_tc[PACKET_LENGTH];
 

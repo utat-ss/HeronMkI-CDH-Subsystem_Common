@@ -40,6 +40,7 @@
 #include "global_var.h"
 #include "can_api.h"
 #include <stdlib.h>
+#include "uart.h"
 
 /*********** DEFINITIONS ******************/
 
@@ -48,7 +49,7 @@
 #define STATUS_INTERVAL 1000
 #define ACK_TIMEOUT 1000
 #define TRANSCEIVER_CYCLE 250
-#define TRANSMIT_TIMEOUT 500
+#define TRANSMIT_TIMEOUT 1000
 #define CALIBRATION_TIMEOUT 5000
 #define DEVICE_ADDRESS 0xA5
 #define REAL_PACKET_LENGTH 76
@@ -299,5 +300,6 @@ void load_ack(void);
 uint8_t transmit_packet(void);
 void setup_fake_tc(void);
 uint16_t fletcher16(uint8_t* data, int count);
+void prepareAnt(void);
 
 #endif

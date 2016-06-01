@@ -269,8 +269,8 @@ void decode_command(uint8_t* command_array)
 		case TM_PACKET_READY:
 			//current_tm_fullf = 0;
 			//if((!current_tm_fullf) && (!receiving_tmf))
-			if(!receiving_tmf)
-				start_tm_packet();
+			//if(!receiving_tmf)
+				//start_tm_packet();
 			break;
 		case TC_TRANSACTION_RESP:
 			#if (SELF_ID == 0)
@@ -503,8 +503,7 @@ static void start_tm_packet(void)
 	send_arr[6] = MT_COM;
 	send_arr[5] = OK_START_TM_PACKET;
 	send_arr[4] = CURRENT_MINUTE;
-	if(!receiving_tmf)
-		startedReceivingTM = millis();
+	startedReceivingTM = millis();
 	receiving_tmf = 1;
 	can_send_message(&(send_arr[0]), CAN1_MB2);
 	
@@ -520,6 +519,10 @@ static void start_tm_packet(void)
 		}
 		if(current_tm_fullf)
 			return;
+		if(millis() - startedReceivingTM > 2000)
+			return;
+		if (alert_deployf)
+			alert_deploy();
 	}
 	receiving_tmf = 0;
 	return;

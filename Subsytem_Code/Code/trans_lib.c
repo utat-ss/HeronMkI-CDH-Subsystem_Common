@@ -240,16 +240,20 @@ void transceiver_run(void)
 			delay_ms(200);		// Relic of working code.
 			if(rx_length > REAL_PACKET_LENGTH)
 			{
+				//uart_printf("PACKET RECEIVED\n\r");
 				load_packet();
 				/* We have a packet */
 				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
 				{
-					//PIN_toggle(LED1);
+					PIN_toggle(LED3);
 					check = store_new_packet();
 					rx_length = 0;
 					if(!check)									// Packet was accepted and stored internally.
 					{
-						prepareAck();
+						if(alert_deployf)
+							prepareAnt();
+						else
+							prepareAck();
 						cmd_str(STX);
 						return;
 					}
@@ -630,6 +634,32 @@ void prepareAck(void)
 	return;
 }
 
+void prepareAnt(void)
+{
+	char* ackMessage = "ANT";
+	uint8_t ackAddress = 0xA5, i;
+	cmd_str(SIDLE);
+	cmd_str(SFTX);
+	
+	// Reset FIFO registers
+	reg_write2F(TXFIRST, 0x00);
+	// Put the ACK Packet in the FIFO
+	dir_FIFO_write(0, (3 + 2));
+	dir_FIFO_write(1, ackAddress);
+	
+	for(i = 0; i < 3; i++)
+	dir_FIFO_write(i+2, ackMessage[i]);
+	
+	reg_write2F(TXFIRST, 0);
+	reg_write2F(TXLAST, (3 + 3));
+	reg_write2F(RXFIRST, 0x00);
+	reg_write2F(RXLAST, 0x00);
+	tx_mode = 1;
+	rx_mode = 0;
+	lastTransmit = millis();
+	return;
+}
+
 void clear_new_packet(void)
 {
 	for(uint8_t i = 0; i < 128; i ++){
@@ -648,12 +678,19 @@ uint8_t store_new_packet(void)
 	/* There is room in the packet list */
 	if(new_packet[77] != 0x18)					// Characteristic of B151 in a telecommand.
 		return 0xFF;
+		
+	if(new_packet[70] == 69 && new_packet[69] == 13)
+		alert_deployf = 1;
 
 	packet_count++;
+	//uart_printf("START PACKET\n\r");
 	for (i = 0; i < 76; i++)
 	{
+		//uart_printf("%u: ", i);
+		//uart_printf("%u\n\r", new_packet[i + 2]);
 		packet_list[packet_count - 1].data[i + 76] = new_packet[i + 2];
 	}
+	//uart_printf("END PACKET\n\r");
 	for(i = 0; i < 76; i++)
 	{
 		packet_list[packet_count - 1].data[i] = 0;

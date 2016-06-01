@@ -76,6 +76,8 @@ void run_commands(void)
 	if (set_varf)
 		set_var();
 #if (SELF_ID == 0)
+	if (alert_deployf)
+		alert_deploy();
 	if (new_tm_msgf)
 		receive_tm_msg();
 	if (packet_count)
@@ -1079,6 +1081,18 @@ void send_ask_alive(void)
 	return;
 }
 
+void alert_deploy(void)
+{
+	send_arr[7] = (SELF_ID << 4)|OBC_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = ALERT_DEPLOY;
+
+	can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
+	alert_deployf = 0;
+	delay_ms(1);
+	return;
+}
+
 void enter_take_over(void)
 {
 	TAKEOVER = 1;
@@ -1302,3 +1316,5 @@ void collect_fluorescence_data(void)
 {
 	
 }
+
+
