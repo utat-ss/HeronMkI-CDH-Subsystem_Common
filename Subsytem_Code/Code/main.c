@@ -103,6 +103,7 @@
 #if (SELF_ID == 1)
 	#include "mppt_timer.h"
 	#include "battBalance.h"
+	#include "sensors.h"
 #endif
 #if (SELF_ID == 2)
 	#include "port_expander.h"
@@ -138,11 +139,13 @@ int main(void)
 	}
 	#endif
 	/*		Begin Main Program Loop					*/
+	#if (SELF_ID) == 2
 	uint32_t temperature;
 	uint16_t acc_data = 0;
 	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	uint8_t sign = 1;
 	uint8_t state;
+	#endif
 	while(1)
     {	
 		/* Reset the WDT */
@@ -167,8 +170,9 @@ int main(void)
 			#endif
 			#if (SELF_ID == 1)
 				delay_ms(250);
-				PIN_toggle(LED3);
-				spi_send_shunt_dpot_value(0xAC);
+				//PIN_toggle(LED3);
+				//update_sensor_all();
+				spi_send_shunt_dpot_value(shuntdpot);		//shuntdpot is initialized to 0xAC
 			#endif
 			#if (SELF_ID == 2)
 				pressure_sensor_init(pressure_calib);
@@ -242,9 +246,14 @@ static void sys_init(void)
 		pxi	= 0x0F;
 		pyv = 0x5F;
 		pyi = 0x2F;
+		shuntdpot = 0xAC;
 		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
 		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
-		PIN_set(LED1);	
+		PIN_set(LED1);
+		PIN_clr(S0_P);
+		PIN_set(S1_P);
+		PIN_set(S2_P);
+		PIN_set(S3_P);
 	#endif
 
 	/* PAY ONLY Initialization */
@@ -309,7 +318,7 @@ static void io_init(void)
 #if (SELF_ID == 1)
 	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
-	DDRC = 0b11010101;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
+	DDRC = 0b11010101;	// s3 | s0 | Z | eps_temp | X | X | X | RED LED
 	DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
 #endif
 #if (SELF_ID == 2)
@@ -481,7 +490,10 @@ static void init_global_vars(void)
 	set_varf = 0;
 	pause_operationsf = 0;
 	resume_operationsf = 0;	
+	deploy_antennaf = 0;
+	turn_off_deployf = 0;
 	event_readyf = 0;
+	antenna_deployed = 0;
 
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;

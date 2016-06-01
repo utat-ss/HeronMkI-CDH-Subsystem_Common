@@ -41,7 +41,7 @@ typedef struct{
 #define PUS_COMMUNICATION_ON	1 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
 								  // programmable from the laptop interface.
 								  
-#define UART_DISABLE			0 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
+#define UART_DISABLE			1 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
 								  // from the laptop interface
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
@@ -177,6 +177,9 @@ typedef struct{
 #define COLLECT_PD				0x28
 #define PD_COLLECTED			0x29
 #define ALERT_DEPLOY			0x2A
+#define DEP_ANT_COMMAND			0x2B
+#define DEP_ANT_OFF				0x2C
+
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
 
@@ -326,7 +329,8 @@ typedef struct{
 
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;
-uint8_t enter_low_powerf, exit_low_powerf, enter_take_overf, exit_take_overf, pause_operationsf, resume_operationsf;
+uint8_t enter_low_powerf, exit_low_powerf, enter_take_overf, exit_take_overf, pause_operationsf, resume_operationsf, deploy_antennaf;
+uint8_t turn_off_deployf, antenna_deployed;
 uint8_t read_response, write_response, open_valvesf, collect_pdf;
 uint8_t receive_arr[8], send_arr[8], read_arr[8], write_arr[8], data_req_arr[8];
 uint8_t sensh_arr[8], sensl_arr[8], setv_arr[8], pause_msg[8], resume_msg[8];

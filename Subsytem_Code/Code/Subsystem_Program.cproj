@@ -206,6 +206,12 @@
     <Compile Include="mppt_timer.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="multiplexer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="multiplexer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="port.c">
       <SubType>compile</SubType>
     </Compile>
@@ -216,6 +222,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="port_expander.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sensors.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sensors.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="spi_lib.c">

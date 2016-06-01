@@ -262,7 +262,7 @@ uint8_t spi_transfer4(uint8_t message)
 	return *reg_ptr;
 }
 
-
+// MAX5423 digital potentiometer
 void spi_send_shunt_dpot_value(uint8_t message)
 {
 	uint8_t spi_result, temp;
@@ -322,6 +322,7 @@ uint16_t spi_retrieve_temp(uint8_t chip_select)
 {
 	uint8_t* reg_ptr;
 	uint8_t receive_char;
+	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	reg_ptr = SPDR_BASE;
 	uint16_t ret_val = 0;
 	if(SELF_ID == 0)
@@ -350,9 +351,15 @@ uint16_t spi_retrieve_temp(uint8_t chip_select)
 	/* Enable SPI  */
 	SPCR |= (0b01000000);
 	//delay_ms(300);
-	ret_val = ((uint16_t)spi_transfer(0)) << 8;		// Collect temperature data
-	ret_val += (uint16_t)spi_transfer(0);	
+	*temp_raw = ((uint32_t)spi_transfer(0)) << 8;		// Collect temperature data
+	*temp_raw += (uint32_t)spi_transfer(0);
 	SS1_set_high(chip_select);
+	convert_to_temp(temp_raw);
+	ret_val = (uint16_t)*temp_raw;
+	if(ret_val < 20)
+		ret_val = 20;
+	if(ret_val > 35)
+		ret_val = 35;	
 	
 	if(SELF_ID == 0)
 		SS1_set_low(COMS_UHF_SS);
@@ -615,6 +622,7 @@ void SS1_set_high(uint32_t sensor_id)
 	uint8_t state;
 	switch(sensor_id)
 	{
+#if	(SELF_ID == 0)
 		case COMS_TEMP_SS:
 			PIN_set(COMS_TEMP_PIN);
 			break;
@@ -624,12 +632,16 @@ void SS1_set_high(uint32_t sensor_id)
 		case COMS_VHF_SS:
 			PIN_set(COMS_VHF_PIN);
 			break;
+#endif
+#if (SELF_ID == 1)
 		case EPS_TEMP_CS:
 			PIN_set(EPS_TEMP_PIN);
 			break;
 		case EPS_DPOT_CS:
 			PIN_set(EPS_DPOT_PIN);
 			break;
+#endif
+#if (SELF_ID == 2)
 		case PAY_EXP1_CS:
 			PIN_set(32);
 			break;
@@ -706,6 +718,7 @@ void SS1_set_high(uint32_t sensor_id)
 		case ADC_FL_CS:	// FL	-- PE7
 			set_gpiob_pin(7, 0);		// Stop comm with ADC on detect board.
 			break;
+#endif
 		default:
 			break;
 	}
@@ -725,6 +738,7 @@ void SS1_set_low(uint32_t sensor_id)
 	uint8_t state;
 	switch(sensor_id)
 	{	
+#if (SELF_ID == 0)
 		case COMS_TEMP_SS:
 			PIN_clr(COMS_TEMP_PIN);
 			break;
@@ -734,12 +748,16 @@ void SS1_set_low(uint32_t sensor_id)
 		case COMS_VHF_SS:
 			PIN_clr(COMS_VHF_PIN);
 			break;
+#endif
+#if (SELF_ID == 1)
 		case EPS_TEMP_CS:
 			PIN_clr(EPS_TEMP_PIN);
 			break;
 		case EPS_DPOT_CS:
 			PIN_clr(EPS_DPOT_PIN);
 			break;
+#endif
+#if (SELF_ID == 2)
 		case PAY_EXP1_CS:
 			PIN_clr(32);
 			break;
@@ -818,7 +836,8 @@ void SS1_set_low(uint32_t sensor_id)
 			break;
 		case ADC_FL_CS:	// FL	-- PE7
 			clr_gpiob_pin(7, 0);		// Communicate with PE on detect board.
-			break;	
+			break;
+#endif
 		default:
 			break;
 	}

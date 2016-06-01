@@ -41,7 +41,9 @@
 #endif
 #include "error_handling.h"
 #include <stdint.h>
+#include <stdlib.h>
 #include "spi_lib.h"
+#include "adc_lib.h"
 
 /* Function Prototypes								 */	
 void run_commands(void);
@@ -70,6 +72,7 @@ void resume_operations(void);
 uint16_t collect_pressure(void);
 uint8_t convert_to_temp(uint32_t* temp);
 void alert_deploy(void);
+void deploy_antenna(void);
 
 /*****************************************************/
 #endif

@@ -322,6 +322,11 @@ void decode_command(uint8_t* command_array)
 				resume_msg[i] = *(command_array + i);
 			}
 			break;
+		case DEP_ANT_COMMAND:
+			if(antenna_deployed == 0)
+				deploy_antennaf = 1;
+		case DEP_ANT_OFF:
+			turn_off_deployf = 1;
 #if (SELF_ID == 2)
 		case OPEN_VALVES:
 			open_valvesf = 1;
