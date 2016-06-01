@@ -266,8 +266,8 @@ static void sys_init(void)
 		SS1_set_high(COMS_VHF_SS);
 		SS1_set_low(COMS_UHF_SS);
 		PIN_set(UHF_FE_EN);
-		PIN_set(UHF_FE_TR);
-		PIN_set(UHF_FE_BYP);
+		PIN_clr(UHF_FE_TR);
+		PIN_clr(UHF_FE_BYP);
 		transceiver_initialize();
 	#endif
 	
