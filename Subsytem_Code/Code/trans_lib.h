@@ -274,6 +274,7 @@
 #endif
 
 //uint8_t new_packet[77];		// 76B data + 1B length
+uint8_t beacon_def[BEACON_LENGTH]; //for beacon
 
 /****** FUNCTION PROTOTYPES ***************/
 
@@ -301,5 +302,6 @@ void load_ack(void);
 uint8_t transmit_packet(void);
 void setup_fake_tc(void);
 uint16_t fletcher16(uint8_t* data, int count);
+void initialize_beacon_def(void);
 
 #endif

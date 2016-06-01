@@ -79,9 +79,11 @@ void run_commands(void)
 #if (SELF_ID == 0)
 	if (new_tm_msgf)
 		receive_tm_msg();
+	if (new_beaconf)
+		receive_beacon_msg();
 	
-	if (send_beaconf)
-		send_beacon();
+	if (rx_enablef) 
+		rx_enable();
 	
 	if (packet_count)
 	{
@@ -810,6 +812,16 @@ static void clear_current_tm(void)
 	return;
 }
 
+static void clear_current_beacon(void)
+{
+	uint8_t i;
+	for (i=0; i < BEACON_LENGTH; i++)
+	{
+		current_beacon[i] = 0;
+	}
+	return;
+}
+
 void receive_tm_msg(void)
 {
 	uint8_t req_by, obc_seq_count;
@@ -1215,15 +1227,14 @@ void collect_fluorescence_data(void)
 
 void send_beacon(void)
 {
-	send_beaconf = 0;
 	
 	//send the beacon data
 	
 	//switch to beacon tx mode
 	transceiver_calibrate(UHFTSV, true);
 	
-	//TODO
-	//use housekeeping to form the beacon message
+	//TODO 
+	//use housekeeping to form the beacon message (assume it is in current_beacon)
 	char beacon_msg[] = "HELLO WORLD";
 	
 	
@@ -1232,6 +1243,69 @@ void send_beacon(void)
 	beacon_transmit(beacon_msg);
 	
 	
-	//switch back to rx
-	transceiver_calibrate(UHFTSV, false);
+	//switch to idle
+	set_transceiver(0);
+}
+
+void rx_enable(void) 
+{
+	rx_enablef = 0;
+	//go to rx mode
+	transceiver_calibrate(UHFTSV, false);	
+}
+
+
+void receive_beacon_msg(void)
+{
+	uint8_t req_by, obc_seq_count;
+	req_by = new_beacon_msg[7] >> 4;
+	obc_seq_count = new_beacon_msg[4];
+	new_beaconf = 0;
+	
+	if(obc_seq_count > (beacon_sequence_count + 1))
+	{
+		send_tm_transaction_response(req_by, 0xFF);		// Let the OBC know that the transaction failed.
+		beacon_sequence_count = 0;
+		receiving_beaconf = 0;
+		clear_current_beacon();
+		return;
+	}
+	if(current_beacon_fullf)
+	{
+		send_tm_transaction_response(req_by, 0xFF);
+		beacon_sequence_count = 0;
+		receiving_beaconf = 0;
+		return;
+	}
+	
+	if((!obc_seq_count && !beacon_sequence_count) || (obc_seq_count == (beacon_sequence_count + 1)))
+	{
+		beacon_sequence_count = obc_seq_count;
+		receiving_beaconf = 1;
+		current_beacon[(obc_seq_count * 4)]		= new_beacon_msg[0];
+		current_beacon[(obc_seq_count * 4) + 1] = new_beacon_msg[1];
+		current_beacon[(obc_seq_count * 4) + 2] = new_beacon_msg[2];
+		current_beacon[(obc_seq_count * 4) + 3] = new_beacon_msg[3];
+		if(obc_seq_count == PACKET_LENGTH / 4 - 1)
+		{
+			//PIN_toggle(LED2);
+			beacon_sequence_count = 0;									// Reset tm_sequence_count, transmission has completed.
+			receiving_beaconf = 0;
+			current_beacon_fullf = 1;								// TM buffer now full, ready to downlink to ground.
+			
+			send_tm_transaction_response(req_by, obc_seq_count);	// Let the OBC know that the transaction succeeded.
+			
+			//send beacon
+			send_beacon();
+		}
+		return;
+	}
+	else
+	{
+		send_tm_transaction_response(req_by, 0xFF);
+		beacon_sequence_count = 0;
+		receiving_beaconf = 0;
+		clear_current_beacon();
+		return;
+	}
 }

@@ -45,6 +45,7 @@ typedef struct{
 								  // from the laptop interface
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
+#define BEACON_LENGTH			14 // Length of beacon command
 
 #define COMMAND_OUT					0X01010101
 #define COMMAND_IN					0x11111111
@@ -177,6 +178,8 @@ typedef struct{
 #define COLLECT_PD				0x28
 #define PD_COLLECTED			0x29
 #define SEND_BEACON				0x2A
+#define RX_ENABLE				0x2B
+#define BEACON_READY			0x2C
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -272,9 +275,6 @@ uint8_t mpptx, mppty, balance_h, balance_l, batt_heater_control;
 // Global variable used to store the current minute (updated by a CAN message from the OBC)
 uint8_t CURRENT_MINUTE;
 
-// Global variables for sending the beacon
-uint8_t send_beaconf;
-
 // Global variables for the different modes that the SSM can be in.
 uint8_t LOW_POWER_MODE;
 uint8_t PAUSE;
@@ -293,10 +293,15 @@ uint8_t event_readyf;
 uint8_t event_arr[8];
 
 #if (SELF_ID == 0)
-/* Global variables used for PUS packet communication */
+/* Global variables used for PUS packet communication (and beacon) */
 uint8_t new_tm_msg[8], new_tc_msg[8], tm_sequence_count, new_tm_msgf, current_tm_fullf, tc_packet_readyf;
-uint8_t tc_transfer_completef, start_tc_transferf, receiving_tmf;
+uint8_t new_beacon_msg[8], new_beaconf, beacon_sequence_count, current_beacon_fullf;
+uint8_t tc_transfer_completef, start_tc_transferf, receiving_tmf, receiving_beaconf;
 uint8_t current_tm[PACKET_LENGTH], tm_to_downlink[PACKET_LENGTH], current_tc[PACKET_LENGTH];
+uint8_t current_beacon[BEACON_LENGTH];
+
+// Global variable for enable transceivers
+uint8_t rx_enablef;
 
 // Global Flags and Constants for Coms TakeOver
 uint8_t TAKEOVER;					// Coms is taking over for OBC
@@ -333,7 +338,7 @@ uint8_t tx_fail_count;
 uint8_t ack_acquired;
 long int lastCalibration;
 long int lastCalibrationTx, lastCalibrationRx;
-long int startedReceivingTM;
+long int startedReceivingTM, startedReceivingBeacon;
 uint8_t low_half_acquired;
 
 /* Global variables used for operational timeouts */

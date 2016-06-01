@@ -837,4 +837,28 @@ uint16_t fletcher16(uint8_t* data, int count)
 	return (sum2 << 8) | sum1;
 }
 
+
+void initialize_beacon_def(void) 
+{
+	//time
+	beacon_def[0] = ABS_TIME_D;
+	beacon_def[1] = ABS_TIME_D;
+	beacon_def[2] = ABS_TIME_H;
+	beacon_def[3] = ABS_TIME_H;
+	beacon_def[4] = ABS_TIME_M;
+	beacon_def[5] = ABS_TIME_M;
+	
+	//battery
+	beacon_def[6] = BATTM_V;
+	beacon_def[7] = BATTM_V;
+	beacon_def[8] = BATT_V;
+	beacon_def[9] = BATT_V;
+	
+	//solar panel current
+	beacon_def[10] = PANELX_I;
+	beacon_def[11] = PANELX_I;
+	beacon_def[12] = PANELY_I;
+	beacon_def[13] = PANELY_I;
+}
+
 #endif

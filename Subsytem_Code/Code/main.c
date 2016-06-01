@@ -154,6 +154,8 @@ int main(void)
 				}
 				if(millis() - startedReceivingTM > TM_TIMEOUT)
 					receiving_tmf = 0;
+				if (millis() - startedReceivingBeacon > TM_TIMEOUT)
+					receiving_beaconf = 0;
 				// Continually check if COMS needs to takeover for OBC
 				//check_obc_alive();
 			#endif
@@ -323,8 +325,14 @@ static void init_global_vars(void)
 		for (i = 0; i < 8; i++)
 		{
 			new_tm_msg[i] = 0;
-			new_tc_msg[i] = 0;		
+			new_tc_msg[i] = 0;	
+			new_beacon_msg[i] = 0;	
 		}
+		for (i=0; i<BEACON_LENGTH; i++)
+		{
+			current_beacon[i]=0;
+		}
+		initialize_beacon_def();
 
 		/* Initialize Global coms takeover flags to zero */
 		TAKEOVER = 0;
@@ -362,6 +370,7 @@ static void init_global_vars(void)
 		lastAck = 0;
 		low_half_acquired = 0;
 		startedReceivingTM = 0;
+		startedReceivingBeacon = 0;
 
 		/* PUS Packet Variables */
 		for(j = 0; j < 5; j++)
@@ -380,12 +389,16 @@ static void init_global_vars(void)
 		
 		/* Command Flags */
 		new_tm_msgf = 0;
+		new_beaconf = 0;
 		tm_sequence_count = 0;
+		beacon_sequence_count = 0;
 		current_tm_fullf = 0;
+		current_beacon_fullf = 0;
 		tc_packet_readyf = 0;
 		tc_transfer_completef = 0;
 		start_tc_transferf = 0;
 		receiving_tmf = 0;
+		receiving_beaconf = 0;
 		ask_alive = 0;
 		enter_take_overf = 0;
 		exit_take_overf = 0;
@@ -466,8 +479,7 @@ static void init_global_vars(void)
 	event_readyf = 0;
 	
 	/* Initialize beacon variables */
-	send_beaconf = 0;
-	
+	rx_enablef = 0;
 	
 	/* Initialize Global Mode variables to zero */
 	LOW_POWER_MODE = 0;

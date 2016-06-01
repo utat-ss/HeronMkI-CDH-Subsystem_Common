@@ -298,7 +298,19 @@ void decode_command(uint8_t* command_array)
 				exit_take_overf = 1;
 			break;
 		case SEND_BEACON:
-			send_beaconf = 1;
+			new_beaconf = 1;
+			for (i = 0; i < 8; i ++)
+			{
+				new_beacon_msg[i] = *(command_array + i);
+			}
+			break;
+		case BEACON_READY:
+			if (!receiving_beaconf)
+				start_beacon();
+			break;
+		case RX_ENABLE:
+			rx_enablef = 1;
+			break;
 #endif
 #if (SELF_ID == 1)
 		case ENTER_LOW_POWER_COM:
@@ -523,6 +535,37 @@ static void start_tm_packet(void)
 			return;
 	}
 	receiving_tmf = 0;
+	return;
+}
+//let obc know you are ready to receive beacon
+static void start_beacon(void)
+{
+	uint8_t waiting = 100;
+	send_arr[7] = (SELF_ID << 4)|COMS_TASK_ID;
+	send_arr[6] = MT_COM;
+	send_arr[5] = OK_START_TM_PACKET;
+	send_arr[4] = CURRENT_MINUTE;
+	
+	if(!receiving_beaconf)
+		startedReceivingBeacon = millis();
+	
+	receiving_beaconf = 1;
+	can_send_message(&(send_arr[0]), CAN1_MB2);
+	
+	while(waiting--)	// Timeout of 100ms.
+	{
+		delay_ms(1);
+		can_check_general();
+		wdt_reset();
+		if(new_beaconf)
+		{
+			receive_beacon_msg();
+			waiting = 100;
+		}
+		if(current_beacon_fullf)
+			return;
+	}
+	receiving_beaconf = 0;
 	return;
 }
 #endif
