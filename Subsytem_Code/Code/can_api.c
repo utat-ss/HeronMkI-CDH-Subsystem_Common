@@ -269,8 +269,8 @@ void decode_command(uint8_t* command_array)
 		case TM_PACKET_READY:
 			//current_tm_fullf = 0;
 			//if((!current_tm_fullf) && (!receiving_tmf))
-			//if(!receiving_tmf)
-				//start_tm_packet();
+			if(!receiving_tmf)
+				start_tm_packet();
 			break;
 		case TC_TRANSACTION_RESP:
 			#if (SELF_ID == 0)
@@ -323,10 +323,11 @@ void decode_command(uint8_t* command_array)
 			}
 			break;
 		case DEP_ANT_COMMAND:
-			if(antenna_deployed == 0)
-				deploy_antennaf = 1;
+			deploy_antennaf = 1;
+			break;
 		case DEP_ANT_OFF:
 			turn_off_deployf = 1;
+			break;
 #if (SELF_ID == 2)
 		case OPEN_VALVES:
 			open_valvesf = 1;
@@ -524,8 +525,8 @@ static void start_tm_packet(void)
 		}
 		if(current_tm_fullf)
 			return;
-		if(millis() - startedReceivingTM > 2000)
-			return;
+		//if(millis() - startedReceivingTM > 2000)
+		//	return;
 		if (alert_deployf)
 			alert_deploy();
 	}

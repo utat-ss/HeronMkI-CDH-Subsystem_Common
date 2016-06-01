@@ -682,7 +682,6 @@ uint8_t store_new_packet(void)
 	if(new_packet[70] == 69 && new_packet[69] == 13)
 	{
 		alert_deployf = 1;
-		//return 0;
 	}
 
 	packet_count++;

@@ -1181,7 +1181,7 @@ void deploy_antenna(void)
 
 void turn_off_deploy(void)
 {
-	PIN_set(LED3);	// Replace with code to turn off the antenna deployment.
+	PIN_clr(LED3);	// Replace with code to turn off the antenna deployment.
 	turn_off_deployf = 0;
 	return;
 }
