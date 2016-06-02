@@ -105,6 +105,7 @@
 #if (SELF_ID == 1)
 	#include "mppt_timer.h"
 	#include "battBalance.h"
+	#include "sensors.h"
 #endif
 #if (SELF_ID == 2)
 	#include "port_expander.h"
@@ -159,8 +160,19 @@ int main(void)
 			#endif
 			#if (SELF_ID == 1)
 				delay_ms(250);
-				PIN_toggle(LED3);
-				spi_send_shunt_dpot_value(0xAC);
+				//PIN_toggle(LED3);
+				run_mppt();
+				uint32_t sensor_data;
+				
+				update_sensor_all();
+				//sensor_data = read_multiplexer_sensor(BATT_V_PIN);
+				//uart_printf("PANELX_V(RAW)				:	+%lu\n\r", sensor_data);
+				
+				//test_reg[0] = *mux_result;
+				//test_reg[1] = *(mux_result + 1);
+				//send_can_value(test_reg);
+				
+				//spi_send_shunt_dpot_value(0xAC);
 			#endif
 			#if (SELF_ID == 2)
 				pressure_sensor_init(pressure_calib);
@@ -210,7 +222,7 @@ static void sys_init(void)
 		uart_init();
 	#endif
 	/* Enable watchdog timer - 2s */
-	wdt_enable(WDTO_2S);
+	wdt_enable(WDTO_8S);
 	
 	/* COMS ONLY Initialization */
 	#if (SELF_ID == 0)
@@ -219,12 +231,12 @@ static void sys_init(void)
 
 	/* EPS ONLY Initialization */
 	#if (SELF_ID == 1)
+		uart_sendmsg("*****BEGIN EPS INIT*****\n\r");
 		// Ensure all SS bits set high
 		SS1_set_high(EPS_DPOT_CS);
 		SS1_set_high(EPS_TEMP_CS);
 		//PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
 		
-		//mppt_timer_init();
 		mpptx = 0x3F;
 		mppty = 0x1F;
 		balance_l = 0;				// Turn off the low transistor (NPN)
@@ -236,6 +248,9 @@ static void sys_init(void)
 		pyi = 0x2F;
 		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
 		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
+		adc_initialize();
+		mppt_timer_init();
+		uart_sendmsg("*****FINISH EPS INIT*****\n\r");
 		PIN_set(LED1);	
 	#endif
 
@@ -302,7 +317,7 @@ static void io_init(void)
 	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
 	DDRC = 0b11010101;	// s3 | s0 | X | eps_temp | X | X | X | RED LED
-	DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
+	DDRD = 0b01101011;	// X | mppty | mpptx | X | SS/RXD | X | dpot_ss | BLUE LED
 #endif
 #if (SELF_ID == 2)
 	DDRC |= 0b11000100;

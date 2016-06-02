@@ -35,18 +35,22 @@
 #if (SELF_ID == 1)
 //When the A compare register is reached, turn on the MPPTX signal
 ISR(TIMER0_COMPA_vect) {
-	PIN_clr(LED2);
+	//PIN_clr(LED2);
+	PIN_clr(MPPTX_P);
 }
 
 //When the B compare register is reached, turn on the MPPTY signal
 ISR(TIMER0_COMPB_vect) {
-	PIN_clr(LED3);
+	//PIN_clr(LED3);
+	PIN_clr(MPPTY_P);
 }
 
 //When the timer overflows, turn off both signals
 ISR(TIMER0_OVF_vect) {
-	PIN_set(LED2);
-	PIN_set(LED3);
+	//PIN_set(LED2);
+	//PIN_set(LED3);
+	PIN_set(MPPTX_P);
+	PIN_set(MPPTY_P);
 }
 
 
@@ -64,7 +68,7 @@ void mppt_timer_init(void) {
 	OCR0B = 0xBF; // b10111111
 	
 	TCCR0A = 0x00; // b00000000 Don't connect any pins, but set to normal mode as a test
-	TCCR0B = 0x05; // b00000101 Set clock pre-scaling to 1024 for now, will be 1 later for "fast" output
+	TCCR0B = 0x01; // b00000001 // FOC0A | FOC0B | - | - | WGM02 | CS02 | CS01 | CS00  CS = 5 - pre-scale 1024 CS = 1 - no pre-scale
 	TIMSK0 = 0x07; // b00000111 Enable the A and B compare match interrupts. Also enable the timer overflow interrupt
 	
 }

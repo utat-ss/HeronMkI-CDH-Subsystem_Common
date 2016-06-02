@@ -13,25 +13,30 @@
 /******************************************************************************/
 void select_multiplexer_output(uint8_t A)
 {
-	if ( (A & 1) == 1) PIN_set(22);
-	if ( (A & 2) == 1) PIN_set(23);
-	if ( (A & 4) == 1) PIN_set(24);
-	if ( (A & 8) == 1) PIN_set(25);
+	PIN_clr(S0_P);
+	PIN_clr(S1_P);
+	PIN_clr(S2_P);
+	PIN_clr(S3_P);
+	if ( (A & 1) == 1) PIN_set(S0_P);
+	if ( (A & 2) == 2) PIN_set(S1_P);
+	if ( (A & 4) == 4) PIN_set(S2_P);
+	if ( (A & 8) == 8) PIN_set(S3_P);
 }
 
 /***************************************************************/
 /* Read 10-bit sensor data from multiplexer.                   */
 /* Sets multiplexer to sensor_id (sensors.h)                   */
 /***************************************************************/
-uint8_t read_multiplexer_sensor(uint8_t sensor_id, uint8_t* high, uint8_t* low)
+uint16_t read_multiplexer_sensor(uint8_t sensor_id)
 {
 	uint8_t read_value[2];
-	uint8_t status;
+	uint16_t ret_val = 0;
 	select_multiplexer_output(sensor_id);
-	adc_set_pin(9);
-	adc_initialize();
-	status = adc_read(read_value);
-	*high = read_value[1];
-	*low = read_value[0
-	return status;
+	//adc_initialize();
+	//adc_set_pin(9);
+	delay_ms(100);
+	adc_read(read_value);
+	ret_val = ((uint16_t)read_value[1]) << 8;
+	ret_val += (uint16_t)read_value[0];
+	return ret_val;
 }
