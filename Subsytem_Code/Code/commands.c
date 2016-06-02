@@ -1251,7 +1251,7 @@ void rx_enable(void)
 {
 	rx_enablef = 0;
 	//go to rx mode
-	transceiver_calibrate(UHFTSV, false);	
+	transceiver_calibrate(VHFTSV, false);	
 }
 
 

@@ -172,7 +172,7 @@ void transceiver_initialize(void)
     cmd_str(SFRX);		//SFRX          flush RX FIFO
     cmd_str(SFTX);      //SFTX          flush TX FIFO
 	/* Settings taken from SmartRF */
-	reg_settings();
+	reg_settings(1);
 	/* Calibrate */
 	cmd_str(SCAL);                   // Calibrate frequency synthesizer
 	delay_ms(250);
@@ -229,7 +229,7 @@ void transceiver_run(void)
 				cmd_str(SFTX);
 				
 				//switch back to rx
-				transceiver_calibrate(UHFTSV, false);
+				transceiver_calibrate(VHFTSV, false);
 				
 				rx_mode = 1;
 				tx_mode = 0;
@@ -246,7 +246,7 @@ void transceiver_run(void)
 		else
 		{
 			//change to rx mode
-			transceiver_calibrate(UHFTSV, false);
+			transceiver_calibrate(VHFTSV, false);
 			
 			rx_mode = 1;
 			tx_mode = 0;
@@ -315,7 +315,7 @@ void transceiver_run(void)
 	}
 	if(millis() - lastCalibration > CALIBRATION_TIMEOUT)	// Calibrate the transceivers.
 	{
-		transceiver_calibrate(UHFTSV, 0);
+		transceiver_calibrate(VHFTSV, 0);
 	}
 	if(millis() - lastTransmit > TRANSMIT_TIMEOUT)	// Transmit packet (if one is available)
 	{
@@ -343,7 +343,7 @@ static void send_can_value(uint8_t* data)
 	return;
 }
 
-void reg_settings(void)
+void reg_settings(bool isUHF)
 {
 	//high performance settings
 	reg_write2F(FS_DIG1, 0x00);				//FS_DIG1: 0x00         Frequency Synthesizer Digital Reg. 1
@@ -380,7 +380,14 @@ void reg_settings(void)
 	//modulation and freq deviation settings
 	reg_write(DEVIATION_M, 0b01001000);     //DEVIATION_M: 0x48      set DEV_M to 72 which sets freq deviation to 20.019531kHz (with DEV_M=5)
 	reg_write(MODCFG_DEV_E, 0b00000101);    //MODCFG_DEV_E: 0x05     set up modulation mode and DEV_E to 5 (see DEV_M register)
-	reg_write(FS_CFG, 0b00010100);			//FS_CFG: B00010100      set up LO divider to 8 (410.0 - 480.0 MHz band), out of lock detector disabled
+	if (isUHF)
+	{
+		reg_write(FS_CFG, 0b00010100);			//FS_CFG: B00010100      set up LO divider to 8 (410.0 - 480.0 MHz band), out of lock detector disabled
+	}
+	else
+	{
+		reg_write(FS_CFG, 0b00011011);			//FS_CFG: B00011011      set up LO divider to 24 (136.7 - 160.0 MHz band), out of lock detector disabled
+	}
 	
 	//set preamble
 	//reg_write(PREAMBLE_CFG1, 0b00001101);         //PREAMBLE_CFG1: 0x00    No preamble
@@ -425,9 +432,22 @@ void reg_settings(void)
 	reg_write2F(FREQOFF0, 0);				//FREQOFF0: 0x00
 	
 	//Frequency setting
-	reg_write2F(FREQ2, 0x6C);				//FREQ2: 0x6C            set frequency to 434MHz (sets Vco, see equation from FREQ2 section of user guide)
-	reg_write2F(FREQ1, 0x80);				//FREQ1: 0x80
-	reg_write2F(FREQ0, 0x00);				//FREQ0: 0x00	
+	if (isUHF)
+	{
+		//UHF (434 MHz, in amateur band)
+		reg_write2F(FREQ2, 0x6C);				//FREQ2: 0x6C            set frequency to 434MHz (sets Vco, see equation from FREQ2 section of user guide)
+		reg_write2F(FREQ1, 0x80);				//FREQ1: 0x80
+		reg_write2F(FREQ0, 0x00);				//FREQ0: 0x00
+	}
+	else
+	{
+		//VHF (145 MHz, in amateur band)
+		reg_write2F(FREQ2, 0x6C);				//FREQ2: 0x6C            set frequency to 145MHz (sets Vco, see equation from FREQ2 section of user guide)
+		reg_write2F(FREQ1, 0xC0);				//FREQ1: 0xC0
+		reg_write2F(FREQ0, 0x00);				//FREQ0: 0x00
+	}
+	
+	
 	return;
 }
 
@@ -633,7 +653,7 @@ void prepareAck(void)
 	cmd_str(SFTX);
 	
 	//switch to TX transceiver
-	transceiver_calibrate(VHFTSV, false);
+	transceiver_calibrate(UHFTSV, false);
 		
 	// Reset FIFO registers
 	reg_write2F(TXFIRST, 0x00);
@@ -700,7 +720,7 @@ uint8_t transmit_packet(void)
 		return 0xFF;
 	
 	//change to TX transceiver
-	transceiver_calibrate(VHFTSV, 0);
+	transceiver_calibrate(UHFTSV, 0);
 	cmd_str(SFTX);
 	delay_ms(5);
 	

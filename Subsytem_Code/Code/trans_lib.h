@@ -291,7 +291,7 @@ void dir_FIFO_write(uint8_t addr, uint8_t data);
 void reg_write_bit(uint8_t reg, uint8_t n, uint8_t data);
 void reg_write_bit2F(uint8_t reg, uint8_t n, uint8_t data);
 void transceiver_send(uint8_t* message, uint8_t address, uint8_t length);
-void reg_settings(void);
+void reg_settings(bool isUHF);
 void prepareAck(void);
 void transceiver_run(void);
 void clear_new_packet(void);

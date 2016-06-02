@@ -63,17 +63,16 @@ void transceiver_init2(uint8_t tsvNumber, bool isBeacon)
 // Note: set_transceiver(UHFTSV); should already have been called prior to using this function.
 void reg_settings_UHF(uint8_t leave_on)
 {
-	reg_settings();
+	reg_settings(1);
 	if(!leave_on)
 		set_transceiver(0);
 	return;
 }
 
-//This is a duplicate of upper setting function. Need to modified to VHF latter.
 // Note: set_transceiver(VHFTSV); should already have been called prior to using this function.
 void reg_settings_VHF(uint8_t leave_on)
 {
-	reg_settings();
+	reg_settings(0);
 	if(!leave_on)
 		set_transceiver(0);
 	return;
@@ -82,7 +81,7 @@ void reg_settings_VHF(uint8_t leave_on)
 // Note: set_transceiver(UHFTSV); should already have been called prior to using this function.
 void reg_settings_UHF_Beacon(uint8_t leave_on)
 {
-	reg_settings();
+	reg_settings(1);
 	reg_write(MODCFG_DEV_E, 0b00011100); //Put the UHF transceiver to OOK
 	if(!leave_on)
 		set_transceiver(0);
