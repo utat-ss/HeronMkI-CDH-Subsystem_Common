@@ -41,6 +41,10 @@ void LED_Reg_Write(uint8_t val)
 
 void PIN_set(uint8_t PIN)
 {
+	if(PIN == 3)
+	{
+		PORTC |= 0b00000010;
+	}
 	if(PIN == 13)
 	{
 		PORTD |= 0b00100000;
@@ -110,6 +114,10 @@ void PIN_set(uint8_t PIN)
 
 void PIN_toggle(uint8_t PIN)
 {
+	if(PIN == 3)
+	{
+		PORTC ^= 0b00000010;
+	}
 	if(PIN == 13)
 	{
 		PORTD ^= 0b00100000;
@@ -179,6 +187,10 @@ void PIN_toggle(uint8_t PIN)
 
 void PIN_clr(uint8_t PIN)
 {
+	if(PIN == 3)
+	{
+		PORTC &= ~(0b00000010);
+	}
 	if(PIN == 13)
 	{
 		PORTD &= ~(0b00100000);

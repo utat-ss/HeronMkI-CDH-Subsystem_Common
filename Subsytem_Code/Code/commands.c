@@ -1094,7 +1094,7 @@ void alert_deploy(void)
 	send_arr[5] = ALERT_DEPLOY;
 
 	can_send_message(&(send_arr[0]), CAN1_MB7);		//CAN1_MB7 is the command reception MB.
-	alert_deployf = 0;
+	alert_deployf--;
 	delay_ms(1);
 	return;
 }
@@ -1174,6 +1174,7 @@ void exit_low_power(void)
 void deploy_antenna(void)
 {
 	PIN_set(LED3);	// Replace with code to deploy antenna.
+	PIN_set(ANT_DEP_PIN);
 	antenna_deployed = 1;
 	deploy_antennaf = 0;
 	return;
@@ -1182,6 +1183,7 @@ void deploy_antenna(void)
 void turn_off_deploy(void)
 {
 	PIN_clr(LED3);	// Replace with code to turn off the antenna deployment.
+	PIN_clr(ANT_DEP_PIN);
 	turn_off_deployf = 0;
 	return;
 }

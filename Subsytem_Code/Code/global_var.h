@@ -38,17 +38,17 @@ typedef struct{
 /*				MY CAN DEFINES								*/
 #define SELF_ID					0 // Current SSM is EPS.
 
-#define PUS_COMMUNICATION_ON	1 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
+#define PUS_COMMUNICATION_ON	0 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
 								  // programmable from the laptop interface.
 								  
-#define UART_DISABLE			0 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
+#define UART_DISABLE			1 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
 								  // from the laptop interface
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
 
-#define COMMAND_OUT					0X01010101
-#define COMMAND_IN					0x11111111
-
+#define COMMAND_OUT					0X01010101	// COMS: 010
+#define COMMAND_IN					0x11111111	// PAY: 200
+												// EPS: 101
 #define HK_TRANSMIT					0x12345678
 #define CAN_MSG_DUMMY_DATA          0xFFFFFFFF
 

@@ -140,11 +140,12 @@ int main(void)
 	#endif
 	/*		Begin Main Program Loop					*/
 	#if (SELF_ID) == 2
-	uint32_t temperature;
+	uint16_t temperature;
 	uint16_t acc_data = 0;
 	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	uint8_t sign = 1;
 	uint8_t state;
+		uart_printf("*** RESET PAY ***\n\r");
 	#endif
 	while(1)
     {	
@@ -175,16 +176,11 @@ int main(void)
 				spi_send_shunt_dpot_value(shuntdpot);		//shuntdpot is initialized to 0xAC
 			#endif
 			#if (SELF_ID == 2)
-				pressure_sensor_init(pressure_calib);
+				//pressure_sensor_init(pressure_calib);
 				//accelerometer_init();
 				collect_pressure();
-				*temp_raw = (uint32_t)spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
-				sign = convert_to_temp(temp_raw);
-				temperature = *temp_raw;
-				if(sign)
-					uart_printf("TEMP(C)			:	+%lu\n\r", temperature);
-				else
-					uart_printf("TEMP(C)			:	-%lu\n\r", temperature);
+				temperature = (uint32_t)spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
+				uart_printf("TEMP(C)			:	+%u\n\r", temperature);
 				delay_ms(50);
 				acc_data = spi_retrieve_acc(1);
 				uart_printf("ACC (X)		:	+%d\n\r", acc_data);
@@ -232,6 +228,7 @@ static void sys_init(void)
 	/* EPS ONLY Initialization */
 	#if (SELF_ID == 1)
 		// Ensure all SS bits set high
+		PIN_clr(ANT_DEP_PIN);
 		SS1_set_high(EPS_DPOT_CS);
 		SS1_set_high(EPS_TEMP_CS);
 		//PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
@@ -318,7 +315,7 @@ static void io_init(void)
 #if (SELF_ID == 1)
 	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
-	DDRC = 0b11010101;	// s3 | s0 | Z | eps_temp | X | X | X | RED LED
+	DDRC = 0b11010111;	// s3 | s0 | Z | eps_temp | X | X | ANTENNA DEPLOY | RED LED
 	DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
 #endif
 #if (SELF_ID == 2)

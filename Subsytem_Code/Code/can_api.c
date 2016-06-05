@@ -525,8 +525,8 @@ static void start_tm_packet(void)
 		}
 		if(current_tm_fullf)
 			return;
-		//if(millis() - startedReceivingTM > 2000)
-		//	return;
+		//if(millis() - startedReceivingTM > 5000)
+			//return;
 		if (alert_deployf)
 			alert_deploy();
 	}

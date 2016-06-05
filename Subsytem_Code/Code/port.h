@@ -45,6 +45,7 @@
 #define MPPTY_P		14
 #define BATT_HEAT_P	16
 #define DPOT_SS_P	32
+#define ANT_DEP_PIN 3
 
 #define Z_P			18
 #define S0_P		22
