@@ -38,10 +38,10 @@ typedef struct{
 /*				MY CAN DEFINES								*/
 #define SELF_ID					0 // Current SSM is EPS.
 
-#define PUS_COMMUNICATION_ON	0 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
+#define PUS_COMMUNICATION_ON	1 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
 								  // programmable from the laptop interface.
 								  
-#define UART_DISABLE			1 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
+#define UART_DISABLE			0 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
 								  // from the laptop interface
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
@@ -179,6 +179,8 @@ typedef struct{
 #define ALERT_DEPLOY			0x2A
 #define DEP_ANT_COMMAND			0x2B
 #define DEP_ANT_OFF				0x2C
+#define DISABLE_RADIO			0x2D
+#define ENABLE_RADIO			0x2E
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -326,6 +328,8 @@ typedef struct{
 #define EPS_FDIR_SIGNAL			0xEA
 #define PAY_FDIR_SIGNAL			0xE9
 #define BATT_HEAT				0xE8
+
+/* Global variables for modifying configuration mid-run */
 
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;

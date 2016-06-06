@@ -297,6 +297,12 @@ void decode_command(uint8_t* command_array)
 			if(!SELF_ID && TAKEOVER)
 				exit_take_overf = 1;
 			break;
+		case DISABLE_RADIO:
+			DDRD = 0x63;
+			break;
+		case ENABLE_RADIO:
+			DDRD = 0x6F;
+			break;
 #endif
 #if (SELF_ID == 1)
 		case ENTER_LOW_POWER_COM:
