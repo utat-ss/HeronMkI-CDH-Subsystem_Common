@@ -79,6 +79,7 @@ void update_sensor_all(void)
 void update_sensor(uint8_t sensor_name)
 {
 	uint32_t analog = 0;
+	delay_ms(100);
 	if(sensor_name == PANELX_V)
 	{
 		analog = (uint32_t)read_multiplexer_sensor(PANELX_V_PIN);

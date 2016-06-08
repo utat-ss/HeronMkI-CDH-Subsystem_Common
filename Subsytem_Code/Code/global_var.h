@@ -43,6 +43,8 @@ typedef struct{
 								  
 #define UART_DISABLE			1 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
 								  // from the laptop interface
+								 
+#define MPPT_ENABLE				0 // Note: if MPPT_ENABLE == 1, the other SSMs will be programmable from the laptop interface.
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
 

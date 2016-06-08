@@ -175,8 +175,18 @@ int main(void)
 			#if (SELF_ID == 1)
 				delay_ms(250);
 				//PIN_toggle(LED3);
-				//update_sensor_all();
-				spi_send_shunt_dpot_value(shuntdpot);		//shuntdpot is initialized to 0xAC
+				run_mppt();
+				uint32_t sensor_data;
+				
+				update_sensor_all();
+				//sensor_data = read_multiplexer_sensor(BATT_V_PIN);
+				//uart_printf("PANELX_V(RAW)				:	+%lu\n\r", sensor_data);
+				
+				//test_reg[0] = *mux_result;
+				//test_reg[1] = *(mux_result + 1);
+				//send_can_value(test_reg);
+				
+				spi_send_shunt_dpot_value(0xB2);
 			#endif
 			#if (SELF_ID == 2)
 				//pressure_sensor_init(pressure_calib);
@@ -230,15 +240,15 @@ static void sys_init(void)
 
 	/* EPS ONLY Initialization */
 	#if (SELF_ID == 1)
+		uart_sendmsg("*****BEGIN EPS INIT*****\n\r");
 		// Ensure all SS bits set high
 		PIN_clr(ANT_DEP_PIN);
 		SS1_set_high(EPS_DPOT_CS);
 		SS1_set_high(EPS_TEMP_CS);
 		//PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
 		
-		//mppt_timer_init();
-		mpptx = 0x3F;
-		mppty = 0x1F;
+		mpptx = 0xC0;
+		mppty = 0xC0;
 		balance_l = 0;				// Turn off the low transistor (NPN)
 		balance_h = 0;				// Turn off the high transistor (PNP) **THIS IS CURRENTLY AN ISSUE AS I NEED TO ADD AN INVERTER
 		batt_heater_control = 0;	// Start with heaters off
@@ -249,11 +259,10 @@ static void sys_init(void)
 		shuntdpot = 0xAC;
 		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
 		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
-		PIN_set(LED1);
-		PIN_clr(S0_P);
-		PIN_set(S1_P);
-		PIN_set(S2_P);
-		PIN_set(S3_P);
+		adc_initialize();
+		mppt_timer_init();
+		uart_sendmsg("*****FINISH EPS INIT*****\n\r");
+		PIN_set(LED1);	
 	#endif
 
 	/* PAY ONLY Initialization */
@@ -319,7 +328,10 @@ static void io_init(void)
 	// Init the EPS I/O (Set the pins that we want as outputs to act as outputs)
 	DDRB = 0b11111110;	// SCK | bal l | bal h | s2 | s1 | batt_heat | MOSI | MISO
 	DDRC = 0b11010111;	// s3 | s0 | Z | eps_temp | X | X | ANTENNA DEPLOY | RED LED
-	DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
+	if(MPPT_ENABLE)
+		DDRD = 0b01101011;	// X | mppty | mpptx | X | SS/RXD | X | dpot_ss | BLUE LED
+	else
+		DDRD = 0b01100011;	// X | mppty | mpptx | X | SS | X | dpot_ss | BLUE LED	
 #endif
 #if (SELF_ID == 2)
 	DDRC |= 0b11000100;

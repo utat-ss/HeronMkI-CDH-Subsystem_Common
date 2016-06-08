@@ -35,18 +35,18 @@
 #if (SELF_ID == 1)
 //When the A compare register is reached, turn on the MPPTX signal
 ISR(TIMER0_COMPA_vect) {
-	//PIN_clr(LED2);
+	PIN_clr(MPPTX_P);
 }
 
 //When the B compare register is reached, turn on the MPPTY signal
 ISR(TIMER0_COMPB_vect) {
-	//PIN_clr(LED3);
+	PIN_clr(MPPTY_P);
 }
 
 //When the timer overflows, turn off both signals
 ISR(TIMER0_OVF_vect) {
-	//PIN_set(LED2);
-	//PIN_set(LED3);
+	PIN_set(MPPTX_P);
+	PIN_set(MPPTY_P);
 }
 
 
@@ -60,13 +60,15 @@ void mppt_timer_init(void) {
 	
 	TCNT0 = 0x0000; //Clear timer
 	//For now, hard code in the values that the "duty cycle" registers will be set to. This will be updated later by the algorithm
-	OCR0A = 0x3F; // b00111111
-	OCR0B = 0xBF; // b10111111
+	OCR0A = 0xC0; // b00111111
+	OCR0B = 0xC0; // b10111111
 	
-	TCCR0A = 0x00; // b00000000 Don't connect any pins, but set to normal mode as a test
-	TCCR0B = 0x05; // b00000101 Set clock pre-scaling to 1024 for now, will be 1 later for "fast" output
-	TIMSK0 = 0x07; // b00000111 Enable the A and B compare match interrupts. Also enable the timer overflow interrupt
-	
+	// Set WGM pins to 3 to try Fast PWM
+	// Set COM0 pins to 1 1 for set on compare match and clear at top
+	TCCR0A = 0b11000011; // COM0A1 | COM0A0 | COM0B1 | COM0B0 | - | - | WGM01 | WGM00
+	TCCR0B = 0x01; // b00000001 // FOC0A | FOC0B | - | - | WGM02 | CS02 | CS01 | CS00  CS = 5 - pre-scale 1024 CS = 1 - no pre-scale
+	//TIMSK0 = 0x07; // b00000111 Enable the A and B compare match interrupts. Also enable the timer overflow interrupt
+	TCNT0 = 0x0000; //Clear timer
 }
 
 //This function will set the duty cycle of MPPTA
