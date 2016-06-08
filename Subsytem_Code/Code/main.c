@@ -172,7 +172,7 @@ int main(void)
 				//test_reg[1] = *(mux_result + 1);
 				//send_can_value(test_reg);
 				
-				//spi_send_shunt_dpot_value(0xAC);
+				spi_send_shunt_dpot_value(0xB2);
 			#endif
 			#if (SELF_ID == 2)
 				pressure_sensor_init(pressure_calib);
@@ -237,8 +237,8 @@ static void sys_init(void)
 		SS1_set_high(EPS_TEMP_CS);
 		//PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
 		
-		mpptx = 0x3F;
-		mppty = 0x1F;
+		mpptx = 0xC0;
+		mppty = 0xC0;
 		balance_l = 0;				// Turn off the low transistor (NPN)
 		balance_h = 0;				// Turn off the high transistor (PNP) **THIS IS CURRENTLY AN ISSUE AS I NEED TO ADD AN INVERTER
 		batt_heater_control = 0;	// Start with heaters off
