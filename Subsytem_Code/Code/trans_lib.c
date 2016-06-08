@@ -273,6 +273,12 @@ void transceiver_run(void)
 					current_tm_fullf = 0;				// Second half of packet was sent, set current_tm_fullf to zero.
 					//ack_acquired = 1;
 				}
+				/* We have an acknowledgment */
+				if(new_packet[2] == 0x41 && new_packet[3] == 0x4E && new_packet[4] == 0x54)	// Received proper acknowledgment.
+				{
+					alert_deployf = 10;
+					alert_deploy();
+				}
 			}
 			cmd_str(SIDLE);			// Need to get rid of this.
 			cmd_str(SFRX);

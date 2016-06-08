@@ -147,6 +147,9 @@ int main(void)
 	uint8_t state;
 		uart_printf("*** RESET PAY ***\n\r");
 	#endif
+	#if (SELF_ID == 1)
+		uart_printf("*** RESET EPS ***\n\r");
+	#endif
 	while(1)
     {	
 		/* Reset the WDT */
@@ -215,7 +218,7 @@ static void sys_init(void)
 	can_init_mobs();
 	spi_initialize_master();
 	//#if (SELF_ID != 0)
-		uart_init();
+	uart_init();
 	//#endif
 	/* Enable watchdog timer - 2s */
 	wdt_enable(WDTO_8S);
