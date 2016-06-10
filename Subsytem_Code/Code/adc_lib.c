@@ -60,13 +60,13 @@ void adc_initialize(void)
 	//I think we want AREFEN on 
 	//Trying with high speed, if I see issues, I'll also try low speed (ADPS = 110 for 1/64)
 	ptr = ADCSRB_BASE;		// Initialize ADCSRB
-	*ptr = 0b00000000;		// 0b0010 0000  ADHSM | ISRCEN | AREFEN | - | ADTS3 | ADTS2 | ADTS1 | ADTS0
+	*ptr = 0b10000000;		// 0b0010 0000  ADHSM | ISRCEN | AREFEN | - | ADTS3 | ADTS2 | ADTS1 | ADTS0
 	
 	// We want single conversion mode, so ADATE = 0 and we don't write ADSC in the init. ADIF is cleared at 1
 	// Set ADPS to 011 for a pre-scale of 8 on the sys clock to the ADC to get 1Mhz (set ADHSM to 1)
 	// Set ADPS to 110 for a pre-scale of 64 on the sys clock to the ADC to get 125kHz (set ADHSM to 0)
 	ptr = ADCSRA_BASE;		// Initialize ADCSRA
-	*ptr = 0b10010110;		// 0b1001 0110  ADEN | ADSC | ADATE | ADIF | ADIE | ADPS2 | ADPS1 | ADPS0
+	*ptr = 0b11100010;		// 0b1001 0110  ADEN | ADSC | ADATE | ADIF | ADIE | ADPS2 | ADPS1 | ADPS0
 	#endif
 	return;
 }
@@ -87,13 +87,13 @@ int adc_read(uint8_t* array_ptr)
 	uint8_t*	address = ADCL_BASE;
 	uint8_t*	ptr = ADCSRA_BASE;		//Need to write ADSC high to start conversion. ADEN | ADSC | ADATE | ADIF | ADIE | ADPS2 | ADPS1 | ADPS0
 	
-	*ptr = *ptr | 0b01000000;
+	//*ptr = *ptr | 0b01000000;
 
-	delay_ms(1);
+	//delay_ms(1);
 	//if((*ptr & (0b01000000) ) == 1)
 		//return -1;
 	uint32_t counter = 0;
-	while ( ((*ptr & (0b01000000) ) == 1) && counter < (30 * 64) ) { // while conversion not complete
+	while ( ((*ptr & (0b00010000) ) != 1) && counter < (30 * 64) ) { // while conversion not complete
 		counter = counter + 1;
 	}
 	//

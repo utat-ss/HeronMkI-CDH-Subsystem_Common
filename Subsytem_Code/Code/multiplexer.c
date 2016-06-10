@@ -32,7 +32,7 @@ uint16_t read_multiplexer_sensor(uint8_t sensor_id)
 	uint8_t read_value[2];
 	uint16_t ret_val = 0;
 	select_multiplexer_output(sensor_id);
-	delay_ms(100);
+	delay_cycles(160);
 	adc_read(read_value);
 	ret_val = ((uint16_t)read_value[1]) << 8;
 	ret_val += (uint16_t)read_value[0];

@@ -177,7 +177,14 @@ int main(void)
 				//PIN_toggle(LED3);
 				run_mppt();
 				uint32_t sensor_data;
-				
+				//update_sensor(PANELY_I);
+				//uart_printf("PANELY_I(MILIA)				:	+%u\n\r", pxi);
+				//update_sensor(PANELY_V);
+				//uart_printf("PANELY_V(MILIV)				:	+%u\n\r", pxv);
+				//update_sensor(COMS_V);
+				//uart_printf("COMS_V(MV)				:	+%u\n\r", comsv);
+				//update_sensor(COMS_I);
+				//uart_printf("COMS_I(MV)				:	+%u\n\r", comsi);
 				update_sensor_all();
 				//sensor_data = read_multiplexer_sensor(BATT_V_PIN);
 				//uart_printf("PANELX_V(RAW)				:	+%lu\n\r", sensor_data);
