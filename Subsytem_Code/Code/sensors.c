@@ -79,7 +79,7 @@ void update_sensor_all(void)
 void update_sensor(uint8_t sensor_name)
 {
 	uint32_t analog = 0;
-	delay_ms(250);
+	//delay_ms(250);
 	if(sensor_name == PANELX_V)
 	{
 		analog = (uint32_t)read_multiplexer_sensor(PANELX_V_PIN);
@@ -88,6 +88,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= PXV_MULTIPLIER;
 		analog /= 1000;
+		analog -= 121;
+		if(analog > 10000)
+			analog = 0;
 		pxv = (uint16_t)analog;
 	}
 	if(sensor_name == PANELX_I)
@@ -98,6 +101,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= 500000;
 		analog /= PXI_MULTIPLIER;
+		analog -= 11;
+		if(analog > 10000)
+		analog = 0;
 		pxi = (uint16_t)analog;
 	}
 	if(sensor_name == PANELY_V)
@@ -108,6 +114,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= PYV_MULTIPLIER;
 		analog /= 1000;
+		analog -= 119;
+		if(analog > 10000)
+		analog = 0;
 		pyv = (uint16_t)analog;
 	}
 	if(sensor_name == PANELY_I)
@@ -118,6 +127,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= 500000;
 		analog /= PYI_MULTIPLIER;
+		analog -= 11;
+		if(analog > 10000)
+		analog = 0;
 		pyi = (uint16_t)analog;
 	}
 	if(sensor_name == BATT_V)
@@ -128,6 +140,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= BATT_V_MULTIPLIER;
 		analog /= 1000;
+		analog -= 398;
+		if(analog > 10000)
+		analog = 0;
 		battv = (uint16_t)analog;		
 	}
 	if(sensor_name == BATTIN_I)
@@ -138,6 +153,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= 500000;
 		analog /= BATTIN_MULTIPLIER;
+		analog -= 119;
+		if(analog > 10000)
+		analog = 0;
 		battin = (uint16_t)analog;
 	}
 	if(sensor_name == BATTOUT_I)
@@ -148,6 +166,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= 500000;
 		analog /= BATTOUT_MULTIPLIER;
+		analog -= 119;
+		if(analog > 10000)
+		analog = 0;
 		battout = (uint16_t)analog;
 	}
 	if(sensor_name == EPS_TEMP)
@@ -162,6 +183,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= COMS_V_MULTIPLIER;
 		analog /= 1000;
+		analog -= 232;
+		if(analog > 10000)
+		analog = 0;
 		comsv = (uint16_t)analog;
 	}
 	if(sensor_name == COMS_I)
@@ -172,6 +196,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= 500000;
 		analog /= COMS_I_MULTIPLIER;
+		analog -= 118;
+		if(analog > 10000)
+		analog = 0;
 		comsi = (uint16_t)analog;
 	}
 	if(sensor_name == PAY_V)
@@ -182,6 +209,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= PAY_V_MULTIPLIER;
 		analog /= 1000;
+		analog -= 238;
+		if(analog > 10000)
+		analog = 0;
 		payv = (uint16_t)analog;
 	}
 	if(sensor_name == PAY_I)
@@ -192,6 +222,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= 500000;
 		analog /= PAY_I_MULTIPLIER;
+		analog -= 124;
+		if(analog > 10000)
+		analog = 0;
 		payi = (uint16_t)analog;
 	}
 	if(sensor_name == OBC_V)
@@ -202,6 +235,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= OBC_V_MULTIPLIER;
 		analog /= 1000;
+		analog -= 239;
+		if(analog > 10000)
+		analog = 0;
 		obcv = (uint16_t)analog;
 	}
 	if(sensor_name == OBC_I)
@@ -212,6 +248,9 @@ void update_sensor(uint8_t sensor_name)
 		analog /= 1024;
 		analog *= 500000;
 		analog /= OBC_I_MULTIPLIER;
+		analog -= 530;
+		if(analog > 10000)
+		analog = 0;
 		obci = (uint16_t)analog;
 	}
 	return;
