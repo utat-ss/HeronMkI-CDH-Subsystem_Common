@@ -2,27 +2,32 @@
  * beacon.h
  *
  * Created: 2016/1/30 14:42:40
- *  Author: Chris Zhang
+ *  Author: Chris Zhang, Bill
  */ 
 #include <stdint.h>
 #include <stdbool.h>
-#include "trans_lib.h"
 
-#define BOOL_MSG_SIZE 1024
+#define MAX_CHAR_LEN 100	//can easily hold any single character
+#define DOT_LEN 3
+#define DASH_LEN 9
+#define SPACE_LEN 3			//length of a space (9+3+9 so for each space there will be 21 zeroes)
 
-//This function takes one text array and transmit the morse code once.
+#define BREAK_LEN 3 		//length between each dot/dash
+#define CHAR_BREAK_LEN 6 	//length between each character (6+3 so between each character will be 9 zeroes)
+
+#define DOT '.'
+#define DASH '-'
+#define SPACE ' '
+
+//This function takes one text array and transmit the morse code once
+//Can accept uppercase and lowercase letters, alphanumerics, and spaces
 void beacon_transmit(char text[]);
 
-//convert one character to morse 'code' in hex form. Contents in switch block can be obtained from MorseGenerator.cpp
-void char2code(char data, uint8_t *Length, uint8_t *code1,uint8_t *code2,uint8_t *code3, uint8_t *code4, uint8_t *code5, uint8_t *code6, uint8_t *code7,
-uint8_t *code8, uint8_t *code9, uint8_t *code10, uint8_t *code11, uint8_t *code12, uint8_t *code13, uint8_t *code14, uint8_t *code15, uint8_t *code16,
-uint8_t* position_counter );
-
-//convert message to morse code
-void message2morse(char message[], bool* morse);
-
-//This function merges the morse code for each character to one array, which is ready to be transmitted
-void code2morse(uint8_t *current, uint8_t code, uint8_t code2, uint8_t code3, uint8_t code4, uint8_t code5, uint8_t code6,
-uint8_t code7, uint8_t code8, uint8_t code9, uint8_t code10, uint8_t code11,
-uint8_t code12, uint8_t code13, uint8_t code14, uint8_t code15, uint8_t code16, bool* morse, uint8_t length,
-uint8_t* position_counter);
+//send the given array to the transceiver
+void send_array(bool array[], uint8_t len);
+//converts the character to morse code
+void get_morse(char c, bool morse_out[], uint8_t* out_len);
+//converts the given character to a string of dots and dashes
+void get_dots_and_dashes_from_char(char in, char* out, uint8_t* out_length);
+//converts the string of dots and dashes to an array of booleans
+void get_bools_from_dots_and_dashes(char* in, uint8_t in_len, bool* out, uint8_t* out_len);
