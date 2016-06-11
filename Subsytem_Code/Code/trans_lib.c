@@ -245,7 +245,7 @@ void transceiver_run(void)
 				/* We have a packet */
 				if(new_packet[0] <= (rxLast - rxFirst + 1))		// Length = data + address byte + length byte
 				{
-					PIN_toggle(LED3);
+					//PIN_toggle(LED3);
 					check = store_new_packet();
 					rx_length = 0;
 					if(!check)									// Packet was accepted and stored internally.

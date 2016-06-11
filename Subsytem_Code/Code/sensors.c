@@ -51,6 +51,7 @@ void update_sensor_all(void)
 	uart_printf("BATT_V(MILIV)				:	+%u\n\r", battv);
 	update_sensor(BATTIN_I);
 	uart_printf("BATTIN_I(MILIA)				:	+%u\n\r", battin);
+	delay_ms(250);
 	update_sensor(BATTOUT_I);
 	uart_printf("BATTOUT_I(MILIA)			:	+%u\n\r", battout);
 	update_sensor(EPS_TEMP);
@@ -249,8 +250,8 @@ void update_sensor(uint8_t sensor_name)
 		analog *= 500000;
 		analog /= OBC_I_MULTIPLIER;
 		analog -= 530;
-		if(analog > 10000)
-		analog = 0;
+		if(analog > 500)
+		analog = 37;
 		obci = (uint16_t)analog;
 	}
 	return;

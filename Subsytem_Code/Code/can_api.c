@@ -256,6 +256,13 @@ void decode_command(uint8_t* command_array)
 		case SET_TIME:
 			CURRENT_MINUTE = *(command_array);
 			break;
+		case DISABLE_UART:
+			uart_disable = 1;
+			DDRD &= ~(1<<3);	 // PD3 = TXD is output
+		case ENABLE_UART:
+			uart_disable = 0;
+			DDRD |= (1<<3);		// PD3 = TXD is output
+			
 #if (SELF_ID == 0)
 		case SEND_TM:
 			#if (SELF_ID == 0)
@@ -517,6 +524,8 @@ static void start_tm_packet(void)
 	send_arr[4] = CURRENT_MINUTE;
 	startedReceivingTM = millis();
 	receiving_tmf = 1;
+	can_send_message(&(send_arr[0]), CAN1_MB2);
+	delay_ms(1);
 	can_send_message(&(send_arr[0]), CAN1_MB2);
 	
 	while(waiting--)	// Timeout of 100ms.

@@ -44,13 +44,13 @@ typedef struct{
 #define UART_DISABLE			0 // Note: If UART_DISABLE == 0, other SSMs will not be programmable
 								  // from the laptop interface
 								 
-#define MPPT_ENABLE				0 // Note: if MPPT_ENABLE == 1, the other SSMs will be programmable from the laptop interface.
+#define MPPT_ENABLE				0 // Note: if MPPT_ENABLE == 1, the other SSMs will not be programmable from the laptop interface.
 
 #define PACKET_LENGTH			152	// Length of the PUS packet.
 
-#define COMMAND_OUT					0X01010101	// COMS: 010
-#define COMMAND_IN					0x11111111	// PAY: 200
-												// EPS: 101
+#define COMMAND_OUT					0X01010101	// COMS: 0100
+#define COMMAND_IN					0x11111111	// PAY: 2000
+												// EPS: 1001
 #define HK_TRANSMIT					0x12345678
 #define CAN_MSG_DUMMY_DATA          0xFFFFFFFF
 
@@ -183,6 +183,8 @@ typedef struct{
 #define DEP_ANT_OFF				0x2C
 #define DISABLE_RADIO			0x2D
 #define ENABLE_RADIO			0x2E
+#define DISABLE_UART			0x2F
+#define ENABLE_UART				0x30
 
 /* Checksum only */
 #define SAFE_MODE_VAR			0x09
@@ -332,6 +334,7 @@ typedef struct{
 #define BATT_HEAT				0xE8
 
 /* Global variables for modifying configuration mid-run */
+uint8_t uart_disable;
 
 /* Global variables to be used for CAN communication */
 uint8_t	status, mob_number, send_now, send_hk, send_data, set_sens_h, set_sens_l, set_varf, ask_alive;

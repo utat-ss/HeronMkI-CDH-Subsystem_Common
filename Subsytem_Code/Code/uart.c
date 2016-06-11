@@ -63,53 +63,74 @@ ISR (LIN_TC_vect){
 
 void uart_init(void){
 	// initialize chip
-	DDRD |= 1<<3;	 // PD3 = TXD is output
-	DDRD &= ~(1<<4); // PD4 = RXD is input
+	if(!uart_disable)
+	{
+		DDRD |= 1<<3;	 // PD3 = TXD is output
+		DDRD &= ~(1<<4); // PD4 = RXD is input
 	
-	// Initialize UART Registers
-	LINCR = (1 << LSWRES);                    // Software reset
-	LINBRRH = (((F_CPU/UART_BAUD)/16)-1)>>8;  // Baudrate top 8 bits
-	LINBRRL = (((F_CPU/UART_BAUD)/16)-1);     // Baudrate lower 8 bits
-	LINBTR = (1 << LDISR) | (1 << LBT4);
-	LINCR = (1<<LENA)|(1<<LCMD2)|(1<<LCMD1)|(1<<LCMD0); // Turn on UART for full duplex
-	LINENIR = 0b00000001;                     // Set the ISR flags for just the receive
-	LINSIR = 0b00000001;
-	//sei();
+		// Initialize UART Registers
+		LINCR = (1 << LSWRES);                    // Software reset
+		LINBRRH = (((F_CPU/UART_BAUD)/16)-1)>>8;  // Baudrate top 8 bits
+		LINBRRL = (((F_CPU/UART_BAUD)/16)-1);     // Baudrate lower 8 bits
+		LINBTR = (1 << LDISR) | (1 << LBT4);
+		LINCR = (1<<LENA)|(1<<LCMD2)|(1<<LCMD1)|(1<<LCMD0); // Turn on UART for full duplex
+		LINENIR = 0b00000001;                     // Set the ISR flags for just the receive
+		LINSIR = 0b00000001;
+		//sei();
+	}		
 }
 
-uint8_t uart_transmit (uint8_t msg){
-	uint64_t timeout = F_CPU*30;
-	while ((LINSIR & (1 << LBUSY)) && (timeout--)); // Wait while the UART is busy.
-	LINDAT = msg;
-	return 0;
-}
 
-uint8_t uart_sendmsg(char* msg){
-	for (int i = 0; i < strlen(msg); i++)
-	uart_transmit(msg[i]);
-	return 0;
-}
-
-uint8_t uart_receive (void){
-	uint64_t timeout = F_CPU*30;
-	while ((LINSIR & (1 << LBUSY)) && (timeout--)); // Wait while the UART is busy.
-	return LINDAT;
-}
-
-void uart_printf(char* format, ... ){
-	va_list args;
-	va_start(args, format);
-	char sendBuffer[128] = {0};
-	int numWrite = vsnprintf(sendBuffer, 128, format, args);
-	va_end(args);
-	if (numWrite < 0 || numWrite >= 128){
-		uart_sendmsg("Error formatted string too large (uart_printf)\n");
-		return;
+uint8_t uart_transmit (uint8_t msg)
+{
+	if(!uart_disable)
+	{
+		uint64_t timeout = F_CPU*30;
+		while ((LINSIR & (1 << LBUSY)) && (timeout--)); // Wait while the UART is busy.
+		LINDAT = msg;
+		return 0;
 	}
-	uart_sendmsg(sendBuffer);
 }
 
-void uart_debug(void){
+uint8_t uart_sendmsg(char* msg)
+{
+	if(!uart_disable)
+	{
+		for (int i = 0; i < strlen(msg); i++)
+		uart_transmit(msg[i]);
+		return 0;
+	}
+}
+
+uint8_t uart_receive (void)
+{
+	if(!uart_disable)
+	{
+		uint64_t timeout = F_CPU*30;
+		while ((LINSIR & (1 << LBUSY)) && (timeout--)); // Wait while the UART is busy.
+		return LINDAT;
+	}
+}
+
+void uart_printf(char* format, ... )
+{
+	if(!uart_disable)
+	{
+		va_list args;
+		va_start(args, format);
+		char sendBuffer[128] = {0};
+		int numWrite = vsnprintf(sendBuffer, 128, format, args);
+		va_end(args);
+		if (numWrite < 0 || numWrite >= 128){
+			uart_sendmsg("Error formatted string too large (uart_printf)\n");
+			return;
+		}
+		uart_sendmsg(sendBuffer);
+	}
+}
+
+void uart_debug(void)
+{
 	uart_printf("UART Debug: index = %d, OVERFLOW = %d\n", uart_index, uart_overflow);
 }
 

@@ -148,6 +148,7 @@ int main(void)
 		uart_printf("*** RESET PAY ***\n\r");
 	#endif
 	#if (SELF_ID == 1)
+	uint8_t counter = 0;
 		uart_printf("*** RESET EPS ***\n\r");
 	#endif
 	while(1)
@@ -164,7 +165,7 @@ int main(void)
 				// doing anything that is time-intensive (takes more than 10 ms).
 				if(!receiving_tmf)
 				{
-					delay_ms(250);
+					delay_ms(50);
 					transceiver_run();
 				}
 				if(millis() - startedReceivingTM > TM_TIMEOUT)
@@ -173,7 +174,8 @@ int main(void)
 				//check_obc_alive();
 			#endif
 			#if (SELF_ID == 1)
-				delay_ms(250);
+				counter++;
+				delay_ms(50);
 				//PIN_toggle(LED3);
 				run_mppt();
 				uint32_t sensor_data;
@@ -185,7 +187,11 @@ int main(void)
 				//uart_printf("COMS_V(MV)				:	+%u\n\r", comsv);
 				//update_sensor(COMS_I);
 				//uart_printf("COMS_I(MV)				:	+%u\n\r", comsi);
-				update_sensor_all();
+				if(counter >= 5)
+				{
+					update_sensor_all();
+					counter = 0;
+				}
 				//sensor_data = read_multiplexer_sensor(BATT_V_PIN);
 				//uart_printf("PANELX_V(RAW)				:	+%lu\n\r", sensor_data);
 				
@@ -208,7 +214,7 @@ int main(void)
 				uart_printf("ACC (Y)		:	+%d\n\r", acc_data);
 				acc_data = spi_retrieve_acc(3);
 				uart_printf("ACC (Z)		:	+%d\n\r", acc_data);			
-				delay_ms(500);
+				delay_ms(100);
 			#endif
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
@@ -497,6 +503,8 @@ static void init_global_vars(void)
 		pause_msg[i] = 0;
 		resume_msg[i] = 0;
 	}
+	
+	uart_disable = UART_DISABLE;
 
 	/* Initialize Global Command Flags to zero */
 	send_now = 0;
