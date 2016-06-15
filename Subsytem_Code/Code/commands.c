@@ -47,6 +47,10 @@
 #if (SELF_ID == 0)
 static void store_current_tm(void);
 static void send_tc_can_msg(uint8_t packet_count);
+
+#define BEACON_MSG_SIZE 256
+static void add_str_to_msg(char* to_add, uint8_t add_len, char* msg, uint8_t* msg_i);
+static void int_to_char_array(uint32_t data, char* out, uint8_t* out_len);
 #endif
 
 /************************************************************************/
@@ -1225,6 +1229,10 @@ void collect_fluorescence_data(void)
 	
 }
 
+
+//
+// BEACON CODE:
+
 void send_beacon(void)
 {
 	
@@ -1235,8 +1243,71 @@ void send_beacon(void)
 	
 	//TODO 
 	//use housekeeping to form the beacon message (assume it is in current_beacon)
-	char beacon_msg[] = "HELLO WORLD";
 	
+	/* Beacon definition (copied from OBC code in housekeep.c)
+	
+	//time
+	beacon_def[0] = ABS_TIME_D;
+	beacon_def[1] = ABS_TIME_D;
+	beacon_def[2] = ABS_TIME_H;
+	beacon_def[3] = ABS_TIME_H;
+	beacon_def[4] = ABS_TIME_M;
+	beacon_def[5] = ABS_TIME_M;
+	
+	//battery
+	beacon_def[6] = BATTM_V;
+	beacon_def[7] = BATTM_V;
+	beacon_def[8] = BATT_V;
+	beacon_def[9] = BATT_V;
+	
+	//solar panel current
+	beacon_def[10] = PANELX_I;
+	beacon_def[11] = PANELX_I;
+	beacon_def[12] = PANELY_I;
+	beacon_def[13] = PANELY_I;
+	
+	*/
+	
+	uint8_t i;
+	uint32_t data[7];
+	for (i=0; i<BEACON_LENGTH; i+=2) 
+	{
+		data[i/2] = (current_beacon[i+1] >> 8) + (current_beacon[i]);
+	}
+	
+	char beacon_msg[BEACON_MSG_SIZE] = { 0x00 }; //null initialize string to be big enough
+	i=0;
+	
+	char tmp_data[5] = { 0x00 };
+	uint8_t tmp_i=0;
+	
+	add_str_to_msg("DD", 2, beacon_msg, &i);
+	int_to_char_array(data[0], tmp_data, &tmp_i);
+	add_str_to_msg(tmp_data, tmp_i, beacon_msg, &i);
+	
+	add_str_to_msg(" HH", 3, beacon_msg, &i);
+	int_to_char_array(data[1], tmp_data, &tmp_i);
+	add_str_to_msg(tmp_data, tmp_i, beacon_msg, &i);
+	
+	add_str_to_msg(" MM", 3, beacon_msg, &i);
+	int_to_char_array(data[2], tmp_data, &tmp_i);
+	add_str_to_msg(tmp_data, tmp_i, beacon_msg, &i);
+	
+	add_str_to_msg(" BMV", 4, beacon_msg, &i);
+	int_to_char_array(data[3], tmp_data, &tmp_i);
+	add_str_to_msg(tmp_data, tmp_i, beacon_msg, &i);
+	
+	add_str_to_msg(" BV", 3, beacon_msg, &i);
+	int_to_char_array(data[4], tmp_data, &tmp_i);
+	add_str_to_msg(tmp_data, tmp_i, beacon_msg, &i);
+	
+	add_str_to_msg(" PXI", 4, beacon_msg, &i);
+	int_to_char_array(data[5], tmp_data, &tmp_i);
+	add_str_to_msg(tmp_data, tmp_i, beacon_msg, &i);
+	
+	add_str_to_msg(" PYI", 4, beacon_msg, &i);
+	int_to_char_array(data[6], tmp_data, &tmp_i);
+	add_str_to_msg(tmp_data, tmp_i, beacon_msg, &i);
 	
 	
 	//make use of beacon.h to send the message
@@ -1245,6 +1316,44 @@ void send_beacon(void)
 	
 	//switch to idle
 	set_transceiver(0);
+}
+
+static void add_str_to_msg(char* to_add, uint8_t add_len, char* msg, uint8_t* msg_i)
+{
+	if (*msg_i + add_len >= BEACON_MSG_SIZE)
+		return;
+	
+	uint8_t i=0;
+	for (; i<add_len; i++)
+	{
+		msg[i + *msg_i] = to_add[i];
+	}
+	*msg_i += add_len;
+}
+
+static void int_to_char_array(uint32_t data, char* out, uint8_t* out_len)
+{
+	//note: max size is 16 bit => 5 digits (in base 10)
+	*out_len = 0;
+	
+	//determine how many digits we need
+	uint32_t divisor = 1;
+	while (divisor*10 <= data)
+		divisor*=10;
+	
+	do {
+		//get the most significant digit
+		int digit = data / divisor;
+		char c = digit + 0x30; //int to ascii
+		
+		//put the character in the string
+		out[*out_len] = c;
+		*out_len = *out_len + 1;
+		
+		//divide by 10
+		data -= digit*divisor;
+		divisor /= 10;
+	} while(divisor > 0 && *out_len<5);	
 }
 
 void rx_enable(void) 

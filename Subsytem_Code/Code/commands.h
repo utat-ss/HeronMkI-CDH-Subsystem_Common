@@ -71,6 +71,7 @@ uint16_t collect_pressure(void);
 uint8_t convert_to_temp(uint32_t* temp);
 void send_beacon(void);
 void rx_enable(void);
+void receive_beacon_msg(void);
 
 /*****************************************************/
 #endif
