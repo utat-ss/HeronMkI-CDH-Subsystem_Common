@@ -33,6 +33,7 @@
 *               2016/03/12 Test and confirmed public API works at least for gpio A. Able to set pin mode, set output state, and read state.
 *                          The problem was narrowed down to spi_lib which sent bytes out-of-order and often not at all. A new function, spi_transfer5
 *                          was written to fix this.	
+*				2016/11/29 AH: Edit the driver to use for testing with the IT6 SSM Boards. Assuming we will use a single PEX, only PORTA.
 *
 *	REQUIREMENTS/ FUNCTIONAL SPECIFICATION REFERENCES:	
 *
@@ -53,8 +54,24 @@
 
 void port_expander_init(uint8_t pex_id)
 {
-	port_expander_write(pex_id, IOCON, 0b00001000); // Set configuration register with hardware addressing enabled
+	port_expander_write(pex_id, IOCON, 0b10000000); // One PEX, no hardware addressing required.
+													// To enable hardware addressing, write 0x8 to IOCON (set HAEN)
+													// If we only use PORTA, it's easier to set BANK = 1
 	return;
+}
+
+static void init_port_expander_pins(void)
+{
+	uint8_t pex_id = 0;
+	uint8_t i;
+	
+	for (i=0; i<8;i++){
+		gpioa_pin_mode(pex_id, i, OUTPUT);	 // Initialize all pins on A as outputs
+		set_gpioa_pin(pex_id, i);			 // Set all pins to 1 by default
+	}
+	
+
+	
 }
 
 void port_expander_select(uint8_t pex_id)
@@ -63,7 +80,7 @@ void port_expander_select(uint8_t pex_id)
 	if (pex_id & A2) _write_control_byte = _write_control_byte | (0b00001000);
 	if (pex_id & A1) _write_control_byte = _write_control_byte | (0b00000100);
 	if (pex_id & A0) _write_control_byte = _write_control_byte | (0b00000010);
-	_read_control_byte = _write_control_byte | (0b00000001);
+	_read_control_byte = _write_control_byte | (0b00000001); //last bit is R/W bit
 	return;
 }
 
@@ -77,9 +94,9 @@ void port_expander_write(uint8_t pex_id, uint8_t register_address, uint8_t data)
 	SPCR = 0b00011111;
 	/* Enable SPI  */
 	SPCR |= (0b01000000);
-	port_expander_select(pex_id);
+	//port_expander_select(pex_id);  //disabled for testing with 1 PEX
 	SS1_set_low(PAY_EXP1_CS);
-	spi_transfer(_write_control_byte);
+	spi_transfer(CTRL_W); //send control byte
 	spi_transfer(register_address);
 	spi_transfer(data);
 	SS1_set_high(PAY_EXP1_CS);
@@ -102,9 +119,9 @@ void port_expander_read(uint8_t pex_id, uint8_t register_address, uint8_t* data)
 	SPCR = 0b00011111;
 	/* Enable SPI  */
 	SPCR |= (0b01000000);
-	port_expander_select(pex_id);
+	//port_expander_select(pex_id); //disabled for testing with 1 PEX
 	SS1_set_low(PAY_EXP1_CS);
-	spi_transfer(_read_control_byte);
+	spi_transfer(CTRL_R);
 	spi_transfer(register_address);
 	*data = spi_transfer(0x00); // receive data
 	SS1_set_high(PAY_EXP1_CS);

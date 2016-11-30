@@ -36,7 +36,7 @@ typedef struct{
 #define DATA_BUFFER_SIZE		8 // 8 bytes max
 
 /*				MY CAN DEFINES								*/
-#define SELF_ID					1 // Current SSM is EPS.
+#define SELF_ID					2 //current ssm is PAY
 
 #define PUS_COMMUNICATION_ON	0 // Note: If PUS_COMMUNICATION_ON == 1, other SSMs will not be 
 								  // programmable from the laptop interface.

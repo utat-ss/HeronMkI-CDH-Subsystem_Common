@@ -175,7 +175,7 @@ uint8_t spi_transfer5(uint8_t volatile message)
 /*		This function takes in a single byte as a parameter and then	*/
 /*		proceeds to load this byte into the SPDR register in order to	*/
 /*		initiate transmission. It will then loop until the transmission	*/
-/*		is completed. If the transmission times out, it returns 0.		*/
+/*		is completed .If the transmission times out, it returns 0.		*/
 /*		A successful transmission will return the byte which was		*/
 /*		received on the MISO line during the transfer.					*/
 /*																		*/

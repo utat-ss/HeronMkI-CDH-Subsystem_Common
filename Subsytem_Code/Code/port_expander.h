@@ -7,6 +7,10 @@
 #define INPUT	1 /* Enumerations for setting pin mode */
 #define OUTPUT	0
 
+/* For single PEX with Port A/B addresses separated: */
+#define CTRL_R	0b01000000
+#define CTRL_W	0b01000001
+
 #define IODIR_BASE 0x00 /* Base addresses of useful registers */
 #define GPIO_BASE  0x12
 #define IOCON      0x0A // MCP23x17 Configuration Register
@@ -18,6 +22,11 @@ uint8_t _read_control_byte;
 /* Initializes the port expander. Must be called before use.            */
 /************************************************************************/
 void port_expander_init(uint8_t pex_id);
+
+/************************************************************************/
+/* Set up pins for input and output on the interface board              */
+/************************************************************************/
+void init_port_expander_pins(void);
 
 /************************************************************************/
 /* Initializes the write and read control variables for the pex_id		*/

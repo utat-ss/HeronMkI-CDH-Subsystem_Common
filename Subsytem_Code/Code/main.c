@@ -95,6 +95,11 @@
 #include "spi_lib.h"
 #include "global_var.h"
 #include "uart.h"
+
+void uart_printf(char* format, ...);
+void usr_serial_cmd();
+
+
 #if (SELF_ID == 0)
 	#include "trans_lib.h"
 	#include "comsTimer.h"
@@ -113,109 +118,43 @@
 static void io_init(void);
 static void sys_init(void);
 static void init_global_vars(void);
-#if (SELF_ID == 2)
-static void init_port_expander_pins(void);
-#endif
+
 /**************************************************/
 
 volatile uint8_t CTC_flag;	// Variable used in timer.c
 
 int main(void)
 {		
+		
+	
 	/* Initialize All Hardware and Interrupts */
 	sys_init();
-	//uint32_t count = 0;
-	#if (SELF_ID == 0)
-	{
-		PIN_toggle(LED3);
-		delay_ms(100);
-		PIN_toggle(LED3);
-		delay_ms(100);
-		PIN_toggle(LED3);
-		delay_ms(100);
-		PIN_toggle(LED3);
-		setup_fake_tc();
-		uart_printf("*** RESET COMS ***\n\r");
-	}
-	#endif
+	PIN_toggle(LED1);
+	PIN_toggle(LED2);
+	PIN_toggle(LED3); 
+	
 	/*		Begin Main Program Loop					*/
 	#if (SELF_ID) == 2
+	
 	uint16_t temperature;
 	uint16_t acc_data = 0;
 	uint32_t* temp_raw = malloc(sizeof(uint32_t));
 	uint8_t sign = 1;
 	uint8_t state;
-		uart_printf("*** RESET PAY ***\n\r");
+		//uart_printf("*** RESET PAY ***\n\r");
 	#endif
-	#if (SELF_ID == 1)
-	uint8_t counter = 0;
-		uart_printf("*** RESET EPS ***\n\r");
-	#endif
+	uart_printf("*** PAYLOAD TEST ***\n\r")
 	while(1)
     {	
+		
 		/* Reset the WDT */
 		wdt_reset();
+		
 		/* CHECK FOR A GENERAL INCOMING MESSAGE INTO MOB0 as well as HK into MOB5 */
 		can_check_general();
 		if(!PAUSE)
 		{
-			/*		TRANSCEIVER COMMUNICATION	*/
-			#if (SELF_ID == 0)
-				// If you are COMS, please check that receiving_tmf == 0 before
-				// doing anything that is time-intensive (takes more than 10 ms).
-				if(!receiving_tmf)
-				{
-					delay_ms(50);
-					transceiver_run();
-				}
-				if(millis() - startedReceivingTM > TM_TIMEOUT)
-					receiving_tmf = 0;
-				// Continually check if COMS needs to takeover for OBC
-				//check_obc_alive();
-			#endif
-			#if (SELF_ID == 1)
-				counter++;
-				delay_ms(50);
-				//PIN_toggle(LED3);
-				run_mppt();
-				uint32_t sensor_data;
-				//update_sensor(PANELY_I);
-				//uart_printf("PANELY_I(MILIA)				:	+%u\n\r", pxi);
-				//update_sensor(PANELY_V);
-				//uart_printf("PANELY_V(MILIV)				:	+%u\n\r", pxv);
-				//update_sensor(COMS_V);
-				//uart_printf("COMS_V(MV)				:	+%u\n\r", comsv);
-				//update_sensor(COMS_I);
-				//uart_printf("COMS_I(MV)				:	+%u\n\r", comsi);
-				if(counter >= 5)
-				{
-					update_sensor_all();
-					counter = 0;
-				}
-				//sensor_data = read_multiplexer_sensor(BATT_V_PIN);
-				//uart_printf("PANELX_V(RAW)				:	+%lu\n\r", sensor_data);
-				
-				//test_reg[0] = *mux_result;
-				//test_reg[1] = *(mux_result + 1);
-				//send_can_value(test_reg);
-				
-				spi_send_shunt_dpot_value(0xB2);
-			#endif
-			#if (SELF_ID == 2)
-				//pressure_sensor_init(pressure_calib);
-				//accelerometer_init();
-				collect_pressure();
-				temperature = (uint32_t)spi_retrieve_temp(PAY_TEMP_CS);	// Get raw temp reading
-				uart_printf("TEMP(C)			:	+%u\n\r", temperature);
-				delay_ms(50);
-				acc_data = spi_retrieve_acc(1);
-				uart_printf("ACC (X)		:	+%d\n\r", acc_data);
-				acc_data = spi_retrieve_acc(2);
-				uart_printf("ACC (Y)		:	+%d\n\r", acc_data);
-				acc_data = spi_retrieve_acc(3);
-				uart_printf("ACC (Z)		:	+%d\n\r", acc_data);			
-				delay_ms(100);
-			#endif
+					
 		}		
 		/*	EXECUTE OPERATIONS WHICH WERE REQUESTED */
 		run_commands();
@@ -232,89 +171,24 @@ static void sys_init(void)
 	/* Common Initialization */
 	init_global_vars();
 	io_init();
-	#if (SELF_ID == 0)
-		PIN_set(UHF_RST);
-	#endif
+	
 	timer_init();
 	adc_initialize();
 	can_init(0);
 	can_init_mobs();
 	spi_initialize_master();
-	//#if (SELF_ID != 0)
-	uart_init();
-	//#endif
-	/* Enable watchdog timer - 2s */
 	wdt_enable(WDTO_8S);
-	
-	/* COMS ONLY Initialization */
-	#if (SELF_ID == 0)
-		coms_timer_init();
-	#endif
-
-	/* EPS ONLY Initialization */
-	#if (SELF_ID == 1)
-		uart_sendmsg("*****BEGIN EPS INIT*****\n\r");
-		// Ensure all SS bits set high
-		PIN_clr(ANT_DEP_PIN);
-		SS1_set_high(EPS_DPOT_CS);
-		SS1_set_high(EPS_TEMP_CS);
-		//PIN_set(2); // This is the SS pin, set high so the 32M1 can't become a slave
-		
-		mpptx = 0xC0;
-		mppty = 0xC0;
-		balance_l = 0;				// Turn off the low transistor (NPN)
-		balance_h = 0;				// Turn off the high transistor (PNP) **THIS IS CURRENTLY AN ISSUE AS I NEED TO ADD AN INVERTER
-		batt_heater_control = 0;	// Start with heaters off
-		pxv = 0xBF;
-		pxi	= 0x0F;
-		pyv = 0x5F;
-		pyi = 0x2F;
-		shuntdpot = 0xAC;
-		// Keenan says if I want to do this I have to wait for the global interrupts to be enabled
-		//spi_send_shunt_dpot_value(0xAC);		// 0xAC should be the correct value because we are using the H and W so 0 Ohms = 0xFF
-		adc_initialize();
-		mppt_timer_init();
-		uart_sendmsg("*****FINISH EPS INIT*****\n\r");
-		PIN_set(LED1);	
-	#endif
-
-	/* PAY ONLY Initialization */
-	#if (SELF_ID == 2)
-		dac_initialize();
-	#endif
-
+	dac_initialize();
 	/* Enable global interrupts (required for timers) */
 	sei();
-
-	/* COMS ONLY Initialization */
-	#if (SELF_ID == 0)
-		//dac_initialize();
-		//uint8_t dac_reg[2];
-		//dac_reg[0] = 0xBA;
-		//dac_reg[1] = 0x02;
-		//dac_set(dac_reg);
-		SS1_set_high(COMS_TEMP_SS);		// SPI Temp Sensor.	
-		SS1_set_high(COMS_VHF_SS);
-		SS1_set_low(COMS_UHF_SS);
-		PIN_set(UHF_FE_EN);
-		PIN_clr(UHF_FE_TR);
-		PIN_clr(UHF_FE_BYP);
-		transceiver_initialize();
-	#endif
-	
-	/* PAY ONLY Initialization */
-	#if (SELF_ID == 2)
-		PIN_set(EXP_RST);
-		for(uint8_t i = 0; i < 8; i++)		// Initializes config registers of Port Expanders themselves
-		{
-			port_expander_init(i);			
-		}
+	PIN_set(EXP_RST);
+	port_expander_init(1)
 		init_port_expander_pins();
 		pressure_sensor_init(pressure_calib);
 		accelerometer_init();
 		//initialize_adc_all();
 		//gpiob_pin_mode(0, 0, OUTPUT);
-	#endif
+
 }
 
 static void io_init(void) 
@@ -557,55 +431,5 @@ void check_obc_alive(void) {
 		REQUEST_ALIVE_IN_PROG = 0;
 	}
 	//else, wait while the ISALIVE_COUNTER increments.
-}
-#endif
-
-// This function is in charge with initializing the direction and level
-// of pins on all the port expanders in the payload.
-#if (SELF_ID == 2)
-static void init_port_expander_pins(void)
-{
-	uint8_t pex_id = 0;
-	uint8_t i;
-	/* PORT EXPANDER 000 (*8 on INT PCB)	*/
-	/* (The one with the sensors)			*/
-	// Set the data direction to output.
-	for(i = 0; i < 4; i++)
-	{
-		gpioa_pin_mode(pex_id, i, OUTPUT);
-	}
-	gpioa_pin_mode(pex_id, 7, INPUT);
-	gpioa_pin_mode(pex_id, 6, INPUT);
-	gpioa_pin_mode(pex_id, 5, INPUT);
-	//gpioa_pin_mode(pex_id, 4, INPUT);		
-	// Set the default output to high (off for a SPI select)
-	for(i = 0; i < 4; i++)
-	{
-		set_gpioa_pin(pex_id, i);
-	}
-	port_expander_write(0, IODIR_BASE, 0xF0);
-	
-	/* PORT EXPANDER 001 (*4 on INT PCB)	*/
-	/* (The one with heaters and valves)	*/
-	pex_id = 4;
-	// Set the data direction
-	for(i = 0; i < 5; i++)
-	{
-		gpiob_pin_mode(pex_id, i, OUTPUT);
-	}
-	for(i = 0; i < 8; i++)
-	{
-		gpioa_pin_mode(pex_id, i, OUTPUT);
-	}
-	// Set the default pin level
-	for(i = 0; i < 5; i++)
-	{
-		clr_gpiob_pin(pex_id, i);	// All heaters off initially.
-	}
-	for(i = 0; i < 8; i++)
-	{
-		clr_gpioa_pin(pex_id, i);	// All valves pin low initially.
-	}
-	return;
 }
 #endif
