@@ -112,16 +112,15 @@ void spi_initialize_master(void)
 {
 	uint8_t* reg_ptr;
 	uint8_t temp = 0;
+
+	MCUCR &= ~(1<<SPSR);
 	
-	reg_ptr = MCUCR_BASE;
-	temp = 0b01111111;
-	*reg_ptr = *reg_ptr & (temp);	// We set SPIPS to 0 (select MISO, so NOT MISO_A)
+	/* Set MOSI and SCK output, all others input */
+	DDRB |= (1<<PORTB1/*MOSI*/)|(1<<PORTB7/*SCK*/);
 	
-	reg_ptr = SPCR_BASE;
-	temp = 0b01111111;
-	*reg_ptr = *reg_ptr | (temp);	// Set SPE to 1, MSB first, set as master, CPOL = 0 (SCK low when idle), CPHA = 0
-	temp = 0b01010011;
-	*reg_ptr = *reg_ptr & (temp);	// Turn off SPI interrupt if enabled, DORD = 0 ==> MSB first, spiclk = fioclk/128	
+	/* Enable SPI, Master, set clock rate fck/128 */
+	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0)|(1<<SPR1);
+
 	return;
 }
 
@@ -184,8 +183,8 @@ uint8_t spi_transfer(uint8_t volatile message)
 {
 	SPDR = message;
 	uint8_t timeout_counter = 0;
-	while(!(SPSR & (1<<SPIF)) && timeout_counter++ < 254);
-	if (timeout_counter == 254) {
+	while(!(SPSR & (1<<SPIF)) && timeout_counter++ < SPI_TIMEOUT);
+	if (timeout_counter == SPI_TIMEOUT) {
 		return 0;
 		} else {
 		return SPDR; // reading SPSR register and then reading SPDR automatically resets the SPIF bit
